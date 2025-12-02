@@ -161,16 +161,105 @@ examRooms, treatmentRooms, clinicStations
 - Data persists between browser sessions
 - **Important**: Clearing browser data will delete all projects
 
+### GitHub Data Synchronization
+
+The application includes a client-side data synchronization system that fetches updated reference data directly from the GitHub repository.
+
+#### Architecture
+
+The sync system operates entirely in the browser without requiring a server:
+
+1. **Source Files** live in the `src/` folder of the repository
+2. **GitHub Raw URLs** provide direct access to file contents via HTTPS
+3. **Client-side parsers** process TSV and text files into JavaScript objects
+4. **In-memory updates** replace the working data arrays without page refresh
+
+#### Synchronization Flow
+
+When a sync is initiated:
+
+1. **Backup Phase**: Current data is serialized to localStorage with a timestamp (optional)
+2. **Fetch Phase**: Files are downloaded from GitHub using the raw content API:
+   - `https://raw.githubusercontent.com/{repo}/{branch}/src/room_criteria.tsv`
+   - `https://raw.githubusercontent.com/{repo}/{branch}/src/Equipment_Guide_parsed_v2.txt`
+3. **Parse Phase**: Built-in parsers convert raw text into structured data
+4. **Update Phase**: Global data arrays are replaced with newly parsed objects
+5. **Refresh Phase**: UI re-renders to reflect updated reference library
+
+#### Data Parsing
+
+**TSV Parser (room_criteria.tsv):**
+- Reads tab-separated values with headers in the first row
+- Automatically detects and converts numeric values
+- Creates room objects with properties matching column headers
+- Handles empty cells as null values
+- Outputs array of room specification objects
+
+**Equipment Parser (Equipment_Guide_parsed_v2.txt):**
+- Uses section markers (`EQUIPMENT:` and `MAPPINGS:`) to separate content
+- Parses pipe-delimited (`|`) data within each section
+- EQUIPMENT section: JSN code, name, description
+- MAPPINGS section: room code, department, functional area, equipment JSN, quantity
+- Outputs two arrays: equipment catalog and room-equipment relationships
+
+#### File Format Specifications
+
+**room_criteria.tsv Structure:**
+```
+roomCode	name	department	functionalArea	nsf	ceilingFinish	wallFinish
+RM001	Exam Room	Clinic	Outpatient	120	ACT	VWC
+```
+- Tab characters (`\t`) separate columns
+- First row defines property names
+- Each subsequent row represents one room
+- Numeric columns auto-convert to numbers
+
+**Equipment_Guide_parsed_v2.txt Structure:**
+```
+EQUIPMENT:
+JSN001|Equipment Name|Description text
+JSN002|Another Item|More description
+
+MAPPINGS:
+RM001|Clinic|Outpatient|JSN001|2
+RM001|Clinic|Outpatient|JSN002|1
+```
+- Sections divided by keyword markers
+- Pipe characters (`|`) separate fields
+- EQUIPMENT: 3 fields (JSN, name, description)
+- MAPPINGS: 5 fields (room code, department, FA, JSN, quantity)
+
+#### Data Isolation
+
+The sync system maintains clear separation between reference data and user data:
+
+- **Updated by Sync**: `ROOM_SIZES`, `EQUIPMENT_LIST`, `ROOM_EQUIPMENT_MAPPINGS` (reference library)
+- **Never Modified**: User projects, room logic formulas, project settings
+- **Backup Scope**: Only includes reference data, not user projects
+- **Restore Process**: Manual restoration from localStorage backup entries
+
+#### Implementation Details
+
+- **No Authentication Required**: Uses public GitHub raw URLs
+- **CORS-Friendly**: Raw content URLs support cross-origin requests
+- **Stateless**: Each sync is independent, no session tracking
+- **Client-Side Only**: All processing happens in the browser
+- **Rate Limiting**: Subject to GitHub's unauthenticated API limits (~60 requests/hour)
+- **Error Handling**: Fetch failures display in real-time status log
+
 ### Exporting Data
 
 1. **Room Logic**: Click **📥 Export Logic** in Logic Portal
 2. **Projects**: Currently stored in localStorage only
+3. **Data Backups**: Created automatically during sync operations
 
 ### Backup Recommendations
 
+- Enable "Create backup" option when syncing from GitHub
 - Regularly export room logic from the Logic Portal
 - Keep project data in localStorage but consider periodic browser data backups
 - The reference library (room-sizes.js) is always available in the source files
+- Source files in `src/` folder serve as version-controlled backups
 
 ## Data Sources
 
@@ -295,13 +384,18 @@ The application includes several optimizations for handling large datasets effic
 ### File Structure
 
 ```
-index.html                          Main application
+index.html                          Main application (single-page web app)
 room-sizes.js                       Room attributes database (1,764 rooms)
 equipment-data-part1.js            Equipment library (part 1)
 equipment-data-part2.js            Equipment library (part 2)
 load-equipment.js                  Equipment data loader
 room-formulas.js                   Room calculation formulas
-README.md                          This file
+README.md                          Documentation
+src/                               Source data files (for syncing)
+  ├── room_criteria.tsv            Room specifications (tab-separated)
+  ├── Equipment_Guide_parsed_v2.txt Equipment catalog (pipe-delimited)
+  ├── vatilms_room_criteria.xlsx   Original VA TIL/MS data
+  └── generate-room-data.ps1       Data processing script
 ```
 
 ### Data Storage
@@ -321,13 +415,16 @@ README.md                          This file
 
 Potential features for future development:
 - Project export/import (JSON)
-- PDF report generation
+- ~~PDF report generation~~ ✅ **Added** (Equipment & Room Attributes reports)
 - Cost estimation integration
 - Multi-user collaboration
-- Cloud storage options
+- ~~Cloud storage options~~ ✅ **Added** (GitHub sync for reference data)
 - Advanced filtering and search
 - Custom room creation
 - Formula validation and testing
+- Real-time collaborative editing
+- Template projects
+- Version control for projects
 
 ## Support & Credits
 
@@ -336,6 +433,19 @@ Potential features for future development:
 **PDF Reference**: Combined Space Criteria.pdf (Sections 4 & 5)
 
 ## Version History
+
+- **v1.2** (December 2, 2025)
+  - Added PDF report generation (Equipment Focus & Room Attributes Focus)
+  - Added GitHub data sync for reference library updates
+  - Reorganized source files into `src/` folder
+  - Added automated data parsing from TSV and text files
+  - Improved data backup system with timestamps
+
+- **v1.1** (December 2, 2025)
+  - Added comprehensive room attribute display in reference mode
+  - Performance optimizations (debouncing, pagination, caching)
+  - Compact duplicate/delete buttons at FA/Dept levels
+  - Enhanced documentation
 
 - **v1.0** (December 2025)
   - Initial release

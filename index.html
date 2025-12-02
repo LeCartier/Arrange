@@ -665,7 +665,8 @@
             <button class="mode-btn" data-mode="reference" onclick="switchMode('reference')">Reference Mode</button>
           </div>
         </div>
-        <button onclick="openLogicPortal()" style="width: 100%; padding: 10px; margin-bottom: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; transition: transform 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">⚙️ Logic Portal</button>
+        <button onclick="openLogicPortal()" style="width: 100%; padding: 10px; margin-bottom: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; transition: transform 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">⚙️ Logic Portal</button>
+        <button onclick="openDataSyncModal()" style="width: 100%; padding: 10px; margin-bottom: 12px; background: linear-gradient(135deg, #00b894 0%, #00cec9 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; transition: transform 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">🔄 Sync Data</button>
         <button class="btn-secondary" id="return-to-projects-btn" onclick="returnToProjectList()" style="display: none; margin-bottom: 12px; width: 100%;">← Back to Project List</button>
         <button class="add-to-project-btn" id="add-to-project-btn" onclick="openImportModal()" style="display: none;">+ Add to Project</button>
         <div id="tree-view"></div>
@@ -780,6 +781,58 @@
       <div class="modal-footer">
         <button class="btn-secondary" onclick="closeReportModal()">Cancel</button>
         <button class="btn-primary" onclick="generatePDFReport()">📥 Generate PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Sync Modal -->
+  <div id="data-sync-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2>🔄 Sync Data from GitHub</h2>
+        <button class="modal-close" onclick="closeDataSyncModal()">&times;</button>
+      </div>
+      <div style="padding: 20px;">
+        <p style="margin-bottom: 20px; color: var(--muted);">Update room and equipment data from the latest source files in your GitHub repository.</p>
+        
+        <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 16px; margin-bottom: 20px;">
+          <h4 style="margin-bottom: 12px;">Repository Configuration</h4>
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; margin-bottom: 4px; font-size: 0.9rem;">GitHub Repository (owner/repo)</label>
+            <input type="text" id="github-repo" placeholder="LeCartier/Arrange" value="LeCartier/Arrange"
+                   style="width: 100%; padding: 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; margin-bottom: 4px; font-size: 0.9rem;">Branch</label>
+            <input type="text" id="github-branch" placeholder="main" value="main"
+                   style="width: 100%; padding: 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+          </div>
+        </div>
+
+        <div style="background: #1a3a1a; border: 1px solid #2a5a2a; border-radius: 6px; padding: 12px; margin-bottom: 16px;">
+          <div style="font-size: 0.85rem; color: #90ee90;">
+            <strong>📋 Files to Sync:</strong>
+            <ul style="margin: 8px 0 0 20px; line-height: 1.8;">
+              <li>src/room_criteria.tsv → Updates room specifications</li>
+              <li>src/Equipment_Guide_parsed_v2.txt → Updates equipment catalog</li>
+            </ul>
+          </div>
+        </div>
+
+        <div id="sync-status" style="min-height: 60px; padding: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; font-size: 0.85rem; font-family: monospace; overflow-y: auto; max-height: 200px;">
+          <div style="color: var(--muted);">Ready to sync...</div>
+        </div>
+
+        <div style="margin-top: 16px;">
+          <label style="display: flex; align-items: center; cursor: pointer; padding: 8px; background: var(--bg); border-radius: 4px;">
+            <input type="checkbox" id="backup-before-sync" checked style="margin-right: 8px;">
+            <span style="font-size: 0.9rem;">Create backup of current data before syncing</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeDataSyncModal()">Cancel</button>
+        <button class="btn-primary" onclick="syncDataFromGitHub()" style="background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);">🔄 Sync Now</button>
       </div>
     </div>
   </div>
@@ -4452,6 +4505,210 @@
 
     function closeLogicPortal() {
       document.getElementById('logic-portal-modal').classList.remove('active');
+    }
+
+    // -----------------------------
+    // DATA SYNC FUNCTIONS
+    // -----------------------------
+
+    function openDataSyncModal() {
+      document.getElementById('data-sync-modal').classList.add('active');
+      // Load saved config
+      const savedRepo = localStorage.getItem('github-repo') || 'LeCartier/Arrange';
+      const savedBranch = localStorage.getItem('github-branch') || 'main';
+      document.getElementById('github-repo').value = savedRepo;
+      document.getElementById('github-branch').value = savedBranch;
+      
+      // Reset status
+      document.getElementById('sync-status').innerHTML = '<div style="color: var(--muted);">Ready to sync...</div>';
+    }
+
+    function closeDataSyncModal() {
+      document.getElementById('data-sync-modal').classList.remove('active');
+    }
+
+    function logSync(message, type = 'info') {
+      const statusDiv = document.getElementById('sync-status');
+      const color = type === 'error' ? '#ff6b6b' : type === 'success' ? '#51cf66' : type === 'warning' ? '#ffd93d' : 'var(--text)';
+      const timestamp = new Date().toLocaleTimeString();
+      statusDiv.innerHTML += `<div style="color: ${color}; margin-bottom: 4px;">[${timestamp}] ${message}</div>`;
+      statusDiv.scrollTop = statusDiv.scrollHeight;
+    }
+
+    async function syncDataFromGitHub() {
+      const repo = document.getElementById('github-repo').value.trim();
+      const branch = document.getElementById('github-branch').value.trim();
+      const createBackup = document.getElementById('backup-before-sync').checked;
+
+      if (!repo) {
+        alert('Please enter a GitHub repository');
+        return;
+      }
+
+      // Save config
+      localStorage.setItem('github-repo', repo);
+      localStorage.setItem('github-branch', branch);
+
+      // Clear status
+      document.getElementById('sync-status').innerHTML = '';
+      logSync('Starting data sync...', 'info');
+
+      try {
+        // Create backup if requested
+        if (createBackup) {
+          logSync('Creating backup of current data...', 'info');
+          const backup = {
+            timestamp: new Date().toISOString(),
+            ROOM_SIZES: typeof ROOM_SIZES !== 'undefined' ? ROOM_SIZES : [],
+            EQUIPMENT_LIST: typeof EQUIPMENT_LIST !== 'undefined' ? EQUIPMENT_LIST : [],
+            ROOM_EQUIPMENT_MAPPINGS: typeof ROOM_EQUIPMENT_MAPPINGS !== 'undefined' ? ROOM_EQUIPMENT_MAPPINGS : []
+          };
+          localStorage.setItem('data-backup-' + Date.now(), JSON.stringify(backup));
+          logSync('Backup created successfully', 'success');
+        }
+
+        // Fetch room criteria TSV
+        logSync('Fetching room_criteria.tsv...', 'info');
+        const roomCriteriaUrl = `https://raw.githubusercontent.com/${repo}/${branch}/src/room_criteria.tsv`;
+        const roomResponse = await fetch(roomCriteriaUrl);
+        
+        if (!roomResponse.ok) {
+          throw new Error(`Failed to fetch room_criteria.tsv: ${roomResponse.status}`);
+        }
+        
+        const roomData = await roomResponse.text();
+        logSync(`Downloaded room_criteria.tsv (${(roomData.length / 1024).toFixed(1)} KB)`, 'success');
+
+        // Fetch equipment guide
+        logSync('Fetching Equipment_Guide_parsed_v2.txt...', 'info');
+        const equipUrl = `https://raw.githubusercontent.com/${repo}/${branch}/src/Equipment_Guide_parsed_v2.txt`;
+        const equipResponse = await fetch(equipUrl);
+        
+        if (!equipResponse.ok) {
+          throw new Error(`Failed to fetch Equipment_Guide_parsed_v2.txt: ${equipResponse.status}`);
+        }
+        
+        const equipData = await equipResponse.text();
+        logSync(`Downloaded Equipment_Guide_parsed_v2.txt (${(equipData.length / 1024).toFixed(1)} KB)`, 'success');
+
+        // Parse TSV data
+        logSync('Parsing room criteria data...', 'info');
+        const newRoomSizes = parseTSVData(roomData);
+        logSync(`Parsed ${newRoomSizes.length} rooms`, 'success');
+
+        // Parse equipment data
+        logSync('Parsing equipment data...', 'info');
+        const { equipmentList, mappings } = parseEquipmentData(equipData);
+        logSync(`Parsed ${equipmentList.length} equipment items and ${mappings.length} mappings`, 'success');
+
+        // Update global variables
+        if (newRoomSizes.length > 0) {
+          window.ROOM_SIZES = newRoomSizes;
+          logSync('Updated ROOM_SIZES', 'success');
+        }
+        
+        if (equipmentList.length > 0) {
+          window.EQUIPMENT_LIST = equipmentList;
+          logSync('Updated EQUIPMENT_LIST', 'success');
+        }
+        
+        if (mappings.length > 0) {
+          window.ROOM_EQUIPMENT_MAPPINGS = mappings;
+          logSync('Updated ROOM_EQUIPMENT_MAPPINGS', 'success');
+        }
+
+        // Store update timestamp
+        localStorage.setItem('last-data-sync', new Date().toISOString());
+
+        logSync('✓ Data sync completed successfully!', 'success');
+        logSync('Refreshing UI...', 'info');
+        
+        // Refresh the UI
+        renderAll();
+        
+        setTimeout(() => {
+          alert('Data sync completed! The application has been updated with the latest data.');
+          closeDataSyncModal();
+        }, 1000);
+
+      } catch (error) {
+        logSync(`✗ Error: ${error.message}`, 'error');
+        console.error('Sync error:', error);
+      }
+    }
+
+    function parseTSVData(tsvText) {
+      const lines = tsvText.trim().split('\n');
+      if (lines.length < 2) return [];
+
+      const headers = lines[0].split('\t');
+      const rooms = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const values = lines[i].split('\t');
+        const room = {};
+        
+        headers.forEach((header, index) => {
+          const value = values[index] || '';
+          // Convert to appropriate type
+          if (value === '') {
+            room[header] = null;
+          } else if (!isNaN(value) && value !== '') {
+            room[header] = parseFloat(value);
+          } else {
+            room[header] = value;
+          }
+        });
+
+        if (room.roomCode) {
+          rooms.push(room);
+        }
+      }
+
+      return rooms;
+    }
+
+    function parseEquipmentData(equipText) {
+      // This is a simplified parser - adjust based on your actual file format
+      const lines = equipText.trim().split('\n');
+      const equipmentList = [];
+      const mappings = [];
+      
+      let currentSection = null;
+      
+      for (const line of lines) {
+        if (line.startsWith('EQUIPMENT:')) {
+          currentSection = 'equipment';
+          continue;
+        } else if (line.startsWith('MAPPINGS:')) {
+          currentSection = 'mappings';
+          continue;
+        }
+
+        if (currentSection === 'equipment' && line.trim()) {
+          const parts = line.split('|');
+          if (parts.length >= 3) {
+            equipmentList.push({
+              jsn: parts[0].trim(),
+              name: parts[1].trim(),
+              description: parts[2].trim()
+            });
+          }
+        } else if (currentSection === 'mappings' && line.trim()) {
+          const parts = line.split('|');
+          if (parts.length >= 5) {
+            mappings.push({
+              roomCode: parts[0].trim(),
+              department: parts[1].trim(),
+              functionalArea: parts[2].trim(),
+              equipmentJsn: parts[3].trim(),
+              quantity: parseInt(parts[4]) || 1
+            });
+          }
+        }
+      }
+
+      return { equipmentList, mappings };
     }
 
     function loadRoomLogic() {
