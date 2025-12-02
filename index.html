@@ -40,6 +40,49 @@
 
     header {
       margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    header .header-content {
+      flex: 1;
+    }
+
+    header .header-actions {
+      display: flex;
+      gap: 12px;
+      padding-top: 4px;
+    }
+
+    header .icon-btn {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    header .icon-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    header .icon-btn.portal {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    header .icon-btn.sync {
+      background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+      color: white;
     }
 
     header p {
@@ -74,9 +117,36 @@
 
     .tree-header {
       display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .tree-header-top {
+      display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+    }
+
+    .tree-header-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-to-projects-btn {
+      padding: 4px 10px;
+      font-size: 0.85rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .back-to-projects-btn:hover {
+      background: var(--bg-hover);
     }
 
     .mode-toggle {
@@ -647,11 +717,17 @@
 </head>
 <body>
   <header>
-    <h1>Hospital Programming Workbench</h1>
-    <p>
-      A web-based tool for building hospital project programs from equipment guide data.
-      Import departments, functional areas, and rooms with equipment to create your project.
-    </p>
+    <div class="header-content">
+      <h1>Hospital Programming Workbench</h1>
+      <p>
+        A web-based tool for building hospital project programs from equipment guide data.
+        Import departments, functional areas, and rooms with equipment to create your project.
+      </p>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn portal" onclick="openLogicPortal()" title="Logic Portal">⚙️</button>
+      <button class="icon-btn sync" onclick="openDataSyncModal()" title="Sync Data">🔄</button>
+    </div>
   </header>
 
   <main class="layout">
@@ -659,15 +735,17 @@
     <section id="left-column">
       <div class="tree-container">
         <div class="tree-header" id="tree-header">
-          <h2 style="font-size: 1.1rem;">Project Navigator</h2>
+          <div class="tree-header-top">
+            <div class="tree-header-title">
+              <button class="back-to-projects-btn" id="return-to-projects-btn" onclick="returnToProjectList()" style="display: none;">← Projects</button>
+              <h2 style="font-size: 1.1rem; margin: 0;">Project Navigator</h2>
+            </div>
+          </div>
           <div class="mode-toggle" id="mode-toggle">
             <button class="mode-btn active" data-mode="program" onclick="switchMode('program')">Program Mode</button>
             <button class="mode-btn" data-mode="reference" onclick="switchMode('reference')">Reference Mode</button>
           </div>
         </div>
-        <button onclick="openLogicPortal()" style="width: 100%; padding: 10px; margin-bottom: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; transition: transform 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">⚙️ Logic Portal</button>
-        <button onclick="openDataSyncModal()" style="width: 100%; padding: 10px; margin-bottom: 12px; background: linear-gradient(135deg, #00b894 0%, #00cec9 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; transition: transform 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">🔄 Sync Data</button>
-        <button class="btn-secondary" id="return-to-projects-btn" onclick="returnToProjectList()" style="display: none; margin-bottom: 12px; width: 100%;">← Back to Project List</button>
         <button class="add-to-project-btn" id="add-to-project-btn" onclick="openImportModal()" style="display: none;">+ Add to Project</button>
         <div id="tree-view"></div>
       </div>
@@ -3378,9 +3456,9 @@
               <div class="detail-value">${equipCount}</div>
             </div>
           </div>
-          <div class="detail-panel">
-            <button class="btn-secondary" onclick="duplicateRoom('${room.id}')" style="width: 100%; margin-bottom: 8px;">📋 Duplicate Room</button>
-            <button class="btn-secondary" onclick="addEquipmentToRoom('${room.id}')" style="width: 100%;">➕ Add Equipment</button>
+          <div class="detail-panel" style="padding: 8px 12px; display: flex; gap: 8px;">
+            <button class="btn-secondary" onclick="duplicateRoom('${room.id}')" style="flex: 1; font-size: 0.85rem; padding: 6px 12px;">📋 Duplicate Room</button>
+            <button class="btn-secondary" onclick="resetRoomToDefault('${room.id}')" style="flex: 1; font-size: 0.85rem; padding: 6px 12px; background: #f39c12; color: white; border-color: #e67e22;" onmouseover="this.style.background='#e67e22'" onmouseout="this.style.background='#f39c12'">🔄 Reset to Default</button>
           </div>
         `;
 
@@ -3432,7 +3510,10 @@
         if (room.equipment && room.equipment.length > 0) {
           html += `
             <div class="detail-panel">
-              <h3>🔧 Equipment (${room.equipment.length} items)</h3>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="margin: 0;">🔧 Equipment (${room.equipment.length} items)</h3>
+                <button class="btn-secondary" onclick="addEquipmentToRoom('${room.id}')" style="padding: 6px 12px; font-size: 0.85rem;">➕ Add Equipment</button>
+              </div>
               <div class="equipment-list">
           `;
 
@@ -3459,6 +3540,17 @@
 
           html += `
               </div>
+            </div>
+          `;
+        } else {
+          // Show Add Equipment button even when no equipment exists
+          html += `
+            <div class="detail-panel">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="margin: 0;">🔧 Equipment (0 items)</h3>
+                <button class="btn-secondary" onclick="addEquipmentToRoom('${room.id}')" style="padding: 6px 12px; font-size: 0.85rem;">➕ Add Equipment</button>
+              </div>
+              <p style="color: var(--muted); font-size: 0.9rem;">No equipment in this room yet.</p>
             </div>
           `;
         }
@@ -4556,6 +4648,88 @@
       }
     }
 
+    function resetRoomToDefault(roomId) {
+      if (!confirm('Reset this room to default attributes and equipment? This will remove any customizations you\'ve made.')) return;
+      
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      for (const dept of project.departments) {
+        if (!dept.functionalAreas) continue;
+        for (const fa of dept.functionalAreas) {
+          if (!fa.rooms) continue;
+          const room = fa.rooms.find(r => r.id === roomId);
+          if (room) {
+            // Find the base room in ROOM_SIZES
+            const baseRoom = ROOM_SIZES.find(r => r['Room Code'] === room.code);
+            if (!baseRoom) {
+              alert('Cannot find base room data for code: ' + room.code);
+              return;
+            }
+
+            // Reset attributes to default (clear customizations)
+            delete room.attributes;
+            
+            // Reset equipment to base room equipment
+            const baseEquipment = ROOM_EQUIPMENT[room.code] || [];
+            room.equipment = baseEquipment.map(eq => ({
+              id: generateId(),
+              jsn: eq.JSN,
+              name: eq['Equipment Name'],
+              quantity: eq['Qty per Room'] || 1,
+              acqIns: eq['Acq/Ins'],
+              description: eq.Description
+            }));
+            
+            saveProjects();
+            renderAll();
+            return;
+          }
+        }
+      }
+    }
+
+    function resetRoomToDefault(roomId) {
+      if (!confirm('Reset this room to default attributes and equipment? This will remove any customizations you\'ve made.')) return;
+      
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      for (const dept of project.departments) {
+        if (!dept.functionalAreas) continue;
+        for (const fa of dept.functionalAreas) {
+          if (!fa.rooms) continue;
+          const room = fa.rooms.find(r => r.id === roomId);
+          if (room) {
+            // Find the base room in ROOM_SIZES
+            const baseRoom = ROOM_SIZES.find(r => r['Room Code'] === room.code);
+            if (!baseRoom) {
+              alert('Cannot find base room data for code: ' + room.code);
+              return;
+            }
+
+            // Reset attributes to default (clear customizations)
+            delete room.attributes;
+            
+            // Reset equipment to base room equipment
+            const baseEquipment = ROOM_EQUIPMENT[room.code] || [];
+            room.equipment = baseEquipment.map(eq => ({
+              id: generateId(),
+              jsn: eq.JSN,
+              name: eq['Equipment Name'],
+              quantity: eq['Qty per Room'] || 1,
+              acqIns: eq['Acq/Ins'],
+              description: eq.Description
+            }));
+            
+            saveProjects();
+            renderAll();
+            return;
+          }
+        }
+      }
+    }
+
     function duplicateRoom(roomId) {
       const project = getCurrentProject();
       if (!project.departments) return;
@@ -4566,11 +4740,16 @@
           if (!fa.rooms) continue;
           const room = fa.rooms.find(r => r.id === roomId);
           if (room) {
+            const newName = room.name + ' (Copy)';
             const newRoom = {
               id: generateId(),
               code: room.code,
-              name: room.name + ' (Copy)',
+              name: newName,
               nsf: room.nsf,
+              attributes: room.attributes ? {
+                ...room.attributes,
+                'Room Name': newName  // Update Room Name attribute to match new name
+              } : { 'Room Name': newName },
               equipment: room.equipment.map(eq => ({
                 id: generateId(),
                 jsn: eq.jsn,
