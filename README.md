@@ -262,6 +262,34 @@ examRooms, treatmentRooms, clinicStations
 - Check that you clicked "Unlock" button
 - Refresh page if portal doesn't open
 
+## Performance Optimizations
+
+The application includes several optimizations for handling large datasets efficiently:
+
+### Lazy Loading & Pagination
+- **Logic Portal**: Shows 50 rooms at a time with "Load More" button (1,764 total rooms)
+- **Room Lists**: Project/department/functional area views display first 100 rooms max
+- **Import Tree**: Only renders expanded nodes to minimize DOM operations
+
+### Caching
+- Department and functional area structures are cached to avoid rebuilding
+- Reference data is loaded once at startup
+
+### Debouncing
+- Search inputs use 300ms debounce to prevent excessive re-renders
+- Tree expansion uses requestAnimationFrame for smooth animations
+
+### Smart Rendering
+- Only affected components re-render (not full page refreshes)
+- Node expansion toggles only update tree view, not detail panel
+- Large lists automatically truncate with helpful messaging
+
+### Best Practices for Performance
+- Keep projects under 1,000 rooms for optimal performance  
+- Use search filters in Logic Portal rather than scrolling all rooms
+- Close unused import modals when not actively importing
+- Export and backup data regularly to avoid localStorage bloat
+
 ## Technical Details
 
 ### File Structure

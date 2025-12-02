@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Hospital Programming Workbench</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
       --bg: #060606;
@@ -741,6 +742,44 @@
       <div class="modal-footer">
         <button class="btn-secondary" onclick="closeImportModal()">Cancel</button>
         <button class="btn-primary" onclick="confirmImport()">Add Selected</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Report Generation Modal -->
+  <div id="report-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 500px;">
+      <div class="modal-header">
+        <h2>📄 Generate Project Report</h2>
+        <button class="modal-close" onclick="closeReportModal()">&times;</button>
+      </div>
+      <div style="padding: 20px;">
+        <p style="margin-bottom: 20px; color: var(--muted);">Select the report focus for your PDF export:</p>
+        
+        <div style="margin-bottom: 24px;">
+          <label style="display: block; margin-bottom: 12px; cursor: pointer; padding: 12px; border: 2px solid var(--accent); border-radius: 6px; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='var(--border)'">
+            <input type="radio" name="report-type" value="equipment" checked onchange="document.querySelectorAll('[name=report-type]').forEach(r => r.parentElement.style.borderColor = 'var(--border)'); this.parentElement.style.borderColor = 'var(--accent)';" style="margin-right: 8px;">
+            <strong>Equipment Focus</strong>
+            <div style="font-size: 0.85rem; color: var(--muted); margin-top: 4px; margin-left: 24px;">Lists all equipment for each room with JSN codes, quantities, and descriptions</div>
+          </label>
+          
+          <label style="display: block; cursor: pointer; padding: 12px; border: 2px solid var(--border); border-radius: 6px; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='var(--border)'">
+            <input type="radio" name="report-type" value="attributes" onchange="document.querySelectorAll('[name=report-type]').forEach(r => r.parentElement.style.borderColor = 'var(--border)'); this.parentElement.style.borderColor = 'var(--accent)';" style="margin-right: 8px;">
+            <strong>Room Attributes Focus</strong>
+            <div style="font-size: 0.85rem; color: var(--muted); margin-top: 4px; margin-left: 24px;">Shows detailed room specifications including HVAC, materials, utilities, and environmental requirements</div>
+          </label>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <label style="display: flex; align-items: center; cursor: pointer;">
+            <input type="checkbox" id="include-summary" checked style="margin-right: 8px;">
+            <span>Include project summary page</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeReportModal()">Cancel</button>
+        <button class="btn-primary" onclick="generatePDFReport()">📥 Generate PDF</button>
       </div>
     </div>
   </div>
@@ -2327,12 +2366,15 @@
       const isExpanded = expandedNodes.has(node.id);
       const hasChildren = node.children && node.children.length > 0;
       const isSelected = selectedNode?.id === node.id;
+      
+      // Escape the node ID for use in onclick handlers
+      const escapedNodeId = node.id.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
       let html = `
         <div class="tree-node" data-level="${level}">
-          <div class="tree-item ${isSelected ? 'selected' : ''}" onclick="handleNodeClick('${node.id}')">
+          <div class="tree-item ${isSelected ? 'selected' : ''}" onclick="handleNodeClick('${escapedNodeId}')">
             <span class="tree-toggle ${hasChildren ? (isExpanded ? 'expanded' : 'collapsed') : 'leaf'}" 
-                  onclick="event.stopPropagation(); toggleNode('${node.id}')"></span>
+                  onclick="event.stopPropagation(); toggleNode('${escapedNodeId}')"></span>
             <span class="tree-icon">${node.icon}</span>
             <span class="tree-label">${node.label}</span>
             ${node.count ? `<span class="tree-count">×${node.count}</span>` : ''}
@@ -2340,7 +2382,7 @@
       `;
 
       if (hasChildren) {
-        html += `<div class="tree-children ${isExpanded ? 'expanded' : ''}" id="children-${node.id}">`;
+        html += `<div class="tree-children ${isExpanded ? 'expanded' : ''}" id="children-${escapedNodeId}">`;
         node.children.forEach(child => {
           html += renderTreeNode(child, level + 1);
         });
@@ -2424,6 +2466,7 @@
       } else {
         expandedNodes.add(nodeId);
       }
+      // Only re-render tree, not detail (performance optimization)
       renderTree();
     }
 
@@ -2441,6 +2484,7 @@
     function handleNodeClick(nodeId) {
       const treeData = buildTreeData();
       selectedNode = findNodeById(treeData, nodeId);
+      console.log('Node clicked:', nodeId, 'Found:', selectedNode);
       renderTree();
       renderDetail();
     }
@@ -2453,7 +2497,10 @@
       const container = document.getElementById('detail-view');
       
       if (viewState === 'project-list') {
-        if (selectedProjectInList) {
+        // In reference mode, skip project list logic if we have a selected node
+        if (currentMode === 'reference' && selectedNode) {
+          // Fall through to the selectedNode handling below
+        } else if (selectedProjectInList) {
           const project = USER_PROJECTS.find(p => p.id === selectedProjectInList);
           if (project) {
             let totalDepts = project.departments ? project.departments.length : 0;
@@ -2513,37 +2560,42 @@
                 </div>
               </div>
               <div class="detail-panel">
-                <button class="btn-primary" onclick="openProject('${project.id}')" style="width: 100%;">📂 Open Project</button>
+                <button class="btn-primary" onclick="openProject('${project.id}')" style="width: 100%; margin-bottom: 8px;">📂 Open Project</button>
+                <button class="btn-primary" onclick="generateReportForProject('${project.id}')" style="width: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">📄 Generate Report</button>
+              </div>
+            `;
+            return;
+          }
+        } else {
+          // Only show welcome if not in reference mode with a selection
+          if (!(currentMode === 'reference' && selectedNode)) {
+            container.innerHTML = `
+              <div class="detail-panel">
+                <h3>Welcome to Hospital Programming Workbench</h3>
+                <p class="muted" style="margin-bottom: 16px;">Manage your hospital programming projects.</p>
+                <h4 style="margin-top: 24px; margin-bottom: 12px;">Getting Started</h4>
+                <ul class="muted" style="line-height: 1.6;">
+                  <li>Click a project to view its details</li>
+                  <li>Click <strong>📂 Open</strong> to work on a project</li>
+                  <li><strong>Program Mode:</strong> Build your project by importing departments, functional areas, and rooms</li>
+                  <li><strong>Reference Mode:</strong> Browse all available rooms and equipment from the equipment guide</li>
+                  <li>Projects are saved locally in your browser</li>
+                </ul>
+                <div style="margin-top: 24px; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px;">
+                  <h4 style="margin-bottom: 8px;">All Projects</h4>
+                  <div style="font-size: 0.9rem; color: var(--muted);">
+                    Total Projects: ${USER_PROJECTS.length}
+                  </div>
+                </div>
               </div>
             `;
             return;
           }
         }
-
-        container.innerHTML = `
-          <div class="detail-panel">
-            <h3>Welcome to Hospital Programming Workbench</h3>
-            <p class="muted" style="margin-bottom: 16px;">Manage your hospital programming projects.</p>
-            <h4 style="margin-top: 24px; margin-bottom: 12px;">Getting Started</h4>
-            <ul class="muted" style="line-height: 1.6;">
-              <li>Click a project to view its details</li>
-              <li>Click <strong>📂 Open</strong> to work on a project</li>
-              <li><strong>Program Mode:</strong> Build your project by importing departments, functional areas, and rooms</li>
-              <li><strong>Reference Mode:</strong> Browse all available rooms and equipment from the equipment guide</li>
-              <li>Projects are saved locally in your browser</li>
-            </ul>
-            <div style="margin-top: 24px; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px;">
-              <h4 style="margin-bottom: 8px;">All Projects</h4>
-              <div style="font-size: 0.9rem; color: var(--muted);">
-                Total Projects: ${USER_PROJECTS.length}
-              </div>
-            </div>
-          </div>
-        `;
-        return;
       }
       
       if (!selectedNode) {
+        console.log('No selected node');
         container.innerHTML = `
           <div class="detail-panel">
             <h3>Welcome to Hospital Programming Workbench</h3>
@@ -2556,6 +2608,8 @@
         `;
         return;
       }
+
+      console.log('Selected node type:', selectedNode.type, selectedNode);
 
       let html = '';
 
@@ -2572,11 +2626,13 @@
       } else if (selectedNode.type === 'functional-area-reference') {
         html += renderFunctionalAreaReferenceDetail();
       } else if (selectedNode.type === 'room-reference') {
+        console.log('Calling renderRoomReferenceDetail');
         html += renderRoomReferenceDetail();
       } else if (selectedNode.type === 'chapter') {
         html += renderChapterDetail();
       }
 
+      console.log('Rendering HTML length:', html.length);
       container.innerHTML = html;
     }
 
@@ -2627,12 +2683,15 @@
       `;
 
       if (allRooms.length > 0) {
+        const displayRooms = allRooms.slice(0, 100);
+        const hasMoreRooms = allRooms.length > 100;
+        
         html += `
         <div class="detail-panel">
-          <h3>🚪 Rooms (${allRooms.length})</h3>
+          <h3>🚪 Rooms (${allRooms.length}${hasMoreRooms ? ' - showing first 100' : ''})</h3>
           <div style="max-height: 400px; overflow-y: auto;">
         `;
-        allRooms.forEach(({ room, fa }) => {
+        displayRooms.forEach(({ room, fa }) => {
           const equipCount = room.equipment ? room.equipment.length : 0;
           html += `
             <div style="padding: 8px; margin-bottom: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px;">
@@ -2649,8 +2708,8 @@
                 </div>
               </div>
               <div style="display: flex; gap: 4px; margin-top: 4px;">
-                <button onclick="duplicateRoom('${room.id}')" style="flex: 1; padding: 4px 8px; background: var(--primary); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.8rem;">📋 Duplicate</button>
-                <button onclick="deleteRoom('${room.id}')" style="flex: 1; padding: 4px 8px; background: var(--error); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.8rem;">🗑️ Delete</button>
+                <button onclick="duplicateRoom('${room.id}')" style="padding: 3px 6px; background: var(--primary); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.75rem; max-width: 80px;">📋 Dup</button>
+                <button onclick="deleteRoom('${room.id}')" style="padding: 3px 6px; background: var(--error); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.75rem; max-width: 60px;">🗑️ Del</button>
               </div>
               <div style="font-size: 0.8rem; color: var(--muted); margin-top: 4px;">
                 ${equipCount} equipment item${equipCount !== 1 ? 's' : ''}
@@ -2658,6 +2717,13 @@
             </div>
           `;
         });
+        if (hasMoreRooms) {
+          html += `
+            <div style="padding: 12px; text-align: center; color: var(--muted); font-size: 0.85rem;">
+              Showing first 100 of ${allRooms.length} rooms. Use tree navigation for specific rooms.
+            </div>
+          `;
+        }
         html += `
           </div>
         </div>
@@ -2707,12 +2773,15 @@
       `;
 
       if (fa.rooms && fa.rooms.length > 0) {
+        const displayRooms = fa.rooms.slice(0, 100);
+        const hasMoreRooms = fa.rooms.length > 100;
+        
         html += `
         <div class="detail-panel">
-          <h3>🚪 Rooms (${fa.rooms.length})</h3>
+          <h3>🚪 Rooms (${fa.rooms.length}${hasMoreRooms ? ' - showing first 100' : ''})</h3>
           <div style="max-height: 400px; overflow-y: auto;">
         `;
-        fa.rooms.forEach(room => {
+        displayRooms.forEach(room => {
           const equipCount = room.equipment ? room.equipment.length : 0;
           html += `
             <div style="padding: 8px; margin-bottom: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px;">
@@ -2728,8 +2797,8 @@
                 </div>
               </div>
               <div style="display: flex; gap: 4px; margin-top: 4px;">
-                <button onclick="duplicateRoom('${room.id}')" style="flex: 1; padding: 4px 8px; background: var(--primary); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.8rem;">📋 Duplicate</button>
-                <button onclick="deleteRoom('${room.id}')" style="flex: 1; padding: 4px 8px; background: var(--error); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.8rem;">🗑️ Delete</button>
+                <button onclick="duplicateRoom('${room.id}')" style="padding: 3px 6px; background: var(--primary); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.75rem; max-width: 80px;">📋 Dup</button>
+                <button onclick="deleteRoom('${room.id}')" style="padding: 3px 6px; background: var(--error); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.75rem; max-width: 60px;">🗑️ Del</button>
               </div>
               <div style="font-size: 0.8rem; color: var(--muted); margin-top: 4px;">
                 ${equipCount} equipment item${equipCount !== 1 ? 's' : ''}
@@ -2737,6 +2806,13 @@
             </div>
           `;
         });
+        if (hasMoreRooms) {
+          html += `
+            <div style="padding: 12px; text-align: center; color: var(--muted); font-size: 0.85rem;">
+              Showing first 100 of ${fa.rooms.length} rooms. Use tree navigation for specific rooms.
+            </div>
+          `;
+        }
         html += `
           </div>
         </div>
@@ -2890,6 +2966,11 @@
           <div class="detail-row">
             <div class="detail-label">Last Modified:</div>
             <div class="detail-value">${new Date(project.modifiedAt).toLocaleString()}</div>
+          </div>
+          <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+            <button onclick="openReportModal()" class="btn-primary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+              📄 Generate Report
+            </button>
           </div>
         </div>
         <div class="detail-panel">
@@ -3187,6 +3268,19 @@
       const department = selectedNode.department;
       const functionalArea = selectedNode.functionalArea;
       
+      // Defensive check for ROOM_SIZES
+      if (typeof ROOM_SIZES === 'undefined') {
+        return `
+          <div class="detail-panel">
+            <h3>⚠️ Data Loading Error</h3>
+            <p style="color: var(--muted);">Room size data not loaded. Please refresh the page.</p>
+          </div>
+        `;
+      }
+      
+      // Get room attributes from ROOM_SIZES
+      const roomData = ROOM_SIZES ? ROOM_SIZES.find(r => r.id === roomCode) : null;
+      
       // Get all equipment for this room code
       const roomEquipment = ROOM_EQUIPMENT_MAPPINGS.filter(
         re => re.roomCode === roomCode && 
@@ -3209,9 +3303,258 @@
             <div class="detail-label">Functional Area:</div>
             <div class="detail-value">${functionalArea}</div>
           </div>
+          <div class="detail-row">
+            <div class="detail-label">NSF:</div>
+            <div class="detail-value">${roomData?.nsf || 'Not specified'} ${roomData?.nsf ? 'SF' : ''}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Equipment Items:</div>
+            <div class="detail-value">${roomEquipment.length}</div>
+          </div>
+        </div>
+        <div class="detail-panel">
+          <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 12px;">
+            📚 Reference mode - read-only view. Switch to Program Mode and import this room to edit.
+          </p>
         </div>
       `;
 
+      // Room Attributes - Materials
+      if (roomData) {
+        const hasMaterials = roomData.ceilingMaterial || roomData.wallMaterial || roomData.floorMaterial || 
+                            roomData.doorMaterial || roomData.ceilingFinish || roomData.wallFinish;
+        
+        if (hasMaterials) {
+          html += `
+            <div class="detail-panel">
+              <h3>🏗️ Materials & Finishes</h3>
+          `;
+          
+          if (roomData.ceilingMaterial || roomData.ceilingFinish) {
+            html += `
+              <div class="detail-row">
+                <div class="detail-label">Ceiling:</div>
+                <div class="detail-value">${[roomData.ceilingMaterial, roomData.ceilingFinish].filter(Boolean).join(' - ') || 'Not specified'}</div>
+              </div>
+            `;
+          }
+          
+          if (roomData.wallMaterial || roomData.wallFinish) {
+            html += `
+              <div class="detail-row">
+                <div class="detail-label">Wall:</div>
+                <div class="detail-value">${[roomData.wallMaterial, roomData.wallFinish].filter(Boolean).join(' - ') || 'Not specified'}</div>
+              </div>
+            `;
+          }
+          
+          if (roomData.floorMaterial || roomData.floorBaseMaterial) {
+            html += `
+              <div class="detail-row">
+                <div class="detail-label">Floor:</div>
+                <div class="detail-value">${[roomData.floorMaterial, roomData.floorBaseMaterial].filter(Boolean).join(' with ') || 'Not specified'}</div>
+              </div>
+            `;
+          }
+          
+          if (roomData.doorMaterial || roomData.doorType) {
+            html += `
+              <div class="detail-row">
+                <div class="detail-label">Door:</div>
+                <div class="detail-value">${[roomData.doorMaterial, roomData.doorType].filter(Boolean).join(' - ') || 'Not specified'}</div>
+              </div>
+            `;
+          }
+          
+          html += `</div>`;
+        }
+
+        // HVAC & Environmental
+        const hasHVAC = roomData.minTotalAch || roomData.minOaAch || roomData.roomAir || roomData.roomAirBalance ||
+                       roomData.indoorTempCoolingC || roomData.indoorTempHeatingC;
+        
+        if (hasHVAC) {
+          html += `
+            <div class="detail-panel">
+              <h3>❄️ HVAC & Environmental</h3>
+          `;
+          
+          if (roomData.minTotalAch) {
+            html += `
+              <div class="detail-row">
+                <div class="detail-label">Min Total ACH:</div>
+                <div class="detail-value">${roomData.minTotalAch}</div>
+              </div>
+            `;
+          }
+          
+          if (roomData.minOaAch) {
+            html += `
+              <div class="detail-row">
+                <div class="detail-label">Min Outside Air ACH:</div>
+                <div class="detail-value">${roomData.minOaAch}</div>
+              </div>
+            `;
+          }
+          
+          if (roomData.roomAir) {
+            html += `
+              <div class="detail-row">
+                <div class="detail-label">Room Air:</div>
+                <div class="detail-value">${roomData.roomAir}</div>
+              </div>
+            `;
+          }
+          
+          if (roomData.roomAirBalance) {
+            html += `
+              <div class="detail-row">
+                <div class="detail-label">Air Balance:</div>
+                <div class="detail-value">${roomData.roomAirBalance}</div>
+              </div>
+            `;
+          }
+          
+          if (roomData.indoorTempCoolingC || roomData.indoorTempHeatingC) {
+            html += `
+              <div class="detail-row">
+                <div class="detail-label">Temperature:</div>
+                <div class="detail-value">${roomData.indoorTempHeatingC ? roomData.indoorTempHeatingC + '°C heating' : ''} ${roomData.indoorTempCoolingC ? '/ ' + roomData.indoorTempCoolingC + '°C cooling' : ''}</div>
+              </div>
+            `;
+          }
+          
+          if (roomData.airHasHepaFiltration === 'Y') {
+            html += `
+              <div class="detail-row">
+                <div class="detail-label">HEPA Filtration:</div>
+                <div class="detail-value">Yes</div>
+              </div>
+            `;
+          }
+          
+          html += `</div>`;
+        }
+
+        // Medical Gases & Utilities
+        const hasGases = roomData.medAir || roomData.medVac || roomData.oxygen || roomData.nitrogen ||
+                        roomData.nitrousOxide || roomData.co2 || roomData.wagd || roomData.dentalAir;
+        
+        if (hasGases) {
+          html += `
+            <div class="detail-panel">
+              <h3>🔧 Medical Gases & Utilities</h3>
+          `;
+          
+          const gases = [];
+          if (roomData.medAir) gases.push(`Medical Air: ${roomData.medAir}`);
+          if (roomData.medVac) gases.push(`Medical Vacuum: ${roomData.medVac}`);
+          if (roomData.oxygen) gases.push(`Oxygen: ${roomData.oxygen}`);
+          if (roomData.nitrogen) gases.push(`Nitrogen: ${roomData.nitrogen}`);
+          if (roomData.nitrousOxide) gases.push(`Nitrous Oxide: ${roomData.nitrousOxide}`);
+          if (roomData.co2) gases.push(`CO2: ${roomData.co2}`);
+          if (roomData.wagd) gases.push(`WAGD: ${roomData.wagd}`);
+          if (roomData.dentalAir) gases.push(`Dental Air: ${roomData.dentalAir}`);
+          if (roomData.dentalVac) gases.push(`Dental Vacuum: ${roomData.dentalVac}`);
+          
+          gases.forEach(gas => {
+            html += `
+              <div class="detail-row">
+                <div class="detail-value" style="grid-column: 1 / -1;">${gas}</div>
+              </div>
+            `;
+          });
+          
+          html += `</div>`;
+        }
+
+        // Utilities
+        const hasUtilities = roomData.domesticColdWater === 'Y' || roomData.domesticHotWater === 'Y' || 
+                            roomData.floorDrain === 'Y' || roomData.naturalGas;
+        
+        if (hasUtilities) {
+          html += `
+            <div class="detail-panel">
+              <h3>💧 Plumbing & Utilities</h3>
+          `;
+          
+          const utilities = [];
+          if (roomData.domesticColdWater === 'Y') utilities.push('Domestic Cold Water');
+          if (roomData.domesticHotWater === 'Y') utilities.push('Domestic Hot Water');
+          if (roomData.floorDrain === 'Y') utilities.push('Floor Drain');
+          if (roomData.naturalGas) utilities.push(`Natural Gas: ${roomData.naturalGas}`);
+          
+          if (utilities.length > 0) {
+            html += `
+              <div class="detail-row">
+                <div class="detail-value" style="grid-column: 1 / -1;">${utilities.join(', ')}</div>
+              </div>
+            `;
+          }
+          
+          html += `</div>`;
+        }
+
+        // Lighting & Acoustics
+        const hasLightingAcoustics = roomData.lightingLevel || roomData.maxNoiseLevelNc || roomData.acousticalCriteria;
+        
+        if (hasLightingAcoustics) {
+          html += `
+            <div class="detail-panel">
+              <h3>💡 Lighting & Acoustics</h3>
+          `;
+          
+          if (roomData.lightingLevel) {
+            html += `
+              <div class="detail-row">
+                <div class="detail-label">Lighting Level:</div>
+                <div class="detail-value">${roomData.lightingLevel}</div>
+              </div>
+            `;
+          }
+          
+          if (roomData.maxNoiseLevelNc) {
+            html += `
+              <div class="detail-row">
+                <div class="detail-label">Max Noise Level (NC):</div>
+                <div class="detail-value">${roomData.maxNoiseLevelNc}</div>
+              </div>
+            `;
+          }
+          
+          if (roomData.acousticalCriteria) {
+            html += `
+              <div class="detail-row">
+                <div class="detail-label">Acoustical Criteria:</div>
+                <div class="detail-value">${roomData.acousticalCriteria}</div>
+              </div>
+            `;
+          }
+          
+          html += `</div>`;
+        }
+
+        // Notes
+        const notes = [roomData.note1, roomData.note2, roomData.note3, roomData.note4, roomData.note5, roomData.note6, roomData.note7].filter(Boolean);
+        if (notes.length > 0) {
+          html += `
+            <div class="detail-panel">
+              <h3>📋 Notes</h3>
+          `;
+          
+          notes.forEach((note, idx) => {
+            html += `
+              <div class="detail-row">
+                <div class="detail-value" style="grid-column: 1 / -1; font-size: 0.9rem;">${idx + 1}. ${note}</div>
+              </div>
+            `;
+          });
+          
+          html += `</div>`;
+        }
+      }
+
+      // Equipment List
       if (roomEquipment.length > 0) {
         html += `
           <div class="detail-panel">
@@ -3279,10 +3622,26 @@
     // RENDER FUNCTIONS
     // -----------------------------
 
+    // Debounce utility to prevent excessive re-renders
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
     function renderAll() {
       renderTree();
       renderDetail();
     }
+
+    // Debounced version for input handlers
+    const debouncedRenderAll = debounce(renderAll, 150);
 
     // -----------------------------
     // EVENT HANDLERS
@@ -3294,6 +3653,25 @@
 
     let selectedImportItems = new Set();
     let expandedImportNodes = new Set();
+
+    // Cache the department/FA structure to avoid rebuilding on every render
+    let cachedDeptMap = null;
+    function getDeptMap() {
+      if (!cachedDeptMap) {
+        cachedDeptMap = new Map();
+        ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
+          if (!cachedDeptMap.has(mapping.department)) {
+            cachedDeptMap.set(mapping.department, new Map());
+          }
+          const faMap = cachedDeptMap.get(mapping.department);
+          if (!faMap.has(mapping.functionalArea)) {
+            faMap.set(mapping.functionalArea, new Set());
+          }
+          faMap.get(mapping.functionalArea).add(mapping.roomCode);
+        });
+      }
+      return cachedDeptMap;
+    }
 
     function openImportModal() {
       document.getElementById('import-modal').classList.add('active');
@@ -3318,19 +3696,8 @@
       const container = document.getElementById('import-tree-container');
       let html = '';
 
-      // Build hierarchical tree: departments > functional areas > rooms
-      const deptMap = new Map();
-      
-      ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
-        if (!deptMap.has(mapping.department)) {
-          deptMap.set(mapping.department, new Map());
-        }
-        const faMap = deptMap.get(mapping.department);
-        if (!faMap.has(mapping.functionalArea)) {
-          faMap.set(mapping.functionalArea, new Set());
-        }
-        faMap.get(mapping.functionalArea).add(mapping.roomCode);
-      });
+      // Use cached department map
+      const deptMap = getDeptMap();
 
       // Render unified tree with checkboxes at all levels
       Array.from(deptMap.keys()).sort().forEach(dept => {
@@ -3602,6 +3969,295 @@
     }
 
     // -----------------------------
+    // REPORT GENERATION FUNCTIONS
+    // -----------------------------
+
+    function openReportModal() {
+      document.getElementById('report-modal').classList.add('active');
+    }
+
+    function closeReportModal() {
+      document.getElementById('report-modal').classList.remove('active');
+    }
+
+    function generateReportForProject(projectId) {
+      // Temporarily set this project as the context for report generation
+      const originalProject = currentProjectId;
+      currentProjectId = projectId;
+      openReportModal();
+      // Reset after modal opens
+      setTimeout(() => {
+        currentProjectId = originalProject;
+      }, 100);
+    }
+
+    function generatePDFReport() {
+      const reportType = document.querySelector('input[name="report-type"]:checked').value;
+      const includeSummary = document.getElementById('include-summary').checked;
+      const project = getCurrentProject();
+      
+      if (!project) {
+        alert('No project selected');
+        return;
+      }
+
+      // Initialize jsPDF
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      
+      let yPos = 20;
+      const lineHeight = 7;
+      const pageHeight = 280;
+      const marginLeft = 15;
+      const marginRight = 195;
+
+      // Helper function to check if we need a new page
+      function checkPageBreak(spaceNeeded = 20) {
+        if (yPos + spaceNeeded > pageHeight) {
+          doc.addPage();
+          yPos = 20;
+          return true;
+        }
+        return false;
+      }
+
+      // Helper function to add wrapped text
+      function addText(text, x, y, maxWidth, options = {}) {
+        const lines = doc.splitTextToSize(text, maxWidth);
+        lines.forEach((line, i) => {
+          if (i > 0) {
+            checkPageBreak();
+          }
+          doc.text(line, x, y + (i * lineHeight));
+        });
+        return lines.length * lineHeight;
+      }
+
+      // Title Page
+      doc.setFontSize(24);
+      doc.setFont(undefined, 'bold');
+      doc.text('Hospital Programming Report', marginLeft, yPos);
+      yPos += 15;
+      
+      doc.setFontSize(16);
+      doc.text(project.name, marginLeft, yPos);
+      yPos += 10;
+      
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'normal');
+      doc.text(`Generated: ${new Date().toLocaleString()}`, marginLeft, yPos);
+      yPos += 10;
+      doc.text(`Report Type: ${reportType === 'equipment' ? 'Equipment Focus' : 'Room Attributes Focus'}`, marginLeft, yPos);
+      yPos += 15;
+
+      // Summary Page (if selected)
+      if (includeSummary) {
+        const totalDepts = project.departments ? project.departments.length : 0;
+        let totalFAs = 0;
+        let totalRooms = 0;
+        let totalEquip = 0;
+        const totalNSF = calculateProjectNSF(project);
+
+        if (project.departments) {
+          project.departments.forEach(dept => {
+            if (dept.functionalAreas) {
+              totalFAs += dept.functionalAreas.length;
+              dept.functionalAreas.forEach(fa => {
+                if (fa.rooms) {
+                  totalRooms += fa.rooms.length;
+                  fa.rooms.forEach(room => {
+                    if (room.equipment) {
+                      totalEquip += room.equipment.length;
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }
+
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.text('Project Summary', marginLeft, yPos);
+        yPos += 10;
+
+        doc.setFontSize(10);
+        doc.setFont(undefined, 'normal');
+        doc.text(`Departments: ${totalDepts}`, marginLeft, yPos);
+        yPos += lineHeight;
+        doc.text(`Functional Areas: ${totalFAs}`, marginLeft, yPos);
+        yPos += lineHeight;
+        doc.text(`Rooms: ${totalRooms}`, marginLeft, yPos);
+        yPos += lineHeight;
+        doc.text(`Equipment Items: ${totalEquip}`, marginLeft, yPos);
+        yPos += lineHeight;
+        doc.text(`Total NSF: ${totalNSF.toLocaleString()} SF`, marginLeft, yPos);
+        yPos += 15;
+      }
+
+      // Iterate through departments, functional areas, and rooms
+      if (project.departments) {
+        project.departments.forEach((dept, deptIdx) => {
+          checkPageBreak(30);
+          
+          // Department Header
+          doc.setFontSize(14);
+          doc.setFont(undefined, 'bold');
+          doc.text(`Department: ${dept.name}`, marginLeft, yPos);
+          yPos += 10;
+
+          if (dept.functionalAreas) {
+            dept.functionalAreas.forEach((fa, faIdx) => {
+              checkPageBreak(25);
+              
+              // Functional Area Header
+              doc.setFontSize(12);
+              doc.setFont(undefined, 'bold');
+              doc.text(`  Functional Area: ${fa.name}`, marginLeft, yPos);
+              yPos += 8;
+
+              if (fa.rooms) {
+                fa.rooms.forEach((room, roomIdx) => {
+                  checkPageBreak(40);
+                  
+                  // Room Header
+                  doc.setFontSize(10);
+                  doc.setFont(undefined, 'bold');
+                  doc.text(`    ${room.code} - ${room.name}`, marginLeft, yPos);
+                  yPos += lineHeight;
+                  
+                  doc.setFont(undefined, 'normal');
+                  doc.text(`    NSF: ${room.nsf || 0} SF`, marginLeft, yPos);
+                  yPos += lineHeight;
+
+                  if (reportType === 'equipment') {
+                    // Equipment Focus
+                    if (room.equipment && room.equipment.length > 0) {
+                      doc.setFont(undefined, 'italic');
+                      doc.text(`    Equipment (${room.equipment.length} items):`, marginLeft, yPos);
+                      yPos += lineHeight;
+                      
+                      doc.setFont(undefined, 'normal');
+                      room.equipment.forEach(equip => {
+                        checkPageBreak();
+                        doc.setFontSize(9);
+                        const equipText = `      • ${equip.jsn} - ${equip.name} (Qty: ${equip.quantity})`;
+                        yPos += addText(equipText, marginLeft, yPos, marginRight - marginLeft);
+                        
+                        if (equip.description) {
+                          doc.setTextColor(100);
+                          const descText = `        ${equip.description}`;
+                          yPos += addText(descText, marginLeft, yPos, marginRight - marginLeft);
+                          doc.setTextColor(0);
+                        }
+                      });
+                      doc.setFontSize(10);
+                    } else {
+                      doc.setFontSize(9);
+                      doc.setTextColor(150);
+                      doc.text('      No equipment specified', marginLeft, yPos);
+                      doc.setTextColor(0);
+                      doc.setFontSize(10);
+                      yPos += lineHeight;
+                    }
+                  } else {
+                    // Room Attributes Focus
+                    const roomData = ROOM_SIZES.find(r => r.roomCode === room.code);
+                    if (roomData) {
+                      doc.setFontSize(9);
+                      
+                      // HVAC & Environmental
+                      if (roomData.airChangesPerHour || roomData.indoorTemperatureF) {
+                        checkPageBreak(15);
+                        doc.setFont(undefined, 'italic');
+                        doc.text('    HVAC & Environmental:', marginLeft, yPos);
+                        yPos += lineHeight;
+                        doc.setFont(undefined, 'normal');
+                        
+                        if (roomData.airChangesPerHour) {
+                          doc.text(`      Air Changes/Hour: ${roomData.airChangesPerHour}`, marginLeft, yPos);
+                          yPos += lineHeight;
+                        }
+                        if (roomData.indoorTemperatureF) {
+                          doc.text(`      Temperature: ${roomData.indoorTemperatureF}°F`, marginLeft, yPos);
+                          yPos += lineHeight;
+                        }
+                        if (roomData.indoorRelativeHumidityRhMax || roomData.indoorRelativeHumidityRhMin) {
+                          const humidityText = `      Humidity: ${roomData.indoorRelativeHumidityRhMin || ''}${roomData.indoorRelativeHumidityRhMin && roomData.indoorRelativeHumidityRhMax ? '-' : ''}${roomData.indoorRelativeHumidityRhMax || ''}%`;
+                          doc.text(humidityText, marginLeft, yPos);
+                          yPos += lineHeight;
+                        }
+                      }
+
+                      // Materials & Finishes
+                      if (roomData.ceilingFinish || roomData.wallFinish || roomData.floorFinish) {
+                        checkPageBreak(15);
+                        doc.setFont(undefined, 'italic');
+                        doc.text('    Materials & Finishes:', marginLeft, yPos);
+                        yPos += lineHeight;
+                        doc.setFont(undefined, 'normal');
+                        
+                        if (roomData.ceilingFinish) {
+                          doc.text(`      Ceiling: ${roomData.ceilingFinish}`, marginLeft, yPos);
+                          yPos += lineHeight;
+                        }
+                        if (roomData.wallFinish) {
+                          doc.text(`      Wall: ${roomData.wallFinish}`, marginLeft, yPos);
+                          yPos += lineHeight;
+                        }
+                        if (roomData.floorFinish) {
+                          doc.text(`      Floor: ${roomData.floorFinish}`, marginLeft, yPos);
+                          yPos += lineHeight;
+                        }
+                      }
+
+                      // Medical Gases
+                      const gases = [];
+                      if (roomData.oxygenOutlets) gases.push(`O2: ${roomData.oxygenOutlets}`);
+                      if (roomData.medicalAirOutlets) gases.push(`Med Air: ${roomData.medicalAirOutlets}`);
+                      if (roomData.medicalVacuumOutlets) gases.push(`Vac: ${roomData.medicalVacuumOutlets}`);
+                      
+                      if (gases.length > 0) {
+                        checkPageBreak(10);
+                        doc.setFont(undefined, 'italic');
+                        doc.text('    Medical Gases:', marginLeft, yPos);
+                        yPos += lineHeight;
+                        doc.setFont(undefined, 'normal');
+                        doc.text(`      ${gases.join(', ')}`, marginLeft, yPos);
+                        yPos += lineHeight;
+                      }
+
+                      // Equipment count
+                      const equipCount = room.equipment ? room.equipment.length : 0;
+                      if (equipCount > 0) {
+                        doc.text(`    Equipment Items: ${equipCount}`, marginLeft, yPos);
+                        yPos += lineHeight;
+                      }
+
+                      doc.setFontSize(10);
+                    }
+                  }
+
+                  yPos += 3; // Space between rooms
+                });
+              }
+              
+              yPos += 5; // Space between functional areas
+            });
+          }
+          
+          yPos += 5; // Space between departments
+        });
+      }
+
+      // Save the PDF
+      const fileName = `${project.name.replace(/[^a-z0-9]/gi, '_')}_${reportType}_${new Date().toISOString().split('T')[0]}.pdf`;
+      doc.save(fileName);
+      
+      closeReportModal();
+    }
+
+    // -----------------------------
     // ROOM MANAGEMENT FUNCTIONS
     // -----------------------------
 
@@ -3835,11 +4491,14 @@
       }
     }
 
-    function renderLogicRoomsList() {
+    let currentLogicPage = 0;
+    const LOGIC_PAGE_SIZE = 50; // Show 50 rooms at a time
+
+    function renderLogicRoomsList(append = false) {
       const container = document.getElementById('logic-rooms-list');
       const searchTerm = (document.getElementById('logic-search-box')?.value || '').toLowerCase();
       
-      const rooms = Object.values(roomLogicData)
+      const allRooms = Object.values(roomLogicData)
         .filter(room => {
           if (!searchTerm) return true;
           return room.code.toLowerCase().includes(searchTerm) ||
@@ -3847,7 +4506,17 @@
         })
         .sort((a, b) => a.code.localeCompare(b.code));
 
-      container.innerHTML = rooms.map(room => {
+      // Reset page on new search
+      if (!append) {
+        currentLogicPage = 0;
+      }
+
+      const start = currentLogicPage * LOGIC_PAGE_SIZE;
+      const end = start + LOGIC_PAGE_SIZE;
+      const rooms = allRooms.slice(start, end);
+      const hasMore = end < allRooms.length;
+
+      const html = rooms.map(room => {
         const hasLogic = room.qtyFormula || room.minQty || room.maxQty || room.notes;
         const status = hasLogic ? 
           (room.qtyFormula && room.minQty && room.maxQty ? 'complete' : 'partial') : 'empty';
@@ -3942,9 +4611,9 @@
       roomLogicData[code][field] = value;
     }
 
-    function filterLogicRooms() {
+    const filterLogicRooms = debounce(() => {
       renderLogicRoomsList();
-    }
+    }, 300);
 
     function saveAllLogic() {
       try {
