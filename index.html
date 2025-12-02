@@ -929,6 +929,9 @@
           });
           console.log('Verifying window.ROOM_EQUIPMENT_MAPPINGS updated:', window.ROOM_EQUIPMENT_MAPPINGS[0]);
           
+          // Reset cached dept map so import tree rebuilds with enriched data
+          cachedDeptMap = null;
+          
           // Now trigger initial render with enriched data
           viewState = 'project-list';
           renderAll();
@@ -3301,12 +3304,50 @@
       `;
     }
 
+    // Helper function to get room attributes from ROOM_SIZES
+    function getRoomAttributes(roomCode) {
+      if (typeof ROOM_SIZES !== 'undefined' && ROOM_SIZES) {
+        return ROOM_SIZES.find(r => r.id === roomCode);
+      }
+      return null;
+    }
+
+    // Helper to render editable attribute field
+    function renderEditableAttribute(label, value, onChange) {
+      const displayValue = value !== null && value !== undefined && value !== '' ? value : '';
+      return `
+        <div class="detail-row">
+          <div class="detail-label">${label}:</div>
+          <div class="detail-value">
+            <input type="text" value="${displayValue}" 
+              onchange="${onChange}"
+              placeholder="Not specified"
+              style="width: 100%; padding: 4px 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+          </div>
+        </div>
+      `;
+    }
+
+    // Helper to render read-only attribute field
+    function renderReadOnlyAttribute(label, value) {
+      const displayValue = value !== null && value !== undefined && value !== '' ? value : 'Not specified';
+      return `
+        <div class="detail-row">
+          <div class="detail-label">${label}:</div>
+          <div class="detail-value">${displayValue}</div>
+        </div>
+      `;
+    }
+
     function renderRoomDetail() {
       // Handle imported rooms (from reference mode)
       if (selectedNode.room && !selectedNode.roomTemplate) {
         const room = selectedNode.room;
         const equipCount = room.equipment ? room.equipment.length : 0;
         const nsf = room.nsf || 0;
+        
+        // Get room attributes from ROOM_SIZES
+        const roomAttrs = getRoomAttributes(room.code);
 
         let html = `
           <div class="detail-panel">
@@ -3317,7 +3358,11 @@
             </div>
             <div class="detail-row">
               <div class="detail-label">Room Name:</div>
-              <div class="detail-value">${room.name}</div>
+              <div class="detail-value">
+                <input type="text" value="${room.name}" 
+                  onchange="updateRoomName('${room.id}', this.value)"
+                  style="width: 100%; padding: 4px 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+              </div>
             </div>
             <div class="detail-row">
               <div class="detail-label">NSF:</div>
@@ -3339,6 +3384,51 @@
           </div>
         `;
 
+        // Room Attributes - editable if available from ROOM_SIZES
+        if (roomAttrs) {
+          // Helper to get attribute value (room.attributes overrides ROOM_SIZES)
+          const getAttr = (attrName) => room.attributes?.[attrName] ?? roomAttrs[attrName];
+          
+          // Consolidated Attributes Panel with columns
+          html += `
+            <div class="detail-panel">
+              <h3>📋 Room Attributes</h3>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                  <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--muted);">🏗️ Materials & Finishes</h4>
+                  ${renderEditableAttribute('Ceiling Material', getAttr('ceilingMaterial'), `updateRoomAttribute('${room.id}', 'ceilingMaterial', this.value)`)}
+                  ${renderEditableAttribute('Wall Material', getAttr('wallMaterial'), `updateRoomAttribute('${room.id}', 'wallMaterial', this.value)`)}
+                  ${renderEditableAttribute('Floor Material', getAttr('floorMaterial'), `updateRoomAttribute('${room.id}', 'floorMaterial', this.value)`)}
+                  ${renderEditableAttribute('Door Material', getAttr('doorMaterial'), `updateRoomAttribute('${room.id}', 'doorMaterial', this.value)`)}
+                  
+                  <h4 style="margin: 12px 0 8px 0; font-size: 0.9rem; color: var(--muted);">❄️ HVAC</h4>
+                  ${renderEditableAttribute('Min Total ACH', getAttr('minTotalAch'), `updateRoomAttribute('${room.id}', 'minTotalAch', this.value)`)}
+                  ${renderEditableAttribute('Min OA ACH', getAttr('minOaAch'), `updateRoomAttribute('${room.id}', 'minOaAch', this.value)`)}
+                  ${renderEditableAttribute('Temp Cooling (°C)', getAttr('indoorTempCoolingC'), `updateRoomAttribute('${room.id}', 'indoorTempCoolingC', this.value)`)}
+                  ${renderEditableAttribute('Temp Heating (°C)', getAttr('indoorTempHeatingC'), `updateRoomAttribute('${room.id}', 'indoorTempHeatingC', this.value)`)}
+                  
+                  <h4 style="margin: 12px 0 8px 0; font-size: 0.9rem; color: var(--muted);">💡 Lighting & Acoustics</h4>
+                  ${renderEditableAttribute('Lighting Level', getAttr('lightingLevel'), `updateRoomAttribute('${room.id}', 'lightingLevel', this.value)`)}
+                  ${renderEditableAttribute('Max Noise (NC)', getAttr('maxNoiseLevelNc'), `updateRoomAttribute('${room.id}', 'maxNoiseLevelNc', this.value)`)}
+                </div>
+                <div>
+                  <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--muted);">🔧 Medical Gases</h4>
+                  ${renderEditableAttribute('Medical Air', getAttr('medAir'), `updateRoomAttribute('${room.id}', 'medAir', this.value)`)}
+                  ${renderEditableAttribute('Medical Vacuum', getAttr('medVac'), `updateRoomAttribute('${room.id}', 'medVac', this.value)`)}
+                  ${renderEditableAttribute('Oxygen', getAttr('oxygen'), `updateRoomAttribute('${room.id}', 'oxygen', this.value)`)}
+                  ${renderEditableAttribute('Nitrogen', getAttr('nitrogen'), `updateRoomAttribute('${room.id}', 'nitrogen', this.value)`)}
+                  
+                  <h4 style="margin: 12px 0 8px 0; font-size: 0.9rem; color: var(--muted);">💧 Plumbing</h4>
+                  ${renderEditableAttribute('Cold Water', getAttr('domesticColdWater'), `updateRoomAttribute('${room.id}', 'domesticColdWater', this.value)`)}
+                  ${renderEditableAttribute('Hot Water', getAttr('domesticHotWater'), `updateRoomAttribute('${room.id}', 'domesticHotWater', this.value)`)}
+                  ${renderEditableAttribute('Floor Drain', getAttr('floorDrain'), `updateRoomAttribute('${room.id}', 'floorDrain', this.value)`)}
+                  ${renderEditableAttribute('Natural Gas', getAttr('naturalGas'), `updateRoomAttribute('${room.id}', 'naturalGas', this.value)`)}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
         if (room.equipment && room.equipment.length > 0) {
           html += `
             <div class="detail-panel">
@@ -3351,10 +3441,14 @@
               <div class="equipment-item">
                 <div class="equipment-item-header">
                   <span>${eq.jsn} - ${eq.name}</span>
-                  <span>
-                    Qty: ${eq.quantity} | ${eq.acqIns}
+                  <span style="display: flex; align-items: center; gap: 8px;">
+                    <span>Qty:</span>
+                    <input type="number" value="${eq.quantity}" min="1"
+                      onchange="updateEquipmentQuantity('${room.id}', '${eq.id}', this.value)"
+                      style="width: 60px; padding: 2px 6px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+                    <span>| ${eq.acqIns}</span>
                     <button onclick="removeEquipment('${room.id}', '${eq.id}')" 
-                      style="margin-left: 8px; padding: 2px 8px; background: var(--error); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.75rem;"
+                      style="padding: 2px 8px; background: var(--error); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.75rem;"
                       title="Remove equipment">🗑️</button>
                   </span>
                 </div>
@@ -3460,7 +3554,7 @@
       }
       
       // Get room attributes from ROOM_SIZES
-      const roomData = ROOM_SIZES ? ROOM_SIZES.find(r => r.id === roomCode) : null;
+      const roomData = getRoomAttributes(roomCode);
       console.log('Found roomData:', roomData ? 'Yes' : 'No', roomData ? roomData.id : 'null');
       
       // Get all equipment for this room code
@@ -3474,26 +3568,11 @@
       let html = `
         <div class="detail-panel">
           <h3>🚪 ${roomCode} - ${roomName}</h3>
-          <div class="detail-row">
-            <div class="detail-label">Room Code:</div>
-            <div class="detail-value">${roomCode}</div>
-          </div>
-          <div class="detail-row">
-            <div class="detail-label">Department:</div>
-            <div class="detail-value">${department}</div>
-          </div>
-          <div class="detail-row">
-            <div class="detail-label">Functional Area:</div>
-            <div class="detail-value">${functionalArea}</div>
-          </div>
-          <div class="detail-row">
-            <div class="detail-label">NSF:</div>
-            <div class="detail-value">${roomData?.nsf || 'Not specified'} ${roomData?.nsf ? 'SF' : ''}</div>
-          </div>
-          <div class="detail-row">
-            <div class="detail-label">Equipment Items:</div>
-            <div class="detail-value">${roomEquipment.length}</div>
-          </div>
+          ${renderReadOnlyAttribute('Room Code', roomCode)}
+          ${renderReadOnlyAttribute('Department', department)}
+          ${renderReadOnlyAttribute('Functional Area', functionalArea)}
+          ${renderReadOnlyAttribute('NSF', roomData?.nsf ? roomData.nsf + ' SF' : 'Not specified')}
+          ${renderReadOnlyAttribute('Equipment Items', roomEquipment.length)}
         </div>
         <div class="detail-panel">
           <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 12px;">
@@ -3502,239 +3581,54 @@
         </div>
       `;
 
-      // Room Attributes - Materials
+      // Room Attributes - show in compact two-column layout
       if (roomData) {
-        const hasMaterials = roomData.ceilingMaterial || roomData.wallMaterial || roomData.floorMaterial || 
-                            roomData.doorMaterial || roomData.ceilingFinish || roomData.wallFinish;
-        
-        if (hasMaterials) {
-          html += `
-            <div class="detail-panel">
-              <h3>🏗️ Materials & Finishes</h3>
-          `;
-          
-          if (roomData.ceilingMaterial || roomData.ceilingFinish) {
-            html += `
-              <div class="detail-row">
-                <div class="detail-label">Ceiling:</div>
-                <div class="detail-value">${[roomData.ceilingMaterial, roomData.ceilingFinish].filter(Boolean).join(' - ') || 'Not specified'}</div>
+        html += `
+          <div class="detail-panel">
+            <h3>📋 Room Attributes</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div>
+                <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--muted);">🏗️ Materials & Finishes</h4>
+                ${renderReadOnlyAttribute('Ceiling Material', roomData.ceilingMaterial)}
+                ${renderReadOnlyAttribute('Wall Material', roomData.wallMaterial)}
+                ${renderReadOnlyAttribute('Floor Material', roomData.floorMaterial)}
+                ${renderReadOnlyAttribute('Door Material', roomData.doorMaterial)}
+                ${renderReadOnlyAttribute('Door Type', roomData.doorType)}
+                
+                <h4 style="margin: 12px 0 8px 0; font-size: 0.9rem; color: var(--muted);">❄️ HVAC</h4>
+                ${renderReadOnlyAttribute('Min Total ACH', roomData.minTotalAch)}
+                ${renderReadOnlyAttribute('Min OA ACH', roomData.minOaAch)}
+                ${renderReadOnlyAttribute('Room Air Balance', roomData.roomAirBalance)}
+                ${renderReadOnlyAttribute('Temp Cooling (°C)', roomData.indoorTempCoolingC)}
+                ${renderReadOnlyAttribute('Temp Heating (°C)', roomData.indoorTempHeatingC)}
+                ${renderReadOnlyAttribute('RH Max (%)', roomData.indoorRelativeHumidityRhMax)}
+                ${renderReadOnlyAttribute('RH Min (%)', roomData.indoorRelativeHumidityRhMin)}
+                
+                <h4 style="margin: 12px 0 8px 0; font-size: 0.9rem; color: var(--muted);">💡 Lighting & Acoustics</h4>
+                ${renderReadOnlyAttribute('Lighting Level', roomData.lightingLevel)}
+                ${renderReadOnlyAttribute('Max Noise (NC)', roomData.maxNoiseLevelNc)}
+                ${renderReadOnlyAttribute('Acoustical Criteria', roomData.acousticalCriteria)}
               </div>
-            `;
-          }
-          
-          if (roomData.wallMaterial || roomData.wallFinish) {
-            html += `
-              <div class="detail-row">
-                <div class="detail-label">Wall:</div>
-                <div class="detail-value">${[roomData.wallMaterial, roomData.wallFinish].filter(Boolean).join(' - ') || 'Not specified'}</div>
+              <div>
+                <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--muted);">🔧 Medical Gases</h4>
+                ${renderReadOnlyAttribute('Medical Air', roomData.medAir)}
+                ${renderReadOnlyAttribute('Medical Vacuum', roomData.medVac)}
+                ${renderReadOnlyAttribute('Oxygen', roomData.oxygen)}
+                ${renderReadOnlyAttribute('Nitrogen', roomData.nitrogen)}
+                ${renderReadOnlyAttribute('Nitrous Oxide', roomData.nitrousOxide)}
+                ${renderReadOnlyAttribute('CO2', roomData.co2)}
+                ${renderReadOnlyAttribute('Dental Air', roomData.dentalAir)}
+                ${renderReadOnlyAttribute('Dental Vacuum', roomData.dentalVac)}
+                
+                <h4 style="margin: 12px 0 8px 0; font-size: 0.9rem; color: var(--muted);">💧 Plumbing</h4>
+                ${renderReadOnlyAttribute('Cold Water', roomData.domesticColdWater)}
+                ${renderReadOnlyAttribute('Hot Water', roomData.domesticHotWater)}
+                ${renderReadOnlyAttribute('Floor Drain', roomData.floorDrain)}
+                ${renderReadOnlyAttribute('Natural Gas', roomData.naturalGas)}
               </div>
-            `;
-          }
-          
-          if (roomData.floorMaterial || roomData.floorBaseMaterial) {
-            html += `
-              <div class="detail-row">
-                <div class="detail-label">Floor:</div>
-                <div class="detail-value">${[roomData.floorMaterial, roomData.floorBaseMaterial].filter(Boolean).join(' with ') || 'Not specified'}</div>
-              </div>
-            `;
-          }
-          
-          if (roomData.doorMaterial || roomData.doorType) {
-            html += `
-              <div class="detail-row">
-                <div class="detail-label">Door:</div>
-                <div class="detail-value">${[roomData.doorMaterial, roomData.doorType].filter(Boolean).join(' - ') || 'Not specified'}</div>
-              </div>
-            `;
-          }
-          
-          html += `</div>`;
-        }
-
-        // HVAC & Environmental
-        const hasHVAC = roomData.minTotalAch || roomData.minOaAch || roomData.roomAir || roomData.roomAirBalance ||
-                       roomData.indoorTempCoolingC || roomData.indoorTempHeatingC;
-        
-        if (hasHVAC) {
-          html += `
-            <div class="detail-panel">
-              <h3>❄️ HVAC & Environmental</h3>
-          `;
-          
-          if (roomData.minTotalAch) {
-            html += `
-              <div class="detail-row">
-                <div class="detail-label">Min Total ACH:</div>
-                <div class="detail-value">${roomData.minTotalAch}</div>
-              </div>
-            `;
-          }
-          
-          if (roomData.minOaAch) {
-            html += `
-              <div class="detail-row">
-                <div class="detail-label">Min Outside Air ACH:</div>
-                <div class="detail-value">${roomData.minOaAch}</div>
-              </div>
-            `;
-          }
-          
-          if (roomData.roomAir) {
-            html += `
-              <div class="detail-row">
-                <div class="detail-label">Room Air:</div>
-                <div class="detail-value">${roomData.roomAir}</div>
-              </div>
-            `;
-          }
-          
-          if (roomData.roomAirBalance) {
-            html += `
-              <div class="detail-row">
-                <div class="detail-label">Air Balance:</div>
-                <div class="detail-value">${roomData.roomAirBalance}</div>
-              </div>
-            `;
-          }
-          
-          if (roomData.indoorTempCoolingC || roomData.indoorTempHeatingC) {
-            html += `
-              <div class="detail-row">
-                <div class="detail-label">Temperature:</div>
-                <div class="detail-value">${roomData.indoorTempHeatingC ? roomData.indoorTempHeatingC + '°C heating' : ''} ${roomData.indoorTempCoolingC ? '/ ' + roomData.indoorTempCoolingC + '°C cooling' : ''}</div>
-              </div>
-            `;
-          }
-          
-          if (roomData.airHasHepaFiltration === 'Y') {
-            html += `
-              <div class="detail-row">
-                <div class="detail-label">HEPA Filtration:</div>
-                <div class="detail-value">Yes</div>
-              </div>
-            `;
-          }
-          
-          html += `</div>`;
-        }
-
-        // Medical Gases & Utilities
-        const hasGases = roomData.medAir || roomData.medVac || roomData.oxygen || roomData.nitrogen ||
-                        roomData.nitrousOxide || roomData.co2 || roomData.wagd || roomData.dentalAir;
-        
-        if (hasGases) {
-          html += `
-            <div class="detail-panel">
-              <h3>🔧 Medical Gases & Utilities</h3>
-          `;
-          
-          const gases = [];
-          if (roomData.medAir) gases.push(`Medical Air: ${roomData.medAir}`);
-          if (roomData.medVac) gases.push(`Medical Vacuum: ${roomData.medVac}`);
-          if (roomData.oxygen) gases.push(`Oxygen: ${roomData.oxygen}`);
-          if (roomData.nitrogen) gases.push(`Nitrogen: ${roomData.nitrogen}`);
-          if (roomData.nitrousOxide) gases.push(`Nitrous Oxide: ${roomData.nitrousOxide}`);
-          if (roomData.co2) gases.push(`CO2: ${roomData.co2}`);
-          if (roomData.wagd) gases.push(`WAGD: ${roomData.wagd}`);
-          if (roomData.dentalAir) gases.push(`Dental Air: ${roomData.dentalAir}`);
-          if (roomData.dentalVac) gases.push(`Dental Vacuum: ${roomData.dentalVac}`);
-          
-          gases.forEach(gas => {
-            html += `
-              <div class="detail-row">
-                <div class="detail-value" style="grid-column: 1 / -1;">${gas}</div>
-              </div>
-            `;
-          });
-          
-          html += `</div>`;
-        }
-
-        // Utilities
-        const hasUtilities = roomData.domesticColdWater === 'Y' || roomData.domesticHotWater === 'Y' || 
-                            roomData.floorDrain === 'Y' || roomData.naturalGas;
-        
-        if (hasUtilities) {
-          html += `
-            <div class="detail-panel">
-              <h3>💧 Plumbing & Utilities</h3>
-          `;
-          
-          const utilities = [];
-          if (roomData.domesticColdWater === 'Y') utilities.push('Domestic Cold Water');
-          if (roomData.domesticHotWater === 'Y') utilities.push('Domestic Hot Water');
-          if (roomData.floorDrain === 'Y') utilities.push('Floor Drain');
-          if (roomData.naturalGas) utilities.push(`Natural Gas: ${roomData.naturalGas}`);
-          
-          if (utilities.length > 0) {
-            html += `
-              <div class="detail-row">
-                <div class="detail-value" style="grid-column: 1 / -1;">${utilities.join(', ')}</div>
-              </div>
-            `;
-          }
-          
-          html += `</div>`;
-        }
-
-        // Lighting & Acoustics
-        const hasLightingAcoustics = roomData.lightingLevel || roomData.maxNoiseLevelNc || roomData.acousticalCriteria;
-        
-        if (hasLightingAcoustics) {
-          html += `
-            <div class="detail-panel">
-              <h3>💡 Lighting & Acoustics</h3>
-          `;
-          
-          if (roomData.lightingLevel) {
-            html += `
-              <div class="detail-row">
-                <div class="detail-label">Lighting Level:</div>
-                <div class="detail-value">${roomData.lightingLevel}</div>
-              </div>
-            `;
-          }
-          
-          if (roomData.maxNoiseLevelNc) {
-            html += `
-              <div class="detail-row">
-                <div class="detail-label">Max Noise Level (NC):</div>
-                <div class="detail-value">${roomData.maxNoiseLevelNc}</div>
-              </div>
-            `;
-          }
-          
-          if (roomData.acousticalCriteria) {
-            html += `
-              <div class="detail-row">
-                <div class="detail-label">Acoustical Criteria:</div>
-                <div class="detail-value">${roomData.acousticalCriteria}</div>
-              </div>
-            `;
-          }
-          
-          html += `</div>`;
-        }
-
-        // Notes
-        const notes = [roomData.note1, roomData.note2, roomData.note3, roomData.note4, roomData.note5, roomData.note6, roomData.note7].filter(Boolean);
-        if (notes.length > 0) {
-          html += `
-            <div class="detail-panel">
-              <h3>📋 Notes</h3>
-          `;
-          
-          notes.forEach((note, idx) => {
-            html += `
-              <div class="detail-row">
-                <div class="detail-value" style="grid-column: 1 / -1; font-size: 0.9rem;">${idx + 1}. ${note}</div>
-              </div>
-            `;
-          });
-          
-          html += `</div>`;
-        }
+            </div>
+          </div>
+        `;
       }
 
       // Equipment List
@@ -3842,7 +3736,8 @@
     function getDeptMap() {
       if (!cachedDeptMap) {
         cachedDeptMap = new Map();
-        ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
+        const mappings = window.ROOM_EQUIPMENT_MAPPINGS || [];
+        mappings.forEach(mapping => {
           if (!cachedDeptMap.has(mapping.department)) {
             cachedDeptMap.set(mapping.department, new Map());
           }
@@ -3890,12 +3785,16 @@
         const deptId = `dept-${dept.replace(/[^a-zA-Z0-9]/g, '_')}`;
         const isDeptExpanded = expandedImportNodes.has(deptId);
         
+        // Calculate department checkbox state
+        const deptState = getCheckboxState(dept, deptMap);
+        
         html += `
           <div style="margin-bottom: 8px;">
             <div class="import-tree-item">
               <span onclick="toggleImportNode('${deptId}')" style="cursor: pointer; margin-right: 4px;">${isDeptExpanded ? '▼' : '▶'}</span>
               <input type="checkbox" id="import-${dept}" value="${dept}" 
-                ${selectedImportItems.has(dept) ? 'checked' : ''}
+                ${deptState.checked ? 'checked' : ''}
+                ${deptState.indeterminate ? 'data-indeterminate="true"' : ''}
                 onchange="toggleImportItem('${dept}', this.checked)">
               <label for="import-${dept}" style="font-weight: 600;">${dept}</label>
               <span style="font-size: 0.75rem; color: var(--muted); margin-left: 8px;">(${faCount} FAs, ${totalRooms} rooms)</span>
@@ -3908,13 +3807,17 @@
                   const faId = `fa-${dept.replace(/[^a-zA-Z0-9]/g, '_')}-${fa.replace(/[^a-zA-Z0-9]/g, '_')}`;
                   const isFaExpanded = expandedImportNodes.has(faId);
                   
+                  // Calculate FA checkbox state
+                  const faState = getFACheckboxState(dept, fa, deptMap);
+                  
                   return `
                     <div style="margin-bottom: 4px;">
                       <div class="import-tree-item">
                         <span onclick="toggleImportNode('${faId}')" style="cursor: pointer; margin-right: 4px;">${isFaExpanded ? '▼' : '▶'}</span>
                         <input type="checkbox" id="import-${faItemKey.replace(/[^a-zA-Z0-9]/g, '_')}" 
                           value="${faItemKey}" 
-                          ${selectedImportItems.has(faItemKey) ? 'checked' : ''}
+                          ${faState.checked ? 'checked' : ''}
+                          ${faState.indeterminate ? 'data-indeterminate="true"' : ''}
                           onchange="toggleImportItem('${faItemKey}', this.checked)">
                         <label for="import-${faItemKey.replace(/[^a-zA-Z0-9]/g, '_')}">${fa}</label>
                         <span style="font-size: 0.75rem; color: var(--muted); margin-left: 8px;">(${roomCount} rooms)</span>
@@ -3922,7 +3825,8 @@
                       ${isFaExpanded ? `
                         <div style="margin-left: 24px; margin-top: 2px;">
                           ${Array.from(deptMap.get(dept).get(fa)).sort().map(roomCode => {
-                            const roomMapping = ROOM_EQUIPMENT_MAPPINGS.find(m => 
+                            const mappings = window.ROOM_EQUIPMENT_MAPPINGS || [];
+                            const roomMapping = mappings.find(m => 
                               m.department === dept && 
                               m.functionalArea === fa && 
                               m.roomCode === roomCode
@@ -3952,6 +3856,71 @@
       });
 
       container.innerHTML = html || '<p class="muted">No items available</p>';
+      
+      // Set indeterminate states after rendering
+      document.querySelectorAll('input[data-indeterminate="true"]').forEach(checkbox => {
+        checkbox.indeterminate = true;
+      });
+    }
+    
+    function getCheckboxState(dept, deptMap) {
+      // Check if department itself is selected
+      if (selectedImportItems.has(dept)) {
+        return { checked: true, indeterminate: false };
+      }
+      
+      // Count selected FAs and rooms under this department
+      let totalFAs = 0;
+      let selectedFAs = 0;
+      let hasSelectedRooms = false;
+      
+      deptMap.get(dept).forEach((rooms, fa) => {
+        totalFAs++;
+        const faKey = `${dept}::${fa}`;
+        if (selectedImportItems.has(faKey)) {
+          selectedFAs++;
+        } else {
+          // Check if any individual rooms are selected
+          rooms.forEach(roomCode => {
+            if (selectedImportItems.has(`${dept}::${fa}::${roomCode}`)) {
+              hasSelectedRooms = true;
+            }
+          });
+        }
+      });
+      
+      if (selectedFAs === totalFAs) {
+        return { checked: true, indeterminate: false };
+      } else if (selectedFAs > 0 || hasSelectedRooms) {
+        return { checked: false, indeterminate: true };
+      }
+      return { checked: false, indeterminate: false };
+    }
+    
+    function getFACheckboxState(dept, fa, deptMap) {
+      const faKey = `${dept}::${fa}`;
+      
+      // Check if FA itself is selected
+      if (selectedImportItems.has(faKey)) {
+        return { checked: true, indeterminate: false };
+      }
+      
+      // Count selected rooms under this FA
+      const rooms = deptMap.get(dept).get(fa);
+      let selectedRooms = 0;
+      
+      rooms.forEach(roomCode => {
+        if (selectedImportItems.has(`${dept}::${fa}::${roomCode}`)) {
+          selectedRooms++;
+        }
+      });
+      
+      if (selectedRooms === rooms.size) {
+        return { checked: true, indeterminate: false };
+      } else if (selectedRooms > 0) {
+        return { checked: false, indeterminate: true };
+      }
+      return { checked: false, indeterminate: false };
     }
 
     function toggleImportNode(nodeId) {
@@ -3964,11 +3933,92 @@
     }
 
     function toggleImportItem(itemKey, checked) {
-      if (checked) {
-        selectedImportItems.add(itemKey);
-      } else {
-        selectedImportItems.delete(itemKey);
+      const parts = itemKey.split('::');
+      const deptMap = getDeptMap();
+      
+      if (parts.length === 1) {
+        // Department level
+        const dept = itemKey;
+        if (checked) {
+          selectedImportItems.add(dept);
+          // Add all FAs and rooms under this department
+          deptMap.get(dept).forEach((rooms, fa) => {
+            selectedImportItems.add(`${dept}::${fa}`);
+            rooms.forEach(roomCode => {
+              selectedImportItems.add(`${dept}::${fa}::${roomCode}`);
+            });
+          });
+        } else {
+          selectedImportItems.delete(dept);
+          // Remove all FAs and rooms under this department
+          deptMap.get(dept).forEach((rooms, fa) => {
+            selectedImportItems.delete(`${dept}::${fa}`);
+            rooms.forEach(roomCode => {
+              selectedImportItems.delete(`${dept}::${fa}::${roomCode}`);
+            });
+          });
+        }
+      } else if (parts.length === 2) {
+        // Functional Area level
+        const [dept, fa] = parts;
+        if (checked) {
+          selectedImportItems.add(itemKey);
+          // Add all rooms under this FA
+          deptMap.get(dept).get(fa).forEach(roomCode => {
+            selectedImportItems.add(`${dept}::${fa}::${roomCode}`);
+          });
+          // Check if all FAs in this dept are now selected
+          let allFAsSelected = true;
+          deptMap.get(dept).forEach((rooms, faName) => {
+            if (!selectedImportItems.has(`${dept}::${faName}`)) {
+              allFAsSelected = false;
+            }
+          });
+          if (allFAsSelected) {
+            selectedImportItems.add(dept);
+          }
+        } else {
+          selectedImportItems.delete(itemKey);
+          selectedImportItems.delete(dept); // Uncheck parent dept
+          // Remove all rooms under this FA
+          deptMap.get(dept).get(fa).forEach(roomCode => {
+            selectedImportItems.delete(`${dept}::${fa}::${roomCode}`);
+          });
+        }
+      } else if (parts.length === 3) {
+        // Room level
+        const [dept, fa, roomCode] = parts;
+        if (checked) {
+          selectedImportItems.add(itemKey);
+          // Check if all rooms in this FA are now selected
+          const rooms = deptMap.get(dept).get(fa);
+          let allRoomsSelected = true;
+          rooms.forEach(rc => {
+            if (!selectedImportItems.has(`${dept}::${fa}::${rc}`)) {
+              allRoomsSelected = false;
+            }
+          });
+          if (allRoomsSelected) {
+            selectedImportItems.add(`${dept}::${fa}`);
+            // Check if all FAs in dept are now selected
+            let allFAsSelected = true;
+            deptMap.get(dept).forEach((rooms, faName) => {
+              if (!selectedImportItems.has(`${dept}::${faName}`)) {
+                allFAsSelected = false;
+              }
+            });
+            if (allFAsSelected) {
+              selectedImportItems.add(dept);
+            }
+          }
+        } else {
+          selectedImportItems.delete(itemKey);
+          selectedImportItems.delete(`${dept}::${fa}`); // Uncheck parent FA
+          selectedImportItems.delete(dept); // Uncheck parent dept
+        }
       }
+      
+      renderImportTree();
     }
 
     function confirmImport() {
@@ -4463,6 +4513,49 @@
       }
     }
 
+    function updateRoomName(roomId, newName) {
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      for (const dept of project.departments) {
+        if (!dept.functionalAreas) continue;
+        for (const fa of dept.functionalAreas) {
+          if (!fa.rooms) continue;
+          const room = fa.rooms.find(r => r.id === roomId);
+          if (room) {
+            room.name = newName;
+            saveProjects();
+            renderAll();
+            return;
+          }
+        }
+      }
+    }
+
+    function updateRoomAttribute(roomId, attributeName, newValue) {
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      for (const dept of project.departments) {
+        if (!dept.functionalAreas) continue;
+        for (const fa of dept.functionalAreas) {
+          if (!fa.rooms) continue;
+          const room = fa.rooms.find(r => r.id === roomId);
+          if (room) {
+            // Initialize attributes object if it doesn't exist
+            if (!room.attributes) {
+              room.attributes = {};
+            }
+            // Store the attribute value
+            room.attributes[attributeName] = newValue;
+            saveProjects();
+            renderAll();
+            return;
+          }
+        }
+      }
+    }
+
     function duplicateRoom(roomId) {
       const project = getCurrentProject();
       if (!project.departments) return;
@@ -4516,6 +4609,35 @@
             }
             renderAll();
             return;
+          }
+        }
+      }
+    }
+
+    function updateEquipmentQuantity(roomId, equipmentId, newQuantity) {
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      const qty = parseInt(newQuantity);
+      if (isNaN(qty) || qty < 1) {
+        alert('Please enter a valid quantity (minimum 1)');
+        renderAll();
+        return;
+      }
+
+      for (const dept of project.departments) {
+        if (!dept.functionalAreas) continue;
+        for (const fa of dept.functionalAreas) {
+          if (!fa.rooms) continue;
+          const room = fa.rooms.find(r => r.id === roomId);
+          if (room && room.equipment) {
+            const equipment = room.equipment.find(e => e.id === equipmentId);
+            if (equipment) {
+              equipment.quantity = qty;
+              saveProjects();
+              renderAll();
+              return;
+            }
           }
         }
       }
