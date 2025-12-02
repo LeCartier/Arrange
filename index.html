@@ -837,14 +837,128 @@
     </div>
   </div>
 
-  <script src="load-equipment.js"></script>
+  <script src="equipment-data-part1.js"></script>
+  <script src="equipment-data-part2.js"></script>
   <script src="room-sizes.js"></script>
   <script>
+    // Build room code to department/FA mapping from equipment guide
+    console.log('Building room metadata...');
+    
+    // Create a map of roomCode -> {department, functionalArea, roomName}
+    const roomMetadata = new Map();
+    
+    // Parse the Equipment_Guide_parsed_v2.txt data to extract room metadata
+    // The equipment mappings were generated from that file, so we need to reconstruct the metadata
+    // For now, we'll use a simpler approach: create metadata from the existing data
+    
+    // Enrich ROOM_EQUIPMENT_MAPPINGS with department, functional area, and room names
+    if (ROOM_EQUIPMENT_MAPPINGS && ROOM_SIZES && EQUIPMENT_LIST) {
+      console.log(`Starting with ${ROOM_EQUIPMENT_MAPPINGS.length} equipment mappings`);
+      console.log(`Have ${ROOM_SIZES.length} rooms and ${EQUIPMENT_LIST.length} equipment items`);
+      
+      // Since ROOM_EQUIPMENT_MAPPINGS only has roomCode, jsn, qty, we need to add the missing fields
+      // We'll fetch the source file to get department and functional area data
+      fetch('src/Equipment_Guide_parsed_v2.txt')
+        .then(response => response.text())
+        .then(text => {
+          const lines = text.split('\n');
+          const deptFaMap = new Map();
+          
+          // Skip header line
+          for (let i = 1; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line) continue;
+            
+            const parts = line.split('\t');
+            if (parts.length < 3) continue;
+            
+            // Clean up department and FA names
+            let dept = parts[0] ? parts[0].replace(/"/g, '').trim() : '';
+            let fa = parts[1] ? parts[1].replace(/"/g, '').trim() : '';
+            const roomNameField = parts[2] ? parts[2].replace(/"/g, '').trim() : '';
+            
+            // Skip if essential fields are missing
+            if (!dept || !fa || !roomNameField) continue;
+            
+            // Extract room code from "Order - CODE - Name" format
+            const match = roomNameField.match(/- ([A-Z0-9]+) -/);
+            if (match) {
+              const roomCode = match[1];
+              const roomName = roomNameField.split(' - ').slice(2).join(' - ').trim();
+              
+              if (!deptFaMap.has(roomCode)) {
+                deptFaMap.set(roomCode, {
+                  department: dept,
+                  functionalArea: fa,
+                  roomName: roomName
+                });
+              }
+            }
+          }
+          
+          console.log(`Built metadata for ${deptFaMap.size} unique room codes`);
+          console.log('Sample metadata:', Array.from(deptFaMap.entries()).slice(0, 3));
+          
+          // Enrich the mappings
+          const enrichedMappings = [];
+          ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
+            const metadata = deptFaMap.get(mapping.roomCode);
+            if (metadata) {
+              enrichedMappings.push({
+                ...mapping,
+                department: metadata.department,
+                functionalArea: metadata.functionalArea,
+                roomName: metadata.roomName,
+                equipmentJsn: mapping.jsn,
+                quantity: mapping.qty || 1
+              });
+            } else {
+              console.warn('No metadata found for room code:', mapping.roomCode);
+            }
+          });
+          
+          // Update window property only (can't reassign const)
+          window.ROOM_EQUIPMENT_MAPPINGS = enrichedMappings;
+          console.log(`Enriched to ${enrichedMappings.length} mappings with metadata`);
+          console.log('Sample enriched mapping:', enrichedMappings[0]);
+          console.log('First mapping details:', {
+            roomCode: enrichedMappings[0].roomCode,
+            department: enrichedMappings[0].department,
+            functionalArea: enrichedMappings[0].functionalArea,
+            roomName: enrichedMappings[0].roomName
+          });
+          console.log('Verifying window.ROOM_EQUIPMENT_MAPPINGS updated:', window.ROOM_EQUIPMENT_MAPPINGS[0]);
+          
+          // Now trigger initial render with enriched data
+          viewState = 'project-list';
+          renderAll();
+        })
+        .catch(error => {
+          console.error('Error loading equipment guide:', error);
+          // Fall back to using original data without enrichment
+          console.warn('Using original mappings without department/FA metadata');
+          window.ROOM_EQUIPMENT_MAPPINGS = ROOM_EQUIPMENT_MAPPINGS;
+          viewState = 'project-list';
+          renderAll();
+        });
+    } else {
+      // If data isn't available, just render with what we have
+      console.warn('Equipment or room data not loaded');
+      window.ROOM_EQUIPMENT_MAPPINGS = ROOM_EQUIPMENT_MAPPINGS || [];
+      viewState = 'project-list';
+      renderAll();
+    }
+    
     // -----------------------------
     // DATA MODELS & SAMPLE DATA
     // -----------------------------
 
     // For clarity, using plain JS objects; no TypeScript syntax.
+    
+    // Helper to get enriched equipment mappings
+    function getEquipmentMappings() {
+      return window.ROOM_EQUIPMENT_MAPPINGS || ROOM_EQUIPMENT_MAPPINGS || [];
+    }
 
     // PROJECT MANAGEMENT DATA
     // Project structure: departments -> functional areas -> rooms -> equipment
@@ -2269,7 +2383,17 @@
 
         const deptMap = new Map();
         
-        ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
+        console.log('Building reference tree from ROOM_EQUIPMENT_MAPPINGS');
+        console.log('ROOM_EQUIPMENT_MAPPINGS length:', window.ROOM_EQUIPMENT_MAPPINGS ? window.ROOM_EQUIPMENT_MAPPINGS.length : 'undefined');
+        console.log('First mapping in tree build:', window.ROOM_EQUIPMENT_MAPPINGS ? window.ROOM_EQUIPMENT_MAPPINGS[0] : 'no data');
+        
+        const mappings = window.ROOM_EQUIPMENT_MAPPINGS || [];
+        if (mappings.length === 0) {
+          console.warn('No equipment mappings available for reference tree');
+          return tree;
+        }
+        
+        mappings.forEach(mapping => {
           if (!deptMap.has(mapping.department)) {
             deptMap.set(mapping.department, {
               name: mapping.department,
@@ -3321,6 +3445,10 @@
       const department = selectedNode.department;
       const functionalArea = selectedNode.functionalArea;
       
+      console.log('Rendering room reference:', roomCode, roomName, department, functionalArea);
+      console.log('ROOM_SIZES available:', typeof ROOM_SIZES !== 'undefined', ROOM_SIZES ? ROOM_SIZES.length : 0);
+      console.log('ROOM_EQUIPMENT_MAPPINGS available:', typeof ROOM_EQUIPMENT_MAPPINGS !== 'undefined', ROOM_EQUIPMENT_MAPPINGS ? ROOM_EQUIPMENT_MAPPINGS.length : 0);
+      
       // Defensive check for ROOM_SIZES
       if (typeof ROOM_SIZES === 'undefined') {
         return `
@@ -3333,13 +3461,15 @@
       
       // Get room attributes from ROOM_SIZES
       const roomData = ROOM_SIZES ? ROOM_SIZES.find(r => r.id === roomCode) : null;
+      console.log('Found roomData:', roomData ? 'Yes' : 'No', roomData ? roomData.id : 'null');
       
       // Get all equipment for this room code
-      const roomEquipment = ROOM_EQUIPMENT_MAPPINGS.filter(
+      const roomEquipment = getEquipmentMappings().filter(
         re => re.roomCode === roomCode && 
              re.department === department && 
              re.functionalArea === functionalArea
       );
+      console.log('Found equipment mappings:', roomEquipment.length);
 
       let html = `
         <div class="detail-panel">
@@ -4915,22 +5045,14 @@
     // INITIALIZE
     // -----------------------------
 
-    // Load equipment data and then render
-    async function init() {
-      const loaded = await loadEquipmentData();
-      if (loaded) {
-        // Copy to global scope for compatibility
-        window.EQUIPMENT_LIST = EQUIPMENT_LIST;
-        window.ROOM_EQUIPMENT_MAPPINGS = ROOM_EQUIPMENT_MAPPINGS;
-      }
-      
-      // Start in project list view
-      viewState = 'project-list';
-      
-      renderAll();
-    }
 
-    init();
+    // Initialize application
+    // Data loading happens above via fetch, so we just need to wait for it
+    
+    // Start in project list view
+    viewState = 'project-list';
+    
+    // Note: renderAll() is called after data enrichment completes in the fetch above
   </script>
 </body>
 </html>
