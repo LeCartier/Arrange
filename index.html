@@ -825,6 +825,48 @@
     </div>
   </div>
 
+  <!-- Equipment Selection Modal -->
+  <div id="equipment-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 700px;">
+      <div class="modal-header">
+        <h2>Add Equipment to Room</h2>
+        <button class="modal-close" onclick="closeEquipmentModal()">&times;</button>
+      </div>
+      <div style="padding: 20px;">
+        <div style="margin-bottom: 16px;">
+          <input type="text" id="equipment-search" placeholder="Search by JSN, name, or description..." style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.95rem;" oninput="filterEquipmentList()" />
+        </div>
+        <div id="equipment-list" style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border); border-radius: 4px;">
+          <!-- Equipment items will be populated here -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeEquipmentModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Equipment Selection Modal -->
+  <div id="equipment-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 700px;">
+      <div class="modal-header">
+        <h2>Add Equipment to Room</h2>
+        <button class="modal-close" onclick="closeEquipmentModal()">&times;</button>
+      </div>
+      <div style="padding: 20px;">
+        <div style="margin-bottom: 16px;">
+          <input type="text" id="equipment-search" placeholder="Search by JSN, name, or description..." style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.95rem;" oninput="filterEquipmentList()" />
+        </div>
+        <div id="equipment-list" style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border); border-radius: 4px;">
+          <!-- Equipment items will be populated here -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeEquipmentModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Report Generation Modal -->
   <div id="report-modal" class="modal-overlay">
     <div class="modal-content" style="max-width: 500px;">
@@ -1009,6 +1051,25 @@
           
           // Reset cached dept map so import tree rebuilds with enriched data
           cachedDeptMap = null;
+          
+          // Build ROOM_EQUIPMENT lookup object for easy access by room code
+          window.ROOM_EQUIPMENT = {};
+          enrichedMappings.forEach(mapping => {
+            if (!window.ROOM_EQUIPMENT[mapping.roomCode]) {
+              window.ROOM_EQUIPMENT[mapping.roomCode] = [];
+            }
+            const equipItem = EQUIPMENT_LIST.find(e => e.jsn === mapping.equipmentJsn);
+            if (equipItem) {
+              window.ROOM_EQUIPMENT[mapping.roomCode].push({
+                JSN: equipItem.jsn,
+                'Equipment Name': equipItem.name,
+                'Qty per Room': mapping.quantity || 1,
+                'Acq/Ins': mapping.acqIns || equipItem.acqIns || '',
+                Description: equipItem.description || ''
+              });
+            }
+          });
+          console.log('Built ROOM_EQUIPMENT lookup with', Object.keys(window.ROOM_EQUIPMENT).length, 'room codes');
           
           // Now trigger initial render with enriched data
           viewState = 'project-list';
@@ -4248,43 +4309,46 @@
       let room = fa.rooms.find(r => r.code === roomCode);
       
       if (!room || !mergeMode) {
-        // Get room info from mappings
-        const roomMapping = ROOM_EQUIPMENT_MAPPINGS.find(m => 
+        // Get room info from enriched mappings
+        const roomMapping = (window.ROOM_EQUIPMENT_MAPPINGS || ROOM_EQUIPMENT_MAPPINGS).find(m => 
           m.department === deptName && 
           m.functionalArea === faName && 
           m.roomCode === roomCode
         );
 
-        // Look up NSF from SAMPLE_ROOMS
-        const roomTemplate = SAMPLE_ROOMS.find(r => r.id === roomCode);
-        const nsf = roomTemplate ? roomTemplate.nsf : 100; // Default 100 NSF if not found
+        // Look up room name and NSF from ROOM_SIZES
+        const roomTemplate = ROOM_SIZES.find(r => r['Room Code'] === roomCode);
+        const nsf = roomTemplate ? roomTemplate['NSF'] : 100; // Default 100 NSF if not found
+        const roomName = roomTemplate ? roomTemplate['Room Name'] : (roomMapping?.roomName || roomCode);
 
         room = {
           id: generateId(),
           code: roomCode,
-          name: roomMapping ? roomMapping.roomName : roomCode,
+          name: roomName,
           nsf: nsf,
           equipment: []
         };
         fa.rooms.push(room);
       }
 
-      // Import equipment for this room
-      ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
+      // Import equipment for this room using enriched mappings
+      const enrichedMappings = window.ROOM_EQUIPMENT_MAPPINGS || ROOM_EQUIPMENT_MAPPINGS;
+      enrichedMappings.forEach(mapping => {
         if (mapping.department === deptName && 
             mapping.functionalArea === faName && 
             mapping.roomCode === roomCode) {
           
-          const equipExists = room.equipment.some(e => e.jsn === mapping.equipmentJsn);
+          const jsn = mapping.equipmentJsn || mapping.jsn;
+          const equipExists = room.equipment.some(e => e.jsn === jsn);
           if (!equipExists || !mergeMode) {
-            const equipItem = EQUIPMENT_LIST.find(e => e.jsn === mapping.equipmentJsn);
+            const equipItem = EQUIPMENT_LIST.find(e => e.jsn === jsn);
             if (equipItem) {
               room.equipment.push({
                 id: generateId(),
                 jsn: equipItem.jsn,
                 name: equipItem.name,
                 quantity: mapping.quantity || 1,
-                acqIns: mapping.acqIns || '',
+                acqIns: mapping.acqIns || equipItem.acqIns || '',
                 description: equipItem.description || ''
               });
             }
@@ -4841,14 +4905,66 @@
       }
     }
 
-    function addEquipmentToRoom(roomId) {
-      // For now, show all available equipment
-      const equipmentJsn = prompt('Enter equipment JSN code:');
-      if (!equipmentJsn) return;
+    let currentRoomIdForEquipment = null;
 
-      const equipItem = EQUIPMENT_LIST.find(e => e.jsn === equipmentJsn.toUpperCase());
+    function addEquipmentToRoom(roomId) {
+      currentRoomIdForEquipment = roomId;
+      renderEquipmentList();
+      document.getElementById('equipment-modal').classList.add('active');
+      document.getElementById('equipment-search').value = '';
+      document.getElementById('equipment-search').focus();
+    }
+
+    function closeEquipmentModal() {
+      document.getElementById('equipment-modal').classList.remove('active');
+      currentRoomIdForEquipment = null;
+    }
+
+    function renderEquipmentList(searchTerm = '') {
+      const container = document.getElementById('equipment-list');
+      const lowerSearch = searchTerm.toLowerCase();
+      
+      let filteredEquipment = EQUIPMENT_LIST;
+      if (searchTerm) {
+        filteredEquipment = EQUIPMENT_LIST.filter(eq => 
+          eq.jsn.toLowerCase().includes(lowerSearch) ||
+          eq.name.toLowerCase().includes(lowerSearch) ||
+          (eq.description && eq.description.toLowerCase().includes(lowerSearch))
+        );
+      }
+
+      if (filteredEquipment.length === 0) {
+        container.innerHTML = '<div style="padding: 40px; text-align: center; color: var(--muted);">No equipment found</div>';
+        return;
+      }
+
+      let html = '<div style="display: flex; flex-direction: column;">';
+      filteredEquipment.forEach(eq => {
+        html += `
+          <div style="padding: 12px 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s;" 
+               onmouseover="this.style.background='var(--bg-hover)'" 
+               onmouseout="this.style.background='transparent'"
+               onclick="selectEquipment('${eq.jsn}')">
+            <div style="font-weight: 600; margin-bottom: 4px;">${eq.jsn} - ${eq.name}</div>
+            ${eq.acqIns ? `<div style="font-size: 0.85rem; color: var(--muted); margin-bottom: 2px;">Category: ${eq.acqIns}</div>` : ''}
+            ${eq.description ? `<div style="font-size: 0.85rem; color: var(--muted);">${eq.description}</div>` : ''}
+          </div>
+        `;
+      });
+      html += '</div>';
+      
+      container.innerHTML = html;
+    }
+
+    function filterEquipmentList() {
+      const searchTerm = document.getElementById('equipment-search').value;
+      renderEquipmentList(searchTerm);
+    }
+
+    function selectEquipment(jsn) {
+      const equipItem = EQUIPMENT_LIST.find(e => e.jsn === jsn);
       if (!equipItem) {
-        alert('Equipment not found. Please enter a valid JSN code.');
+        alert('Equipment not found.');
         return;
       }
 
@@ -4862,7 +4978,7 @@
         if (!dept.functionalAreas) continue;
         for (const fa of dept.functionalAreas) {
           if (!fa.rooms) continue;
-          const room = fa.rooms.find(r => r.id === roomId);
+          const room = fa.rooms.find(r => r.id === currentRoomIdForEquipment);
           if (room) {
             if (!room.equipment) room.equipment = [];
             room.equipment.push({
@@ -4874,6 +4990,7 @@
               description: equipItem.description
             });
             saveProjects();
+            closeEquipmentModal();
             renderAll();
             return;
           }
@@ -5340,6 +5457,7 @@
       if (e.target.id === 'password-modal') closePasswordModal();
       if (e.target.id === 'logic-portal-modal') closeLogicPortal();
       if (e.target.id === 'import-modal') closeImportModal();
+      if (e.target.id === 'equipment-modal') closeEquipmentModal();
     });
 
     // -----------------------------
