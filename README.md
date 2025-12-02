@@ -25,6 +25,22 @@ The Hospital Programming Workbench helps you build and manage hospital programmi
    - Click on a project in the list to view its details
    - Click **📂 Open Project** to start working
 
+## Application Layout
+
+### Header Area
+- **Title & Description**: Application branding and overview
+- **⚙️ Logic Portal**: Persistent icon button (top-right) - Access admin portal for room formulas
+- **🔄 Sync Data**: Persistent icon button (top-right) - Synchronize reference data from GitHub
+
+### Navigation Area
+- **← Projects**: Return to project list (appears in project mode, left of navigator title)
+- **Mode Toggle**: Switch between Program Mode and Reference Mode
+- **+ Add to Project**: Import rooms from reference library (program mode only)
+
+### Main Layout
+- **Left Panel**: Tree navigator showing project/reference hierarchy
+- **Right Panel**: Detail view with room information, attributes, and equipment
+
 ## Application Modes
 
 ### Program Mode
@@ -52,11 +68,12 @@ Browse the complete VA equipment guide database without affecting your project.
 **Key Features:**
 - View all 1,764+ rooms organized by department and functional area
 - Browse equipment specifications for each room
-- Review room attributes (materials, HVAC, utilities, etc.)
+- Review all 76 room attributes (materials, HVAC, utilities, etc.) in organized two-column layout
+- Read-only view prevents accidental changes to reference data
 - Search and explore the reference data
 
 **To Switch Modes:**
-- Use the **📚 Reference Mode** / **📝 Program Mode** button in the top navigation
+- Use the **📚 Reference Mode** / **📝 Program Mode** toggle button below the header
 
 ## Working with Your Project
 
@@ -75,7 +92,10 @@ Project
 #### At the Room Level
 When you select a room in the tree:
 - **Edit NSF**: Change the square footage directly
-- **📋 Duplicate Room**: Create a copy with all equipment
+- **Edit Room Attributes**: Modify all 76 room attributes (materials, HVAC, utilities, etc.) in a two-column layout
+- **Edit Equipment Quantities**: Adjust equipment quantities using inline number inputs
+- **📋 Duplicate Room**: Create a copy with all equipment and attributes (attributes include updated Room Name)
+- **🔄 Reset to Default**: Restore room to original attributes and equipment from base template
 - **➕ Add Equipment**: Add new equipment items (enter JSN code)
 - **🗑️ Delete Equipment**: Remove individual equipment items
 
@@ -266,11 +286,16 @@ The sync system maintains clear separation between reference data and user data:
 ### Room Attributes (room-sizes.js)
 - 1,764 rooms from VA TIL/MS Space Criteria
 - 76 attributes per room including:
-  - Materials (ceiling, wall, floor)
+  - Room identification (Room Code, Room Name, NSF)
+  - Materials (ceiling, wall, floor finishes)
   - Door specifications
-  - HVAC and environmental controls
-  - Medical gases and utilities
+  - HVAC and environmental controls (temperature, humidity, air changes, pressurization)
+  - Medical gases and utilities (oxygen, vacuum, nitrogen, etc.)
   - Lighting and electrical requirements
+  - Plumbing fixtures (sinks, eyewash, emergency shower)
+  - Acoustic requirements
+- **Editable in Program Mode**: All attributes can be customized per room instance
+- **Two-Column Layout**: Organized by category for efficient editing and review
 
 ### Equipment Mappings (equipment-data-part1.js, part2.js)
 - Complete equipment specifications
@@ -304,10 +329,20 @@ The sync system maintains clear separation between reference data and user data:
 
 ### Room Duplication
 
-- Duplicates include all equipment
-- Room names get " (Copy)" suffix
-- Edit the duplicate's NSF or equipment independently
+- Duplicates include all equipment with original quantities
+- **Attributes are copied**: All 76 room attributes transfer to the duplicate
+- **Room Name auto-updates**: The "Room Name" attribute matches the new name with " (Copy)" suffix
+- Room names get " (Copy)" suffix automatically
+- Edit the duplicate's NSF, attributes, or equipment independently
 - Useful for multiple exam rooms, patient rooms, etc.
+
+### Resetting Rooms to Default
+
+- **Reset to Default** button restores original room template
+- Clears all attribute customizations
+- Resets equipment list to base room code specifications
+- Useful when you want to start fresh with template values
+- Confirmation prompt prevents accidental resets
 
 ### Reference Mode Exploration
 
@@ -433,6 +468,15 @@ Potential features for future development:
 **PDF Reference**: Combined Space Criteria.pdf (Sections 4 & 5)
 
 ## Version History
+
+- **v1.3** (December 2, 2025)
+  - **UI Reorganization**: Moved Logic Portal and Sync buttons to persistent header icons
+  - **Room Attributes**: Added comprehensive editable attribute display (76 fields in two-column layout)
+  - **Equipment Editing**: Added inline quantity adjustment for equipment items
+  - **Room Duplication**: Fixed attribute copying and Room Name synchronization
+  - **Reset Feature**: Added "Reset to Default" button to restore rooms to base template
+  - **Hierarchical Checkboxes**: Implemented indeterminate state for parent nodes in import tree
+  - **Button Layout**: Reorganized buttons for better UX (Add Equipment in panel, compact Duplicate/Reset)
 
 - **v1.2** (December 2, 2025)
   - Added PDF report generation (Equipment Focus & Room Attributes Focus)
