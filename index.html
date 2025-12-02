@@ -1,0 +1,4010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hospital Programming Workbench</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #060606;
+      --bg-card: #111;
+      --border: #444;
+      --text: #f5f5f5;
+      --muted: #aaaaaa;
+      --accent: #00b894;
+      --pill-inactive: #333;
+      --input-bg: #111;
+      --input-border: #555;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+
+    h1, h2, h3, h4 {
+      margin: 0;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    header {
+      margin-bottom: 24px;
+    }
+
+    header p {
+      margin-top: 8px;
+      color: var(--muted);
+      max-width: 800px;
+      font-size: 0.95rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(320px, 400px) minmax(0, 1fr);
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Tree View Styles */
+    .tree-container {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      max-height: calc(100vh - 200px);
+      overflow-y: auto;
+    }
+
+    .tree-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .mode-toggle {
+      display: flex;
+      gap: 8px;
+    }
+
+    .mode-btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background-color: var(--pill-inactive);
+      color: var(--text);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .mode-btn.active {
+      background-color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .mode-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .tree-node {
+      margin-left: 0;
+    }
+
+    .tree-item {
+      display: flex;
+      align-items: center;
+      padding: 6px 8px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background-color 0.15s ease;
+      user-select: none;
+    }
+
+    .tree-item:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .tree-item.selected {
+      background-color: rgba(0, 184, 148, 0.2);
+      border-left: 3px solid var(--accent);
+    }
+
+    .tree-toggle {
+      width: 16px;
+      height: 16px;
+      margin-right: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .tree-toggle.collapsed::before {
+      content: '▶';
+    }
+
+    .tree-toggle.expanded::before {
+      content: '▼';
+    }
+
+    .tree-toggle.leaf {
+      visibility: hidden;
+    }
+
+    .tree-icon {
+      margin-right: 6px;
+      font-size: 0.85rem;
+    }
+
+    .tree-label {
+      font-size: 0.85rem;
+      flex: 1;
+    }
+
+    .tree-count {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-left: 8px;
+    }
+
+    .tree-children {
+      margin-left: 20px;
+      display: none;
+    }
+
+    .tree-children.expanded {
+      display: block;
+    }
+
+    .detail-panel {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .detail-panel h3 {
+      margin-bottom: 12px;
+      font-size: 1.1rem;
+      color: var(--accent);
+    }
+
+    .detail-row {
+      display: flex;
+      padding: 8px 0;
+      border-bottom: 1px solid #222;
+      font-size: 0.85rem;
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .detail-label {
+      font-weight: 600;
+      min-width: 120px;
+      color: var(--muted);
+    }
+
+    .detail-value {
+      flex: 1;
+    }
+
+    .equipment-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .equipment-item {
+      padding: 8px;
+      margin: 4px 0;
+      background-color: rgba(255, 255, 255, 0.02);
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    .equipment-item-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .equipment-item-desc {
+      color: var(--muted);
+      font-size: 0.75rem;
+      line-height: 1.4;
+    }
+
+    /* Logic Portal Styles */
+    .logic-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      transition: all 0.2s;
+    }
+
+    .logic-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 12px rgba(0, 184, 148, 0.2);
+    }
+
+    .logic-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .logic-card-title {
+      flex: 1;
+    }
+
+    .logic-card-code {
+      font-weight: bold;
+      color: var(--accent);
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .logic-card-name {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .logic-fields {
+      display: grid;
+      gap: 15px;
+    }
+
+    .logic-field {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .logic-field-label {
+      font-weight: 600;
+      color: var(--text);
+      padding-top: 8px;
+      font-size: 13px;
+    }
+
+    .logic-field-input, .logic-field-textarea {
+      padding: 8px 12px;
+      border: 2px solid var(--input-border);
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: 'Courier New', monospace;
+      background: var(--input-bg);
+      color: var(--text);
+    }
+
+    .logic-field-input:focus, .logic-field-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .logic-field-textarea {
+      min-height: 60px;
+      resize: vertical;
+    }
+
+    .logic-help-text {
+      grid-column: 2;
+      font-size: 12px;
+      color: var(--muted);
+      font-style: italic;
+      margin-top: -10px;
+    }
+
+    .logic-status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .logic-status.complete {
+      background: rgba(0, 184, 148, 0.2);
+      color: #00b894;
+    }
+
+    .logic-status.partial {
+      background: rgba(255, 193, 7, 0.2);
+      color: #ffc107;
+    }
+
+    .logic-status.empty {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--muted);
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      background-color: var(--bg-card);
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.35);
+    }
+
+    .card h2 {
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: 6px 12px;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      border: none;
+      cursor: pointer;
+      background-color: var(--pill-inactive);
+      color: var(--text);
+      font-size: 0.75rem;
+      transition: background-color 0.15s ease, transform 0.12s ease;
+    }
+
+    .pill.active {
+      background-color: var(--accent);
+    }
+
+    .pill:hover {
+      transform: translateY(-1px);
+    }
+
+    .pill-group {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .ids-list {
+      max-height: 420px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .ids-item {
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #333;
+      font-size: 0.8rem;
+    }
+
+    .ids-question {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .ids-input {
+      width: 100%;
+      padding: 6px;
+      border-radius: 4px;
+      border: 1px solid var(--input-border);
+      background-color: var(--input-bg);
+      color: var(--text);
+      font-size: 0.8rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    th, td {
+      padding: 4px 0;
+    }
+
+    th {
+      text-align: left;
+      border-bottom: 1px solid #555;
+      padding-bottom: 4px;
+      font-weight: 600;
+    }
+
+    th.right,
+    td.right {
+      text-align: right;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    code {
+      font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+      font-size: 0.8rem;
+      background-color: #222;
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+
+    ul {
+      padding-left: 18px;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      max-width: 900px;
+      max-height: 80vh;
+      overflow-y: auto;
+      width: 90%;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+    }
+
+    .modal-close:hover {
+      color: var(--accent);
+    }
+
+    .import-options {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .import-option-btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background-color: var(--pill-inactive);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.15s ease;
+    }
+
+    .import-option-btn.active {
+      background-color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .import-tree {
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      background-color: var(--bg);
+    }
+
+    .import-tree-item {
+      padding: 6px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .import-tree-item input[type="checkbox"] {
+      cursor: pointer;
+    }
+
+    .import-tree-item label {
+      cursor: pointer;
+      flex: 1;
+    }
+
+    .import-tree-children {
+      margin-left: 24px;
+    }
+
+    .merge-option {
+      margin-top: 16px;
+      padding: 12px;
+      background-color: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+
+    .merge-option label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.15s ease;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+    }
+
+    .btn-secondary {
+      background-color: var(--pill-inactive);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.15s ease;
+    }
+
+    .btn-secondary:hover {
+      background-color: #444;
+    }
+
+    .modal-footer {
+      margin-top: 20px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .project-name-input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid var(--input-border);
+      background-color: var(--input-bg);
+      color: var(--text);
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+    }
+
+    .add-to-project-btn {
+      margin-top: 12px;
+      width: 100%;
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.15s ease;
+    }
+
+    .add-to-project-btn:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Hospital Programming Workbench</h1>
+    <p>
+      A web-based tool for building hospital project programs from equipment guide data.
+      Import departments, functional areas, and rooms with equipment to create your project.
+    </p>
+  </header>
+
+  <main class="layout">
+    <!-- LEFT COLUMN: Tree Navigation -->
+    <section id="left-column">
+      <div class="tree-container">
+        <div class="tree-header" id="tree-header">
+          <h2 style="font-size: 1.1rem;">Project Navigator</h2>
+          <div class="mode-toggle" id="mode-toggle">
+            <button class="mode-btn active" data-mode="program" onclick="switchMode('program')">Program Mode</button>
+            <button class="mode-btn" data-mode="reference" onclick="switchMode('reference')">Reference Mode</button>
+          </div>
+        </div>
+        <button onclick="openLogicPortal()" style="width: 100%; padding: 10px; margin-bottom: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; transition: transform 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">⚙️ Logic Portal</button>
+        <button class="btn-secondary" id="return-to-projects-btn" onclick="returnToProjectList()" style="display: none; margin-bottom: 12px; width: 100%;">← Back to Project List</button>
+        <button class="add-to-project-btn" id="add-to-project-btn" onclick="openImportModal()" style="display: none;">+ Add to Project</button>
+        <div id="tree-view"></div>
+      </div>
+    </section>
+
+    <!-- RIGHT COLUMN: Detail View -->
+    <section id="right-column">
+      <div id="detail-view"></div>
+    </section>
+  </main>
+
+  <!-- Password Modal -->
+  <div id="password-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 400px;">
+      <div class="modal-header">
+        <h2>🔐 Logic Portal Access</h2>
+        <button class="modal-close" onclick="closePasswordModal()">&times;</button>
+      </div>
+      <div style="padding: 20px;">
+        <p style="margin-bottom: 20px; color: var(--muted);">Enter password to access the Room Logic Management Portal</p>
+        <input type="password" id="portal-password" placeholder="Enter password" 
+               style="width: 100%; padding: 12px; font-size: 16px; border: 2px solid var(--border); border-radius: 6px; background: var(--input-bg); color: var(--text);"
+               onkeypress="if(event.key === 'Enter') checkPassword()">
+        <div id="password-error" style="color: #e74c3c; margin-top: 10px; display: none;">❌ Incorrect password</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closePasswordModal()">Cancel</button>
+        <button class="btn-primary" onclick="checkPassword()">Enter Portal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logic Portal Modal -->
+  <div id="logic-portal-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 1400px; max-height: 90vh;">
+      <div class="modal-header">
+        <h2>⚙️ Room Logic Management Portal</h2>
+        <button class="modal-close" onclick="closeLogicPortal()">&times;</button>
+      </div>
+      <div style="padding: 20px; overflow-y: auto; max-height: calc(90vh - 160px);">
+        <div style="display: flex; gap: 20px; margin-bottom: 20px; align-items: center;">
+          <input type="text" id="logic-search-box" placeholder="🔍 Search rooms by code or name..."
+                 style="flex: 1; padding: 12px; font-size: 14px; border: 2px solid var(--border); border-radius: 6px; background: var(--input-bg); color: var(--text);"
+                 oninput="filterLogicRooms()">
+          <button onclick="saveAllLogic()" class="btn-primary" style="white-space: nowrap;">💾 Save All Changes</button>
+          <button onclick="exportLogic()" class="btn-secondary" style="white-space: nowrap;">📥 Export</button>
+        </div>
+        
+        <div id="logic-rooms-list" style="display: grid; gap: 15px;">
+          <!-- Room logic cards will be inserted here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import Modal -->
+  <div id="import-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Add to Project</h2>
+        <button class="modal-close" onclick="closeImportModal()">&times;</button>
+      </div>
+      <div id="import-modal-body">
+        <p class="muted">Expand the tree and check items to add to your project. You can select departments, functional areas, or individual rooms.</p>
+        <div id="import-tree-container" class="import-tree"></div>
+        <div class="merge-option">
+          <label>
+            <input type="checkbox" id="merge-on-import" checked />
+            <span>Merge with existing items at same level (uncheck to create duplicates)</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeImportModal()">Cancel</button>
+        <button class="btn-primary" onclick="confirmImport()">Add Selected</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="load-equipment.js"></script>
+  <script src="room-sizes.js"></script>
+  <script>
+    // -----------------------------
+    // DATA MODELS & SAMPLE DATA
+    // -----------------------------
+
+    // For clarity, using plain JS objects; no TypeScript syntax.
+
+    // PROJECT MANAGEMENT DATA
+    // Project structure: departments -> functional areas -> rooms -> equipment
+    let USER_PROJECTS = JSON.parse(localStorage.getItem('va-user-projects') || '[]');
+    let CURRENT_PROJECT_ID = localStorage.getItem('va-current-project-id') || null;
+
+    // Initialize default project if none exist
+    if (USER_PROJECTS.length === 0) {
+      const defaultProject = {
+        id: generateId(),
+        name: "New Project",
+        siteName: "",
+        description: "",
+        departments: [],
+        createdAt: new Date().toISOString(),
+        modifiedAt: new Date().toISOString()
+      };
+      USER_PROJECTS.push(defaultProject);
+      CURRENT_PROJECT_ID = defaultProject.id;
+      saveProjects();
+    } else if (!CURRENT_PROJECT_ID || !USER_PROJECTS.find(p => p.id === CURRENT_PROJECT_ID)) {
+      CURRENT_PROJECT_ID = USER_PROJECTS[0].id;
+      localStorage.setItem('va-current-project-id', CURRENT_PROJECT_ID);
+    }
+
+    function getCurrentProject() {
+      return USER_PROJECTS.find(p => p.id === CURRENT_PROJECT_ID) || USER_PROJECTS[0];
+    }
+
+    function saveProjects() {
+      localStorage.setItem('va-user-projects', JSON.stringify(USER_PROJECTS));
+      getCurrentProject().modifiedAt = new Date().toISOString();
+    }
+
+    function generateId() {
+      return 'id-' + Math.random().toString(36).substr(2, 9) + '-' + Date.now();
+    }
+
+    const PROJECT = {
+      id: "proj-1",
+      name: "Sample VA Hospital Project",
+      siteName: "Sample VAMC",
+      description: "Baseline demo program using PG-18-9 logic."
+    };
+
+    const SAMPLE_CHAPTERS = [
+      { id: "100", title: "MEDICAL / SURGICAL PATIENT CARE UNIT (MS PCU)", category: "clinical" },
+      { id: "102", title: "INTENSIVE CARE PATIENT CARE UNIT (IC PCU)", category: "clinical" },
+      { id: "112", title: "MATERNITY CARE (MAT)", category: "clinical" },
+      { id: "122", title: "PEDIATRIC PATIENT CARE UNIT (PED PCU)", category: "clinical" },
+      { id: "124", title: "NEONATAL INTENSIVE CARE UNIT (NICU)", category: "clinical" },
+      { id: "126", title: "PSYCHIATRIC PATIENT CARE UNIT (PSY PCU)", category: "clinical" },
+      { id: "130", title: "SPINAL CORD INJURY PATIENT CARE UNIT (SCI PCU)", category: "clinical" },
+      { id: "132", title: "BLIND REHABILITATION PATIENT CARE UNIT (BR PCU)", category: "clinical" },
+      { id: "202", title: "AMBULATORY CARE / PRIMARY CARE", category: "clinical" },
+      { id: "210", title: "SURGERY", category: "clinical" },
+      { id: "214", title: "ANESTHESIA", category: "clinical" },
+      { id: "218", title: "POST ANESTHESIA CARE UNIT (PACU)", category: "clinical" },
+      { id: "224", title: "PAIN MANAGEMENT", category: "clinical" },
+      { id: "230", title: "ENDOSCOPY / BRONCHOSCOPY", category: "clinical" },
+      { id: "256", title: "EMERGENCY DEPARTMENT (ED)", category: "clinical" },
+      { id: "258", title: "URGENT CARE CENTER", category: "clinical" },
+      { id: "260", title: "IMAGING", category: "clinical" },
+      { id: "262", title: "CARDIOLOGY", category: "clinical" },
+      { id: "264", title: "NUCLEAR MEDICINE", category: "clinical" },
+      { id: "266", title: "RADIATION ONCOLOGY", category: "clinical" },
+      { id: "268", title: "PHARMACY SERVICE", category: "clinical" },
+      { id: "270", title: "PATHOLOGY & LABORATORY MEDICINE", category: "clinical" },
+      { id: "272", title: "BLOOD BANK", category: "clinical" },
+      { id: "280", title: "PROSTHETICS & ORTHOTICS", category: "clinical" },
+      { id: "282", title: "PHYSICAL MEDICINE & REHABILITATION", category: "clinical" },
+      { id: "284", title: "AUDIOLOGY / SPEECH", category: "clinical" },
+      { id: "286", title: "NUTRITION & FOOD SERVICE", category: "support" },
+      { id: "290", title: "MENTAL HEALTH / SUBSTANCE ABUSE", category: "clinical" },
+      { id: "292", title: "SOCIAL WORK SERVICE", category: "clinical" },
+      { id: "294", title: "CHAPLAIN SERVICE", category: "support" },
+      { id: "298", title: "EDUCATION / TRAINING", category: "support" },
+      { id: "300", title: "ADMINISTRATION", category: "support" },
+      { id: "310", title: "MEDICAL RECORDS", category: "support" },
+      { id: "330", title: "VOLUNTARY SERVICE", category: "support" },
+      { id: "340", title: "ENVIRONMENTAL MANAGEMENT SERVICE", category: "support" },
+      { id: "350", title: "STERILE PROCESSING & DISTRIBUTION", category: "support" },
+      { id: "360", title: "LINEN SERVICE", category: "support" },
+      { id: "370", title: "ENGINEERING / MAINTENANCE", category: "support" },
+      { id: "380", title: "POLICE SERVICE", category: "support" },
+      { id: "390", title: "TELECOMMUNICATIONS", category: "support" },
+      { id: "420", title: "GENERAL STORAGE / RECEIVING", category: "support" }
+    ];
+
+    const SAMPLE_IDS = [
+      // CHAPTER 100: MEDICAL/SURGICAL PCU
+      { id: "CH100_A", chapterId: "100", label: "A", text: "How many Acute Inpatient Medical / Surgical patient beds are projected? (W) (17-267)", type: "W", inputKind: "number", minValue: 17, maxValue: 267, defaultValue: 32 },
+      { id: "CH100_B", chapterId: "100", label: "B", text: "Is Behavioral Health Care for Inpatients authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      
+      // CHAPTER 102: INTENSIVE CARE PCU
+      { id: "CH102_A", chapterId: "102", label: "A", text: "How many ICU beds are projected? (W) (8-45)", type: "W", inputKind: "number", minValue: 8, maxValue: 45, defaultValue: 12 },
+      { id: "CH102_B", chapterId: "102", label: "B", text: "Is a Coronary Care Unit authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      { id: "CH102_C", chapterId: "102", label: "C", text: "Is a Cardiac Catheterization Lab authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      
+      // CHAPTER 112: MATERNITY CARE
+      { id: "CH112_A", chapterId: "112", label: "A", text: "How many annual deliveries are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH112_B", chapterId: "112", label: "B", text: "Is Labor, Delivery, Recovery (LDR) authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      { id: "CH112_C", chapterId: "112", label: "C", text: "Is Labor, Delivery, Recovery, Postpartum (LDRP) authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      
+      // CHAPTER 122: PEDIATRIC PCU
+      { id: "CH122_A", chapterId: "122", label: "A", text: "How many Pediatric inpatient beds are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 124: NEONATAL ICU
+      { id: "CH124_A", chapterId: "124", label: "A", text: "How many NICU beds are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH124_B", chapterId: "124", label: "B", text: "Is Level II (Intermediate) care authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      { id: "CH124_C", chapterId: "124", label: "C", text: "Is Level III (Intensive) care authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      
+      // CHAPTER 126: PSYCHIATRIC PCU
+      { id: "CH126_A", chapterId: "126", label: "A", text: "How many Psychiatric inpatient beds are projected? (W) (16-120)", type: "W", inputKind: "number", minValue: 16, maxValue: 120, defaultValue: 0 },
+      { id: "CH126_B", chapterId: "126", label: "B", text: "Is Intensive Psychiatric care authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      
+      // CHAPTER 130: SPINAL CORD INJURY PCU
+      { id: "CH130_A", chapterId: "130", label: "A", text: "How many SCI beds are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 132: BLIND REHABILITATION PCU
+      { id: "CH132_A", chapterId: "132", label: "A", text: "How many Blind Rehabilitation beds are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 202: AMBULATORY CARE
+      { id: "CH202_A", chapterId: "202", label: "A", text: "How many annual Primary Care clinic stops are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH202_B", chapterId: "202", label: "B", text: "How many Primary Care Provider FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      { id: "CH202_C", chapterId: "202", label: "C", text: "How many Specialty Care Provider FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 210: SURGERY
+      { id: "CH210_A", chapterId: "210", label: "A", text: "How many annual surgical operations are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH210_B", chapterId: "210", label: "B", text: "How many Operating Rooms are authorized? (M)", type: "M", inputKind: "number", defaultValue: 0 },
+      { id: "CH210_C", chapterId: "210", label: "C", text: "Is Ambulatory Surgery authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      { id: "CH210_D", chapterId: "210", label: "D", text: "Is Cystoscopy authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      
+      // CHAPTER 214: ANESTHESIA
+      { id: "CH214_A", chapterId: "214", label: "A", text: "How many annual anesthesia procedures are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH214_B", chapterId: "214", label: "B", text: "How many Anesthesiologist FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 218: PACU
+      { id: "CH218_A", chapterId: "218", label: "A", text: "How many PACU beds are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 224: PAIN MANAGEMENT
+      { id: "CH224_A", chapterId: "224", label: "A", text: "How many annual Pain Management clinic stops are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 230: ENDOSCOPY
+      { id: "CH230_A", chapterId: "230", label: "A", text: "How many annual endoscopy procedures are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH230_B", chapterId: "230", label: "B", text: "How many Endoscopy Procedure Rooms are authorized? (M)", type: "M", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 256: EMERGENCY DEPARTMENT
+      { id: "CH256_A", chapterId: "256", label: "A", text: "How many annual ED visits (Stop Code 130) are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH256_B", chapterId: "256", label: "B", text: "How many Emergency Treatment Rooms are authorized? (M)", type: "M", inputKind: "number", defaultValue: 0 },
+      { id: "CH256_C", chapterId: "256", label: "C", text: "Is a Trauma Bay authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      
+      // CHAPTER 258: URGENT CARE
+      { id: "CH258_A", chapterId: "258", label: "A", text: "How many annual Urgent Care visits are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 260: IMAGING
+      { id: "CH260_A", chapterId: "260", label: "A", text: "How many annual Diagnostic Radiology procedures are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH260_B", chapterId: "260", label: "B", text: "How many Radiographic/Fluoroscopic Rooms are authorized? (M)", type: "M", inputKind: "number", defaultValue: 0 },
+      { id: "CH260_C", chapterId: "260", label: "C", text: "How many CT Scanners are authorized? (M)", type: "M", inputKind: "number", defaultValue: 0 },
+      { id: "CH260_D", chapterId: "260", label: "D", text: "How many MRI units are authorized? (M)", type: "M", inputKind: "number", defaultValue: 0 },
+      { id: "CH260_E", chapterId: "260", label: "E", text: "How many Ultrasound Rooms are authorized? (M)", type: "M", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 262: CARDIOLOGY
+      { id: "CH262_A", chapterId: "262", label: "A", text: "How many annual Cardiology clinic stops are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH262_B", chapterId: "262", label: "B", text: "Is Echocardiography authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      { id: "CH262_C", chapterId: "262", label: "C", text: "Is Cardiac Stress Testing authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      
+      // CHAPTER 264: NUCLEAR MEDICINE
+      { id: "CH264_A", chapterId: "264", label: "A", text: "How many annual Nuclear Medicine procedures are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH264_B", chapterId: "264", label: "B", text: "How many Gamma Cameras are authorized? (M)", type: "M", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 266: RADIATION ONCOLOGY
+      { id: "CH266_A", chapterId: "266", label: "A", text: "How many annual Radiation Oncology treatments are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH266_B", chapterId: "266", label: "B", text: "How many Linear Accelerators are authorized? (M)", type: "M", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 268: PHARMACY
+      { id: "CH268_A", chapterId: "268", label: "A", text: "How many Clinical Pharmacist FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      { id: "CH268_B", chapterId: "268", label: "B", text: "How many annual outpatient prescriptions are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH268_C", chapterId: "268", label: "C", text: "Is IV Admixture authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      { id: "CH268_D", chapterId: "268", label: "D", text: "Is Investigational Drug Service authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      
+      // CHAPTER 270: PATHOLOGY & LAB
+      { id: "CH270_A", chapterId: "270", label: "A", text: "How many annual Laboratory tests are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH270_B", chapterId: "270", label: "B", text: "How many Pathologist FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      { id: "CH270_C", chapterId: "270", label: "C", text: "Is Anatomical Pathology authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      { id: "CH270_D", chapterId: "270", label: "D", text: "Is Microbiology authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      
+      // CHAPTER 272: BLOOD BANK
+      { id: "CH272_A", chapterId: "272", label: "A", text: "How many annual blood units are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH272_B", chapterId: "272", label: "B", text: "Is Apheresis authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      
+      // CHAPTER 280: PROSTHETICS
+      { id: "CH280_A", chapterId: "280", label: "A", text: "How many Prosthetics FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      { id: "CH280_B", chapterId: "280", label: "B", text: "Is Orthotics/Prosthetics Fabrication authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      
+      // CHAPTER 282: PHYSICAL MEDICINE & REHAB
+      { id: "CH282_A", chapterId: "282", label: "A", text: "How many annual Physical Therapy visits are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH282_B", chapterId: "282", label: "B", text: "How many annual Occupational Therapy visits are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH282_C", chapterId: "282", label: "C", text: "How many Physical Therapist FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      { id: "CH282_D", chapterId: "282", label: "D", text: "How many Occupational Therapist FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 284: AUDIOLOGY/SPEECH
+      { id: "CH284_A", chapterId: "284", label: "A", text: "How many annual Audiology clinic stops are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH284_B", chapterId: "284", label: "B", text: "How many annual Speech Pathology visits are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH284_C", chapterId: "284", label: "C", text: "How many Audiologist FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 286: NUTRITION & FOOD
+      { id: "CH286_A", chapterId: "286", label: "A", text: "How many total meals per day are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH286_B", chapterId: "286", label: "B", text: "How many Dietitian FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      { id: "CH286_C", chapterId: "286", label: "C", text: "Is a Dining Room for patients authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      
+      // CHAPTER 290: MENTAL HEALTH
+      { id: "CH290_A", chapterId: "290", label: "A", text: "How many annual Mental Health clinic stops are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH290_B", chapterId: "290", label: "B", text: "How many Psychiatrist FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      { id: "CH290_C", chapterId: "290", label: "C", text: "How many Psychologist FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      { id: "CH290_D", chapterId: "290", label: "D", text: "Is Substance Abuse Treatment authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      
+      // CHAPTER 292: SOCIAL WORK
+      { id: "CH292_A", chapterId: "292", label: "A", text: "How many Social Worker FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 294: CHAPLAIN
+      { id: "CH294_A", chapterId: "294", label: "A", text: "How many Chaplain FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      { id: "CH294_B", chapterId: "294", label: "B", text: "Is a Chapel authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      
+      // CHAPTER 298: EDUCATION
+      { id: "CH298_A", chapterId: "298", label: "A", text: "How many Educator FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      { id: "CH298_B", chapterId: "298", label: "B", text: "How many total staff requiring training? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 300: ADMINISTRATION
+      { id: "CH300_A", chapterId: "300", label: "A", text: "How many Administrative FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      { id: "CH300_B", chapterId: "300", label: "B", text: "How many total facility FTE positions? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 310: MEDICAL RECORDS
+      { id: "CH310_A", chapterId: "310", label: "A", text: "How many annual patient registrations are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH310_B", chapterId: "310", label: "B", text: "How many Medical Records FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 330: VOLUNTARY SERVICE
+      { id: "CH330_A", chapterId: "330", label: "A", text: "How many Voluntary Service FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 340: ENVIRONMENTAL MANAGEMENT
+      { id: "CH340_A", chapterId: "340", label: "A", text: "How many Environmental Management FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      { id: "CH340_B", chapterId: "340", label: "B", text: "What is the total building gross square feet? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 350: STERILE PROCESSING
+      { id: "CH350_A", chapterId: "350", label: "A", text: "How many annual surgical instrument sets are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH350_B", chapterId: "350", label: "B", text: "How many Sterile Processing FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 360: LINEN SERVICE
+      { id: "CH360_A", chapterId: "360", label: "A", text: "How many pounds of linen per day are projected? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      { id: "CH360_B", chapterId: "360", label: "B", text: "Is on-site laundry authorized? (M)", type: "M", inputKind: "boolean", defaultValue: false },
+      
+      // CHAPTER 370: ENGINEERING
+      { id: "CH370_A", chapterId: "370", label: "A", text: "How many Engineering FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      { id: "CH370_B", chapterId: "370", label: "B", text: "What is the total building gross square feet? (W)", type: "W", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 380: POLICE SERVICE
+      { id: "CH380_A", chapterId: "380", label: "A", text: "How many Police Officer FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 390: TELECOMMUNICATIONS
+      { id: "CH390_A", chapterId: "390", label: "A", text: "How many Telecommunications FTE positions are authorized? (S)", type: "S", inputKind: "number", defaultValue: 0 },
+      
+      // CHAPTER 420: GENERAL STORAGE
+      { id: "CH420_A", chapterId: "420", label: "A", text: "What is the total building gross square feet? (W)", type: "W", inputKind: "number", defaultValue: 0 }
+    ];
+
+    const SAMPLE_FUNCTIONAL_AREAS = [
+      {
+        id: "100-FA1",
+        chapterId: "100",
+        code: "FA 1",
+        name: "Inpatient Unit Patient Area"
+      },
+      {
+        id: "100-FA2",
+        chapterId: "100",
+        code: "FA 2",
+        name: "Support Area"
+      },
+      {
+        id: "268-FA13",
+        chapterId: "268",
+        code: "FA 13",
+        name: "Medication Consultation Services"
+      }
+    ];
+
+    // SAMPLE_ROOMS now loaded from room-sizes.js as ROOM_SIZES
+    const SAMPLE_ROOMS = ROOM_SIZES || [
+      // Fallback data if room-sizes.js fails to load
+      { id: "IMS21", chapterId: "100", name: "Single Universal Bedroom, MS PCU", nsf: 140 },
+      { id: "IMS23", chapterId: "100", name: "Airborne Infection Isolation (AII) Bedroom", nsf: 160 },
+      { id: "IMS24", chapterId: "100", name: "Airborne Infection Isolation (AII) Anteroom", nsf: 65 },
+      { id: "IMS25", chapterId: "100", name: "Protective Environment Isolation Bedroom", nsf: 160 },
+      { id: "IMS26", chapterId: "100", name: "Protective Environment Isolation Anteroom", nsf: 65 },
+      { id: "IMS27", chapterId: "100", name: "Bariatric / Physical Disabilities Bedroom", nsf: 200 },
+      { id: "NTOIL", chapterId: "100", name: "Patient Toilet", nsf: 60 },
+      { id: "NTOI1", chapterId: "100", name: "Patient Toilet, Bariatric", nsf: 80 },
+      { id: "NTOI2", chapterId: "100", name: "Patient Toilet, Isolation", nsf: 65 },
+      { id: "NSHWR", chapterId: "100", name: "Patient Shower", nsf: 40 },
+      { id: "NBATH", chapterId: "100", name: "Patient Bathing Room", nsf: 80 },
+      { id: "NWCRM", chapterId: "100", name: "Wheelchair Storage", nsf: 30 },
+      { id: "OFA01", chapterId: "100", name: "Office, Nurse Manager", nsf: 120 },
+      { id: "OFA02", chapterId: "100", name: "Office, Assistant Nurse Manager", nsf: 100 },
+      { id: "OFA03", chapterId: "100", name: "Office, Clinical Nurse Specialist", nsf: 100 },
+      { id: "WRML1", chapterId: "100", name: "Workroom, Clinical", nsf: 150 },
+      { id: "MEDST", chapterId: "100", name: "Medication Room", nsf: 120 },
+      { id: "UTLCL", chapterId: "100", name: "Utility Room, Clean", nsf: 80 },
+      { id: "UTLSO", chapterId: "100", name: "Utility Room, Soiled", nsf: 80 },
+      { id: "NUTRI", chapterId: "100", name: "Nourishment Station", nsf: 100 },
+      { id: "EQPSS", chapterId: "100", name: "Equipment Storage", nsf: 60 },
+      { id: "LNST1", chapterId: "100", name: "Linen Storage, Clean", nsf: 60 },
+      { id: "JANIT", chapterId: "100", name: "Janitor's Closet", nsf: 40 },
+      
+      // CHAPTER 102: ICU
+      { id: "ICU01", chapterId: "102", name: "ICU Patient Room", nsf: 250 },
+      { id: "ICU02", chapterId: "102", name: "ICU Patient Room, Isolation", nsf: 270 },
+      { id: "ICUTO", chapterId: "102", name: "ICU Patient Toilet", nsf: 60 },
+      { id: "ICUFA", chapterId: "102", name: "ICU Family Consult Room", nsf: 120 },
+      { id: "ICUWR", chapterId: "102", name: "ICU Workroom", nsf: 150 },
+      { id: "ICUMD", chapterId: "102", name: "ICU Medication Room", nsf: 120 },
+      { id: "ICUUC", chapterId: "102", name: "ICU Utility Clean", nsf: 80 },
+      { id: "ICUUS", chapterId: "102", name: "ICU Utility Soiled", nsf: 80 },
+      { id: "ICUEQ", chapterId: "102", name: "ICU Equipment Storage", nsf: 80 },
+      
+      // CHAPTER 112: MATERNITY
+      { id: "LDR01", chapterId: "112", name: "Labor, Delivery, Recovery Room (LDR)", nsf: 350 },
+      { id: "LDRP1", chapterId: "112", name: "Labor, Delivery, Recovery, Postpartum (LDRP)", nsf: 400 },
+      { id: "LABOR", chapterId: "112", name: "Labor Room", nsf: 200 },
+      { id: "DELIV", chapterId: "112", name: "Delivery Room", nsf: 400 },
+      { id: "RECOV", chapterId: "112", name: "Recovery Room", nsf: 140 },
+      { id: "NURSY", chapterId: "112", name: "Nursery", nsf: 120 },
+      { id: "MATWR", chapterId: "112", name: "Maternity Workroom", nsf: 150 },
+      
+      // CHAPTER 122: PEDIATRICS
+      { id: "PEDBR", chapterId: "122", name: "Pediatric Patient Bedroom", nsf: 140 },
+      { id: "PEDPT", chapterId: "122", name: "Pediatric Play Room", nsf: 200 },
+      { id: "PEDWR", chapterId: "122", name: "Pediatric Workroom", nsf: 150 },
+      
+      // CHAPTER 124: NICU
+      { id: "NICU1", chapterId: "124", name: "NICU Patient Space, Level II", nsf: 120 },
+      { id: "NICU2", chapterId: "124", name: "NICU Patient Space, Level III", nsf: 150 },
+      { id: "NICUW", chapterId: "124", name: "NICU Workroom", nsf: 150 },
+      
+      // CHAPTER 126: PSYCHIATRY
+      { id: "PSYBR", chapterId: "126", name: "Psychiatric Patient Bedroom", nsf: 140 },
+      { id: "PSYTO", chapterId: "126", name: "Psychiatric Patient Toilet", nsf: 60 },
+      { id: "PSYDA", chapterId: "126", name: "Psychiatric Day Room", nsf: 400 },
+      { id: "PSYDI", chapterId: "126", name: "Psychiatric Dining Room", nsf: 300 },
+      { id: "PSYOC", chapterId: "126", name: "Psychiatric Occupational Therapy", nsf: 400 },
+      { id: "PSYEX", chapterId: "126", name: "Psychiatric Exercise Room", nsf: 300 },
+      { id: "PSYQU", chapterId: "126", name: "Psychiatric Quiet Room", nsf: 100 },
+      { id: "PSYSE", chapterId: "126", name: "Psychiatric Seclusion Room", nsf: 100 },
+      
+      // CHAPTER 130: SCI
+      { id: "SCIBR", chapterId: "130", name: "SCI Patient Bedroom", nsf: 200 },
+      { id: "SCITO", chapterId: "130", name: "SCI Patient Toilet", nsf: 80 },
+      { id: "SCISH", chapterId: "130", name: "SCI Patient Shower", nsf: 60 },
+      { id: "SCITR", chapterId: "130", name: "SCI Therapy Room", nsf: 400 },
+      
+      // CHAPTER 132: BLIND REHAB
+      { id: "BRBR1", chapterId: "132", name: "Blind Rehab Patient Bedroom", nsf: 140 },
+      { id: "BRTR1", chapterId: "132", name: "Blind Rehab Training Room", nsf: 300 },
+      
+      // CHAPTER 202: AMBULATORY CARE
+      { id: "EXCL1", chapterId: "202", name: "Exam/Consult Room, Primary Care", nsf: 120 },
+      { id: "EXCL2", chapterId: "202", name: "Exam/Consult Room, Specialty", nsf: 120 },
+      { id: "PROC1", chapterId: "202", name: "Procedure Room, Minor", nsf: 150 },
+      { id: "OFCL1", chapterId: "202", name: "Office, Provider", nsf: 120 },
+      { id: "WRMCL", chapterId: "202", name: "Workroom, Clinical", nsf: 120 },
+      
+      // CHAPTER 210: SURGERY
+      { id: "OPROM", chapterId: "210", name: "Operating Room", nsf: 600 },
+      { id: "ORCYS", chapterId: "210", name: "Cystoscopy Room", nsf: 400 },
+      { id: "SCRUB", chapterId: "210", name: "Scrub/Gown Area", nsf: 80 },
+      { id: "SUBST", chapterId: "210", name: "Sub-Sterile Room", nsf: 80 },
+      { id: "ANSUP", chapterId: "210", name: "Anesthesia Supply Room", nsf: 150 },
+      { id: "ORSTR", chapterId: "210", name: "OR Supply/Storage", nsf: 200 },
+      { id: "ORSTC", chapterId: "210", name: "OR Sterile Supply", nsf: 150 },
+      
+      // CHAPTER 214: ANESTHESIA
+      { id: "OFAN1", chapterId: "214", name: "Office, Anesthesiologist", nsf: 120 },
+      { id: "ANWRK", chapterId: "214", name: "Anesthesia Workroom", nsf: 150 },
+      
+      // CHAPTER 218: PACU
+      { id: "PACUB", chapterId: "218", name: "PACU Patient Bay", nsf: 120 },
+      { id: "PACUW", chapterId: "218", name: "PACU Workstation", nsf: 150 },
+      
+      // CHAPTER 224: PAIN MANAGEMENT
+      { id: "PAINC", chapterId: "224", name: "Pain Management Consult Room", nsf: 120 },
+      { id: "PAINP", chapterId: "224", name: "Pain Management Procedure Room", nsf: 150 },
+      
+      // CHAPTER 230: ENDOSCOPY
+      { id: "ENDPR", chapterId: "230", name: "Endoscopy Procedure Room", nsf: 350 },
+      { id: "ENDREC", chapterId: "230", name: "Endoscopy Recovery Bay", nsf: 80 },
+      { id: "ENDCL", chapterId: "230", name: "Endoscope Cleaning Room", nsf: 120 },
+      
+      // CHAPTER 256: EMERGENCY
+      { id: "EDTRT", chapterId: "256", name: "ED Treatment Room", nsf: 140 },
+      { id: "EDTRA", chapterId: "256", name: "ED Trauma Bay", nsf: 400 },
+      { id: "EDCAR", chapterId: "256", name: "ED Cardiac Room", nsf: 200 },
+      { id: "EDTRI", chapterId: "256", name: "ED Triage Room", nsf: 100 },
+      { id: "EDWAI", chapterId: "256", name: "ED Waiting Room", nsf: 300 },
+      { id: "EDWRK", chapterId: "256", name: "ED Workroom", nsf: 150 },
+      
+      // CHAPTER 258: URGENT CARE
+      { id: "UCTRT", chapterId: "258", name: "Urgent Care Treatment Room", nsf: 120 },
+      { id: "UCWAI", chapterId: "258", name: "Urgent Care Waiting", nsf: 200 },
+      
+      // CHAPTER 260: IMAGING
+      { id: "XRAY1", chapterId: "260", name: "Radiographic/Fluoroscopic Room", nsf: 350 },
+      { id: "XRCT1", chapterId: "260", name: "CT Scanner Room", nsf: 500 },
+      { id: "XRMRI", chapterId: "260", name: "MRI Room", nsf: 600 },
+      { id: "XRUS1", chapterId: "260", name: "Ultrasound Room", nsf: 200 },
+      { id: "XRCON", chapterId: "260", name: "Radiologist Control/Reading Room", nsf: 150 },
+      { id: "XRCHG", chapterId: "260", name: "Patient Changing Room", nsf: 40 },
+      { id: "XRWAI", chapterId: "260", name: "Imaging Waiting Area", nsf: 200 },
+      
+      // CHAPTER 262: CARDIOLOGY
+      { id: "CARDC", chapterId: "262", name: "Cardiology Consult Room", nsf: 120 },
+      { id: "CECHO", chapterId: "262", name: "Echocardiography Room", nsf: 200 },
+      { id: "CSTRS", chapterId: "262", name: "Cardiac Stress Test Room", nsf: 250 },
+      { id: "CCATH", chapterId: "262", name: "Cardiac Catheterization Lab", nsf: 800 },
+      
+      // CHAPTER 264: NUCLEAR MEDICINE
+      { id: "NMGAM", chapterId: "264", name: "Gamma Camera Room", nsf: 350 },
+      { id: "NMPTS", chapterId: "264", name: "Nuclear Med Patient Waiting", nsf: 80 },
+      { id: "NMHOT", chapterId: "264", name: "Hot Lab", nsf: 120 },
+      
+      // CHAPTER 266: RADIATION ONCOLOGY
+      { id: "ROLAC", chapterId: "266", name: "Linear Accelerator Room", nsf: 600 },
+      { id: "ROSIM", chapterId: "266", name: "Simulation Room", nsf: 400 },
+      { id: "ROCON", chapterId: "266", name: "Radiation Oncology Consult", nsf: 120 },
+      { id: "ROWAI", chapterId: "266", name: "Radiation Oncology Waiting", nsf: 200 },
+      
+      // CHAPTER 268: PHARMACY
+      { id: "PHCON", chapterId: "268", name: "Pharmacy Consult Room", nsf: 100 },
+      { id: "PHDIS", chapterId: "268", name: "Outpatient Dispensing", nsf: 300 },
+      { id: "PHIVA", chapterId: "268", name: "IV Admixture Room", nsf: 200 },
+      { id: "PHINV", chapterId: "268", name: "Investigational Drug Room", nsf: 120 },
+      { id: "PHSTO", chapterId: "268", name: "Pharmacy Storage", nsf: 400 },
+      { id: "PHOFF", chapterId: "268", name: "Pharmacist Office", nsf: 100 },
+      
+      // CHAPTER 270: LAB
+      { id: "LABCH", chapterId: "270", name: "Chemistry Lab", nsf: 600 },
+      { id: "LABHE", chapterId: "270", name: "Hematology Lab", nsf: 400 },
+      { id: "LABMI", chapterId: "270", name: "Microbiology Lab", nsf: 500 },
+      { id: "LABPA", chapterId: "270", name: "Pathology Lab", nsf: 400 },
+      { id: "LABGR", chapterId: "270", name: "Gross Anatomy Room", nsf: 300 },
+      { id: "LABPC", chapterId: "270", name: "Phlebotomy Collection", nsf: 80 },
+      { id: "LABOF", chapterId: "270", name: "Pathologist Office", nsf: 120 },
+      
+      // CHAPTER 272: BLOOD BANK
+      { id: "BBSTO", chapterId: "272", name: "Blood Bank Storage", nsf: 200 },
+      { id: "BBAPH", chapterId: "272", name: "Apheresis Room", nsf: 150 },
+      { id: "BBWRK", chapterId: "272", name: "Blood Bank Workroom", nsf: 200 },
+      
+      // CHAPTER 280: PROSTHETICS
+      { id: "PROEX", chapterId: "280", name: "Prosthetics Exam Room", nsf: 120 },
+      { id: "PROFB", chapterId: "280", name: "Prosthetics Fabrication", nsf: 500 },
+      { id: "PROFF", chapterId: "280", name: "Prosthetist Office", nsf: 100 },
+      
+      // CHAPTER 282: PM&R
+      { id: "PTGYM", chapterId: "282", name: "Physical Therapy Gymnasium", nsf: 800 },
+      { id: "PTTRT", chapterId: "282", name: "PT Treatment Cubicle", nsf: 80 },
+      { id: "OTTRM", chapterId: "282", name: "Occupational Therapy Room", nsf: 200 },
+      { id: "OTADL", chapterId: "282", name: "OT Activities of Daily Living", nsf: 300 },
+      { id: "PMOFF", chapterId: "282", name: "Therapist Office", nsf: 100 },
+      
+      // CHAPTER 284: AUDIOLOGY
+      { id: "AUDBO", chapterId: "284", name: "Audiology Booth", nsf: 80 },
+      { id: "SPCON", chapterId: "284", name: "Speech Pathology Room", nsf: 120 },
+      { id: "AUDOF", chapterId: "284", name: "Audiologist Office", nsf: 100 },
+      
+      // CHAPTER 286: NUTRITION
+      { id: "KITCN", chapterId: "286", name: "Main Kitchen", nsf: 2000 },
+      { id: "DININ", chapterId: "286", name: "Dining Room", nsf: 600 },
+      { id: "CAFET", chapterId: "286", name: "Cafeteria", nsf: 1200 },
+      { id: "NUTOF", chapterId: "286", name: "Dietitian Office", nsf: 100 },
+      { id: "NUTCO", chapterId: "286", name: "Nutrition Consult Room", nsf: 100 },
+      
+      // CHAPTER 290: MENTAL HEALTH
+      { id: "MHCON", chapterId: "290", name: "Mental Health Consult Room", nsf: 120 },
+      { id: "MHGRP", chapterId: "290", name: "Group Therapy Room", nsf: 300 },
+      { id: "MHOFF", chapterId: "290", name: "Psychiatrist/Psychologist Office", nsf: 120 },
+      { id: "MHSUB", chapterId: "290", name: "Substance Abuse Treatment Room", nsf: 150 },
+      
+      // CHAPTER 292: SOCIAL WORK
+      { id: "SWCON", chapterId: "292", name: "Social Work Consult Room", nsf: 100 },
+      { id: "SWOFF", chapterId: "292", name: "Social Worker Office", nsf: 100 },
+      
+      // CHAPTER 294: CHAPLAIN
+      { id: "CHOFF", chapterId: "294", name: "Chaplain Office", nsf: 100 },
+      { id: "CHAPE", chapterId: "294", name: "Chapel", nsf: 800 },
+      { id: "CHMED", chapterId: "294", name: "Meditation Room", nsf: 120 },
+      
+      // CHAPTER 298: EDUCATION
+      { id: "EDCLR", chapterId: "298", name: "Classroom", nsf: 600 },
+      { id: "EDCON", chapterId: "298", name: "Conference Room", nsf: 400 },
+      { id: "EDOFF", chapterId: "298", name: "Educator Office", nsf: 100 },
+      { id: "EDLIB", chapterId: "298", name: "Library", nsf: 800 },
+      
+      // CHAPTER 300: ADMINISTRATION
+      { id: "ADDIR", chapterId: "300", name: "Director Office", nsf: 200 },
+      { id: "ADOFF", chapterId: "300", name: "Administrative Office", nsf: 100 },
+      { id: "ADCON", chapterId: "300", name: "Conference Room", nsf: 300 },
+      { id: "ADWRK", chapterId: "300", name: "Workroom/Copy", nsf: 150 },
+      
+      // CHAPTER 310: MEDICAL RECORDS
+      { id: "MRREG", chapterId: "310", name: "Registration/Admitting", nsf: 80 },
+      { id: "MRFIL", chapterId: "310", name: "File Room", nsf: 800 },
+      { id: "MRWRK", chapterId: "310", name: "Medical Records Work Area", nsf: 200 },
+      { id: "MROFF", chapterId: "310", name: "Medical Records Office", nsf: 100 },
+      
+      // CHAPTER 330: VOLUNTARY SERVICE
+      { id: "VSOFF", chapterId: "330", name: "Voluntary Service Office", nsf: 100 },
+      { id: "VSWRK", chapterId: "330", name: "Volunteer Work Area", nsf: 200 },
+      
+      // CHAPTER 340: ENVIRONMENTAL MGMT
+      { id: "EMOFF", chapterId: "340", name: "EMS Office", nsf: 100 },
+      { id: "EMSTO", chapterId: "340", name: "Housekeeping Storage", nsf: 200 },
+      { id: "EMJAN", chapterId: "340", name: "Janitor Closet", nsf: 40 },
+      
+      // CHAPTER 350: STERILE PROCESSING
+      { id: "SPDEC", chapterId: "350", name: "Decontamination Area", nsf: 400 },
+      { id: "SPPRE", chapterId: "350", name: "Prep & Pack Area", nsf: 400 },
+      { id: "SPSTR", chapterId: "350", name: "Sterilization Room", nsf: 300 },
+      { id: "SPSTO", chapterId: "350", name: "Sterile Storage", nsf: 300 },
+      
+      // CHAPTER 360: LINEN
+      { id: "LNCLN", chapterId: "360", name: "Clean Linen Storage", nsf: 400 },
+      { id: "LNSOL", chapterId: "360", name: "Soiled Linen Holding", nsf: 200 },
+      { id: "LNLAU", chapterId: "360", name: "Laundry Processing", nsf: 800 },
+      
+      // CHAPTER 370: ENGINEERING
+      { id: "ENGOF", chapterId: "370", name: "Engineering Office", nsf: 100 },
+      { id: "ENGSH", chapterId: "370", name: "Engineering Shop", nsf: 400 },
+      { id: "ENGST", chapterId: "370", name: "Engineering Storage", nsf: 300 },
+      
+      // CHAPTER 380: POLICE
+      { id: "POLOF", chapterId: "380", name: "Police Office", nsf: 100 },
+      { id: "POLDI", chapterId: "380", name: "Police Dispatch", nsf: 150 },
+      
+      // CHAPTER 390: TELECOM
+      { id: "TELOF", chapterId: "390", name: "Telecommunications Office", nsf: 100 },
+      { id: "TELMDF", chapterId: "390", name: "MDF/IDF Room", nsf: 200 },
+      
+      // CHAPTER 420: STORAGE
+      { id: "STRGE", chapterId: "420", name: "General Storage", nsf: 1000 },
+      { id: "RECEI", chapterId: "420", name: "Receiving Dock", nsf: 600 }
+    ];
+
+    const SAMPLE_EQUIPMENT = [];  // Will be loaded from Equipment_Guide_parsed_v2.txt
+
+    const SAMPLE_ROOM_EQUIPMENT = [];  // Will be loaded from Equipment_Guide_parsed_v2.txt
+
+    // -----------------------------
+    // STATE
+    // -----------------------------
+
+    let activeChapters = ["100", "102", "210", "256", "268"];
+    let driverValues = [
+      { projectId: PROJECT.id, driverId: "CH100_A", value: 32 },
+      { projectId: PROJECT.id, driverId: "CH100_B", value: false },
+      { projectId: PROJECT.id, driverId: "CH102_A", value: 12 },
+      { projectId: PROJECT.id, driverId: "CH102_B", value: false },
+      { projectId: PROJECT.id, driverId: "CH102_C", value: false },
+      { projectId: PROJECT.id, driverId: "CH210_A", value: 0 },
+      { projectId: PROJECT.id, driverId: "CH210_B", value: 4 },
+      { projectId: PROJECT.id, driverId: "CH210_C", value: false },
+      { projectId: PROJECT.id, driverId: "CH210_D", value: false },
+      { projectId: PROJECT.id, driverId: "CH256_A", value: 0 },
+      { projectId: PROJECT.id, driverId: "CH256_B", value: 8 },
+      { projectId: PROJECT.id, driverId: "CH256_C", value: false },
+      { projectId: PROJECT.id, driverId: "CH268_A", value: 3 },
+      { projectId: PROJECT.id, driverId: "CH268_B", value: 50000 },
+      { projectId: PROJECT.id, driverId: "CH268_C", value: true },
+      { projectId: PROJECT.id, driverId: "CH268_D", value: false }
+    ];
+
+    let currentMode = 'program'; // 'program' or 'reference'
+    let selectedNode = null;
+    let expandedNodes = new Set(['project']);
+    let viewState = 'project-list'; // 'project-list' or 'project-detail'
+    let selectedProjectInList = null; // Project selected in list view (not opened)
+
+    let globalIdCounter = 1;
+    function makeId() {
+      return "id-" + (globalIdCounter++);
+    }
+
+    // -----------------------------
+    // RULE ENGINE
+    // -----------------------------
+
+    function buildProgram(project, driverValues, activeChapterIds) {
+      const driverMap = new Map();
+      driverValues.forEach(d => driverMap.set(d.driverId, d));
+
+      // Helper function to get driver value
+      const getVal = (driverId) => {
+        const driver = driverMap.get(driverId);
+        if (!driver) return 0;
+        if (typeof driver.value === "boolean") return driver.value ? 1 : 0;
+        return typeof driver.value === "number" ? driver.value : Number(driver.value || 0);
+      };
+
+      const getBool = (driverId) => {
+        const driver = driverMap.get(driverId);
+        if (!driver) return false;
+        return driver.value === true || driver.value === "true";
+      };
+
+      const roomRequirements = [];
+
+      // Helper to add room requirement
+      const addRoom = (chapterId, roomId, count) => {
+        if (count > 0) {
+          roomRequirements.push({
+            id: makeId(),
+            projectId: project.id,
+            chapterId: chapterId,
+            roomTemplateId: roomId,
+            requiredCount: Math.ceil(count)
+          });
+        }
+      };
+
+      // ===== CHAPTER 100: MED/SURG PCU =====
+      if (activeChapterIds.includes("100")) {
+        const beds = getVal("CH100_A");
+        const hasBehavioral = getBool("CH100_B");
+        
+        if (beds > 0) {
+          // Patient Bedrooms - 1 per bed
+          addRoom("100", "IMS21", beds);
+          
+          // Isolation rooms - 1 per 16 beds
+          addRoom("100", "IMS23", Math.ceil(beds / 16));
+          addRoom("100", "IMS24", Math.ceil(beds / 16)); // Anteroom for isolation
+          
+          // Bariatric rooms - minimum 1 per 32 beds
+          addRoom("100", "IMS27", Math.max(1, Math.ceil(beds / 32)));
+        }
+      }
+
+      // ===== CHAPTER 102: ICU =====
+      if (activeChapterIds.includes("102")) {
+        const icuBeds = getVal("CH102_A");
+        const hasCCU = getBool("CH102_B");
+        const hasCath = getBool("CH102_C");
+        
+        if (icuBeds > 0) {
+          // ICU patient rooms - 1 per bed
+          addRoom("102", "ICU01", icuBeds);
+          
+          // Isolation rooms - minimum 1, or 10% of beds
+          addRoom("102", "ICU02", Math.max(1, Math.ceil(icuBeds * 0.1)));
+          
+          // Patient toilets - 1 per 2 beds
+          addRoom("102", "ICUTO", Math.ceil(icuBeds / 2));
+          
+          // Family consult - 1 per unit (12 beds)
+          addRoom("102", "ICUFA", Math.ceil(icuBeds / 12));
+          
+          // Workroom - 1 per unit
+          addRoom("102", "ICUWR", Math.ceil(icuBeds / 12));
+          
+          // Medication room - 1 per unit
+          addRoom("102", "ICUMD", Math.ceil(icuBeds / 12));
+          
+          // Utility clean - 1 per unit
+          addRoom("102", "ICUUC", Math.ceil(icuBeds / 12));
+          
+          // Utility soiled - 1 per unit
+          addRoom("102", "ICUUS", Math.ceil(icuBeds / 12));
+          
+          // Equipment storage - 1 per unit
+          addRoom("102", "ICUEQ", Math.ceil(icuBeds / 12));
+          
+          // If Cardiac Cath Lab authorized
+          if (hasCath) {
+            addRoom("102", "CCATH", 1);
+          }
+        }
+      }
+
+      // ===== CHAPTER 112: MATERNITY =====
+      if (activeChapterIds.includes("112")) {
+        const deliveries = getVal("CH112_A");
+        const hasLDR = getBool("CH112_B");
+        const hasLDRP = getBool("CH112_C");
+        
+        if (deliveries > 0) {
+          if (hasLDRP) {
+            // LDRP rooms - 1 per 300 deliveries
+            addRoom("112", "LDRP1", Math.max(1, Math.ceil(deliveries / 300)));
+          } else if (hasLDR) {
+            // LDR rooms - 1 per 400 deliveries
+            addRoom("112", "LDR01", Math.max(1, Math.ceil(deliveries / 400)));
+          } else {
+            // Traditional Labor & Delivery
+            addRoom("112", "LABOR", Math.max(1, Math.ceil(deliveries / 500)));
+            addRoom("112", "DELIV", Math.max(1, Math.ceil(deliveries / 600)));
+          }
+          
+          // Recovery rooms
+          addRoom("112", "RECOV", Math.max(2, Math.ceil(deliveries / 400)));
+          
+          // Nursery
+          addRoom("112", "NURSY", Math.max(1, Math.ceil(deliveries / 500)));
+          
+          // Workroom
+          addRoom("112", "MATWR", 1);
+        }
+      }
+
+      // ===== CHAPTER 122: PEDIATRICS =====
+      if (activeChapterIds.includes("122")) {
+        const pedBeds = getVal("CH122_A");
+        
+        if (pedBeds > 0) {
+          addRoom("122", "PEDBR", pedBeds);
+          addRoom("122", "PEDPT", Math.ceil(pedBeds / 16));
+          addRoom("122", "PEDWR", Math.ceil(pedBeds / 16));
+        }
+      }
+
+      // ===== CHAPTER 124: NICU =====
+      if (activeChapterIds.includes("124")) {
+        const nicuBeds = getVal("CH124_A");
+        const hasLevel2 = getBool("CH124_B");
+        const hasLevel3 = getBool("CH124_C");
+        
+        if (nicuBeds > 0) {
+          if (hasLevel3) {
+            addRoom("124", "NICU2", nicuBeds);
+          } else if (hasLevel2) {
+            addRoom("124", "NICU1", nicuBeds);
+          }
+          addRoom("124", "NICUW", Math.ceil(nicuBeds / 12));
+        }
+      }
+
+      // ===== CHAPTER 126: PSYCHIATRY =====
+      if (activeChapterIds.includes("126")) {
+        const psyBeds = getVal("CH126_A");
+        const hasIntensive = getBool("CH126_B");
+        
+        if (psyBeds > 0) {
+          // Bedrooms - 1 per bed
+          addRoom("126", "PSYBR", psyBeds);
+          
+          // Toilets - 1 per bedroom
+          addRoom("126", "PSYTO", psyBeds);
+          
+          // Day room - 1 per 16 beds
+          addRoom("126", "PSYDA", Math.ceil(psyBeds / 16));
+          
+          // Dining - 1 per 16 beds
+          addRoom("126", "PSYDI", Math.ceil(psyBeds / 16));
+          
+          // OT space - 1 per 16 beds
+          addRoom("126", "PSYOC", Math.ceil(psyBeds / 16));
+          
+          // Exercise room - 1 per 32 beds
+          addRoom("126", "PSYEX", Math.ceil(psyBeds / 32));
+          
+          // Quiet room - 1 per 16 beds
+          addRoom("126", "PSYQU", Math.ceil(psyBeds / 16));
+          
+          // Seclusion room - minimum 2
+          addRoom("126", "PSYSE", Math.max(2, Math.ceil(psyBeds / 16)));
+        }
+      }
+
+      // ===== CHAPTER 130: SCI =====
+      if (activeChapterIds.includes("130")) {
+        const sciBeds = getVal("CH130_A");
+        
+        if (sciBeds > 0) {
+          addRoom("130", "SCIBR", sciBeds);
+          addRoom("130", "SCITO", sciBeds);
+          addRoom("130", "SCISH", Math.ceil(sciBeds / 4));
+          addRoom("130", "SCITR", Math.ceil(sciBeds / 8));
+        }
+      }
+
+      // ===== CHAPTER 132: BLIND REHAB =====
+      if (activeChapterIds.includes("132")) {
+        const brBeds = getVal("CH132_A");
+        
+        if (brBeds > 0) {
+          addRoom("132", "BRBR1", brBeds);
+          addRoom("132", "BRTR1", Math.ceil(brBeds / 8));
+        }
+      }
+
+      // ===== CHAPTER 202: AMBULATORY CARE =====
+      if (activeChapterIds.includes("202")) {
+        const primaryStops = getVal("CH202_A");
+        const primaryFTE = getVal("CH202_B");
+        const specialtyFTE = getVal("CH202_C");
+        
+        // Primary care exam rooms - 1.5 per FTE
+        if (primaryFTE > 0) {
+          addRoom("202", "EXCL1", Math.ceil(primaryFTE * 1.5));
+          addRoom("202", "OFCL1", primaryFTE);
+        }
+        
+        // Specialty exam rooms - 1.5 per FTE
+        if (specialtyFTE > 0) {
+          addRoom("202", "EXCL2", Math.ceil(specialtyFTE * 1.5));
+        }
+        
+        // Procedure rooms - 1 per 10,000 stops
+        if (primaryStops > 0) {
+          addRoom("202", "PROC1", Math.max(1, Math.ceil(primaryStops / 10000)));
+          addRoom("202", "WRMCL", Math.max(1, Math.ceil((primaryFTE + specialtyFTE) / 5)));
+        }
+      }
+
+      // ===== CHAPTER 210: SURGERY =====
+      if (activeChapterIds.includes("210")) {
+        const surgeries = getVal("CH210_A");
+        const orRooms = getVal("CH210_B");
+        const hasAmb = getBool("CH210_C");
+        const hasCysto = getBool("CH210_D");
+        
+        if (orRooms > 0) {
+          addRoom("210", "OPROM", orRooms);
+          addRoom("210", "SCRUB", orRooms);
+          addRoom("210", "SUBST", orRooms);
+          addRoom("210", "ANSUP", Math.max(1, Math.ceil(orRooms / 4)));
+          addRoom("210", "ORSTR", Math.max(1, Math.ceil(orRooms / 4)));
+          addRoom("210", "ORSTC", Math.max(1, Math.ceil(orRooms / 4)));
+          
+          if (hasCysto) {
+            addRoom("210", "ORCYS", 1);
+          }
+        }
+      }
+
+      // ===== CHAPTER 214: ANESTHESIA =====
+      if (activeChapterIds.includes("214")) {
+        const anesthFTE = getVal("CH214_B");
+        
+        if (anesthFTE > 0) {
+          addRoom("214", "OFAN1", anesthFTE);
+          addRoom("214", "ANWRK", Math.ceil(anesthFTE / 4));
+        }
+      }
+
+      // ===== CHAPTER 218: PACU =====
+      if (activeChapterIds.includes("218")) {
+        const pacuBeds = getVal("CH218_A");
+        
+        if (pacuBeds > 0) {
+          addRoom("218", "PACUB", pacuBeds);
+          addRoom("218", "PACUW", Math.ceil(pacuBeds / 8));
+        }
+      }
+
+      // ===== CHAPTER 224: PAIN MANAGEMENT =====
+      if (activeChapterIds.includes("224")) {
+        const painStops = getVal("CH224_A");
+        
+        if (painStops > 0) {
+          addRoom("224", "PAINC", Math.max(1, Math.ceil(painStops / 2500)));
+          addRoom("224", "PAINP", Math.max(1, Math.ceil(painStops / 3000)));
+        }
+      }
+
+      // ===== CHAPTER 230: ENDOSCOPY =====
+      if (activeChapterIds.includes("230")) {
+        const endoProc = getVal("CH230_A");
+        const endoRooms = getVal("CH230_B");
+        
+        if (endoRooms > 0) {
+          addRoom("230", "ENDPR", endoRooms);
+          addRoom("230", "ENDREC", endoRooms * 2);
+          addRoom("230", "ENDCL", Math.max(1, Math.ceil(endoRooms / 2)));
+        }
+      }
+
+      // ===== CHAPTER 256: EMERGENCY DEPARTMENT =====
+      if (activeChapterIds.includes("256")) {
+        const edVisits = getVal("CH256_A");
+        const edRooms = getVal("CH256_B");
+        const hasTrauma = getBool("CH256_C");
+        
+        if (edVisits > 0 || edRooms > 0) {
+          const rooms = edRooms > 0 ? edRooms : Math.max(4, Math.ceil(edVisits / 3000));
+          
+          addRoom("256", "EDTRT", rooms);
+          addRoom("256", "EDTRI", Math.max(1, Math.ceil(rooms / 8)));
+          addRoom("256", "EDCAR", Math.max(1, Math.ceil(rooms / 10)));
+          addRoom("256", "EDWAI", Math.max(1, Math.ceil(rooms / 10)));
+          addRoom("256", "EDWRK", Math.max(1, Math.ceil(rooms / 8)));
+          
+          if (hasTrauma) {
+            addRoom("256", "EDTRA", 1);
+          }
+        }
+      }
+
+      // ===== CHAPTER 258: URGENT CARE =====
+      if (activeChapterIds.includes("258")) {
+        const ucVisits = getVal("CH258_A");
+        
+        if (ucVisits > 0) {
+          addRoom("258", "UCTRT", Math.max(2, Math.ceil(ucVisits / 5000)));
+          addRoom("258", "UCWAI", 1);
+        }
+      }
+
+      // ===== CHAPTER 260: IMAGING =====
+      if (activeChapterIds.includes("260")) {
+        const xrayRooms = getVal("CH260_B");
+        const ctScanners = getVal("CH260_C");
+        const mriUnits = getVal("CH260_D");
+        const usRooms = getVal("CH260_E");
+        
+        if (xrayRooms > 0) {
+          addRoom("260", "XRAY1", xrayRooms);
+          addRoom("260", "XRCON", Math.max(1, Math.ceil(xrayRooms / 3)));
+        }
+        
+        if (ctScanners > 0) {
+          addRoom("260", "XRCT1", ctScanners);
+        }
+        
+        if (mriUnits > 0) {
+          addRoom("260", "XRMRI", mriUnits);
+        }
+        
+        if (usRooms > 0) {
+          addRoom("260", "XRUS1", usRooms);
+        }
+        
+        const totalRooms = xrayRooms + ctScanners + mriUnits + usRooms;
+        if (totalRooms > 0) {
+          addRoom("260", "XRCHG", Math.max(2, Math.ceil(totalRooms / 2)));
+          addRoom("260", "XRWAI", Math.max(1, Math.ceil(totalRooms / 5)));
+        }
+      }
+
+      // ===== CHAPTER 262: CARDIOLOGY =====
+      if (activeChapterIds.includes("262")) {
+        const cardStops = getVal("CH262_A");
+        const hasEcho = getBool("CH262_B");
+        const hasStress = getBool("CH262_C");
+        
+        if (cardStops > 0) {
+          addRoom("262", "CARDC", Math.max(1, Math.ceil(cardStops / 2000)));
+          
+          if (hasEcho) {
+            addRoom("262", "CECHO", Math.max(1, Math.ceil(cardStops / 3000)));
+          }
+          
+          if (hasStress) {
+            addRoom("262", "CSTRS", Math.max(1, Math.ceil(cardStops / 2500)));
+          }
+        }
+      }
+
+      // ===== CHAPTER 264: NUCLEAR MEDICINE =====
+      if (activeChapterIds.includes("264")) {
+        const nmProc = getVal("CH264_A");
+        const gammaCams = getVal("CH264_B");
+        
+        if (gammaCams > 0) {
+          addRoom("264", "NMGAM", gammaCams);
+          addRoom("264", "NMPTS", gammaCams * 2);
+          addRoom("264", "NMHOT", Math.max(1, Math.ceil(gammaCams / 2)));
+        }
+      }
+
+      // ===== CHAPTER 266: RADIATION ONCOLOGY =====
+      if (activeChapterIds.includes("266")) {
+        const roTreatments = getVal("CH266_A");
+        const linacs = getVal("CH266_B");
+        
+        if (linacs > 0) {
+          addRoom("266", "ROLAC", linacs);
+          addRoom("266", "ROSIM", Math.max(1, Math.ceil(linacs / 2)));
+          addRoom("266", "ROCON", Math.max(2, linacs));
+          addRoom("266", "ROWAI", Math.max(1, Math.ceil(linacs / 2)));
+        }
+      }
+
+      // ===== CHAPTER 268: PHARMACY =====
+      if (activeChapterIds.includes("268")) {
+        const pharmFTE = getVal("CH268_A");
+        const rxVolume = getVal("CH268_B");
+        const hasIV = getBool("CH268_C");
+        const hasInv = getBool("CH268_D");
+        
+        if (pharmFTE > 0) {
+          addRoom("268", "PHCON", Math.max(1, Math.ceil(pharmFTE / 2)));
+          addRoom("268", "PHOFF", Math.ceil(pharmFTE / 3));
+        }
+        
+        if (rxVolume > 0) {
+          addRoom("268", "PHDIS", Math.max(1, Math.ceil(rxVolume / 100000)));
+          addRoom("268", "PHSTO", Math.max(1, Math.ceil(rxVolume / 80000)));
+        }
+        
+        if (hasIV) {
+          addRoom("268", "PHIVA", 1);
+        }
+        
+        if (hasInv) {
+          addRoom("268", "PHINV", 1);
+        }
+      }
+
+      // ===== CHAPTER 270: PATHOLOGY & LAB =====
+      if (activeChapterIds.includes("270")) {
+        const labTests = getVal("CH270_A");
+        const pathFTE = getVal("CH270_B");
+        const hasAnatPath = getBool("CH270_C");
+        const hasMicro = getBool("CH270_D");
+        
+        if (labTests > 0) {
+          addRoom("270", "LABCH", Math.max(1, Math.ceil(labTests / 200000)));
+          addRoom("270", "LABHE", Math.max(1, Math.ceil(labTests / 250000)));
+          addRoom("270", "LABPC", Math.max(2, Math.ceil(labTests / 100000)));
+          
+          if (hasMicro) {
+            addRoom("270", "LABMI", Math.max(1, Math.ceil(labTests / 300000)));
+          }
+          
+          if (hasAnatPath) {
+            addRoom("270", "LABPA", 1);
+            addRoom("270", "LABGR", 1);
+          }
+        }
+        
+        if (pathFTE > 0) {
+          addRoom("270", "LABOF", pathFTE);
+        }
+      }
+
+      // ===== CHAPTER 272: BLOOD BANK =====
+      if (activeChapterIds.includes("272")) {
+        const bloodUnits = getVal("CH272_A");
+        const hasApheresis = getBool("CH272_B");
+        
+        if (bloodUnits > 0) {
+          addRoom("272", "BBSTO", Math.max(1, Math.ceil(bloodUnits / 5000)));
+          addRoom("272", "BBWRK", 1);
+          
+          if (hasApheresis) {
+            addRoom("272", "BBAPH", 1);
+          }
+        }
+      }
+
+      // ===== CHAPTER 280: PROSTHETICS =====
+      if (activeChapterIds.includes("280")) {
+        const prosFTE = getVal("CH280_A");
+        const hasFab = getBool("CH280_B");
+        
+        if (prosFTE > 0) {
+          addRoom("280", "PROEX", Math.max(1, Math.ceil(prosFTE * 1.5)));
+          addRoom("280", "PROFF", prosFTE);
+          
+          if (hasFab) {
+            addRoom("280", "PROFB", 1);
+          }
+        }
+      }
+
+      // ===== CHAPTER 282: PHYSICAL MEDICINE & REHAB =====
+      if (activeChapterIds.includes("282")) {
+        const ptVisits = getVal("CH282_A");
+        const otVisits = getVal("CH282_B");
+        const ptFTE = getVal("CH282_C");
+        const otFTE = getVal("CH282_D");
+        
+        if (ptVisits > 0 || ptFTE > 0) {
+          addRoom("282", "PTGYM", Math.max(1, Math.ceil(ptFTE / 8)));
+          addRoom("282", "PTTRT", Math.max(2, Math.ceil(ptVisits / 3000)));
+        }
+        
+        if (otVisits > 0 || otFTE > 0) {
+          addRoom("282", "OTTRM", Math.max(2, Math.ceil(otVisits / 2500)));
+          addRoom("282", "OTADL", Math.max(1, Math.ceil(otFTE / 5)));
+        }
+        
+        if (ptFTE + otFTE > 0) {
+          addRoom("282", "PMOFF", ptFTE + otFTE);
+        }
+      }
+
+      // ===== CHAPTER 284: AUDIOLOGY/SPEECH =====
+      if (activeChapterIds.includes("284")) {
+        const audioStops = getVal("CH284_A");
+        const speechVisits = getVal("CH284_B");
+        const audioFTE = getVal("CH284_C");
+        
+        if (audioStops > 0 || audioFTE > 0) {
+          addRoom("284", "AUDBO", Math.max(1, Math.ceil(audioFTE * 1.5)));
+          addRoom("284", "AUDOF", audioFTE);
+        }
+        
+        if (speechVisits > 0) {
+          addRoom("284", "SPCON", Math.max(1, Math.ceil(speechVisits / 2000)));
+        }
+      }
+
+      // ===== CHAPTER 286: NUTRITION & FOOD =====
+      if (activeChapterIds.includes("286")) {
+        const mealsPerDay = getVal("CH286_A");
+        const dietFTE = getVal("CH286_B");
+        const hasDining = getBool("CH286_C");
+        
+        if (mealsPerDay > 0) {
+          addRoom("286", "KITCN", Math.max(1, Math.ceil(mealsPerDay / 500)));
+          
+          if (hasDining) {
+            addRoom("286", "DININ", Math.max(1, Math.ceil(mealsPerDay / 200)));
+          }
+          
+          addRoom("286", "CAFET", Math.max(1, Math.ceil(mealsPerDay / 300)));
+        }
+        
+        if (dietFTE > 0) {
+          addRoom("286", "NUTOF", dietFTE);
+          addRoom("286", "NUTCO", Math.max(1, Math.ceil(dietFTE / 2)));
+        }
+      }
+
+      // ===== CHAPTER 290: MENTAL HEALTH =====
+      if (activeChapterIds.includes("290")) {
+        const mhStops = getVal("CH290_A");
+        const psychFTE = getVal("CH290_B");
+        const psycholFTE = getVal("CH290_C");
+        const hasSub = getBool("CH290_D");
+        
+        if (mhStops > 0) {
+          addRoom("290", "MHCON", Math.max(2, Math.ceil(mhStops / 2000)));
+          addRoom("290", "MHGRP", Math.max(1, Math.ceil(mhStops / 5000)));
+          
+          if (hasSub) {
+            addRoom("290", "MHSUB", Math.max(1, Math.ceil(mhStops / 4000)));
+          }
+        }
+        
+        if (psychFTE + psycholFTE > 0) {
+          addRoom("290", "MHOFF", psychFTE + psycholFTE);
+        }
+      }
+
+      // ===== CHAPTER 292: SOCIAL WORK =====
+      if (activeChapterIds.includes("292")) {
+        const swFTE = getVal("CH292_A");
+        
+        if (swFTE > 0) {
+          addRoom("292", "SWCON", Math.max(1, Math.ceil(swFTE * 1.2)));
+          addRoom("292", "SWOFF", swFTE);
+        }
+      }
+
+      // ===== CHAPTER 294: CHAPLAIN =====
+      if (activeChapterIds.includes("294")) {
+        const chapFTE = getVal("CH294_A");
+        const hasChapel = getBool("CH294_B");
+        
+        if (chapFTE > 0) {
+          addRoom("294", "CHOFF", chapFTE);
+        }
+        
+        if (hasChapel) {
+          addRoom("294", "CHAPE", 1);
+          addRoom("294", "CHMED", 1);
+        }
+      }
+
+      // ===== CHAPTER 298: EDUCATION =====
+      if (activeChapterIds.includes("298")) {
+        const edFTE = getVal("CH298_A");
+        const totalStaff = getVal("CH298_B");
+        
+        if (totalStaff > 0) {
+          addRoom("298", "EDCLR", Math.max(1, Math.ceil(totalStaff / 200)));
+          addRoom("298", "EDCON", Math.max(1, Math.ceil(totalStaff / 150)));
+          addRoom("298", "EDLIB", Math.max(1, Math.ceil(totalStaff / 300)));
+        }
+        
+        if (edFTE > 0) {
+          addRoom("298", "EDOFF", edFTE);
+        }
+      }
+
+      // ===== CHAPTER 300: ADMINISTRATION =====
+      if (activeChapterIds.includes("300")) {
+        const adminFTE = getVal("CH300_A");
+        const totalFTE = getVal("CH300_B");
+        
+        if (adminFTE > 0) {
+          addRoom("300", "ADDIR", Math.max(1, Math.ceil(adminFTE / 50)));
+          addRoom("300", "ADOFF", adminFTE);
+          addRoom("300", "ADCON", Math.max(1, Math.ceil(adminFTE / 20)));
+          addRoom("300", "ADWRK", Math.max(1, Math.ceil(adminFTE / 15)));
+        }
+      }
+
+      // ===== CHAPTER 310: MEDICAL RECORDS =====
+      if (activeChapterIds.includes("310")) {
+        const registrations = getVal("CH310_A");
+        const mrFTE = getVal("CH310_B");
+        
+        if (registrations > 0) {
+          addRoom("310", "MRREG", Math.max(2, Math.ceil(registrations / 25000)));
+          addRoom("310", "MRFIL", Math.max(1, Math.ceil(registrations / 30000)));
+          addRoom("310", "MRWRK", Math.max(1, Math.ceil(registrations / 40000)));
+        }
+        
+        if (mrFTE > 0) {
+          addRoom("310", "MROFF", Math.max(1, Math.ceil(mrFTE / 3)));
+        }
+      }
+
+      // ===== CHAPTER 330: VOLUNTARY SERVICE =====
+      if (activeChapterIds.includes("330")) {
+        const vsFTE = getVal("CH330_A");
+        
+        if (vsFTE > 0) {
+          addRoom("330", "VSOFF", vsFTE);
+          addRoom("330", "VSWRK", Math.max(1, Math.ceil(vsFTE / 2)));
+        }
+      }
+
+      // ===== CHAPTER 340: ENVIRONMENTAL MANAGEMENT =====
+      if (activeChapterIds.includes("340")) {
+        const emFTE = getVal("CH340_A");
+        const buildingGSF = getVal("CH340_B");
+        
+        if (emFTE > 0) {
+          addRoom("340", "EMOFF", Math.max(1, Math.ceil(emFTE / 10)));
+          addRoom("340", "EMSTO", Math.max(2, Math.ceil(buildingGSF / 100000)));
+          addRoom("340", "EMJAN", Math.max(4, Math.ceil(buildingGSF / 30000)));
+        }
+      }
+
+      // ===== CHAPTER 350: STERILE PROCESSING =====
+      if (activeChapterIds.includes("350")) {
+        const instrSets = getVal("CH350_A");
+        const spFTE = getVal("CH350_B");
+        
+        if (instrSets > 0 || spFTE > 0) {
+          addRoom("350", "SPDEC", Math.max(1, Math.ceil(instrSets / 5000)));
+          addRoom("350", "SPPRE", Math.max(1, Math.ceil(instrSets / 5000)));
+          addRoom("350", "SPSTR", Math.max(1, Math.ceil(instrSets / 6000)));
+          addRoom("350", "SPSTO", Math.max(1, Math.ceil(instrSets / 4000)));
+        }
+      }
+
+      // ===== CHAPTER 360: LINEN SERVICE =====
+      if (activeChapterIds.includes("360")) {
+        const linenLbs = getVal("CH360_A");
+        const hasLaundry = getBool("CH360_B");
+        
+        if (linenLbs > 0) {
+          addRoom("360", "LNCLN", Math.max(1, Math.ceil(linenLbs / 1000)));
+          addRoom("360", "LNSOL", Math.max(1, Math.ceil(linenLbs / 2000)));
+          
+          if (hasLaundry) {
+            addRoom("360", "LNLAU", Math.max(1, Math.ceil(linenLbs / 800)));
+          }
+        }
+      }
+
+      // ===== CHAPTER 370: ENGINEERING =====
+      if (activeChapterIds.includes("370")) {
+        const engFTE = getVal("CH370_A");
+        const buildingGSF = getVal("CH370_B");
+        
+        if (engFTE > 0) {
+          addRoom("370", "ENGOF", engFTE);
+          addRoom("370", "ENGSH", Math.max(1, Math.ceil(engFTE / 8)));
+          addRoom("370", "ENGST", Math.max(1, Math.ceil(buildingGSF / 150000)));
+        }
+      }
+
+      // ===== CHAPTER 380: POLICE SERVICE =====
+      if (activeChapterIds.includes("380")) {
+        const policeFTE = getVal("CH380_A");
+        
+        if (policeFTE > 0) {
+          addRoom("380", "POLOF", Math.max(1, Math.ceil(policeFTE / 5)));
+          addRoom("380", "POLDI", 1);
+        }
+      }
+
+      // ===== CHAPTER 390: TELECOMMUNICATIONS =====
+      if (activeChapterIds.includes("390")) {
+        const telFTE = getVal("CH390_A");
+        
+        if (telFTE > 0) {
+          addRoom("390", "TELOF", telFTE);
+          addRoom("390", "TELMDF", Math.max(2, Math.ceil(telFTE / 3)));
+        }
+      }
+
+      // ===== CHAPTER 420: GENERAL STORAGE =====
+      if (activeChapterIds.includes("420")) {
+        const buildingGSF = getVal("CH420_A");
+        
+        if (buildingGSF > 0) {
+          addRoom("420", "STRGE", Math.max(1, Math.ceil(buildingGSF / 50000)));
+          addRoom("420", "RECEI", Math.max(1, Math.ceil(buildingGSF / 100000)));
+        }
+      }
+
+      // Equipment requirements from room requirements + mappings
+      const equipmentRequirements = [];
+      for (const rr of roomRequirements) {
+        const mappings = ROOM_EQUIPMENT_MAPPINGS.filter(
+          re => re.roomCode === rr.roomTemplateId
+        );
+        for (const mapRow of mappings) {
+          equipmentRequirements.push({
+            id: makeId(),
+            projectId: project.id,
+            roomRequirementId: rr.id,
+            equipmentJsn: mapRow.jsn,
+            requiredQtyPerRoom: mapRow.qty
+          });
+        }
+      }
+
+      return { roomRequirements, equipmentRequirements };
+    }
+
+    // -----------------------------
+    // TREE VIEW FUNCTIONS
+    // -----------------------------
+
+    function switchMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+      
+      // Show Add button only in program mode
+      const addBtn = document.getElementById('add-to-project-btn');
+      if (addBtn) {
+        addBtn.style.display = mode === 'program' ? 'block' : 'none';
+      }
+      
+      renderAll();
+    }
+
+    function selectProjectInList(projectId) {
+      selectedProjectInList = projectId;
+      renderDetail();
+    }
+
+    function openProject(projectId) {
+      CURRENT_PROJECT_ID = projectId;
+      localStorage.setItem('va-current-project-id', projectId);
+      viewState = 'project-detail';
+      selectedProjectInList = null;
+      expandedNodes.clear();
+      selectedNode = null;
+      renderAll();
+    }
+
+    function returnToProjectList() {
+      viewState = 'project-list';
+      selectedProjectInList = null;
+      expandedNodes.clear();
+      selectedNode = null;
+      renderAll();
+    }
+
+    function createNewProject() {
+      const newProject = {
+        id: generateId(),
+        name: `Project ${USER_PROJECTS.length + 1}`,
+        siteName: "",
+        description: "",
+        departments: [],
+        createdAt: new Date().toISOString(),
+        modifiedAt: new Date().toISOString()
+      };
+      USER_PROJECTS.push(newProject);
+      saveProjects();
+      openProject(newProject.id);
+    }
+
+    function deleteProject(projectId, event) {
+      event.stopPropagation();
+      if (USER_PROJECTS.length === 1) {
+        alert('Cannot delete the last project');
+        return;
+      }
+      if (!confirm('Are you sure you want to delete this project? This cannot be undone.')) {
+        return;
+      }
+      USER_PROJECTS = USER_PROJECTS.filter(p => p.id !== projectId);
+      if (CURRENT_PROJECT_ID === projectId) {
+        CURRENT_PROJECT_ID = USER_PROJECTS[0].id;
+        localStorage.setItem('va-current-project-id', CURRENT_PROJECT_ID);
+      }
+      saveProjects();
+      renderAll();
+    }
+
+    function buildTreeData() {
+      // Reference mode - always show reference tree regardless of view state
+      if (currentMode === 'reference') {
+        const tree = {
+          id: 'reference-root',
+          type: 'reference-root',
+          label: 'Guide',
+          icon: '📚',
+          children: []
+        };
+
+        const deptMap = new Map();
+        
+        ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
+          if (!deptMap.has(mapping.department)) {
+            deptMap.set(mapping.department, {
+              name: mapping.department,
+              functionalAreas: new Map()
+            });
+          }
+          
+          const dept = deptMap.get(mapping.department);
+          if (!dept.functionalAreas.has(mapping.functionalArea)) {
+            dept.functionalAreas.set(mapping.functionalArea, {
+              name: mapping.functionalArea,
+              rooms: new Map()
+            });
+          }
+          
+          const fa = dept.functionalAreas.get(mapping.functionalArea);
+          if (!fa.rooms.has(mapping.roomCode)) {
+            fa.rooms.set(mapping.roomCode, {
+              code: mapping.roomCode,
+              name: mapping.roomName
+            });
+          }
+        });
+
+        Array.from(deptMap.keys()).sort().forEach(deptName => {
+          const dept = deptMap.get(deptName);
+          const deptNode = {
+            id: `dept-ref-${deptName}`,
+            type: 'department-reference',
+            label: deptName,
+            icon: '🏢',
+            children: []
+          };
+
+          Array.from(dept.functionalAreas.keys()).sort().forEach(faName => {
+            const fa = dept.functionalAreas.get(faName);
+            const faNode = {
+              id: `fa-ref-${deptName}-${faName}`,
+              type: 'functional-area-reference',
+              label: faName,
+              icon: '📂',
+              department: deptName,
+              children: []
+            };
+
+            Array.from(fa.rooms.keys()).sort().forEach(roomCode => {
+              const room = fa.rooms.get(roomCode);
+              faNode.children.push({
+                id: `room-ref-${deptName}-${faName}-${roomCode}`,
+                type: 'room-reference',
+                label: `${room.code} - ${room.name}`,
+                icon: '🚪',
+                department: deptName,
+                functionalArea: faName,
+                roomCode: room.code,
+                roomName: room.name
+              });
+            });
+
+            deptNode.children.push(faNode);
+          });
+
+          tree.children.push(deptNode);
+        });
+
+        return tree;
+      }
+
+      // Project list view
+      if (viewState === 'project-list') {
+        const tree = {
+          id: 'project-list',
+          type: 'project-list',
+          label: 'Projects',
+          icon: '📋',
+          children: []
+        };
+        return tree;
+      }
+
+      // Program mode - Individual project view
+      const project = getCurrentProject();
+      const tree = {
+        id: 'project',
+        type: 'project',
+        project: project,
+        label: project.name,
+        icon: '🏥',
+        children: []
+      };
+
+      if (currentMode === 'program') {
+        // Program mode: show user's project structure (departments > functional areas > rooms > equipment)
+        if (!project.departments || project.departments.length === 0) {
+          // No departments yet - show empty state
+          return tree;
+        }
+
+        project.departments.forEach(dept => {
+          const deptNode = {
+            id: `dept-${dept.id}`,
+            type: 'department',
+            department: dept,
+            label: dept.name,
+            icon: '🏢',
+            children: []
+          };
+
+          if (dept.functionalAreas && dept.functionalAreas.length > 0) {
+            dept.functionalAreas.forEach(fa => {
+              const faNode = {
+                id: `fa-${fa.id}`,
+                type: 'functional-area',
+                functionalArea: fa,
+                department: dept,
+                label: fa.name,
+                icon: '📂',
+                children: []
+              };
+
+              if (fa.rooms && fa.rooms.length > 0) {
+                fa.rooms.forEach(room => {
+                  faNode.children.push({
+                    id: `room-${room.id}`,
+                    type: 'room',
+                    room: room,
+                    functionalArea: fa,
+                    department: dept,
+                    label: `${room.code} - ${room.name}`,
+                    icon: '🚪'
+                  });
+                });
+              }
+
+              deptNode.children.push(faNode);
+            });
+          }
+
+          tree.children.push(deptNode);
+        });
+      }
+
+      return tree;
+    }
+
+    function renderTreeNode(node, level = 0) {
+      const isExpanded = expandedNodes.has(node.id);
+      const hasChildren = node.children && node.children.length > 0;
+      const isSelected = selectedNode?.id === node.id;
+
+      let html = `
+        <div class="tree-node" data-level="${level}">
+          <div class="tree-item ${isSelected ? 'selected' : ''}" onclick="handleNodeClick('${node.id}')">
+            <span class="tree-toggle ${hasChildren ? (isExpanded ? 'expanded' : 'collapsed') : 'leaf'}" 
+                  onclick="event.stopPropagation(); toggleNode('${node.id}')"></span>
+            <span class="tree-icon">${node.icon}</span>
+            <span class="tree-label">${node.label}</span>
+            ${node.count ? `<span class="tree-count">×${node.count}</span>` : ''}
+          </div>
+      `;
+
+      if (hasChildren) {
+        html += `<div class="tree-children ${isExpanded ? 'expanded' : ''}" id="children-${node.id}">`;
+        node.children.forEach(child => {
+          html += renderTreeNode(child, level + 1);
+        });
+        html += `</div>`;
+      }
+
+      html += `</div>`;
+      return html;
+    }
+
+    function renderTree() {
+      const container = document.getElementById('tree-view');
+      const modeToggle = document.getElementById('mode-toggle');
+      const addBtn = document.getElementById('add-to-project-btn');
+      const returnBtn = document.getElementById('return-to-projects-btn');
+
+      if (viewState === 'project-list') {
+        // Show mode toggle, hide add button and return button in project list view
+        if (modeToggle) modeToggle.style.display = 'flex';
+        if (addBtn) addBtn.style.display = 'none';
+        if (returnBtn) returnBtn.style.display = 'none';
+        
+        // Render project list in program mode, tree in reference mode
+        if (currentMode === 'program') {
+          let html = `
+            <div style="margin-bottom: 16px;">
+              <button class="btn-primary" onclick="createNewProject()" style="width: 100%;">+ New Project</button>
+            </div>
+          `;
+        
+        USER_PROJECTS.forEach(project => {
+          const deptCount = project.departments ? project.departments.length : 0;
+          let roomCount = 0;
+          if (project.departments) {
+            project.departments.forEach(dept => {
+              if (dept.functionalAreas) {
+                dept.functionalAreas.forEach(fa => {
+                  if (fa.rooms) roomCount += fa.rooms.length;
+                });
+              }
+            });
+          }
+          
+          const isSelected = selectedProjectInList === project.id;
+          
+          html += `
+            <div class="tree-item" style="padding: 12px; margin-bottom: 8px; background: ${isSelected ? 'var(--input-bg)' : 'var(--bg)'}; border: 1px solid ${isSelected ? 'var(--accent)' : 'var(--border)'}; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 12px;" onclick="selectProjectInList('${project.id}')">
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-weight: 600; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">🏥 ${project.name}</div>
+                <div style="font-size: 0.75rem; color: var(--muted);">${deptCount} departments • ${roomCount} rooms</div>
+              </div>
+              <div style="display: flex; gap: 6px; flex-shrink: 0;">
+                <button class="btn-secondary" onclick="openProject('${project.id}'); event.stopPropagation();" style="padding: 6px 10px; font-size: 0.75rem;" title="Open project">📂 Open</button>
+                <button class="btn-secondary" onclick="deleteProject('${project.id}', event)" style="padding: 6px 10px; font-size: 0.75rem;" title="Delete project">🗑️</button>
+              </div>
+            </div>
+          `;
+        });
+        
+        container.innerHTML = html;
+        } else {
+          // Reference mode in project list - show reference tree
+          const treeData = buildTreeData();
+          container.innerHTML = renderTreeNode(treeData);
+        }
+      } else {
+        // Show mode toggle and conditionally show add/return buttons
+        if (modeToggle) modeToggle.style.display = 'flex';
+        if (returnBtn) returnBtn.style.display = 'block';
+        if (addBtn) addBtn.style.display = currentMode === 'program' ? 'block' : 'none';
+        
+        // Render project tree
+        const treeData = buildTreeData();
+        container.innerHTML = renderTreeNode(treeData);
+      }
+    }
+
+    function toggleNode(nodeId) {
+      if (expandedNodes.has(nodeId)) {
+        expandedNodes.delete(nodeId);
+      } else {
+        expandedNodes.add(nodeId);
+      }
+      renderTree();
+    }
+
+    function findNodeById(tree, nodeId) {
+      if (tree.id === nodeId) return tree;
+      if (tree.children) {
+        for (const child of tree.children) {
+          const found = findNodeById(child, nodeId);
+          if (found) return found;
+        }
+      }
+      return null;
+    }
+
+    function handleNodeClick(nodeId) {
+      const treeData = buildTreeData();
+      selectedNode = findNodeById(treeData, nodeId);
+      renderTree();
+      renderDetail();
+    }
+
+    // -----------------------------
+    // DETAIL VIEW FUNCTIONS
+    // -----------------------------
+
+    function renderDetail() {
+      const container = document.getElementById('detail-view');
+      
+      if (viewState === 'project-list') {
+        if (selectedProjectInList) {
+          const project = USER_PROJECTS.find(p => p.id === selectedProjectInList);
+          if (project) {
+            let totalDepts = project.departments ? project.departments.length : 0;
+            let totalFAs = 0;
+            let totalRooms = 0;
+            let totalEquip = 0;
+
+            if (project.departments) {
+              project.departments.forEach(dept => {
+                if (dept.functionalAreas) {
+                  totalFAs += dept.functionalAreas.length;
+                  dept.functionalAreas.forEach(fa => {
+                    if (fa.rooms) {
+                      totalRooms += fa.rooms.length;
+                      fa.rooms.forEach(room => {
+                        if (room.equipment) totalEquip += room.equipment.length;
+                      });
+                    }
+                  });
+                }
+              });
+            }
+
+            container.innerHTML = `
+              <div class="detail-panel">
+                <h3>📊 Project Information</h3>
+                <div class="detail-row">
+                  <div class="detail-label">Project Name:</div>
+                  <div class="detail-value">${project.name}</div>
+                </div>
+                <div class="detail-row">
+                  <div class="detail-label">Created:</div>
+                  <div class="detail-value">${new Date(project.createdAt).toLocaleDateString()}</div>
+                </div>
+                <div class="detail-row">
+                  <div class="detail-label">Last Modified:</div>
+                  <div class="detail-value">${new Date(project.modifiedAt).toLocaleString()}</div>
+                </div>
+              </div>
+              <div class="detail-panel">
+                <h3>📈 Project Statistics</h3>
+                <div class="detail-row">
+                  <div class="detail-label">Departments:</div>
+                  <div class="detail-value">${totalDepts}</div>
+                </div>
+                <div class="detail-row">
+                  <div class="detail-label">Functional Areas:</div>
+                  <div class="detail-value">${totalFAs}</div>
+                </div>
+                <div class="detail-row">
+                  <div class="detail-label">Rooms:</div>
+                  <div class="detail-value">${totalRooms}</div>
+                </div>
+                <div class="detail-row">
+                  <div class="detail-label">Equipment Items:</div>
+                  <div class="detail-value">${totalEquip}</div>
+                </div>
+              </div>
+              <div class="detail-panel">
+                <button class="btn-primary" onclick="openProject('${project.id}')" style="width: 100%;">📂 Open Project</button>
+              </div>
+            `;
+            return;
+          }
+        }
+
+        container.innerHTML = `
+          <div class="detail-panel">
+            <h3>Welcome to Hospital Programming Workbench</h3>
+            <p class="muted" style="margin-bottom: 16px;">Manage your hospital programming projects.</p>
+            <h4 style="margin-top: 24px; margin-bottom: 12px;">Getting Started</h4>
+            <ul class="muted" style="line-height: 1.6;">
+              <li>Click a project to view its details</li>
+              <li>Click <strong>📂 Open</strong> to work on a project</li>
+              <li><strong>Program Mode:</strong> Build your project by importing departments, functional areas, and rooms</li>
+              <li><strong>Reference Mode:</strong> Browse all available rooms and equipment from the equipment guide</li>
+              <li>Projects are saved locally in your browser</li>
+            </ul>
+            <div style="margin-top: 24px; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px;">
+              <h4 style="margin-bottom: 8px;">All Projects</h4>
+              <div style="font-size: 0.9rem; color: var(--muted);">
+                Total Projects: ${USER_PROJECTS.length}
+              </div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+      
+      if (!selectedNode) {
+        container.innerHTML = `
+          <div class="detail-panel">
+            <h3>Welcome to Hospital Programming Workbench</h3>
+            <p class="muted">Select an item from the tree on the left to view details.</p>
+            <ul class="muted" style="margin-top: 16px; line-height: 1.6;">
+              <li><strong>Program Mode:</strong> Build your project by importing departments, functional areas, and rooms</li>
+              <li><strong>Reference Mode:</strong> Browse all available rooms and equipment from the equipment guide</li>
+            </ul>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+
+      if (selectedNode.type === 'project') {
+        html += renderProjectDetail();
+      } else if (selectedNode.type === 'department') {
+        html += renderDepartmentDetail();
+      } else if (selectedNode.type === 'functional-area') {
+        html += renderFunctionalAreaDetail();
+      } else if (selectedNode.type === 'room') {
+        html += renderRoomDetail();
+      } else if (selectedNode.type === 'department-reference') {
+        html += renderDepartmentReferenceDetail();
+      } else if (selectedNode.type === 'functional-area-reference') {
+        html += renderFunctionalAreaReferenceDetail();
+      } else if (selectedNode.type === 'room-reference') {
+        html += renderRoomReferenceDetail();
+      } else if (selectedNode.type === 'chapter') {
+        html += renderChapterDetail();
+      }
+
+      container.innerHTML = html;
+    }
+
+    function renderDepartmentDetail() {
+      const dept = selectedNode.department;
+      const faCount = dept.functionalAreas ? dept.functionalAreas.length : 0;
+      let roomCount = 0;
+      let equipCount = 0;
+      const totalNSF = calculateDeptNSF(dept);
+      const allRooms = [];
+
+      if (dept.functionalAreas) {
+        dept.functionalAreas.forEach(fa => {
+          if (fa.rooms) {
+            roomCount += fa.rooms.length;
+            fa.rooms.forEach(room => {
+              if (room.equipment) equipCount += room.equipment.length;
+              allRooms.push({ room, fa });
+            });
+          }
+        });
+      }
+
+      let html = `
+        <div class="detail-panel">
+          <h3>🏢 ${dept.name}</h3>
+          <div class="detail-row">
+            <div class="detail-label">Department:</div>
+            <div class="detail-value">${dept.name}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Functional Areas:</div>
+            <div class="detail-value">${faCount}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Total Rooms:</div>
+            <div class="detail-value">${roomCount}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Total Equipment:</div>
+            <div class="detail-value">${equipCount}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Total NSF:</div>
+            <div class="detail-value">${totalNSF.toLocaleString()} SF</div>
+          </div>
+        </div>
+      `;
+
+      if (allRooms.length > 0) {
+        html += `
+        <div class="detail-panel">
+          <h3>🚪 Rooms (${allRooms.length})</h3>
+          <div style="max-height: 400px; overflow-y: auto;">
+        `;
+        allRooms.forEach(({ room, fa }) => {
+          const equipCount = room.equipment ? room.equipment.length : 0;
+          html += `
+            <div style="padding: 8px; margin-bottom: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 4px;">
+                <div style="flex: 1;">
+                  <strong>${room.code}</strong> - ${room.name}<br>
+                  <span style="font-size: 0.85rem; color: var(--muted);">${fa.name}</span>
+                </div>
+                <div style="text-align: right;">
+                  <input type="number" value="${room.nsf || 0}" 
+                    onchange="updateRoomNSF('${room.id}', this.value)"
+                    style="width: 70px; padding: 2px 4px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 3px; margin-right: 4px;">
+                  <span style="font-size: 0.85rem;">SF</span>
+                </div>
+              </div>
+              <div style="display: flex; gap: 4px; margin-top: 4px;">
+                <button onclick="duplicateRoom('${room.id}')" style="flex: 1; padding: 4px 8px; background: var(--primary); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.8rem;">📋 Duplicate</button>
+                <button onclick="deleteRoom('${room.id}')" style="flex: 1; padding: 4px 8px; background: var(--error); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.8rem;">🗑️ Delete</button>
+              </div>
+              <div style="font-size: 0.8rem; color: var(--muted); margin-top: 4px;">
+                ${equipCount} equipment item${equipCount !== 1 ? 's' : ''}
+              </div>
+            </div>
+          `;
+        });
+        html += `
+          </div>
+        </div>
+        `;
+      }
+
+      return html;
+    }
+
+    function renderFunctionalAreaDetail() {
+      const fa = selectedNode.functionalArea;
+      const dept = selectedNode.department;
+      const roomCount = fa.rooms ? fa.rooms.length : 0;
+      let equipCount = 0;
+      const totalNSF = calculateFANSF(fa);
+
+      if (fa.rooms) {
+        fa.rooms.forEach(room => {
+          if (room.equipment) equipCount += room.equipment.length;
+        });
+      }
+
+      let html = `
+        <div class="detail-panel">
+          <h3>📂 ${fa.name}</h3>
+          <div class="detail-row">
+            <div class="detail-label">Department:</div>
+            <div class="detail-value">${dept.name}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Functional Area:</div>
+            <div class="detail-value">${fa.name}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Rooms:</div>
+            <div class="detail-value">${roomCount}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Total Equipment:</div>
+            <div class="detail-value">${equipCount}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Total NSF:</div>
+            <div class="detail-value">${totalNSF.toLocaleString()} SF</div>
+          </div>
+        </div>
+      `;
+
+      if (fa.rooms && fa.rooms.length > 0) {
+        html += `
+        <div class="detail-panel">
+          <h3>🚪 Rooms (${fa.rooms.length})</h3>
+          <div style="max-height: 400px; overflow-y: auto;">
+        `;
+        fa.rooms.forEach(room => {
+          const equipCount = room.equipment ? room.equipment.length : 0;
+          html += `
+            <div style="padding: 8px; margin-bottom: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 4px;">
+                <div style="flex: 1;">
+                  <strong>${room.code}</strong> - ${room.name}
+                </div>
+                <div style="text-align: right;">
+                  <input type="number" value="${room.nsf || 0}" 
+                    onchange="updateRoomNSF('${room.id}', this.value)"
+                    style="width: 70px; padding: 2px 4px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 3px; margin-right: 4px;">
+                  <span style="font-size: 0.85rem;">SF</span>
+                </div>
+              </div>
+              <div style="display: flex; gap: 4px; margin-top: 4px;">
+                <button onclick="duplicateRoom('${room.id}')" style="flex: 1; padding: 4px 8px; background: var(--primary); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.8rem;">📋 Duplicate</button>
+                <button onclick="deleteRoom('${room.id}')" style="flex: 1; padding: 4px 8px; background: var(--error); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.8rem;">🗑️ Delete</button>
+              </div>
+              <div style="font-size: 0.8rem; color: var(--muted); margin-top: 4px;">
+                ${equipCount} equipment item${equipCount !== 1 ? 's' : ''}
+              </div>
+            </div>
+          `;
+        });
+        html += `
+          </div>
+        </div>
+        `;
+      }
+
+      return html;
+    }
+
+    function renderDepartmentReferenceDetail() {
+      let faCount = 0;
+      let roomCount = 0;
+      const deptName = selectedNode.label;
+
+      const fas = new Set();
+      ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
+        if (mapping.department === deptName) {
+          fas.add(mapping.functionalArea);
+        }
+      });
+      faCount = fas.size;
+
+      const rooms = new Set();
+      ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
+        if (mapping.department === deptName) {
+          rooms.add(mapping.roomCode);
+        }
+      });
+      roomCount = rooms.size;
+
+      return `
+        <div class="detail-panel">
+          <h3>🏢 ${deptName}</h3>
+          <div class="detail-row">
+            <div class="detail-label">Department:</div>
+            <div class="detail-value">${deptName}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Functional Areas:</div>
+            <div class="detail-value">${faCount}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Total Rooms:</div>
+            <div class="detail-value">${roomCount}</div>
+          </div>
+        </div>
+        <div class="detail-panel">
+          <p style="color: var(--muted); font-size: 0.9rem;">
+            Reference mode - viewing equipment guide data. Switch to Program Mode to work with your project.
+          </p>
+        </div>
+      `;
+    }
+
+    function renderFunctionalAreaReferenceDetail() {
+      const deptName = selectedNode.department;
+      const faName = selectedNode.label;
+
+      const rooms = new Set();
+      ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
+        if (mapping.department === deptName && mapping.functionalArea === faName) {
+          rooms.add(mapping.roomCode);
+        }
+      });
+
+      return `
+        <div class="detail-panel">
+          <h3>📂 ${faName}</h3>
+          <div class="detail-row">
+            <div class="detail-label">Department:</div>
+            <div class="detail-value">${deptName}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Functional Area:</div>
+            <div class="detail-value">${faName}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Rooms:</div>
+            <div class="detail-value">${rooms.size}</div>
+          </div>
+        </div>
+        <div class="detail-panel">
+          <p style="color: var(--muted); font-size: 0.9rem;">
+            Reference mode - viewing equipment guide data. Switch to Program Mode to work with your project.
+          </p>
+        </div>
+      `;
+    }
+
+    function renderProjectDetail() {
+      const project = getCurrentProject();
+      const totalDepts = project.departments ? project.departments.length : 0;
+      let totalFAs = 0;
+      let totalRooms = 0;
+      let totalEquip = 0;
+      const totalNSF = calculateProjectNSF(project);
+      const allRooms = [];
+
+      if (project.departments) {
+        project.departments.forEach(dept => {
+          if (dept.functionalAreas) {
+            totalFAs += dept.functionalAreas.length;
+            dept.functionalAreas.forEach(fa => {
+              if (fa.rooms) {
+                totalRooms += fa.rooms.length;
+                fa.rooms.forEach(room => {
+                  if (room.equipment) {
+                    totalEquip += room.equipment.length;
+                  }
+                  allRooms.push({ room, fa, dept });
+                });
+              }
+            });
+          }
+        });
+      }
+
+      let html = `
+        <div class="detail-panel">
+          <h3>📊 Project Overview</h3>
+          <div class="detail-row">
+            <div class="detail-label">Project Name:</div>
+            <div class="detail-value">
+              <input type="text" 
+                     class="project-name-input" 
+                     value="${project.name}" 
+                     onchange="updateProjectName(this.value)"
+                     style="padding: 4px 8px;">
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Departments:</div>
+            <div class="detail-value">${totalDepts}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Functional Areas:</div>
+            <div class="detail-value">${totalFAs}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Rooms:</div>
+            <div class="detail-value">${totalRooms}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Equipment Items:</div>
+            <div class="detail-value">${totalEquip}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Total NSF:</div>
+            <div class="detail-value">${totalNSF.toLocaleString()} SF</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Last Modified:</div>
+            <div class="detail-value">${new Date(project.modifiedAt).toLocaleString()}</div>
+          </div>
+        </div>
+        <div class="detail-panel">
+          <p style="margin-bottom: 12px; color: var(--muted); font-size: 0.9rem;">
+            Click <strong>+ Add to Project</strong> to import departments, functional areas, or rooms from the reference library.
+          </p>
+        </div>
+      `;
+
+      if (allRooms.length > 0) {
+        html += `
+        <div class="detail-panel">
+          <h3>🚪 All Rooms (${allRooms.length})</h3>
+          <div style="max-height: 400px; overflow-y: auto;">
+        `;
+        allRooms.forEach(({ room, fa, dept }) => {
+          const equipCount = room.equipment ? room.equipment.length : 0;
+          html += `
+            <div style="padding: 8px; margin-bottom: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 4px;">
+                <div style="flex: 1;">
+                  <strong>${room.code}</strong> - ${room.name}<br>
+                  <span style="font-size: 0.85rem; color: var(--muted);">${dept.name} → ${fa.name}</span>
+                </div>
+                <div style="text-align: right;">
+                  <input type="number" value="${room.nsf || 0}" 
+                    onchange="updateRoomNSF('${room.id}', this.value)"
+                    style="width: 70px; padding: 2px 4px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 3px; margin-right: 4px;">
+                  <span style="font-size: 0.85rem;">SF</span>
+                </div>
+              </div>
+              <div style="display: flex; gap: 4px; margin-top: 4px;">
+                <button onclick="duplicateRoom('${room.id}')" style="flex: 1; padding: 4px 8px; background: var(--primary); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.8rem;">📋 Duplicate</button>
+                <button onclick="deleteRoom('${room.id}')" style="flex: 1; padding: 4px 8px; background: var(--error); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.8rem;">🗑️ Delete</button>
+              </div>
+              <div style="font-size: 0.8rem; color: var(--muted); margin-top: 4px;">
+                ${equipCount} equipment item${equipCount !== 1 ? 's' : ''}
+              </div>
+            </div>
+          `;
+        });
+        html += `
+          </div>
+        </div>
+        `;
+      }
+
+      return html;
+    }
+
+    function updateProjectName(newName) {
+      const project = getCurrentProject();
+      project.name = newName;
+      saveProjects();
+      renderAll();
+    }
+
+    function renderIDSPanel() {
+      const activeIds = SAMPLE_IDS.filter(d => activeChapters.includes(d.chapterId));
+      
+      if (activeIds.length === 0) return '';
+
+      let html = `
+        <div class="detail-panel">
+          <h3>📝 Input Data Statements (IDS)</h3>
+          <p class="muted" style="margin-bottom: 12px; font-size: 0.85rem;">
+            Adjust these values to recalculate the program.
+          </p>
+      `;
+
+      activeIds.forEach(driver => {
+        const current = driverValues.find(
+          v => v.projectId === PROJECT.id && v.driverId === driver.id
+        );
+        const val = current ? current.value : (driver.defaultValue ?? "");
+
+        html += `
+          <div class="detail-row">
+            <div class="detail-label" style="min-width: 200px; font-weight: normal;">
+              ${driver.chapterId} ${driver.label}
+            </div>
+            <div class="detail-value">
+        `;
+
+        if (driver.inputKind === "number") {
+          html += `
+            <input type="number" 
+                   value="${val}" 
+                   ${driver.minValue != null ? `min="${driver.minValue}"` : ''}
+                   ${driver.maxValue != null ? `max="${driver.maxValue}"` : ''}
+                   onchange="handleDriverChange('${driver.id}', this.value, 'number')"
+                   style="width: 100px; padding: 4px 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+          `;
+        } else if (driver.inputKind === "boolean") {
+          html += `
+            <select onchange="handleDriverChange('${driver.id}', this.value, 'boolean')"
+                    style="padding: 4px 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+              <option value="false" ${!val ? 'selected' : ''}>No</option>
+              <option value="true" ${val ? 'selected' : ''}>Yes</option>
+            </select>
+          `;
+        }
+
+        html += `
+            </div>
+          </div>
+          <div style="font-size: 0.75rem; color: var(--muted); margin: 4px 0 8px 0; padding-left: 200px;">
+            ${driver.text}
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      return html;
+    }
+
+    function renderChapterDetail() {
+      const chapter = SAMPLE_CHAPTERS.find(c => c.id === selectedNode.chapterId);
+      const program = buildProgram(PROJECT, driverValues, activeChapters);
+      const chapterRooms = program.roomRequirements.filter(rr => rr.chapterId === selectedNode.chapterId);
+      const totalRooms = chapterRooms.reduce((sum, rr) => sum + rr.requiredCount, 0);
+      const totalNSF = chapterRooms.reduce((sum, rr) => {
+        const room = SAMPLE_ROOMS.find(r => r.id === rr.roomTemplateId);
+        return sum + (room ? room.nsf * rr.requiredCount : 0);
+      }, 0);
+
+      return `
+        <div class="detail-panel">
+          <h3>📁 ${chapter.title}</h3>
+          <div class="detail-row">
+            <div class="detail-label">Chapter ID:</div>
+            <div class="detail-value">${chapter.id}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Category:</div>
+            <div class="detail-value">${chapter.category}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Room Types:</div>
+            <div class="detail-value">${chapterRooms.length}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Total Rooms:</div>
+            <div class="detail-value">${totalRooms}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Total NSF:</div>
+            <div class="detail-value">${totalNSF.toLocaleString()} SF</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderRoomDetail() {
+      // Handle imported rooms (from reference mode)
+      if (selectedNode.room && !selectedNode.roomTemplate) {
+        const room = selectedNode.room;
+        const equipCount = room.equipment ? room.equipment.length : 0;
+        const nsf = room.nsf || 0;
+
+        let html = `
+          <div class="detail-panel">
+            <h3>🚪 ${room.code} - ${room.name}</h3>
+            <div class="detail-row">
+              <div class="detail-label">Room Code:</div>
+              <div class="detail-value">${room.code}</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Room Name:</div>
+              <div class="detail-value">${room.name}</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">NSF:</div>
+              <div class="detail-value">
+                <input type="number" value="${nsf}" 
+                  onchange="updateRoomNSF('${room.id}', this.value)"
+                  style="width: 80px; padding: 4px 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+                SF
+              </div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Equipment Items:</div>
+              <div class="detail-value">${equipCount}</div>
+            </div>
+          </div>
+          <div class="detail-panel">
+            <button class="btn-secondary" onclick="duplicateRoom('${room.id}')" style="width: 100%; margin-bottom: 8px;">📋 Duplicate Room</button>
+            <button class="btn-secondary" onclick="addEquipmentToRoom('${room.id}')" style="width: 100%;">➕ Add Equipment</button>
+          </div>
+        `;
+
+        if (room.equipment && room.equipment.length > 0) {
+          html += `
+            <div class="detail-panel">
+              <h3>🔧 Equipment (${room.equipment.length} items)</h3>
+              <div class="equipment-list">
+          `;
+
+          room.equipment.forEach(eq => {
+            html += `
+              <div class="equipment-item">
+                <div class="equipment-item-header">
+                  <span>${eq.jsn} - ${eq.name}</span>
+                  <span>
+                    Qty: ${eq.quantity} | ${eq.acqIns}
+                    <button onclick="removeEquipment('${room.id}', '${eq.id}')" 
+                      style="margin-left: 8px; padding: 2px 8px; background: var(--error); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.75rem;"
+                      title="Remove equipment">🗑️</button>
+                  </span>
+                </div>
+                <div class="equipment-item-desc">${eq.description.substring(0, 200)}${eq.description.length > 200 ? '...' : ''}</div>
+              </div>
+            `;
+          });
+
+          html += `
+              </div>
+            </div>
+          `;
+        }
+
+        return html;
+      }
+
+      // Handle program mode rooms (rule-based)
+      const room = selectedNode.roomTemplate;
+      const rr = selectedNode.roomRequirement;
+      const program = buildProgram(PROJECT, driverValues, activeChapters);
+      
+      // Get equipment for this room
+      const roomEquipment = program.equipmentRequirements.filter(
+        er => er.roomRequirementId === rr.id
+      );
+
+      let html = `
+        <div class="detail-panel">
+          <h3>🚪 ${room.id} - ${room.name}</h3>
+          <div class="detail-row">
+            <div class="detail-label">Room Code:</div>
+            <div class="detail-value">${room.id}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Quantity:</div>
+            <div class="detail-value">${rr.requiredCount}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">NSF per Room:</div>
+            <div class="detail-value">${room.nsf} SF</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Total NSF:</div>
+            <div class="detail-value">${(room.nsf * rr.requiredCount).toLocaleString()} SF</div>
+          </div>
+        </div>
+      `;
+
+      if (roomEquipment.length > 0) {
+        html += `
+          <div class="detail-panel">
+            <h3>🔧 Equipment (${roomEquipment.length} items)</h3>
+            <div class="equipment-list">
+        `;
+
+        const equipmentMap = new Map();
+        EQUIPMENT_LIST.forEach(e => equipmentMap.set(e.jsn, e));
+
+        roomEquipment.forEach(er => {
+          const eq = equipmentMap.get(er.equipmentJsn);
+          if (eq) {
+            html += `
+              <div class="equipment-item">
+                <div class="equipment-item-header">
+                  <span>${eq.jsn} - ${eq.name}</span>
+                  <span>Qty: ${er.requiredQtyPerRoom} | ${eq.acqIns}</span>
+                </div>
+                <div class="equipment-item-desc">${eq.description.substring(0, 200)}${eq.description.length > 200 ? '...' : ''}</div>
+              </div>
+            `;
+          }
+        });
+
+        html += `
+            </div>
+          </div>
+        `;
+      }
+
+      return html;
+    }
+
+    function renderRoomReferenceDetail() {
+      // Get room info from selected node
+      const roomCode = selectedNode.roomCode;
+      const roomName = selectedNode.roomName;
+      const department = selectedNode.department;
+      const functionalArea = selectedNode.functionalArea;
+      
+      // Get all equipment for this room code
+      const roomEquipment = ROOM_EQUIPMENT_MAPPINGS.filter(
+        re => re.roomCode === roomCode && 
+             re.department === department && 
+             re.functionalArea === functionalArea
+      );
+
+      let html = `
+        <div class="detail-panel">
+          <h3>🚪 ${roomCode} - ${roomName}</h3>
+          <div class="detail-row">
+            <div class="detail-label">Room Code:</div>
+            <div class="detail-value">${roomCode}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Department:</div>
+            <div class="detail-value">${department}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Functional Area:</div>
+            <div class="detail-value">${functionalArea}</div>
+          </div>
+        </div>
+      `;
+
+      if (roomEquipment.length > 0) {
+        html += `
+          <div class="detail-panel">
+            <h3>🔧 Equipment (${roomEquipment.length} items)</h3>
+            <div class="equipment-list">
+        `;
+
+        const equipmentMap = new Map();
+        EQUIPMENT_LIST.forEach(e => equipmentMap.set(e.jsn, e));
+
+        roomEquipment.forEach(re => {
+          const eq = equipmentMap.get(re.jsn);
+          if (eq) {
+            html += `
+              <div class="equipment-item">
+                <div class="equipment-item-header">
+                  <span>${eq.jsn} - ${eq.name}</span>
+                  <span>Qty: ${re.quantity} | ${eq.acqIns}</span>
+                </div>
+                <div class="equipment-item-desc">${eq.description.substring(0, 200)}${eq.description.length > 200 ? '...' : ''}</div>
+              </div>
+            `;
+          }
+        });
+
+        html += `
+            </div>
+          </div>
+        `;
+      }
+
+      return html;
+    }
+
+    function handleDriverChange(driverId, value, type) {
+      const existingIndex = driverValues.findIndex(
+        d => d.projectId === PROJECT.id && d.driverId === driverId
+      );
+
+      let finalValue = value;
+      if (type === "number") {
+        finalValue = value === "" ? "" : Number(value);
+      } else if (type === "boolean") {
+        finalValue = value === "true";
+      }
+
+      const newEntry = {
+        projectId: PROJECT.id,
+        driverId: driverId,
+        value: finalValue
+      };
+
+      if (existingIndex === -1) {
+        driverValues = driverValues.concat(newEntry);
+      } else {
+        const copy = driverValues.slice();
+        copy[existingIndex] = newEntry;
+        driverValues = copy;
+      }
+
+      renderAll();
+    }
+
+    // -----------------------------
+    // RENDER FUNCTIONS
+    // -----------------------------
+
+    function renderAll() {
+      renderTree();
+      renderDetail();
+    }
+
+    // -----------------------------
+    // EVENT HANDLERS
+    // -----------------------------
+
+    // -----------------------------
+    // IMPORT MODAL FUNCTIONS
+    // -----------------------------
+
+    let selectedImportItems = new Set();
+    let expandedImportNodes = new Set();
+
+    function openImportModal() {
+      document.getElementById('import-modal').classList.add('active');
+      renderImportTree();
+    }
+
+    function closeImportModal() {
+      document.getElementById('import-modal').classList.remove('active');
+      selectedImportItems.clear();
+    }
+
+    function toggleImportNode(nodeId) {
+      if (expandedImportNodes.has(nodeId)) {
+        expandedImportNodes.delete(nodeId);
+      } else {
+        expandedImportNodes.add(nodeId);
+      }
+      renderImportTree();
+    }
+
+    function renderImportTree() {
+      const container = document.getElementById('import-tree-container');
+      let html = '';
+
+      // Build hierarchical tree: departments > functional areas > rooms
+      const deptMap = new Map();
+      
+      ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
+        if (!deptMap.has(mapping.department)) {
+          deptMap.set(mapping.department, new Map());
+        }
+        const faMap = deptMap.get(mapping.department);
+        if (!faMap.has(mapping.functionalArea)) {
+          faMap.set(mapping.functionalArea, new Set());
+        }
+        faMap.get(mapping.functionalArea).add(mapping.roomCode);
+      });
+
+      // Render unified tree with checkboxes at all levels
+      Array.from(deptMap.keys()).sort().forEach(dept => {
+        const faCount = deptMap.get(dept).size;
+        let totalRooms = 0;
+        deptMap.get(dept).forEach(rooms => totalRooms += rooms.size);
+        const deptId = `dept-${dept.replace(/[^a-zA-Z0-9]/g, '_')}`;
+        const isDeptExpanded = expandedImportNodes.has(deptId);
+        
+        html += `
+          <div style="margin-bottom: 8px;">
+            <div class="import-tree-item">
+              <span onclick="toggleImportNode('${deptId}')" style="cursor: pointer; margin-right: 4px;">${isDeptExpanded ? '▼' : '▶'}</span>
+              <input type="checkbox" id="import-${dept}" value="${dept}" 
+                ${selectedImportItems.has(dept) ? 'checked' : ''}
+                onchange="toggleImportItem('${dept}', this.checked)">
+              <label for="import-${dept}" style="font-weight: 600;">${dept}</label>
+              <span style="font-size: 0.75rem; color: var(--muted); margin-left: 8px;">(${faCount} FAs, ${totalRooms} rooms)</span>
+            </div>
+            ${isDeptExpanded ? `
+              <div style="margin-left: 24px; margin-top: 4px;">
+                ${Array.from(deptMap.get(dept).keys()).sort().map(fa => {
+                  const roomCount = deptMap.get(dept).get(fa).size;
+                  const faItemKey = `${dept}::${fa}`;
+                  const faId = `fa-${dept.replace(/[^a-zA-Z0-9]/g, '_')}-${fa.replace(/[^a-zA-Z0-9]/g, '_')}`;
+                  const isFaExpanded = expandedImportNodes.has(faId);
+                  
+                  return `
+                    <div style="margin-bottom: 4px;">
+                      <div class="import-tree-item">
+                        <span onclick="toggleImportNode('${faId}')" style="cursor: pointer; margin-right: 4px;">${isFaExpanded ? '▼' : '▶'}</span>
+                        <input type="checkbox" id="import-${faItemKey.replace(/[^a-zA-Z0-9]/g, '_')}" 
+                          value="${faItemKey}" 
+                          ${selectedImportItems.has(faItemKey) ? 'checked' : ''}
+                          onchange="toggleImportItem('${faItemKey}', this.checked)">
+                        <label for="import-${faItemKey.replace(/[^a-zA-Z0-9]/g, '_')}">${fa}</label>
+                        <span style="font-size: 0.75rem; color: var(--muted); margin-left: 8px;">(${roomCount} rooms)</span>
+                      </div>
+                      ${isFaExpanded ? `
+                        <div style="margin-left: 24px; margin-top: 2px;">
+                          ${Array.from(deptMap.get(dept).get(fa)).sort().map(roomCode => {
+                            const roomMapping = ROOM_EQUIPMENT_MAPPINGS.find(m => 
+                              m.department === dept && 
+                              m.functionalArea === fa && 
+                              m.roomCode === roomCode
+                            );
+                            const roomName = roomMapping ? roomMapping.roomName : roomCode;
+                            const roomItemKey = `${dept}::${fa}::${roomCode}`;
+                            
+                            return `
+                              <div class="import-tree-item" style="padding-left: 16px;">
+                                <input type="checkbox" id="import-${roomItemKey.replace(/[^a-zA-Z0-9]/g, '_')}" 
+                                  value="${roomItemKey}" 
+                                  ${selectedImportItems.has(roomItemKey) ? 'checked' : ''}
+                                  onchange="toggleImportItem('${roomItemKey}', this.checked)">
+                                <label for="import-${roomItemKey.replace(/[^a-zA-Z0-9]/g, '_')}" style="font-size: 0.85rem;">${roomCode} - ${roomName}</label>
+                              </div>
+                            `;
+                          }).join('')}
+                        </div>
+                      ` : ''}
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      });
+
+      container.innerHTML = html || '<p class="muted">No items available</p>';
+    }
+
+    function toggleImportNode(nodeId) {
+      if (expandedImportNodes.has(nodeId)) {
+        expandedImportNodes.delete(nodeId);
+      } else {
+        expandedImportNodes.add(nodeId);
+      }
+      renderImportTree();
+    }
+
+    function toggleImportItem(itemKey, checked) {
+      if (checked) {
+        selectedImportItems.add(itemKey);
+      } else {
+        selectedImportItems.delete(itemKey);
+      }
+    }
+
+    function confirmImport() {
+      if (selectedImportItems.size === 0) {
+        alert('Please select at least one item to import');
+        return;
+      }
+
+      const mergeMode = document.getElementById('merge-on-import').checked;
+      const project = getCurrentProject();
+
+      selectedImportItems.forEach(itemKey => {
+        const parts = itemKey.split('::');
+        if (parts.length === 1) {
+          // Department
+          importDepartment(project, itemKey, mergeMode);
+        } else if (parts.length === 2) {
+          // Functional Area
+          const [dept, fa] = parts;
+          importFunctionalArea(project, dept, fa, mergeMode);
+        } else if (parts.length === 3) {
+          // Room
+          const [dept, fa, roomCode] = parts;
+          importRoom(project, dept, fa, roomCode, mergeMode);
+        }
+      });
+
+      saveProjects();
+      closeImportModal();
+      renderAll();
+    }
+
+    function importDepartment(project, deptName, mergeMode) {
+      let dept = project.departments.find(d => d.name === deptName);
+      
+      if (!dept || !mergeMode) {
+        dept = {
+          id: generateId(),
+          name: deptName,
+          functionalAreas: []
+        };
+        project.departments.push(dept);
+      }
+
+      // Import all functional areas
+      const faMap = new Map();
+      ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
+        if (mapping.department === deptName) {
+          if (!faMap.has(mapping.functionalArea)) {
+            faMap.set(mapping.functionalArea, new Set());
+          }
+          faMap.get(mapping.functionalArea).add(mapping.roomCode);
+        }
+      });
+
+      faMap.forEach((rooms, faName) => {
+        let fa = dept.functionalAreas.find(f => f.name === faName);
+        if (!fa || !mergeMode) {
+          fa = {
+            id: generateId(),
+            name: faName,
+            rooms: []
+          };
+          dept.functionalAreas.push(fa);
+        }
+
+        // Import all rooms in this functional area
+        rooms.forEach(roomCode => {
+          importRoomToFA(fa, deptName, faName, roomCode, mergeMode);
+        });
+      });
+    }
+
+    function importFunctionalArea(project, deptName, faName, mergeMode) {
+      let dept = project.departments.find(d => d.name === deptName);
+      
+      if (!dept) {
+        dept = {
+          id: generateId(),
+          name: deptName,
+          functionalAreas: []
+        };
+        project.departments.push(dept);
+      }
+
+      let fa = dept.functionalAreas.find(f => f.name === faName);
+      if (!fa || !mergeMode) {
+        fa = {
+          id: generateId(),
+          name: faName,
+          rooms: []
+        };
+        dept.functionalAreas.push(fa);
+      }
+
+      // Import all rooms
+      const rooms = new Set();
+      ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
+        if (mapping.department === deptName && mapping.functionalArea === faName) {
+          rooms.add(mapping.roomCode);
+        }
+      });
+
+      rooms.forEach(roomCode => {
+        importRoomToFA(fa, deptName, faName, roomCode, mergeMode);
+      });
+    }
+
+    function importRoom(project, deptName, faName, roomCode, mergeMode) {
+      let dept = project.departments.find(d => d.name === deptName);
+      
+      if (!dept) {
+        dept = {
+          id: generateId(),
+          name: deptName,
+          functionalAreas: []
+        };
+        project.departments.push(dept);
+      }
+
+      let fa = dept.functionalAreas.find(f => f.name === faName);
+      if (!fa) {
+        fa = {
+          id: generateId(),
+          name: faName,
+          rooms: []
+        };
+        dept.functionalAreas.push(fa);
+      }
+
+      importRoomToFA(fa, deptName, faName, roomCode, mergeMode);
+    }
+
+    function importRoomToFA(fa, deptName, faName, roomCode, mergeMode) {
+      let room = fa.rooms.find(r => r.code === roomCode);
+      
+      if (!room || !mergeMode) {
+        // Get room info from mappings
+        const roomMapping = ROOM_EQUIPMENT_MAPPINGS.find(m => 
+          m.department === deptName && 
+          m.functionalArea === faName && 
+          m.roomCode === roomCode
+        );
+
+        // Look up NSF from SAMPLE_ROOMS
+        const roomTemplate = SAMPLE_ROOMS.find(r => r.id === roomCode);
+        const nsf = roomTemplate ? roomTemplate.nsf : 100; // Default 100 NSF if not found
+
+        room = {
+          id: generateId(),
+          code: roomCode,
+          name: roomMapping ? roomMapping.roomName : roomCode,
+          nsf: nsf,
+          equipment: []
+        };
+        fa.rooms.push(room);
+      }
+
+      // Import equipment for this room
+      ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
+        if (mapping.department === deptName && 
+            mapping.functionalArea === faName && 
+            mapping.roomCode === roomCode) {
+          
+          const equipExists = room.equipment.some(e => e.jsn === mapping.equipmentJsn);
+          if (!equipExists || !mergeMode) {
+            const equipItem = EQUIPMENT_LIST.find(e => e.jsn === mapping.equipmentJsn);
+            if (equipItem) {
+              room.equipment.push({
+                id: generateId(),
+                jsn: equipItem.jsn,
+                name: equipItem.name,
+                quantity: mapping.quantity || 1,
+                acqIns: mapping.acqIns || '',
+                description: equipItem.description || ''
+              });
+            }
+          }
+        }
+      });
+    }
+
+    // -----------------------------
+    // ROOM MANAGEMENT FUNCTIONS
+    // -----------------------------
+
+    function updateRoomNSF(roomId, newNSF) {
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      for (const dept of project.departments) {
+        if (!dept.functionalAreas) continue;
+        for (const fa of dept.functionalAreas) {
+          if (!fa.rooms) continue;
+          const room = fa.rooms.find(r => r.id === roomId);
+          if (room) {
+            room.nsf = parseFloat(newNSF) || 0;
+            saveProjects();
+            renderAll();
+            return;
+          }
+        }
+      }
+    }
+
+    function duplicateRoom(roomId) {
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      for (const dept of project.departments) {
+        if (!dept.functionalAreas) continue;
+        for (const fa of dept.functionalAreas) {
+          if (!fa.rooms) continue;
+          const room = fa.rooms.find(r => r.id === roomId);
+          if (room) {
+            const newRoom = {
+              id: generateId(),
+              code: room.code,
+              name: room.name + ' (Copy)',
+              nsf: room.nsf,
+              equipment: room.equipment.map(eq => ({
+                id: generateId(),
+                jsn: eq.jsn,
+                name: eq.name,
+                quantity: eq.quantity,
+                acqIns: eq.acqIns,
+                description: eq.description
+              }))
+            };
+            fa.rooms.push(newRoom);
+            saveProjects();
+            renderAll();
+            return;
+          }
+        }
+      }
+    }
+
+    function deleteRoom(roomId) {
+      if (!confirm('Are you sure you want to delete this room?')) return;
+      
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      for (const dept of project.departments) {
+        if (!dept.functionalAreas) continue;
+        for (const fa of dept.functionalAreas) {
+          if (!fa.rooms) continue;
+          const roomIndex = fa.rooms.findIndex(r => r.id === roomId);
+          if (roomIndex !== -1) {
+            fa.rooms.splice(roomIndex, 1);
+            saveProjects();
+            // Clear selection if the deleted room was selected
+            if (selectedNode && selectedNode.room && selectedNode.room.id === roomId) {
+              selectedNode = null;
+            }
+            renderAll();
+            return;
+          }
+        }
+      }
+    }
+
+    function removeEquipment(roomId, equipmentId) {
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      for (const dept of project.departments) {
+        if (!dept.functionalAreas) continue;
+        for (const fa of dept.functionalAreas) {
+          if (!fa.rooms) continue;
+          const room = fa.rooms.find(r => r.id === roomId);
+          if (room && room.equipment) {
+            room.equipment = room.equipment.filter(e => e.id !== equipmentId);
+            saveProjects();
+            renderAll();
+            return;
+          }
+        }
+      }
+    }
+
+    function addEquipmentToRoom(roomId) {
+      // For now, show all available equipment
+      const equipmentJsn = prompt('Enter equipment JSN code:');
+      if (!equipmentJsn) return;
+
+      const equipItem = EQUIPMENT_LIST.find(e => e.jsn === equipmentJsn.toUpperCase());
+      if (!equipItem) {
+        alert('Equipment not found. Please enter a valid JSN code.');
+        return;
+      }
+
+      const quantity = prompt('Enter quantity:', '1');
+      if (!quantity) return;
+
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      for (const dept of project.departments) {
+        if (!dept.functionalAreas) continue;
+        for (const fa of dept.functionalAreas) {
+          if (!fa.rooms) continue;
+          const room = fa.rooms.find(r => r.id === roomId);
+          if (room) {
+            if (!room.equipment) room.equipment = [];
+            room.equipment.push({
+              id: generateId(),
+              jsn: equipItem.jsn,
+              name: equipItem.name,
+              quantity: parseInt(quantity) || 1,
+              acqIns: equipItem.acqIns,
+              description: equipItem.description
+            });
+            saveProjects();
+            renderAll();
+            return;
+          }
+        }
+      }
+    }
+
+    function calculateTotalNSF(rooms) {
+      if (!rooms) return 0;
+      return rooms.reduce((sum, room) => sum + (room.nsf || 0), 0);
+    }
+
+    function calculateFANSF(fa) {
+      return calculateTotalNSF(fa.rooms);
+    }
+
+    function calculateDeptNSF(dept) {
+      if (!dept.functionalAreas) return 0;
+      return dept.functionalAreas.reduce((sum, fa) => sum + calculateFANSF(fa), 0);
+    }
+
+    function calculateProjectNSF(project) {
+      if (!project.departments) return 0;
+      return project.departments.reduce((sum, dept) => sum + calculateDeptNSF(dept), 0);
+    }
+
+    // -----------------------------
+    // LOGIC PORTAL
+    // -----------------------------
+
+    let roomLogicData = {};
+
+    function openLogicPortal() {
+      document.getElementById('password-modal').classList.add('active');
+      document.getElementById('portal-password').value = '';
+      document.getElementById('password-error').style.display = 'none';
+      setTimeout(() => document.getElementById('portal-password').focus(), 100);
+    }
+
+    function closePasswordModal() {
+      document.getElementById('password-modal').classList.remove('active');
+    }
+
+    function checkPassword() {
+      const password = document.getElementById('portal-password').value;
+      if (password === 'CARTER') {
+        closePasswordModal();
+        showLogicPortal();
+      } else {
+        document.getElementById('password-error').style.display = 'block';
+        document.getElementById('portal-password').select();
+      }
+    }
+
+    function showLogicPortal() {
+      loadRoomLogic();
+      renderLogicRoomsList();
+      document.getElementById('logic-portal-modal').classList.add('active');
+    }
+
+    function closeLogicPortal() {
+      document.getElementById('logic-portal-modal').classList.remove('active');
+    }
+
+    function loadRoomLogic() {
+      // Load existing logic from localStorage
+      const saved = localStorage.getItem('roomLogicData');
+      if (saved) {
+        try {
+          roomLogicData = JSON.parse(saved);
+        } catch (e) {
+          roomLogicData = {};
+        }
+      }
+
+      // Initialize with all rooms from ROOM_SIZES
+      if (typeof ROOM_SIZES !== 'undefined') {
+        ROOM_SIZES.forEach(room => {
+          if (!roomLogicData[room.id]) {
+            roomLogicData[room.id] = {
+              code: room.id,
+              name: room.name,
+              minQty: '',
+              maxQty: '',
+              qtyFormula: '',
+              nsfFormula: room.nsf ? String(room.nsf) : '',
+              variables: '',
+              notes: ''
+            };
+          } else {
+            // Update name if it changed
+            roomLogicData[room.id].name = room.name;
+            // Update NSF if not set
+            if (!roomLogicData[room.id].nsfFormula && room.nsf) {
+              roomLogicData[room.id].nsfFormula = String(room.nsf);
+            }
+          }
+        });
+      }
+    }
+
+    function renderLogicRoomsList() {
+      const container = document.getElementById('logic-rooms-list');
+      const searchTerm = (document.getElementById('logic-search-box')?.value || '').toLowerCase();
+      
+      const rooms = Object.values(roomLogicData)
+        .filter(room => {
+          if (!searchTerm) return true;
+          return room.code.toLowerCase().includes(searchTerm) ||
+                 room.name.toLowerCase().includes(searchTerm);
+        })
+        .sort((a, b) => a.code.localeCompare(b.code));
+
+      container.innerHTML = rooms.map(room => {
+        const hasLogic = room.qtyFormula || room.minQty || room.maxQty || room.notes;
+        const status = hasLogic ? 
+          (room.qtyFormula && room.minQty && room.maxQty ? 'complete' : 'partial') : 'empty';
+        const statusText = status === 'complete' ? 'Complete' : 
+                          status === 'partial' ? 'Partial' : 'No Logic';
+        
+        const escapedCode = escapeHtml(room.code).replace(/'/g, '&#39;');
+        const displayCode = escapeHtml(room.code);
+        const displayName = escapeHtml(room.name);
+        const displayMinQty = escapeHtml(room.minQty || '');
+        const displayMaxQty = escapeHtml(room.maxQty || '');
+        const displayQtyFormula = escapeHtml(room.qtyFormula || '');
+        const displayNsfFormula = escapeHtml(room.nsfFormula || '');
+        const displayVariables = escapeHtml(room.variables || '');
+        const displayNotes = escapeHtml(room.notes || '');
+
+        return `
+          <div class="logic-card">
+            <div class="logic-card-header">
+              <div class="logic-card-title">
+                <div class="logic-card-code">${displayCode}</div>
+                <div class="logic-card-name">${displayName}</div>
+              </div>
+              <span class="logic-status ${status}">${statusText}</span>
+            </div>
+            
+            <div class="logic-fields">
+              <div class="logic-field">
+                <label class="logic-field-label">Minimum Qty:</label>
+                <input type="text" class="logic-field-input" 
+                       value="${displayMinQty}" 
+                       data-room-code="${escapedCode}"
+                       onchange="updateRoomLogic(this.dataset.roomCode, 'minQty', this.value)"
+                       placeholder="e.g., 1 or 0">
+              </div>
+              
+              <div class="logic-field">
+                <label class="logic-field-label">Maximum Qty:</label>
+                <input type="text" class="logic-field-input" 
+                       value="${displayMaxQty}" 
+                       data-room-code="${escapedCode}"
+                       onchange="updateRoomLogic(this.dataset.roomCode, 'maxQty', this.value)"
+                       placeholder="e.g., 20 or unlimited">
+              </div>
+              
+              <div class="logic-field">
+                <label class="logic-field-label">Quantity Formula:</label>
+                <textarea class="logic-field-textarea" 
+                          data-room-code="${escapedCode}"
+                          onchange="updateRoomLogic(this.dataset.roomCode, 'qtyFormula', this.value)"
+                          placeholder="e.g., annualVisits / 2000 or 1 per 10 beds">${displayQtyFormula}</textarea>
+              </div>
+              <div class="logic-help-text">Enter calculation formula or text description</div>
+              
+              <div class="logic-field">
+                <label class="logic-field-label">NSF per Room:</label>
+                <input type="text" class="logic-field-input" 
+                       value="${displayNsfFormula}" 
+                       data-room-code="${escapedCode}"
+                       onchange="updateRoomLogic(this.dataset.roomCode, 'nsfFormula', this.value)"
+                       placeholder="e.g., 120 or varies">
+              </div>
+              
+              <div class="logic-field">
+                <label class="logic-field-label">Variables Used:</label>
+                <input type="text" class="logic-field-input" 
+                       value="${displayVariables}" 
+                       data-room-code="${escapedCode}"
+                       onchange="updateRoomLogic(this.dataset.roomCode, 'variables', this.value)"
+                       placeholder="e.g., numBeds, annualVisits">
+              </div>
+              <div class="logic-help-text">Comma-separated list of project variables</div>
+              
+              <div class="logic-field">
+                <label class="logic-field-label">Notes:</label>
+                <textarea class="logic-field-textarea" 
+                          data-room-code="${escapedCode}"
+                          onchange="updateRoomLogic(this.dataset.roomCode, 'notes', this.value)"
+                          placeholder="Section 4 & 5 notes from PDF...">${displayNotes}</textarea>
+              </div>
+              <div class="logic-help-text">Reference to PDF sections or calculation notes</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateRoomLogic(code, field, value) {
+      if (!roomLogicData[code]) {
+        roomLogicData[code] = { code };
+      }
+      roomLogicData[code][field] = value;
+    }
+
+    function filterLogicRooms() {
+      renderLogicRoomsList();
+    }
+
+    function saveAllLogic() {
+      try {
+        localStorage.setItem('roomLogicData', JSON.stringify(roomLogicData));
+        alert('✅ Room logic saved successfully to browser storage!');
+      } catch (e) {
+        alert('❌ Error saving logic: ' + e.message);
+      }
+    }
+
+    function exportLogic() {
+      try {
+        const dataStr = JSON.stringify(roomLogicData, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `room-logic-${new Date().toISOString().split('T')[0]}.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+        alert('✅ Room logic exported successfully!');
+      } catch (e) {
+        alert('❌ Error exporting logic: ' + e.message);
+      }
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Close modals when clicking outside
+    window.addEventListener('click', (e) => {
+      if (e.target.id === 'password-modal') closePasswordModal();
+      if (e.target.id === 'logic-portal-modal') closeLogicPortal();
+      if (e.target.id === 'import-modal') closeImportModal();
+    });
+
+    // -----------------------------
+    // INITIALIZE
+    // -----------------------------
+
+    // Load equipment data and then render
+    async function init() {
+      const loaded = await loadEquipmentData();
+      if (loaded) {
+        // Copy to global scope for compatibility
+        window.EQUIPMENT_LIST = EQUIPMENT_LIST;
+        window.ROOM_EQUIPMENT_MAPPINGS = ROOM_EQUIPMENT_MAPPINGS;
+      }
+      
+      // Start in project list view
+      viewState = 'project-list';
+      
+      renderAll();
+    }
+
+    init();
+  </script>
+</body>
+</html>
