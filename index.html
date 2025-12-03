@@ -99,6 +99,80 @@
       align-items: flex-start;
     }
 
+    .layout.compare-mode {
+      grid-template-columns: minmax(320px, 400px) minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    #left-column {
+      display: block;
+    }
+
+    #right-column {
+      display: block;
+    }
+
+    #compare-column {
+      display: none;
+    }
+
+    .layout.compare-mode #compare-column {
+      display: block;
+    }
+
+    .compare-column {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 20px;
+      border: 2px dashed var(--border);
+      min-height: 400px;
+      transition: border-color 0.2s;
+    }
+
+    .compare-column.drag-over {
+      border-color: var(--accent);
+      background: rgba(0, 184, 148, 0.05);
+    }
+
+    .compare-column h3 {
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .compare-search {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+    }
+
+    .compare-room-display {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .compare-room-display h4 {
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+
+    .compare-room-display .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .compare-room-display .detail-row:last-child {
+      border-bottom: none;
+    }
+
     @media (max-width: 900px) {
       .layout {
         grid-template-columns: 1fr;
@@ -186,6 +260,17 @@
       border-radius: 4px;
       transition: background-color 0.15s ease;
       user-select: none;
+    }
+
+    /* Hide spinner arrows on number inputs */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    
+    input[type="number"] {
+      -moz-appearance: textfield;
     }
 
     .tree-item:hover {
@@ -304,6 +389,33 @@
       color: var(--muted);
       font-size: 0.75rem;
       line-height: 1.4;
+      display: block;
+    }
+
+    .equipment-item-desc.truncated {
+      display: inline;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    .equipment-item-desc.expanded {
+      display: block;
+      white-space: normal;
+    }
+
+    .equipment-desc-toggle {
+      color: var(--primary);
+      cursor: pointer;
+      font-size: 0.75rem;
+      margin-left: 4px;
+      text-decoration: underline;
+      display: inline;
+    }
+
+    .equipment-desc-toggle:hover {
+      color: var(--primary-hover);
     }
 
     /* Logic Portal Styles */
@@ -738,12 +850,13 @@
           <div class="tree-header-top">
             <div class="tree-header-title">
               <button class="back-to-projects-btn" id="return-to-projects-btn" onclick="returnToProjectList()" style="display: none;">← Projects</button>
-              <h2 style="font-size: 1.1rem; margin: 0;">Project Navigator</h2>
+              <h2 style="font-size: 1.1rem; margin: 0;" id="nav-title">Navigator</h2>
             </div>
           </div>
           <div class="mode-toggle" id="mode-toggle">
             <button class="mode-btn active" data-mode="program" onclick="switchMode('program')">Program Mode</button>
             <button class="mode-btn" data-mode="reference" onclick="switchMode('reference')">Reference Mode</button>
+            <button class="mode-btn" data-mode="compare" onclick="switchMode('compare')">Compare Mode</button>
           </div>
         </div>
         <button class="add-to-project-btn" id="add-to-project-btn" onclick="openImportModal()" style="display: none;">+ Add to Project</button>
@@ -754,6 +867,11 @@
     <!-- RIGHT COLUMN: Detail View -->
     <section id="right-column">
       <div id="detail-view"></div>
+    </section>
+
+    <!-- COMPARE MODE: Second Column -->
+    <section id="compare-column">
+      <div id="compare-view"></div>
     </section>
   </main>
 
@@ -810,6 +928,9 @@
       </div>
       <div id="import-modal-body">
         <p class="muted">Expand the tree and check items to add to your project. You can select departments, functional areas, or individual rooms.</p>
+        <div style="margin-bottom: 12px;">
+          <input type="text" id="import-search" placeholder="Search departments, functional areas, or rooms..." style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.95rem;" oninput="filterImportTree()" />
+        </div>
         <div id="import-tree-container" class="import-tree"></div>
         <div class="merge-option">
           <label>
@@ -1018,6 +1139,9 @@
           
           console.log(`Built metadata for ${deptFaMap.size} unique room codes`);
           console.log('Sample metadata:', Array.from(deptFaMap.entries()).slice(0, 3));
+          
+          // Store globally for compare mode
+          window.ROOM_METADATA = deptFaMap;
           
           // Enrich the mappings
           const enrichedMappings = [];
@@ -1680,7 +1804,9 @@
       { projectId: PROJECT.id, driverId: "CH268_D", value: false }
     ];
 
-    let currentMode = 'program'; // 'program' or 'reference'
+    let currentMode = 'program';
+    let compareLeftRoom = null;
+    let compareRightRoom = null; // 'program' or 'reference'
     let selectedNode = null;
     let expandedNodes = new Set(['project']);
     let viewState = 'project-list'; // 'project-list' or 'project-detail'
@@ -2453,6 +2579,19 @@
         addBtn.style.display = mode === 'program' ? 'block' : 'none';
       }
       
+      const layout = document.querySelector('.layout');
+      if (mode === 'compare') {
+        layout.classList.add('compare-mode');
+      } else {
+        layout.classList.remove('compare-mode');
+      }
+      
+      // Update navigator title
+      const navTitle = document.getElementById('nav-title');
+      if (navTitle) {
+        navTitle.textContent = 'Navigator';
+      }
+      
       renderAll();
     }
 
@@ -2513,8 +2652,8 @@
     }
 
     function buildTreeData() {
-      // Reference mode - always show reference tree regardless of view state
-      if (currentMode === 'reference') {
+      // Reference/Compare mode - always show reference tree regardless of view state
+      if (currentMode === 'reference' || currentMode === 'compare') {
         const tree = {
           id: 'reference-root',
           type: 'reference-root',
@@ -2688,10 +2827,14 @@
       
       // Escape the node ID for use in onclick handlers
       const escapedNodeId = node.id.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+      
+      // Make rooms draggable in compare mode (check for both room object and roomCode)
+      const isDraggable = currentMode === 'compare' && (node.room || node.roomCode);
+      const draggableAttrs = isDraggable ? `draggable="true" ondragstart="handleRoomDragStart(event, '${escapedNodeId}')"` : '';
 
       let html = `
         <div class="tree-node" data-level="${level}">
-          <div class="tree-item ${isSelected ? 'selected' : ''}" onclick="handleNodeClick('${escapedNodeId}')">
+          <div class="tree-item ${isSelected ? 'selected' : ''}" ${draggableAttrs} onclick="handleNodeClick('${escapedNodeId}')" style="${isDraggable ? 'cursor: grab;' : ''}">
             <span class="tree-toggle ${hasChildren ? (isExpanded ? 'expanded' : 'collapsed') : 'leaf'}" 
                   onclick="event.stopPropagation(); toggleNode('${escapedNodeId}')"></span>
             <span class="tree-icon">${node.icon}</span>
@@ -2724,7 +2867,7 @@
         if (addBtn) addBtn.style.display = 'none';
         if (returnBtn) returnBtn.style.display = 'none';
         
-        // Render project list in program mode, tree in reference mode
+        // Render project list in program mode, tree in reference/compare mode
         if (currentMode === 'program') {
           let html = `
             <div style="margin-bottom: 16px;">
@@ -2763,17 +2906,17 @@
         
         container.innerHTML = html;
         } else {
-          // Reference mode in project list - show reference tree
+          // Reference/Compare mode in project list - show reference tree
           const treeData = buildTreeData();
           container.innerHTML = renderTreeNode(treeData);
         }
       } else {
         // Show mode toggle and conditionally show add/return buttons
         if (modeToggle) modeToggle.style.display = 'flex';
-        if (returnBtn) returnBtn.style.display = 'block';
+        if (returnBtn) returnBtn.style.display = currentMode === 'compare' ? 'none' : 'block';
         if (addBtn) addBtn.style.display = currentMode === 'program' ? 'block' : 'none';
         
-        // Render project tree
+        // Render project tree (program mode) or reference tree (reference/compare mode)
         const treeData = buildTreeData();
         container.innerHTML = renderTreeNode(treeData);
       }
@@ -2801,6 +2944,11 @@
     }
 
     function handleNodeClick(nodeId) {
+      // In compare mode, clicking doesn't select - only drag/drop or search
+      if (currentMode === 'compare') {
+        return;
+      }
+      
       const treeData = buildTreeData();
       selectedNode = findNodeById(treeData, nodeId);
       console.log('Node clicked:', nodeId, 'Found:', selectedNode);
@@ -2812,8 +2960,100 @@
     // DETAIL VIEW FUNCTIONS
     // -----------------------------
 
+    // Helper function to check if two rooms are identical
+    function areRoomsIdentical(room1, room2) {
+      // Compare basic properties (code, name, and NSF must match)
+      if (room1.code !== room2.code || room1.name !== room2.name || room1.nsf !== room2.nsf) {
+        return false;
+      }
+      
+      // Compare equipment (same items and quantities)
+      const eq1 = room1.equipment || [];
+      const eq2 = room2.equipment || [];
+      if (eq1.length !== eq2.length) return false;
+      
+      // Sort and compare equipment by JSN
+      const eq1Sorted = [...eq1].sort((a, b) => a.jsn.localeCompare(b.jsn));
+      const eq2Sorted = [...eq2].sort((a, b) => a.jsn.localeCompare(b.jsn));
+      
+      for (let i = 0; i < eq1Sorted.length; i++) {
+        if (eq1Sorted[i].jsn !== eq2Sorted[i].jsn || eq1Sorted[i].quantity !== eq2Sorted[i].quantity) {
+          return false;
+        }
+      }
+      
+      // Compare attributes (excluding 'Room Name' which can have copy suffix)
+      const attr1 = room1.attributes || {};
+      const attr2 = room2.attributes || {};
+      
+      const keys1 = Object.keys(attr1).filter(k => k !== 'Room Name').sort();
+      const keys2 = Object.keys(attr2).filter(k => k !== 'Room Name').sort();
+      
+      if (keys1.length !== keys2.length) return false;
+      if (keys1.join(',') !== keys2.join(',')) return false;
+      
+      for (const key of keys1) {
+        if (attr1[key] !== attr2[key]) return false;
+      }
+      
+      return true;
+    }
+    
+    // Helper function to group rooms by identity
+    function groupRoomsByIdentity(rooms) {
+      const groups = [];
+      const processed = new Set();
+      
+      rooms.forEach((room, index) => {
+        if (processed.has(index)) return;
+        
+        const group = {
+          room: room,
+          roomIds: [room.id],
+          quantity: 1
+        };
+        
+        // Find other identical rooms
+        for (let i = index + 1; i < rooms.length; i++) {
+          if (processed.has(i)) continue;
+          if (areRoomsIdentical(room, rooms[i])) {
+            group.roomIds.push(rooms[i].id);
+            group.quantity++;
+            processed.add(i);
+          }
+        }
+        
+        processed.add(index);
+        groups.push(group);
+      });
+      
+      return groups;
+    }
+
+    // Toggle detail section expansion
+    function toggleDetailSection(sectionId) {
+      const content = document.getElementById(`content-${sectionId}`);
+      const toggle = document.getElementById(`toggle-${sectionId}`);
+      
+      if (content && toggle) {
+        if (content.style.display === 'none') {
+          content.style.display = 'block';
+          toggle.textContent = '▼';
+        } else {
+          content.style.display = 'none';
+          toggle.textContent = '▶';
+        }
+      }
+    }
+
     function renderDetail() {
       const container = document.getElementById('detail-view');
+      
+      // In compare mode, renderCompareMode handles the detail view
+      if (currentMode === 'compare') {
+        renderCompareMode();
+        return;
+      }
       
       if (viewState === 'project-list') {
         // In reference mode, skip project list logic if we have a selected node
@@ -2999,6 +3239,9 @@
             <div class="detail-value">${totalNSF.toLocaleString()} SF</div>
           </div>
         </div>
+        <div class="detail-panel" style="padding: 8px 12px;">
+          <button class="btn-secondary" onclick="deleteDepartment('${dept.id}')" style="width: 100%; font-size: 0.85rem; padding: 6px 12px; background: var(--error); color: white; border-color: var(--error);" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">🗑️ Delete Department</button>
+        </div>
       `;
 
       if (allRooms.length > 0) {
@@ -3007,44 +3250,61 @@
         
         html += `
         <div class="detail-panel">
-          <h3>🚪 Rooms (${allRooms.length}${hasMoreRooms ? ' - showing first 100' : ''})</h3>
-          <div style="max-height: 400px; overflow-y: auto;">
+          <h3>🏢 Department Structure</h3>
         `;
-        displayRooms.forEach(({ room, fa }) => {
-          const equipCount = room.equipment ? room.equipment.length : 0;
+        
+        // Group by functional areas
+        dept.functionalAreas.forEach((fa, faIndex) => {
+          if (!fa.rooms || fa.rooms.length === 0) return;
+          
+          const faNSF = calculateFANSF(fa);
+          
           html += `
-            <div style="padding: 8px; margin-bottom: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px;">
-              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 4px;">
+            <div style="margin-bottom: 12px; padding: 10px; background: var(--bg); border-left: 3px solid var(--primary); border-radius: 4px;">
+              <div style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;" onclick="toggleDetailSection('fa-${faIndex}')">
+                <span id="toggle-fa-${faIndex}" style="font-size: 0.9rem;">▶</span>
                 <div style="flex: 1;">
-                  <strong>${room.code}</strong> - ${room.name}<br>
-                  <span style="font-size: 0.85rem; color: var(--muted);">${fa.name}</span>
+                  <div style="font-weight: 600; font-size: 0.95rem;">📂 ${fa.name}</div>
+                  <div style="font-size: 0.85rem; color: var(--muted); margin-top: 2px;">${fa.rooms.length} rooms • ${faNSF.toLocaleString()} SF</div>
                 </div>
-                <div style="text-align: right;">
+              </div>
+              <div id="content-fa-${faIndex}" style="display: none; margin-top: 8px; margin-left: 8px;">
+          `;
+          
+          // Show rooms in this FA (grouped by identity)
+          const roomGroups = groupRoomsByIdentity(fa.rooms);
+          roomGroups.forEach(group => {
+            const room = group.room;
+            const equipCount = room.equipment ? room.equipment.length : 0;
+            html += `
+              <div style="padding: 6px 8px; margin-bottom: 4px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 4px; display: flex; align-items: center; gap: 8px; font-size: 0.85rem;">
+                <div style="min-width: 30px; text-align: center;">
+                  <input type="number" value="${group.quantity}" min="0" 
+                    onchange="updateRoomGroupQuantity('${group.roomIds.join(',')}', this.value, ${group.quantity})"
+                    style="width: 45px; padding: 2px 4px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 3px; text-align: center; font-size: 0.85rem;"
+                    title="Quantity (0 to delete all, adjust to add/remove copies)">
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                  <strong>${room.code}</strong> - ${room.name}
+                </div>
+                <div style="white-space: nowrap;">
                   <input type="number" value="${room.nsf || 0}" 
-                    onchange="updateRoomNSF('${room.id}', this.value)"
-                    style="width: 70px; padding: 2px 4px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 3px; margin-right: 4px;">
-                  <span style="font-size: 0.85rem;">SF</span>
+                    onchange="updateRoomGroupNSF('${group.roomIds.join(',')}', this.value)"
+                    style="width: 55px; padding: 2px 4px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 3px; text-align: right; font-size: 0.85rem;">
+                  <span style="font-size: 0.75rem; margin-left: 2px;">SF</span>
                 </div>
+                <div style="font-size: 0.75rem; color: var(--muted); white-space: nowrap;">${equipCount} eq</div>
               </div>
-              <div style="display: flex; gap: 4px; margin-top: 4px;">
-                <button onclick="duplicateRoom('${room.id}')" style="padding: 3px 6px; background: var(--primary); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.75rem; max-width: 80px;">📋 Dup</button>
-                <button onclick="deleteRoom('${room.id}')" style="padding: 3px 6px; background: var(--error); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.75rem; max-width: 60px;">🗑️ Del</button>
-              </div>
-              <div style="font-size: 0.8rem; color: var(--muted); margin-top: 4px;">
-                ${equipCount} equipment item${equipCount !== 1 ? 's' : ''}
+            `;
+          });
+          
+          html += `
               </div>
             </div>
           `;
         });
-        if (hasMoreRooms) {
-          html += `
-            <div style="padding: 12px; text-align: center; color: var(--muted); font-size: 0.85rem;">
-              Showing first 100 of ${allRooms.length} rooms. Use tree navigation for specific rooms.
-            </div>
-          `;
-        }
+        
         html += `
-          </div>
         </div>
         `;
       }
@@ -3089,6 +3349,9 @@
             <div class="detail-value">${totalNSF.toLocaleString()} SF</div>
           </div>
         </div>
+        <div class="detail-panel" style="padding: 8px 12px;">
+          <button class="btn-secondary" onclick="deleteFunctionalArea('${fa.id}', '${dept.id}')" style="width: 100%; font-size: 0.85rem; padding: 6px 12px; background: var(--error); color: white; border-color: var(--error);" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">🗑️ Delete Functional Area</button>
+        </div>
       `;
 
       if (fa.rooms && fa.rooms.length > 0) {
@@ -3100,28 +3363,28 @@
           <h3>🚪 Rooms (${fa.rooms.length}${hasMoreRooms ? ' - showing first 100' : ''})</h3>
           <div style="max-height: 400px; overflow-y: auto;">
         `;
-        displayRooms.forEach(room => {
+        const roomGroups = groupRoomsByIdentity(displayRooms);
+        roomGroups.forEach(group => {
+          const room = group.room;
           const equipCount = room.equipment ? room.equipment.length : 0;
           html += `
-            <div style="padding: 8px; margin-bottom: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px;">
-              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 4px;">
-                <div style="flex: 1;">
-                  <strong>${room.code}</strong> - ${room.name}
-                </div>
-                <div style="text-align: right;">
-                  <input type="number" value="${room.nsf || 0}" 
-                    onchange="updateRoomNSF('${room.id}', this.value)"
-                    style="width: 70px; padding: 2px 4px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 3px; margin-right: 4px;">
-                  <span style="font-size: 0.85rem;">SF</span>
-                </div>
+            <div style="padding: 6px 8px; margin-bottom: 4px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; display: flex; align-items: center; gap: 8px; font-size: 0.85rem;">
+              <div style="min-width: 30px; text-align: center;">
+                <input type="number" value="${group.quantity}" min="0" 
+                  onchange="updateRoomGroupQuantity('${group.roomIds.join(',')}', this.value, ${group.quantity})"
+                  style="width: 45px; padding: 2px 4px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 3px; text-align: center; font-size: 0.85rem;"
+                  title="Quantity (0 to delete all, adjust to add/remove copies)">
               </div>
-              <div style="display: flex; gap: 4px; margin-top: 4px;">
-                <button onclick="duplicateRoom('${room.id}')" style="padding: 3px 6px; background: var(--primary); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.75rem; max-width: 80px;">📋 Dup</button>
-                <button onclick="deleteRoom('${room.id}')" style="padding: 3px 6px; background: var(--error); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.75rem; max-width: 60px;">🗑️ Del</button>
+              <div style="flex: 1; min-width: 0;">
+                <strong>${room.code}</strong> - ${room.name}
               </div>
-              <div style="font-size: 0.8rem; color: var(--muted); margin-top: 4px;">
-                ${equipCount} equipment item${equipCount !== 1 ? 's' : ''}
+              <div style="white-space: nowrap;">
+                <input type="number" value="${room.nsf || 0}" 
+                  onchange="updateRoomGroupNSF('${group.roomIds.join(',')}', this.value)"
+                  style="width: 55px; padding: 2px 4px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 3px; text-align: right; font-size: 0.85rem;">
+                <span style="font-size: 0.75rem; margin-left: 2px;">SF</span>
               </div>
+              <div style="font-size: 0.75rem; color: var(--muted); white-space: nowrap;">${equipCount} eq</div>
             </div>
           `;
         });
@@ -3302,37 +3565,86 @@
       if (allRooms.length > 0) {
         html += `
         <div class="detail-panel">
-          <h3>🚪 All Rooms (${allRooms.length})</h3>
-          <div style="max-height: 400px; overflow-y: auto;">
+          <h3>🏥 Project Structure</h3>
         `;
-        allRooms.forEach(({ room, fa, dept }) => {
-          const equipCount = room.equipment ? room.equipment.length : 0;
+        
+        // Group by departments
+        project.departments.forEach((dept, deptIndex) => {
+          if (!dept.functionalAreas || dept.functionalAreas.length === 0) return;
+          
+          const deptRoomCount = dept.functionalAreas.reduce((sum, fa) => sum + (fa.rooms?.length || 0), 0);
+          const deptNSF = calculateDeptNSF(dept);
+          
           html += `
-            <div style="padding: 8px; margin-bottom: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px;">
-              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 4px;">
+            <div style="margin-bottom: 16px; padding: 12px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 6px;">
+              <div style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;" onclick="toggleDetailSection('dept-${deptIndex}')">
+                <span id="toggle-dept-${deptIndex}" style="font-size: 0.9rem;">▶</span>
                 <div style="flex: 1;">
-                  <strong>${room.code}</strong> - ${room.name}<br>
-                  <span style="font-size: 0.85rem; color: var(--muted);">${dept.name} → ${fa.name}</span>
-                </div>
-                <div style="text-align: right;">
-                  <input type="number" value="${room.nsf || 0}" 
-                    onchange="updateRoomNSF('${room.id}', this.value)"
-                    style="width: 70px; padding: 2px 4px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 3px; margin-right: 4px;">
-                  <span style="font-size: 0.85rem;">SF</span>
+                  <div style="font-weight: 600; font-size: 1rem;">🏢 ${dept.name}</div>
+                  <div style="font-size: 0.85rem; color: var(--muted); margin-top: 2px;">${deptRoomCount} rooms • ${deptNSF.toLocaleString()} SF</div>
                 </div>
               </div>
-              <div style="display: flex; gap: 4px; margin-top: 4px;">
-                <button onclick="duplicateRoom('${room.id}')" style="flex: 1; padding: 4px 8px; background: var(--primary); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.8rem;">📋 Duplicate</button>
-                <button onclick="deleteRoom('${room.id}')" style="flex: 1; padding: 4px 8px; background: var(--error); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.8rem;">🗑️ Delete</button>
+              <div id="content-dept-${deptIndex}" style="display: none; margin-top: 12px;">
+          `;
+          
+          // Group by functional areas within department
+          dept.functionalAreas.forEach((fa, faIndex) => {
+            if (!fa.rooms || fa.rooms.length === 0) return;
+            
+            const faNSF = calculateFANSF(fa);
+            
+            html += `
+              <div style="margin-left: 12px; margin-bottom: 12px; padding: 8px; background: var(--bg); border-left: 3px solid var(--primary); border-radius: 4px;">
+                <div style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;" onclick="toggleDetailSection('dept-${deptIndex}-fa-${faIndex}')">
+                  <span id="toggle-dept-${deptIndex}-fa-${faIndex}" style="font-size: 0.8rem;">▶</span>
+                  <div style="flex: 1;">
+                    <div style="font-weight: 600; font-size: 0.95rem;">📂 ${fa.name}</div>
+                    <div style="font-size: 0.85rem; color: var(--muted); margin-top: 2px;">${fa.rooms.length} rooms • ${faNSF.toLocaleString()} SF</div>
+                  </div>
+                </div>
+                <div id="content-dept-${deptIndex}-fa-${faIndex}" style="display: none; margin-top: 8px; margin-left: 8px;">
+            `;
+            
+            // Show rooms in this FA (grouped by identity)
+            const roomGroups = groupRoomsByIdentity(fa.rooms);
+            roomGroups.forEach(group => {
+              const room = group.room;
+              const equipCount = room.equipment ? room.equipment.length : 0;
+              html += `
+                <div style="padding: 6px 8px; margin-bottom: 4px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 4px; display: flex; align-items: center; gap: 8px; font-size: 0.85rem;">
+                  <div style="min-width: 30px; text-align: center;">
+                    <input type="number" value="${group.quantity}" min="0" 
+                      onchange="updateRoomGroupQuantity('${group.roomIds.join(',')}', this.value, ${group.quantity})"
+                      style="width: 45px; padding: 2px 4px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 3px; text-align: center; font-size: 0.85rem;"
+                      title="Quantity (0 to delete all, adjust to add/remove copies)">
+                  </div>
+                  <div style="flex: 1; min-width: 0;">
+                    <strong>${room.code}</strong> - ${room.name}
+                  </div>
+                  <div style="white-space: nowrap;">
+                    <input type="number" value="${room.nsf || 0}" 
+                      onchange="updateRoomGroupNSF('${group.roomIds.join(',')}', this.value)"
+                      style="width: 55px; padding: 2px 4px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 3px; text-align: right; font-size: 0.85rem;">
+                    <span style="font-size: 0.75rem; margin-left: 2px;">SF</span>
+                  </div>
+                  <div style="font-size: 0.75rem; color: var(--muted); white-space: nowrap;">${equipCount} eq</div>
+                </div>
+              `;
+            });
+            
+            html += `
+                </div>
               </div>
-              <div style="font-size: 0.8rem; color: var(--muted); margin-top: 4px;">
-                ${equipCount} equipment item${equipCount !== 1 ? 's' : ''}
+            `;
+          });
+          
+          html += `
               </div>
             </div>
           `;
         });
+        
         html += `
-          </div>
         </div>
         `;
       }
@@ -3582,7 +3894,7 @@
             html += `
               <div class="equipment-item">
                 <div class="equipment-item-header">
-                  <span>${eq.jsn} - ${eq.name}</span>
+                  <span>${eq.jsn} - ${eq.name} - <span class="equipment-item-desc${eq.description && eq.description.length > 100 ? ' truncated' : ''}">${eq.description || ''}</span>${eq.description && eq.description.length > 100 ? ' <span class="equipment-desc-toggle" onclick="toggleEquipmentDesc(this)">more</span>' : ''}</span>
                   <span style="display: flex; align-items: center; gap: 8px;">
                     <span>Qty:</span>
                     <input type="number" value="${eq.quantity}" min="1"
@@ -3594,7 +3906,6 @@
                       title="Remove equipment">🗑️</button>
                   </span>
                 </div>
-                <div class="equipment-item-desc">${eq.description.substring(0, 200)}${eq.description.length > 200 ? '...' : ''}</div>
               </div>
             `;
           });
@@ -3667,10 +3978,9 @@
             html += `
               <div class="equipment-item">
                 <div class="equipment-item-header">
-                  <span>${eq.jsn} - ${eq.name}</span>
+                  <span>${eq.jsn} - ${eq.name} - <span class="equipment-item-desc${eq.description && eq.description.length > 100 ? ' truncated' : ''}">${eq.description || ''}</span>${eq.description && eq.description.length > 100 ? '<span class="equipment-desc-toggle" onclick="toggleEquipmentDesc(this)">more</span>' : ''}</span>
                   <span>Qty: ${er.requiredQtyPerRoom} | ${eq.acqIns}</span>
                 </div>
-                <div class="equipment-item-desc">${eq.description.substring(0, 200)}${eq.description.length > 200 ? '...' : ''}</div>
               </div>
             `;
           }
@@ -3801,10 +4111,9 @@
             html += `
               <div class="equipment-item">
                 <div class="equipment-item-header">
-                  <span>${eq.jsn} - ${eq.name}</span>
+                  <span>${eq.jsn} - ${eq.name} - <span class="equipment-item-desc${eq.description && eq.description.length > 100 ? ' truncated' : ''}">${eq.description || ''}</span>${eq.description && eq.description.length > 100 ? '<span class="equipment-desc-toggle" onclick="toggleEquipmentDesc(this)">more</span>' : ''}</span>
                   <span>Qty: ${re.quantity} | ${eq.acqIns}</span>
                 </div>
-                <div class="equipment-item-desc">${eq.description.substring(0, 200)}${eq.description.length > 200 ? '...' : ''}</div>
               </div>
             `;
           }
@@ -3868,6 +4177,340 @@
     function renderAll() {
       renderTree();
       renderDetail();
+      
+      // Render compare mode panels if in compare mode
+      if (currentMode === 'compare') {
+        renderCompareMode();
+      }
+    }
+
+    function renderCompareMode() {
+      const detailView = document.getElementById('detail-view');
+      const compareView = document.getElementById('compare-view');
+      
+      console.log('renderCompareMode called');
+      console.log('compareLeftRoom:', compareLeftRoom);
+      console.log('compareRightRoom:', compareRightRoom);
+      
+      // Left column in detail-view
+      let leftHtml = `
+        <div class="compare-column" id="compare-left-col" ondrop="handleCompareDrop(event, 'left')" ondragover="handleCompareDragOver(event)" ondragleave="handleCompareDragLeave(event)">
+          <h3>Room Comparison - Left Side</h3>
+          <input type="text" class="compare-search" id="compare-left-search" placeholder="Search room code or name..." oninput="searchCompareRoom('left')">
+          <div id="compare-left-results"></div>
+          <div id="compare-left-display">
+      `;
+      
+      if (compareLeftRoom) {
+        console.log('Rendering left room:', compareLeftRoom.room.code);
+        leftHtml += renderRoomComparison(compareLeftRoom);
+      } else {
+        leftHtml += `<p style="color: var(--muted); text-align: center; padding: 40px 0;">Drag a room here or search to compare</p>`;
+      }
+      
+      leftHtml += `
+          </div>
+        </div>
+      `;
+      
+      detailView.innerHTML = leftHtml;
+      
+      // Right column in compare-view
+      let rightHtml = `
+        <div class="compare-column" id="compare-right-col" ondrop="handleCompareDrop(event, 'right')" ondragover="handleCompareDragOver(event)" ondragleave="handleCompareDragLeave(event)">
+          <h3>Room Comparison - Right Side</h3>
+          <input type="text" class="compare-search" id="compare-right-search" placeholder="Search room code or name..." oninput="searchCompareRoom('right')">
+          <div id="compare-right-results"></div>
+          <div id="compare-right-display">
+      `;
+      
+      if (compareRightRoom) {
+        console.log('Rendering right room:', compareRightRoom.room.code);
+        rightHtml += renderRoomComparison(compareRightRoom);
+      } else {
+        rightHtml += `<p style="color: var(--muted); text-align: center; padding: 40px 0;">Drag a room here or search to compare</p>`;
+      }
+      
+      rightHtml += `
+          </div>
+        </div>
+      `;
+      
+      console.log('Setting compareView innerHTML');
+      compareView.innerHTML = rightHtml;
+    }
+
+    function renderRoomComparison(roomData) {
+      const { room, fa, dept } = roomData;
+      const equipCount = room.equipment ? room.equipment.length : 0;
+      const totalNSF = room.nsf || 0;
+      
+      let html = `
+        <div class="compare-room-display">
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
+            <h4>${room.code} - ${room.name}</h4>
+            <button onclick="clearCompareRoom('${roomData.side}')" style="background: var(--pill-inactive); border: none; color: var(--text); padding: 4px 8px; border-radius: 4px; cursor: pointer;">✕</button>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Department:</div>
+            <div class="detail-value">${dept.name}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Functional Area:</div>
+            <div class="detail-value">${fa.name}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">NSF:</div>
+            <div class="detail-value">${totalNSF.toLocaleString()} SF</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Equipment Items:</div>
+            <div class="detail-value">${equipCount}</div>
+          </div>
+      `;
+      
+      // Attributes
+      if (room.attributes && Object.keys(room.attributes).length > 0) {
+        html += `<h4 style="margin-top: 20px; margin-bottom: 12px; font-size: 0.95rem;">Attributes</h4>`;
+        Object.entries(room.attributes).forEach(([key, value]) => {
+          html += `
+            <div class="detail-row">
+              <div class="detail-label">${key}:</div>
+              <div class="detail-value">${value}</div>
+            </div>
+          `;
+        });
+      }
+      
+      // Equipment
+      if (room.equipment && room.equipment.length > 0) {
+        html += `<h4 style="margin-top: 20px; margin-bottom: 12px; font-size: 0.95rem;">Equipment (${room.equipment.length})</h4>`;
+        room.equipment.forEach(eq => {
+          const hasLongDesc = eq.description && eq.description.length > 100;
+          html += `
+            <div style="padding: 8px; margin-bottom: 8px; background: var(--bg-secondary); border-radius: 4px;">
+              <div style="font-weight: 600; margin-bottom: 4px;">${eq.jsn} - ${eq.name} - <span class="equipment-item-desc${hasLongDesc ? ' truncated' : ''}" style="font-size: 0.8rem; color: var(--muted);">${eq.description || ''}</span>${hasLongDesc ? '<span class="equipment-desc-toggle" onclick="toggleEquipmentDesc(this)">more</span>' : ''}</div>
+              <div style="font-size: 0.85rem; color: var(--muted);">Qty: ${eq.quantity} | ${eq.acqIns}</div>
+            </div>
+          `;
+        });
+      }
+      
+      html += `
+        </div>
+      `;
+      
+      return html;
+    }
+
+    function handleRoomDragStart(event, nodeId) {
+      // Store the room code for the drop event (use reference data in compare mode)
+      const treeData = buildTreeData();
+      const node = findNodeById(treeData, nodeId);
+      if (node) {
+        // In compare mode, use roomCode; in program mode, use room.id
+        if (currentMode === 'compare' && node.roomCode) {
+          event.dataTransfer.setData('text/plain', node.roomCode);
+        } else if (node.room) {
+          event.dataTransfer.setData('text/plain', node.room.id);
+        }
+        event.dataTransfer.effectAllowed = 'copy';
+      }
+    }
+
+    function handleCompareDragOver(event) {
+      event.preventDefault();
+      event.currentTarget.classList.add('drag-over');
+    }
+
+    function handleCompareDragLeave(event) {
+      event.currentTarget.classList.remove('drag-over');
+    }
+
+    function handleCompareDrop(event, side) {
+      event.preventDefault();
+      event.currentTarget.classList.remove('drag-over');
+      
+      // Get room code from drag event
+      const roomCode = event.dataTransfer.getData('text/plain');
+      if (!roomCode) return;
+      
+      console.log('Drop received for room code:', roomCode);
+      
+      // Get metadata for this room code
+      const metadata = window.ROOM_METADATA ? window.ROOM_METADATA.get(roomCode) : null;
+      if (!metadata) {
+        console.error('No metadata found for room code:', roomCode);
+        return;
+      }
+      
+      console.log('Found metadata:', metadata);
+      
+      const roomSize = ROOM_SIZES.find(r => r.id === roomCode);
+      if (!roomSize) {
+        console.error('No room size found for room code:', roomCode);
+        return;
+      }
+      
+      // Build room object from reference data
+      const room = {
+        code: roomCode,
+        name: roomSize.name || metadata.roomName || roomCode,
+        nsf: roomSize.nsf || 0,
+        attributes: {},
+        equipment: []
+      };
+      
+      // Add attributes from ROOM_SIZES (all properties except id, name, nsf)
+      Object.keys(roomSize).forEach(key => {
+        if (key !== 'id' && key !== 'name' && key !== 'nsf' && roomSize[key] !== null) {
+          room.attributes[key] = roomSize[key];
+        }
+      });
+      
+      // Add equipment
+      const equipForRoom = ROOM_EQUIPMENT_MAPPINGS.filter(m => m.roomCode === roomCode);
+      equipForRoom.forEach(eq => {
+        const equipDetail = EQUIPMENT_LIST.find(e => e.jsn === eq.jsn);
+        if (equipDetail) {
+          room.equipment.push({
+            jsn: eq.jsn,
+            name: equipDetail.name,
+            quantity: eq.qty || eq.quantity || 1,
+            acqIns: equipDetail.acqIns,
+            description: equipDetail.description
+          });
+        }
+      });
+      
+      const dept = { name: metadata.department };
+      const fa = { name: metadata.functionalArea };
+      
+      console.log('Built room data:', { room, fa, dept });
+      
+      if (side === 'left') {
+        compareLeftRoom = { room, fa, dept, side: 'left' };
+      } else if (side === 'right') {
+        compareRightRoom = { room, fa, dept, side: 'right' };
+      }
+      
+      console.log('Rendering compare mode after drop');
+      renderCompareMode();
+    }
+
+    function clearCompareRoom(side) {
+      if (side === 'left') {
+        compareLeftRoom = null;
+      } else if (side === 'right') {
+        compareRightRoom = null;
+      }
+      renderCompareMode();
+    }
+
+    function searchCompareRoom(side) {
+      const searchInput = document.getElementById(`compare-${side}-search`);
+      const resultsDiv = document.getElementById(`compare-${side}-results`);
+      const query = searchInput.value.toLowerCase().trim();
+      
+      if (!query) {
+        resultsDiv.innerHTML = '';
+        return;
+      }
+      
+      const matches = [];
+      const seenRooms = new Set();
+      
+      // Search reference data
+      ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
+        if (seenRooms.has(mapping.roomCode)) return;
+        
+        const roomSize = ROOM_SIZES[mapping.roomCode];
+        if (!roomSize) return;
+        
+        const roomName = roomSize['Room Name'] || mapping.roomCode;
+        
+        if (mapping.roomCode.toLowerCase().includes(query) || roomName.toLowerCase().includes(query)) {
+          seenRooms.add(mapping.roomCode);
+          matches.push({
+            roomCode: mapping.roomCode,
+            roomName: roomName,
+            deptName: mapping.department,
+            faName: mapping.functionalArea
+          });
+        }
+      });
+      
+      let html = '';
+      if (matches.length > 0) {
+        html = '<div style="background: var(--bg); border: 1px solid var(--border); border-radius: 4px; margin-bottom: 12px; max-height: 200px; overflow-y: auto;">';
+        matches.forEach(match => {
+          html += `
+            <div onclick="selectCompareRoom('${match.roomCode}', '${side}')" style="padding: 8px; cursor: pointer; border-bottom: 1px solid var(--border); transition: background 0.2s;" onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background='transparent'">
+              <div style="font-weight: 600;">${match.roomCode} - ${match.roomName}</div>
+              <div style="font-size: 0.85rem; color: var(--muted);">${match.deptName} → ${match.faName}</div>
+            </div>
+          `;
+        });
+        html += '</div>';
+      } else {
+        html = '<p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 12px;">No matching rooms found</p>';
+      }
+      
+      resultsDiv.innerHTML = html;
+    }
+
+    function selectCompareRoom(roomCode, side) {
+      // Get metadata for this room code
+      const metadata = window.ROOM_METADATA ? window.ROOM_METADATA.get(roomCode) : null;
+      if (!metadata) return;
+      
+      const roomSize = ROOM_SIZES.find(r => r.id === roomCode);
+      if (!roomSize) return;
+      
+      // Build room object from reference data
+      const room = {
+        code: roomCode,
+        name: roomSize.name || metadata.roomName || roomCode,
+        nsf: roomSize.nsf || 0,
+        attributes: {},
+        equipment: []
+      };
+      
+      // Add attributes from ROOM_SIZES (all properties except id, name, nsf)
+      Object.keys(roomSize).forEach(key => {
+        if (key !== 'id' && key !== 'name' && key !== 'nsf' && roomSize[key] !== null) {
+          room.attributes[key] = roomSize[key];
+        }
+      });
+      
+      // Add equipment
+      const equipForRoom = ROOM_EQUIPMENT_MAPPINGS.filter(m => m.roomCode === roomCode);
+      equipForRoom.forEach(eq => {
+        const equipDetail = EQUIPMENT_LIST.find(e => e.jsn === eq.jsn);
+        if (equipDetail) {
+          room.equipment.push({
+            jsn: eq.jsn,
+            name: equipDetail.name,
+            quantity: eq.qty || eq.quantity || 1,
+            acqIns: equipDetail.acqIns,
+            description: equipDetail.description
+          });
+        }
+      });
+      
+      const dept = { name: metadata.department };
+      const fa = { name: metadata.functionalArea };
+      
+      if (side === 'left') {
+        compareLeftRoom = { room, fa, dept, side: 'left' };
+      } else if (side === 'right') {
+        compareRightRoom = { room, fa, dept, side: 'right' };
+      }
+      
+      // Clear search
+      document.getElementById(`compare-${side}-search`).value = '';
+      document.getElementById(`compare-${side}-results`).innerHTML = '';
+      renderCompareMode();
     }
 
     // Debounced version for input handlers
@@ -3906,12 +4549,48 @@
 
     function openImportModal() {
       document.getElementById('import-modal').classList.add('active');
+      document.getElementById('import-search').value = '';
       renderImportTree();
+      setTimeout(() => document.getElementById('import-search').focus(), 100);
     }
 
     function closeImportModal() {
       document.getElementById('import-modal').classList.remove('active');
       selectedImportItems.clear();
+    }
+
+    function filterImportTree() {
+      const searchTerm = document.getElementById('import-search').value.toLowerCase();
+      
+      if (searchTerm) {
+        // Auto-expand all nodes when searching to show matches
+        const deptMap = getDeptMap();
+        deptMap.forEach((faMap, dept) => {
+          const deptMatches = dept.toLowerCase().includes(searchTerm);
+          
+          faMap.forEach((rooms, fa) => {
+            const faMatches = fa.toLowerCase().includes(searchTerm);
+            
+            rooms.forEach(roomCode => {
+              const enrichedMappings = window.ROOM_EQUIPMENT_MAPPINGS || ROOM_EQUIPMENT_MAPPINGS;
+              const roomMapping = enrichedMappings.find(
+                m => m.department === dept && m.functionalArea === fa && m.roomCode === roomCode
+              );
+              const roomName = roomMapping ? roomMapping.roomName : roomCode;
+              const roomMatches = roomCode.toLowerCase().includes(searchTerm) || 
+                                  (roomName && roomName.toLowerCase().includes(searchTerm));
+              
+              // Expand parent nodes if any child matches
+              if (deptMatches || faMatches || roomMatches) {
+                expandedImportNodes.add(dept);
+                expandedImportNodes.add(`${dept}::${fa}`);
+              }
+            });
+          });
+        });
+      }
+      
+      renderImportTree();
     }
 
     function toggleImportNode(nodeId) {
@@ -3929,10 +4608,73 @@
 
       // Use cached department map
       const deptMap = getDeptMap();
+      
+      // Get search term
+      const searchTerm = document.getElementById('import-search')?.value.toLowerCase() || '';
+
+      // Helper function to check if department should be shown
+      function shouldShowDept(dept, faMap) {
+        if (!searchTerm) return true;
+        if (dept.toLowerCase().includes(searchTerm)) return true;
+        
+        // Check if any FA or room matches
+        for (const [fa, rooms] of faMap.entries()) {
+          if (fa.toLowerCase().includes(searchTerm)) return true;
+          
+          for (const roomCode of rooms) {
+            const enrichedMappings = window.ROOM_EQUIPMENT_MAPPINGS || ROOM_EQUIPMENT_MAPPINGS;
+            const roomMapping = enrichedMappings.find(
+              m => m.department === dept && m.functionalArea === fa && m.roomCode === roomCode
+            );
+            const roomName = roomMapping ? roomMapping.roomName : roomCode;
+            if (roomCode.toLowerCase().includes(searchTerm) || 
+                (roomName && roomName.toLowerCase().includes(searchTerm))) {
+              return true;
+            }
+          }
+        }
+        return false;
+      }
+      
+      // Helper function to check if FA should be shown
+      function shouldShowFA(dept, fa, rooms) {
+        if (!searchTerm) return true;
+        if (fa.toLowerCase().includes(searchTerm)) return true;
+        
+        for (const roomCode of rooms) {
+          const enrichedMappings = window.ROOM_EQUIPMENT_MAPPINGS || ROOM_EQUIPMENT_MAPPINGS;
+          const roomMapping = enrichedMappings.find(
+            m => m.department === dept && m.functionalArea === fa && m.roomCode === roomCode
+          );
+          const roomName = roomMapping ? roomMapping.roomName : roomCode;
+          if (roomCode.toLowerCase().includes(searchTerm) || 
+              (roomName && roomName.toLowerCase().includes(searchTerm))) {
+            return true;
+          }
+        }
+        return false;
+      }
+      
+      // Helper function to check if room should be shown
+      function shouldShowRoom(dept, fa, roomCode) {
+        if (!searchTerm) return true;
+        const enrichedMappings = window.ROOM_EQUIPMENT_MAPPINGS || ROOM_EQUIPMENT_MAPPINGS;
+        const roomMapping = enrichedMappings.find(
+          m => m.department === dept && m.functionalArea === fa && m.roomCode === roomCode
+        );
+        const roomName = roomMapping ? roomMapping.roomName : roomCode;
+        return roomCode.toLowerCase().includes(searchTerm) || 
+               (roomName && roomName.toLowerCase().includes(searchTerm));
+      }
 
       // Render unified tree with checkboxes at all levels
       Array.from(deptMap.keys()).sort().forEach(dept => {
-        const faCount = deptMap.get(dept).size;
+        const faMap = deptMap.get(dept);
+        
+        // Skip if doesn't match search
+        if (!shouldShowDept(dept, faMap)) return;
+        
+        const faCount = faMap.size;
         let totalRooms = 0;
         deptMap.get(dept).forEach(rooms => totalRooms += rooms.size);
         const deptId = `dept-${dept.replace(/[^a-zA-Z0-9]/g, '_')}`;
@@ -3954,7 +4696,9 @@
             </div>
             ${isDeptExpanded ? `
               <div style="margin-left: 24px; margin-top: 4px;">
-                ${Array.from(deptMap.get(dept).keys()).sort().map(fa => {
+                ${Array.from(deptMap.get(dept).keys()).sort().filter(fa => {
+                  return shouldShowFA(dept, fa, deptMap.get(dept).get(fa));
+                }).map(fa => {
                   const roomCount = deptMap.get(dept).get(fa).size;
                   const faItemKey = `${dept}::${fa}`;
                   const faId = `fa-${dept.replace(/[^a-zA-Z0-9]/g, '_')}-${fa.replace(/[^a-zA-Z0-9]/g, '_')}`;
@@ -3977,7 +4721,9 @@
                       </div>
                       ${isFaExpanded ? `
                         <div style="margin-left: 24px; margin-top: 2px;">
-                          ${Array.from(deptMap.get(dept).get(fa)).sort().map(roomCode => {
+                          ${Array.from(deptMap.get(dept).get(fa)).sort().filter(roomCode => {
+                            return shouldShowRoom(dept, fa, roomCode);
+                          }).map(roomCode => {
                             const mappings = window.ROOM_EQUIPMENT_MAPPINGS || [];
                             const roomMapping = mappings.find(m => 
                               m.department === dept && 
@@ -4008,7 +4754,7 @@
         `;
       });
 
-      container.innerHTML = html || '<p class="muted">No items available</p>';
+      container.innerHTML = html || `<p class="muted" style="text-align: center; padding: 40px;">${searchTerm ? 'No matching items found' : 'No items available'}</p>`;
       
       // Set indeterminate states after rendering
       document.querySelectorAll('input[data-indeterminate="true"]').forEach(checkbox => {
@@ -4650,6 +5396,219 @@
     // ROOM MANAGEMENT FUNCTIONS
     // -----------------------------
 
+    function updateRoomGroupQuantity(roomIdsStr, newQuantity, currentQuantity) {
+      const qty = parseInt(newQuantity);
+      const currentQty = parseInt(currentQuantity);
+      
+      if (isNaN(qty) || qty < 0) {
+        alert('Please enter a valid quantity (0 or greater)');
+        renderAll();
+        return;
+      }
+
+      const roomIds = roomIdsStr.split(',');
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      // Find the first room to use as template
+      let templateRoom = null;
+      let targetFA = null;
+      
+      for (const dept of project.departments) {
+        if (!dept.functionalAreas) continue;
+        for (const fa of dept.functionalAreas) {
+          if (!fa.rooms) continue;
+          const room = fa.rooms.find(r => r.id === roomIds[0]);
+          if (room) {
+            templateRoom = room;
+            targetFA = fa;
+            break;
+          }
+        }
+        if (templateRoom) break;
+      }
+
+      if (!templateRoom || !targetFA) return;
+
+      if (qty === 0) {
+        // Delete all rooms in the group
+        if (confirm(`Delete all ${currentQty} "${templateRoom.name}" room(s)?`)) {
+          roomIds.forEach(roomId => {
+            const roomIndex = targetFA.rooms.findIndex(r => r.id === roomId);
+            if (roomIndex !== -1) {
+              targetFA.rooms.splice(roomIndex, 1);
+              if (selectedNode && selectedNode.room && selectedNode.room.id === roomId) {
+                selectedNode = null;
+              }
+            }
+          });
+          saveProjects();
+          renderAll();
+        } else {
+          renderAll();
+        }
+        return;
+      }
+
+      const difference = qty - currentQty;
+      
+      if (difference > 0) {
+        // Add more copies
+        for (let i = 0; i < difference; i++) {
+          const newName = templateRoom.name;
+          const newRoom = {
+            id: generateId(),
+            code: templateRoom.code,
+            name: newName,
+            nsf: templateRoom.nsf,
+            attributes: templateRoom.attributes ? { ...templateRoom.attributes } : undefined,
+            equipment: templateRoom.equipment ? templateRoom.equipment.map(eq => ({
+              id: generateId(),
+              jsn: eq.jsn,
+              name: eq.name,
+              quantity: eq.quantity,
+              acqIns: eq.acqIns,
+              description: eq.description
+            })) : []
+          };
+          targetFA.rooms.push(newRoom);
+        }
+        saveProjects();
+        renderAll();
+      } else if (difference < 0) {
+        // Remove some copies (keep the first ones, remove the last)
+        const toRemove = Math.abs(difference);
+        const toRemoveIds = roomIds.slice(-toRemove);
+        
+        toRemoveIds.forEach(roomId => {
+          const roomIndex = targetFA.rooms.findIndex(r => r.id === roomId);
+          if (roomIndex !== -1) {
+            targetFA.rooms.splice(roomIndex, 1);
+            if (selectedNode && selectedNode.room && selectedNode.room.id === roomId) {
+              selectedNode = null;
+            }
+          }
+        });
+        saveProjects();
+        renderAll();
+      }
+      // If difference === 0, no change needed
+    }
+
+    function updateRoomGroupNSF(roomIdsStr, newNSF) {
+      const nsf = parseInt(newNSF);
+      if (isNaN(nsf) || nsf < 0) {
+        alert('Please enter a valid NSF value');
+        renderAll();
+        return;
+      }
+
+      const roomIds = roomIdsStr.split(',');
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      // Update NSF for all rooms in the group
+      for (const dept of project.departments) {
+        if (!dept.functionalAreas) continue;
+        for (const fa of dept.functionalAreas) {
+          if (!fa.rooms) continue;
+          roomIds.forEach(roomId => {
+            const room = fa.rooms.find(r => r.id === roomId);
+            if (room) {
+              room.nsf = nsf;
+            }
+          });
+        }
+      }
+
+      saveProjects();
+      renderAll();
+    }
+
+    function toggleEquipmentDesc(element) {
+      const descDiv = element.previousElementSibling;
+      const isExpanded = descDiv.classList.contains('expanded');
+      
+      if (isExpanded) {
+        descDiv.classList.remove('expanded');
+        descDiv.classList.add('truncated');
+        element.textContent = 'more';
+      } else {
+        descDiv.classList.add('expanded');
+        descDiv.classList.remove('truncated');
+        element.textContent = 'less';
+      }
+    }
+
+    function updateRoomQuantity(roomId, newQuantity) {
+      const qty = parseInt(newQuantity);
+      if (isNaN(qty) || qty < 0) {
+        alert('Please enter a valid quantity (0 or greater)');
+        renderAll();
+        return;
+      }
+
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      // Find the room
+      for (const dept of project.departments) {
+        if (!dept.functionalAreas) continue;
+        for (const fa of dept.functionalAreas) {
+          if (!fa.rooms) continue;
+          const roomIndex = fa.rooms.findIndex(r => r.id === roomId);
+          if (roomIndex !== -1) {
+            const room = fa.rooms[roomIndex];
+            
+            if (qty === 0) {
+              // Delete the room
+              if (confirm(`Delete "${room.name}"?`)) {
+                fa.rooms.splice(roomIndex, 1);
+                if (selectedNode && selectedNode.room && selectedNode.room.id === roomId) {
+                  selectedNode = null;
+                }
+                saveProjects();
+                renderAll();
+              } else {
+                renderAll(); // Reset the input
+              }
+              return;
+            } else if (qty > 1) {
+              // Duplicate the room (qty - 1) times
+              const duplicateCount = qty - 1;
+              for (let i = 0; i < duplicateCount; i++) {
+                const newName = room.name + ' (Copy)';
+                const newRoom = {
+                  id: generateId(),
+                  code: room.code,
+                  name: newName,
+                  nsf: room.nsf,
+                  attributes: room.attributes ? {
+                    ...room.attributes,
+                    'Room Name': newName
+                  } : { 'Room Name': newName },
+                  equipment: room.equipment.map(eq => ({
+                    id: generateId(),
+                    jsn: eq.jsn,
+                    name: eq.name,
+                    quantity: eq.quantity,
+                    acqIns: eq.acqIns,
+                    description: eq.description
+                  }))
+                };
+                fa.rooms.push(newRoom);
+              }
+              saveProjects();
+              renderAll();
+              return;
+            }
+            // qty === 1: do nothing, it's the current state
+            return;
+          }
+        }
+      }
+    }
+
     function updateRoomNSF(roomId, newNSF) {
       const project = getCurrentProject();
       if (!project.departments) return;
@@ -4829,6 +5788,62 @@
             return;
           }
         }
+      }
+    }
+
+    function deleteDepartment(deptId) {
+      const project = getCurrentProject();
+      const dept = project.departments?.find(d => d.id === deptId);
+      
+      if (!dept) return;
+      
+      const faCount = dept.functionalAreas?.length || 0;
+      let roomCount = 0;
+      dept.functionalAreas?.forEach(fa => {
+        roomCount += fa.rooms?.length || 0;
+      });
+      
+      const confirmMsg = `Are you sure you want to delete "${dept.name}"?\n\nThis will delete:\n- ${faCount} functional area(s)\n- ${roomCount} room(s)\n\nThis action cannot be undone.`;
+      
+      if (!confirm(confirmMsg)) return;
+      
+      if (!project.departments) return;
+      
+      const deptIndex = project.departments.findIndex(d => d.id === deptId);
+      if (deptIndex !== -1) {
+        project.departments.splice(deptIndex, 1);
+        saveProjects();
+        // Clear selection if the deleted department was selected
+        if (selectedNode && selectedNode.department && selectedNode.department.id === deptId) {
+          selectedNode = null;
+        }
+        renderAll();
+      }
+    }
+
+    function deleteFunctionalArea(faId, deptId) {
+      const project = getCurrentProject();
+      const dept = project.departments?.find(d => d.id === deptId);
+      const fa = dept?.functionalAreas?.find(f => f.id === faId);
+      
+      if (!fa) return;
+      
+      const roomCount = fa.rooms?.length || 0;
+      const confirmMsg = `Are you sure you want to delete "${fa.name}"?\n\nThis will delete ${roomCount} room(s).\n\nThis action cannot be undone.`;
+      
+      if (!confirm(confirmMsg)) return;
+      
+      if (!dept || !dept.functionalAreas) return;
+      
+      const faIndex = dept.functionalAreas.findIndex(f => f.id === faId);
+      if (faIndex !== -1) {
+        dept.functionalAreas.splice(faIndex, 1);
+        saveProjects();
+        // Clear selection if the deleted functional area was selected
+        if (selectedNode && selectedNode.functionalArea && selectedNode.functionalArea.id === faId) {
+          selectedNode = null;
+        }
+        renderAll();
       }
     }
 
@@ -5197,7 +6212,13 @@
         const room = {};
         
         headers.forEach((header, index) => {
-          const value = values[index] || '';
+          let value = values[index] || '';
+          
+          // Remove surrounding quotes if present (common in TSV/CSV for fields with commas)
+          if (value.startsWith('"') && value.endsWith('"')) {
+            value = value.slice(1, -1);
+          }
+          
           // Convert to appropriate type
           if (value === '') {
             room[header] = null;
