@@ -335,21 +335,23 @@
       background-color: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 16px;
+      padding: 12px;
+      margin-bottom: 10px;
     }
 
     .detail-panel h3 {
-      margin-bottom: 12px;
-      font-size: 1.1rem;
+      margin: 0 0 8px 0;
+      font-size: 1rem;
       color: var(--accent);
     }
 
     .detail-row {
-      display: flex;
-      padding: 8px 0;
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 8px;
+      padding: 4px 0;
       border-bottom: 1px solid #222;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
     }
 
     .detail-row:last-child {
@@ -377,13 +379,27 @@
       background-color: rgba(255, 255, 255, 0.02);
       border-radius: 4px;
       font-size: 0.8rem;
+      overflow: hidden; /* Prevent horizontal scroll */
     }
 
     .equipment-item-header {
       display: flex;
       justify-content: space-between;
+      gap: 12px;
       font-weight: 600;
       margin-bottom: 4px;
+      min-width: 0; /* Allow flex items to shrink below content size */
+    }
+    
+    .equipment-item-header > span:first-child {
+      flex: 1;
+      min-width: 0; /* Allow text to wrap/truncate */
+      overflow: hidden;
+    }
+    
+    .equipment-item-header > span:last-child {
+      flex-shrink: 0; /* Don't shrink the quantity/acq info */
+      white-space: nowrap;
     }
 
     .equipment-item-desc {
@@ -391,14 +407,17 @@
       font-size: 0.75rem;
       line-height: 1.4;
       display: block;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     .equipment-item-desc.truncated {
-      display: inline;
-      white-space: nowrap;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 100%;
     }
 
     .equipment-item-desc.expanded {
@@ -826,6 +845,31 @@
     .add-to-project-btn:hover {
       opacity: 0.9;
     }
+
+    .tree-search-box {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.9rem;
+      margin-top: 12px;
+      margin-bottom: 0;
+    }
+
+    .tree-search-box:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .tree-item.search-match {
+      background-color: rgba(0, 184, 148, 0.1);
+    }
+
+    .tree-item.search-highlight {
+      background-color: rgba(0, 184, 148, 0.3);
+    }
   </style>
 </head>
 <body>
@@ -859,6 +903,7 @@
             <button class="mode-btn" data-mode="reference" onclick="switchMode('reference')">Reference Mode</button>
             <button class="mode-btn" data-mode="compare" onclick="switchMode('compare')">Compare Mode</button>
           </div>
+          <input type="text" id="tree-search-box" class="tree-search-box" placeholder="🔍 Search rooms, departments..." oninput="filterTreeDebounced()" style="display: none;" />
         </div>
         <button class="add-to-project-btn" id="add-to-project-btn" onclick="openImportModal()" style="display: none;">+ Add to Project</button>
         <div id="tree-view"></div>
@@ -1107,6 +1152,10 @@
           const deptFaMap = new Map();
           
           // Skip header line
+          // Build map of ALL room instances (not just first occurrence)
+          // This allows rooms like SB191 to appear in multiple departments
+          const allRoomInstances = [];
+          
           for (let i = 1; i < lines.length; i++) {
             const line = lines[i].trim();
             if (!line) continue;
@@ -1128,6 +1177,15 @@
               const roomCode = match[1];
               const roomName = roomNameField.split(' - ').slice(2).join(' - ').trim();
               
+              // Store ALL instances, not just first occurrence
+              allRoomInstances.push({
+                roomCode: roomCode,
+                department: dept,
+                functionalArea: fa,
+                roomName: roomName
+              });
+              
+              // Also keep first occurrence map for backward compatibility
               if (!deptFaMap.has(roomCode)) {
                 deptFaMap.set(roomCode, {
                   department: dept,
@@ -1139,51 +1197,72 @@
           }
           
           console.log(`Built metadata for ${deptFaMap.size} unique room codes`);
+          console.log(`Found ${allRoomInstances.length} total room instances (including duplicates across departments)`);
           console.log('Sample metadata:', Array.from(deptFaMap.entries()).slice(0, 3));
           
           // Store globally for compare mode
           window.ROOM_METADATA = deptFaMap;
+          window.ALL_ROOM_INSTANCES = allRoomInstances;
           
-          // Enrich the mappings
-          const enrichedMappings = [];
+          // Build indexed lookup for performance - O(1) instead of O(n) filter
+          const roomInstancesByCode = new Map();
+          allRoomInstances.forEach(instance => {
+            if (!roomInstancesByCode.has(instance.roomCode)) {
+              roomInstancesByCode.set(instance.roomCode, []);
+            }
+            roomInstancesByCode.get(instance.roomCode).push(instance);
+          });
+          
+          console.log(`Starting enrichment of ${ROOM_EQUIPMENT_MAPPINGS.length} base equipment mappings...`);
+          
+          // First deduplicate the base mappings - same equipment appears multiple times per room
+          const uniqueEquipment = new Map();
           ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
-            const metadata = deptFaMap.get(mapping.roomCode);
-            if (metadata) {
-              enrichedMappings.push({
-                ...mapping,
-                department: metadata.department,
-                functionalArea: metadata.functionalArea,
-                roomName: metadata.roomName,
-                equipmentJsn: mapping.jsn,
-                quantity: mapping.qty || 1
-              });
-            } else {
-              console.warn('No metadata found for room code:', mapping.roomCode);
+            const key = `${mapping.roomCode}|${mapping.jsn}`;
+            if (!uniqueEquipment.has(key)) {
+              uniqueEquipment.set(key, mapping);
             }
           });
+          console.log(`Deduplicated base equipment from ${ROOM_EQUIPMENT_MAPPINGS.length} to ${uniqueEquipment.size} unique room+equipment combinations`);
           
-          // Update window property only (can't reassign const)
-          window.ROOM_EQUIPMENT_MAPPINGS = enrichedMappings;
-          console.log(`Enriched to ${enrichedMappings.length} mappings with metadata`);
-          console.log('Sample enriched mapping:', enrichedMappings[0]);
-          console.log('First mapping details:', {
-            roomCode: enrichedMappings[0].roomCode,
-            department: enrichedMappings[0].department,
-            functionalArea: enrichedMappings[0].functionalArea,
-            roomName: enrichedMappings[0].roomName
+          // Simply add metadata to each unique mapping
+          // Tree building will use ALL_ROOM_INSTANCES to show rooms in multiple depts
+          const enrichedMappings = Array.from(uniqueEquipment.values()).map(mapping => {
+            const metadata = deptFaMap.get(mapping.roomCode);
+            return {
+              ...mapping,
+              department: metadata?.department || 'Unknown',
+              functionalArea: metadata?.functionalArea || 'Unknown',
+              roomName: metadata?.roomName || mapping.roomCode,
+              equipmentJsn: mapping.jsn,
+              quantity: mapping.qty || 1
+            };
           });
-          console.log('Verifying window.ROOM_EQUIPMENT_MAPPINGS updated:', window.ROOM_EQUIPMENT_MAPPINGS[0]);
+          
+          console.log(`Enriched ${enrichedMappings.length} mappings with metadata (deduplicated)`);
+          
+          // Update window property
+          window.ROOM_EQUIPMENT_MAPPINGS = enrichedMappings;
           
           // Reset cached dept map so import tree rebuilds with enriched data
           cachedDeptMap = null;
           
+          // No deduplication needed since we already deduplicated during enrichment
+          // Invalidate cached reference tree since data changed
+          cachedReferenceTree = null;
+          lastMappingsLength = 0;
+          
           // Build ROOM_EQUIPMENT lookup object for easy access by room code
+          // Pre-build equipment items lookup for O(1) access
+          const equipLookup = new Map();
+          EQUIPMENT_LIST.forEach(eq => equipLookup.set(eq.jsn, eq));
+          
           window.ROOM_EQUIPMENT = {};
           enrichedMappings.forEach(mapping => {
             if (!window.ROOM_EQUIPMENT[mapping.roomCode]) {
               window.ROOM_EQUIPMENT[mapping.roomCode] = [];
             }
-            const equipItem = EQUIPMENT_LIST.find(e => e.jsn === mapping.equipmentJsn);
+            const equipItem = equipLookup.get(mapping.equipmentJsn);
             if (equipItem) {
               window.ROOM_EQUIPMENT[mapping.roomCode].push({
                 JSN: equipItem.jsn,
@@ -1194,7 +1273,7 @@
               });
             }
           });
-          console.log('Built ROOM_EQUIPMENT lookup with', Object.keys(window.ROOM_EQUIPMENT).length, 'room codes');
+          console.log('Built ROOM_EQUIPMENT lookup for', Object.keys(window.ROOM_EQUIPMENT).length, 'room codes');
           
           // Now trigger initial render with enriched data
           viewState = 'project-list';
@@ -2580,6 +2659,14 @@
         addBtn.style.display = mode === 'program' ? 'block' : 'none';
       }
       
+      // Show/hide search box based on mode
+      const searchBox = document.getElementById('tree-search-box');
+      if (searchBox) {
+        // Show search in reference mode (project list shows tree in reference mode)
+        searchBox.style.display = mode === 'reference' ? 'block' : 'none';
+        searchBox.value = ''; // Clear search when switching modes
+      }
+      
       const layout = document.querySelector('.layout');
       if (mode === 'compare') {
         layout.classList.add('compare-mode');
@@ -2596,7 +2683,122 @@
       renderAll();
     }
 
-    function selectProjectInList(projectId) {
+    // Debounce filterTree for better performance during typing
+    let filterTreeTimeout = null;
+    function filterTreeDebounced() {
+      if (filterTreeTimeout) {
+        clearTimeout(filterTreeTimeout);
+      }
+      filterTreeTimeout = setTimeout(filterTree, 150);
+    }
+
+    function filterTree() {
+      const searchBox = document.getElementById('tree-search-box');
+      const searchText = searchBox ? searchBox.value.toLowerCase().trim() : '';
+      
+      // Clear all search-related classes
+      document.querySelectorAll('.tree-item').forEach(item => {
+        item.classList.remove('search-match', 'search-highlight');
+      });
+      
+      if (!searchText) {
+        // If search is empty, show everything and collapse auto-expanded nodes
+        document.querySelectorAll('.tree-item').forEach(item => {
+          item.style.display = '';
+        });
+        renderTree();
+        return;
+      }
+      
+      // Find all matching items
+      const allItems = document.querySelectorAll('.tree-item');
+      const matchingItems = new Set();
+      const parentItems = new Set();
+      const nodesToExpand = new Set();
+      
+      allItems.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        const nodeId = item.dataset.nodeId;
+        
+        if (text.includes(searchText)) {
+          matchingItems.add(item);
+          item.classList.add('search-match');
+          
+          // Find and highlight the exact match within the text
+          if (nodeId && nodeId.startsWith('room-')) {
+            item.classList.add('search-highlight');
+          }
+          
+          // Add all parent nodes to ensure they're visible
+          let parentId = item.dataset.parentId;
+          while (parentId) {
+            const parentItem = document.querySelector(`[data-node-id="${parentId}"]`);
+            if (parentItem) {
+              parentItems.add(parentItem);
+              matchingItems.add(parentItem);
+              
+              // Track nodes that should be expanded
+              nodesToExpand.add(parentId);
+              
+              parentId = parentItem.dataset.parentId;
+            } else {
+              break;
+            }
+          }
+        }
+      });
+      
+      // Expand parent nodes
+      nodesToExpand.forEach(nodeId => {
+        if (!expandedNodes.has(nodeId)) {
+          expandedNodes.add(nodeId);
+        }
+      });
+      
+      // Re-render tree to show expanded state, then apply filters
+      renderTree();
+      
+      // Re-apply search highlighting and visibility after render (async for better performance)
+      requestAnimationFrame(() => {
+        const updatedItems = document.querySelectorAll('.tree-item');
+        const updatedMatching = new Set();
+        
+        updatedItems.forEach(item => {
+          const text = item.textContent.toLowerCase();
+          const nodeId = item.dataset.nodeId;
+          
+          if (text.includes(searchText)) {
+            updatedMatching.add(item);
+            item.classList.add('search-match');
+            
+            if (nodeId && nodeId.startsWith('room-')) {
+              item.classList.add('search-highlight');
+            }
+            
+            // Add parent chain
+            let parentId = item.dataset.parentId;
+            while (parentId) {
+              const parentItem = document.querySelector(`[data-node-id="${parentId}"]`);
+              if (parentItem) {
+                updatedMatching.add(parentItem);
+                parentId = parentItem.dataset.parentId;
+              } else {
+                break;
+              }
+            }
+          }
+        });
+        
+        // Hide non-matching items
+        updatedItems.forEach(item => {
+          if (updatedMatching.has(item)) {
+            item.style.display = '';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      }, 0);
+    }    function selectProjectInList(projectId) {
       selectedProjectInList = projectId;
       renderDetail();
     }
@@ -2655,6 +2857,15 @@
     function buildTreeData() {
       // Reference/Compare mode - always show reference tree regardless of view state
       if (currentMode === 'reference' || currentMode === 'compare') {
+        const mappings = window.ROOM_EQUIPMENT_MAPPINGS || [];
+        
+        // Return cached tree if data hasn't changed (and we have data)
+        if (cachedReferenceTree && mappings.length > 0 && lastMappingsLength === mappings.length) {
+          return cachedReferenceTree;
+        }
+        
+        console.log('Building reference tree from', mappings.length, 'mappings');
+        
         const tree = {
           id: 'reference-root',
           type: 'reference-root',
@@ -2663,42 +2874,70 @@
           children: []
         };
 
-        const deptMap = new Map();
-        
-        console.log('Building reference tree from ROOM_EQUIPMENT_MAPPINGS');
-        console.log('ROOM_EQUIPMENT_MAPPINGS length:', window.ROOM_EQUIPMENT_MAPPINGS ? window.ROOM_EQUIPMENT_MAPPINGS.length : 'undefined');
-        console.log('First mapping in tree build:', window.ROOM_EQUIPMENT_MAPPINGS ? window.ROOM_EQUIPMENT_MAPPINGS[0] : 'no data');
-        
-        const mappings = window.ROOM_EQUIPMENT_MAPPINGS || [];
         if (mappings.length === 0) {
           console.warn('No equipment mappings available for reference tree');
           return tree;
         }
+
+        const deptMap = new Map();
         
-        mappings.forEach(mapping => {
-          if (!deptMap.has(mapping.department)) {
-            deptMap.set(mapping.department, {
-              name: mapping.department,
-              functionalAreas: new Map()
-            });
-          }
-          
-          const dept = deptMap.get(mapping.department);
-          if (!dept.functionalAreas.has(mapping.functionalArea)) {
-            dept.functionalAreas.set(mapping.functionalArea, {
-              name: mapping.functionalArea,
-              rooms: new Map()
-            });
-          }
-          
-          const fa = dept.functionalAreas.get(mapping.functionalArea);
-          if (!fa.rooms.has(mapping.roomCode)) {
-            fa.rooms.set(mapping.roomCode, {
-              code: mapping.roomCode,
-              name: mapping.roomName
-            });
-          }
-        });
+        // Build tree structure efficiently from ALL_ROOM_INSTANCES instead of mappings
+        // This is much faster than iterating through millions of mapping entries
+        const allInstances = window.ALL_ROOM_INSTANCES || [];
+        if (allInstances.length > 0) {
+          console.log('Building tree from', allInstances.length, 'room instances (optimized)');
+          allInstances.forEach(instance => {
+            if (!deptMap.has(instance.department)) {
+              deptMap.set(instance.department, {
+                name: instance.department,
+                functionalAreas: new Map()
+              });
+            }
+            
+            const dept = deptMap.get(instance.department);
+            if (!dept.functionalAreas.has(instance.functionalArea)) {
+              dept.functionalAreas.set(instance.functionalArea, {
+                name: instance.functionalArea,
+                rooms: new Map()
+              });
+            }
+            
+            const fa = dept.functionalAreas.get(instance.functionalArea);
+            if (!fa.rooms.has(instance.roomCode)) {
+              fa.rooms.set(instance.roomCode, {
+                code: instance.roomCode,
+                name: instance.roomName
+              });
+            }
+          });
+        } else {
+          // Fallback to mappings if ALL_ROOM_INSTANCES not available
+          console.log('Building tree from', mappings.length, 'mappings (fallback)');
+          mappings.forEach(mapping => {
+            if (!deptMap.has(mapping.department)) {
+              deptMap.set(mapping.department, {
+                name: mapping.department,
+                functionalAreas: new Map()
+              });
+            }
+            
+            const dept = deptMap.get(mapping.department);
+            if (!dept.functionalAreas.has(mapping.functionalArea)) {
+              dept.functionalAreas.set(mapping.functionalArea, {
+                name: mapping.functionalArea,
+                rooms: new Map()
+              });
+            }
+            
+            const fa = dept.functionalAreas.get(mapping.functionalArea);
+            if (!fa.rooms.has(mapping.roomCode)) {
+              fa.rooms.set(mapping.roomCode, {
+                code: mapping.roomCode,
+                name: mapping.roomName
+              });
+            }
+          });
+        }
 
         Array.from(deptMap.keys()).sort().forEach(deptName => {
           const dept = deptMap.get(deptName);
@@ -2740,6 +2979,11 @@
 
           tree.children.push(deptNode);
         });
+
+        // Cache the tree for next time
+        cachedReferenceTree = tree;
+        lastMappingsLength = mappings.length;
+        console.log('Reference tree cached with', tree.children.length, 'departments');
 
         return tree;
       }
@@ -2861,12 +3105,15 @@
       const modeToggle = document.getElementById('mode-toggle');
       const addBtn = document.getElementById('add-to-project-btn');
       const returnBtn = document.getElementById('return-to-projects-btn');
+      const searchBox = document.getElementById('tree-search-box');
 
       if (viewState === 'project-list') {
         // Show mode toggle, hide add button and return button in project list view
         if (modeToggle) modeToggle.style.display = 'flex';
         if (addBtn) addBtn.style.display = 'none';
         if (returnBtn) returnBtn.style.display = 'none';
+        // Show search box in reference mode even in project list (when tree is shown)
+        if (searchBox) searchBox.style.display = currentMode === 'reference' ? 'block' : 'none';
         
         // Render project list in program mode, tree in reference/compare mode
         if (currentMode === 'program') {
@@ -2908,14 +3155,19 @@
         container.innerHTML = html;
         } else {
           // Reference/Compare mode in project list - show reference tree
+          console.log('Rendering reference tree in project-list view, mode:', currentMode);
           const treeData = buildTreeData();
-          container.innerHTML = renderTreeNode(treeData);
+          console.log('Tree data:', treeData ? `${treeData.children?.length || 0} children` : 'null');
+          const treeHTML = renderTreeNode(treeData);
+          console.log('Tree HTML length:', treeHTML?.length || 0);
+          container.innerHTML = treeHTML;
         }
       } else {
-        // Show mode toggle and conditionally show add/return buttons
+        // Show mode toggle and conditionally show add/return buttons and search box
         if (modeToggle) modeToggle.style.display = 'flex';
         if (returnBtn) returnBtn.style.display = currentMode === 'compare' ? 'none' : 'block';
         if (addBtn) addBtn.style.display = currentMode === 'program' ? 'block' : 'none';
+        if (searchBox) searchBox.style.display = currentMode === 'reference' ? 'block' : 'none';
         
         // Render project tree (program mode) or reference tree (reference/compare mode)
         const treeData = buildTreeData();
@@ -3406,25 +3658,27 @@
     }
 
     function renderDepartmentReferenceDetail() {
-      let faCount = 0;
-      let roomCount = 0;
       const deptName = selectedNode.label;
 
+      // Count all room instances and calculate total NSF
+      const allInstances = window.ALL_ROOM_INSTANCES || [];
+      const deptInstances = allInstances.filter(instance => instance.department === deptName);
+      const roomCount = deptInstances.length;
+      
+      // Count functional areas from room instances
       const fas = new Set();
-      ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
-        if (mapping.department === deptName) {
-          fas.add(mapping.functionalArea);
+      deptInstances.forEach(instance => {
+        fas.add(instance.functionalArea);
+      });
+      const faCount = fas.size;
+      
+      let totalNSF = 0;
+      deptInstances.forEach(instance => {
+        const roomData = getRoomAttributes(instance.roomCode);
+        if (roomData && roomData.nsf) {
+          totalNSF += roomData.nsf;
         }
       });
-      faCount = fas.size;
-
-      const rooms = new Set();
-      ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
-        if (mapping.department === deptName) {
-          rooms.add(mapping.roomCode);
-        }
-      });
-      roomCount = rooms.size;
 
       return `
         <div class="detail-panel">
@@ -3441,6 +3695,10 @@
             <div class="detail-label">Total Rooms:</div>
             <div class="detail-value">${roomCount}</div>
           </div>
+          <div class="detail-row">
+            <div class="detail-label">Total NSF:</div>
+            <div class="detail-value">${totalNSF.toLocaleString()} SF</div>
+          </div>
         </div>
         <div class="detail-panel">
           <p style="color: var(--muted); font-size: 0.9rem;">
@@ -3454,10 +3712,18 @@
       const deptName = selectedNode.department;
       const faName = selectedNode.label;
 
-      const rooms = new Set();
-      ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
-        if (mapping.department === deptName && mapping.functionalArea === faName) {
-          rooms.add(mapping.roomCode);
+      // Count all room instances and calculate total NSF
+      const allInstances = window.ALL_ROOM_INSTANCES || [];
+      const faInstances = allInstances.filter(instance => 
+        instance.department === deptName && instance.functionalArea === faName
+      );
+      const roomCount = faInstances.length;
+      
+      let totalNSF = 0;
+      faInstances.forEach(instance => {
+        const roomData = getRoomAttributes(instance.roomCode);
+        if (roomData && roomData.nsf) {
+          totalNSF += roomData.nsf;
         }
       });
 
@@ -3474,7 +3740,11 @@
           </div>
           <div class="detail-row">
             <div class="detail-label">Rooms:</div>
-            <div class="detail-value">${rooms.size}</div>
+            <div class="detail-value">${roomCount}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Total NSF:</div>
+            <div class="detail-value">${totalNSF.toLocaleString()} SF</div>
           </div>
         </div>
         <div class="detail-panel">
@@ -4021,13 +4291,15 @@
       const roomData = getRoomAttributes(roomCode);
       console.log('Found roomData:', roomData ? 'Yes' : 'No', roomData ? roomData.id : 'null');
       
-      // Get all equipment for this room code
-      const roomEquipment = getEquipmentMappings().filter(
-        re => re.roomCode === roomCode && 
-             re.department === department && 
-             re.functionalArea === functionalArea
-      );
-      console.log('Found equipment mappings:', roomEquipment.length);
+      // Get all equipment for this room code (don't filter by dept/FA since equipment is same across instances)
+      const allMappings = getEquipmentMappings();
+      console.log('Total equipment mappings available:', allMappings.length);
+      const roomEquipment = allMappings.filter(re => re.roomCode === roomCode);
+      console.log('Found equipment mappings for', roomCode, ':', roomEquipment.length);
+      if (roomEquipment.length > 0) {
+        console.log('Sample equipment mapping:', roomEquipment[0]);
+        console.log('First 5 JSNs:', roomEquipment.slice(0, 5).map(re => re.jsn));
+      }
 
       let html = `
         <div class="detail-panel">
@@ -4045,50 +4317,46 @@
         </div>
       `;
 
-      // Room Attributes - show in compact two-column layout
+      // Room Attributes - show in compact three-column layout
       if (roomData) {
         html += `
           <div class="detail-panel">
-            <h3>📋 Room Attributes</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <h3>📋 Attributes</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; font-size: 0.75rem;">
               <div>
-                <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--muted);">🏗️ Materials & Finishes</h4>
-                ${renderReadOnlyAttribute('Ceiling Material', roomData.ceilingMaterial)}
-                ${renderReadOnlyAttribute('Wall Material', roomData.wallMaterial)}
-                ${renderReadOnlyAttribute('Floor Material', roomData.floorMaterial)}
-                ${renderReadOnlyAttribute('Door Material', roomData.doorMaterial)}
-                ${renderReadOnlyAttribute('Door Type', roomData.doorType)}
+                <h4 style="margin: 0 0 4px 0; font-size: 0.75rem; color: var(--muted);">🏗️ Materials</h4>
+                ${renderReadOnlyAttribute('Ceiling', roomData.ceilingMaterial)}
+                ${renderReadOnlyAttribute('Wall', roomData.wallMaterial)}
+                ${renderReadOnlyAttribute('Floor', roomData.floorMaterial)}
+                ${renderReadOnlyAttribute('Door', roomData.doorMaterial)}
                 
-                <h4 style="margin: 12px 0 8px 0; font-size: 0.9rem; color: var(--muted);">❄️ HVAC</h4>
-                ${renderReadOnlyAttribute('Min Total ACH', roomData.minTotalAch)}
-                ${renderReadOnlyAttribute('Min OA ACH', roomData.minOaAch)}
-                ${renderReadOnlyAttribute('Room Air Balance', roomData.roomAirBalance)}
-                ${renderReadOnlyAttribute('Temp Cooling (°C)', roomData.indoorTempCoolingC)}
-                ${renderReadOnlyAttribute('Temp Heating (°C)', roomData.indoorTempHeatingC)}
-                ${renderReadOnlyAttribute('RH Max (%)', roomData.indoorRelativeHumidityRhMax)}
-                ${renderReadOnlyAttribute('RH Min (%)', roomData.indoorRelativeHumidityRhMin)}
-                
-                <h4 style="margin: 12px 0 8px 0; font-size: 0.9rem; color: var(--muted);">💡 Lighting & Acoustics</h4>
-                ${renderReadOnlyAttribute('Lighting Level', roomData.lightingLevel)}
-                ${renderReadOnlyAttribute('Max Noise (NC)', roomData.maxNoiseLevelNc)}
-                ${renderReadOnlyAttribute('Acoustical Criteria', roomData.acousticalCriteria)}
+                <h4 style="margin: 6px 0 4px 0; font-size: 0.75rem; color: var(--muted);">💡 Light/Sound</h4>
+                ${renderReadOnlyAttribute('Lighting', roomData.lightingLevel)}
+                ${renderReadOnlyAttribute('Max NC', roomData.maxNoiseLevelNc)}
               </div>
               <div>
-                <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--muted);">🔧 Medical Gases</h4>
-                ${renderReadOnlyAttribute('Medical Air', roomData.medAir)}
-                ${renderReadOnlyAttribute('Medical Vacuum', roomData.medVac)}
-                ${renderReadOnlyAttribute('Oxygen', roomData.oxygen)}
-                ${renderReadOnlyAttribute('Nitrogen', roomData.nitrogen)}
-                ${renderReadOnlyAttribute('Nitrous Oxide', roomData.nitrousOxide)}
-                ${renderReadOnlyAttribute('CO2', roomData.co2)}
-                ${renderReadOnlyAttribute('Dental Air', roomData.dentalAir)}
-                ${renderReadOnlyAttribute('Dental Vacuum', roomData.dentalVac)}
+                <h4 style="margin: 0 0 4px 0; font-size: 0.75rem; color: var(--muted);">❄️ HVAC</h4>
+                ${renderReadOnlyAttribute('Total ACH', roomData.minTotalAch)}
+                ${renderReadOnlyAttribute('OA ACH', roomData.minOaAch)}
+                ${renderReadOnlyAttribute('Air Balance', roomData.roomAirBalance)}
+                ${renderReadOnlyAttribute('Cool', roomData.indoorTempCoolingC ? roomData.indoorTempCoolingC + '°C' : null)}
+                ${renderReadOnlyAttribute('Heat', roomData.indoorTempHeatingC ? roomData.indoorTempHeatingC + '°C' : null)}
+                ${renderReadOnlyAttribute('RH Max', roomData.indoorRelativeHumidityRhMax ? roomData.indoorRelativeHumidityRhMax + '%' : null)}
+                ${renderReadOnlyAttribute('RH Min', roomData.indoorRelativeHumidityRhMin ? roomData.indoorRelativeHumidityRhMin + '%' : null)}
+              </div>
+              <div>
+                <h4 style="margin: 0 0 4px 0; font-size: 0.75rem; color: var(--muted);">🔧 Med Gas</h4>
+                ${renderReadOnlyAttribute('Med Air', roomData.medAir)}
+                ${renderReadOnlyAttribute('Med Vac', roomData.medVac)}
+                ${renderReadOnlyAttribute('O₂', roomData.oxygen)}
+                ${renderReadOnlyAttribute('N₂', roomData.nitrogen)}
+                ${renderReadOnlyAttribute('N₂O', roomData.nitrousOxide)}
                 
-                <h4 style="margin: 12px 0 8px 0; font-size: 0.9rem; color: var(--muted);">💧 Plumbing</h4>
-                ${renderReadOnlyAttribute('Cold Water', roomData.domesticColdWater)}
-                ${renderReadOnlyAttribute('Hot Water', roomData.domesticHotWater)}
-                ${renderReadOnlyAttribute('Floor Drain', roomData.floorDrain)}
-                ${renderReadOnlyAttribute('Natural Gas', roomData.naturalGas)}
+                <h4 style="margin: 6px 0 4px 0; font-size: 0.75rem; color: var(--muted);">💧 Plumbing</h4>
+                ${renderReadOnlyAttribute('Cold', roomData.domesticColdWater)}
+                ${renderReadOnlyAttribute('Hot', roomData.domesticHotWater)}
+                ${renderReadOnlyAttribute('Drain', roomData.floorDrain)}
+                ${renderReadOnlyAttribute('Gas', roomData.naturalGas)}
               </div>
             </div>
           </div>
@@ -4963,14 +5231,15 @@
         project.departments.push(dept);
       }
 
-      // Import all functional areas
+      // Use ALL_ROOM_INSTANCES to find functional areas and rooms for this department
       const faMap = new Map();
-      ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
-        if (mapping.department === deptName) {
-          if (!faMap.has(mapping.functionalArea)) {
-            faMap.set(mapping.functionalArea, new Set());
+      const allInstances = window.ALL_ROOM_INSTANCES || [];
+      allInstances.forEach(instance => {
+        if (instance.department === deptName) {
+          if (!faMap.has(instance.functionalArea)) {
+            faMap.set(instance.functionalArea, new Set());
           }
-          faMap.get(mapping.functionalArea).add(mapping.roomCode);
+          faMap.get(instance.functionalArea).add(instance.roomCode);
         }
       });
 
@@ -5014,11 +5283,12 @@
         dept.functionalAreas.push(fa);
       }
 
-      // Import all rooms
+      // Use ALL_ROOM_INSTANCES to find rooms for this dept/FA combination
       const rooms = new Set();
-      ROOM_EQUIPMENT_MAPPINGS.forEach(mapping => {
-        if (mapping.department === deptName && mapping.functionalArea === faName) {
-          rooms.add(mapping.roomCode);
+      const allInstances = window.ALL_ROOM_INSTANCES || [];
+      allInstances.forEach(instance => {
+        if (instance.department === deptName && instance.functionalArea === faName) {
+          rooms.add(instance.roomCode);
         }
       });
 
@@ -5056,17 +5326,10 @@
       let room = fa.rooms.find(r => r.code === roomCode);
       
       if (!room || !mergeMode) {
-        // Get room info from enriched mappings
-        const roomMapping = (window.ROOM_EQUIPMENT_MAPPINGS || ROOM_EQUIPMENT_MAPPINGS).find(m => 
-          m.department === deptName && 
-          m.functionalArea === faName && 
-          m.roomCode === roomCode
-        );
-
         // Look up room name and NSF from ROOM_SIZES
         const roomTemplate = ROOM_SIZES.find(r => r['Room Code'] === roomCode);
         const nsf = roomTemplate ? roomTemplate['NSF'] : 100; // Default 100 NSF if not found
-        const roomName = roomTemplate ? roomTemplate['Room Name'] : (roomMapping?.roomName || roomCode);
+        const roomName = roomTemplate ? roomTemplate['Room Name'] : roomCode;
 
         room = {
           id: generateId(),
@@ -5078,30 +5341,23 @@
         fa.rooms.push(room);
       }
 
-      // Import equipment for this room using enriched mappings
-      const enrichedMappings = window.ROOM_EQUIPMENT_MAPPINGS || ROOM_EQUIPMENT_MAPPINGS;
-      enrichedMappings.forEach(mapping => {
-        if (mapping.department === deptName && 
-            mapping.functionalArea === faName && 
-            mapping.roomCode === roomCode) {
-          
-          const jsn = mapping.equipmentJsn || mapping.jsn;
-          const equipExists = room.equipment.some(e => e.jsn === jsn);
+      // Import equipment for this room using ROOM_EQUIPMENT lookup (already deduplicated)
+      const baseEquipment = window.ROOM_EQUIPMENT ? window.ROOM_EQUIPMENT[roomCode] : [];
+      if (baseEquipment && baseEquipment.length > 0) {
+        baseEquipment.forEach(eq => {
+          const equipExists = room.equipment.some(e => e.jsn === eq.JSN);
           if (!equipExists || !mergeMode) {
-            const equipItem = EQUIPMENT_LIST.find(e => e.jsn === jsn);
-            if (equipItem) {
-              room.equipment.push({
-                id: generateId(),
-                jsn: equipItem.jsn,
-                name: equipItem.name,
-                quantity: mapping.quantity || 1,
-                acqIns: mapping.acqIns || equipItem.acqIns || '',
-                description: equipItem.description || ''
-              });
-            }
+            room.equipment.push({
+              id: generateId(),
+              jsn: eq.JSN,
+              name: eq['Equipment Name'],
+              quantity: eq['Qty per Room'] || 1,
+              acqIns: eq['Acq/Ins'] || '',
+              description: eq.Description || ''
+            });
           }
-        }
-      });
+        });
+      }
     }
 
     // -----------------------------
