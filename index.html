@@ -293,9 +293,10 @@
     }
 
     .tree-item {
+      position: relative;
       display: flex;
       align-items: center;
-      padding: 6px 8px;
+      padding: 6px 8px 6px 28px;
       cursor: pointer;
       border-radius: 4px;
       transition: background-color 0.15s ease;
@@ -321,6 +322,60 @@
     .tree-item.selected {
       background-color: rgba(0, 184, 148, 0.2);
       border-left: 3px solid var(--accent);
+    }
+
+    .tree-item.draggable-item {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    .tree-item.draggable-item:active {
+      cursor: grabbing !important;
+    }
+
+    .tree-drag-handle {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 20px;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 10;
+    }
+
+    .tree-drag-handle::before {
+      content: '⋮';
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .tree-item:hover .tree-drag-handle {
+      opacity: 1;
+    }
+
+    .tree-drag-handle:active {
+      cursor: grabbing;
+    }
+
+    .tree-item {
+      position: relative;
+      padding-left: 24px;
+    }
+
+    .tree-item.drag-over {
+      border-top: 2px solid var(--accent);
+      background-color: rgba(0, 184, 148, 0.1);
+    }
+
+    .tree-item[draggable="true"] {
+      -webkit-user-drag: element;
     }
 
     .tree-toggle {
@@ -3297,13 +3352,26 @@
       // Escape the node ID for use in onclick handlers
       const escapedNodeId = node.id.replace(/'/g, "\\'").replace(/"/g, '&quot;');
       
-      // Make rooms draggable in compare mode (check for both room object and roomCode)
-      const isDraggable = currentMode === 'compare' && (node.room || node.roomCode);
-      const draggableAttrs = isDraggable ? `draggable="true" ondragstart="handleRoomDragStart(event, '${escapedNodeId}')"` : '';
+      // Make items draggable
+      const isDraggableCompare = currentMode === 'compare' && (node.room || node.roomCode);
+      const isDraggableProgram = currentMode === 'program' && viewState === 'project-open';
+      const isDraggable = isDraggableCompare || isDraggableProgram;
+      
+      // Build draggable/drop attributes
+      let compareAttrs = '';
+      if (isDraggableCompare) {
+        compareAttrs = `draggable="true" ondragstart="handleRoomDragStart(event, '${escapedNodeId}')"`;
+      }
+      
+      let dropAttrs = '';
+      if (isDraggableProgram) {
+        dropAttrs = `ondragover="handleTreeDragOver(event)" ondrop="handleTreeDrop(event, '${escapedNodeId}')" ondragleave="handleTreeDragLeave(event)"`;
+      }
 
       let html = `
-        <div class="tree-node" data-level="${level}">
-          <div class="tree-item ${isSelected ? 'selected' : ''}" ${draggableAttrs} onclick="handleNodeClick('${escapedNodeId}')" style="${isDraggable ? 'cursor: grab;' : ''}" data-node-id="${escapedNodeId}" ${parentId ? `data-parent-id="${parentId}"` : ''}>
+        <div class="tree-node" data-level="${level}" ${dropAttrs}>
+          <div class="tree-item ${isSelected ? 'selected' : ''}" ${compareAttrs} onclick="handleNodeClick('${escapedNodeId}')" data-node-id="${escapedNodeId}" ${parentId ? `data-parent-id="${parentId}"` : ''}>
+            ${isDraggableProgram ? `<span class="tree-drag-handle" draggable="true" ondragstart="handleTreeDragStart(event, '${escapedNodeId}')" ondragend="handleTreeDragEnd(event)" title="Drag to reorder"></span>` : ''}
             <span class="tree-toggle ${hasChildren ? (isExpanded ? 'expanded' : 'collapsed') : 'leaf'}" 
                   onclick="event.stopPropagation(); toggleNode('${escapedNodeId}')"></span>
             <span class="tree-icon">${node.icon}</span>
@@ -3322,6 +3390,176 @@
 
       html += `</div>`;
       return html;
+    }
+
+    // Drag and Drop for Program Mode Tree
+    let draggedNode = null;
+    let draggedNodeData = null;
+    let isDragging = false;
+    let dragStartTime = 0;
+
+    function handleTreeDragStart(event, nodeId) {
+      isDragging = true;
+      dragStartTime = Date.now();
+      draggedNode = event.target.closest('.tree-item');
+      if (draggedNode) {
+        draggedNode.style.opacity = '0.5';
+      }
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', nodeId);
+      
+      // Store the node data for later
+      const treeData = buildTreeData();
+      draggedNodeData = findNodeById(treeData, nodeId);
+      
+      // Stop propagation to prevent triggering click
+      event.stopPropagation();
+    }
+
+    function handleTreeDragOver(event) {
+      if (event.preventDefault) {
+        event.preventDefault();
+      }
+      event.dataTransfer.dropEffect = 'move';
+      
+      // Add visual feedback to the tree-item
+      const target = event.target.closest('.tree-node');
+      if (target) {
+        const item = target.querySelector('.tree-item');
+        if (item && item !== draggedNode) {
+          item.classList.add('drag-over');
+        }
+      }
+      return false;
+    }
+
+    function handleTreeDragLeave(event) {
+      const target = event.target.closest('.tree-node');
+      if (target) {
+        const item = target.querySelector('.tree-item');
+        if (item) {
+          item.classList.remove('drag-over');
+        }
+      }
+    }
+
+    function handleTreeDrop(event, targetNodeId) {
+      if (event.stopPropagation) {
+        event.stopPropagation();
+      }
+      event.preventDefault();
+      
+      const target = event.target.closest('.tree-node');
+      if (target) {
+        const item = target.querySelector('.tree-item');
+        if (item) {
+          item.classList.remove('drag-over');
+        }
+      }
+      
+      if (!draggedNodeData || !targetNodeId || draggedNodeData.id === targetNodeId) {
+        return false;
+      }
+      
+      const project = getCurrentProject();
+      
+      // Extract type and ID from node IDs (format: "dept-xxx", "fa-xxx", "room-xxx")
+      const draggedType = draggedNodeData.type;
+      const targetType = findNodeById(buildTreeData(), targetNodeId)?.type;
+      
+      if (!draggedType || !targetType || draggedType !== targetType) {
+        return false; // Only allow reordering within same type
+      }
+      
+      // Departments can be reordered
+      if (draggedType === 'department' && targetType === 'department') {
+        const draggedDept = draggedNodeData.department;
+        const targetDept = findNodeById(buildTreeData(), targetNodeId)?.department;
+        
+        const draggedIndex = project.departments.findIndex(d => d.id === draggedDept.id);
+        const targetIndex = project.departments.findIndex(d => d.id === targetDept.id);
+        
+        if (draggedIndex !== -1 && targetIndex !== -1) {
+          const [removed] = project.departments.splice(draggedIndex, 1);
+          project.departments.splice(targetIndex, 0, removed);
+          saveProjects();
+          renderAll();
+        }
+      }
+      // FAs can be reordered within same department
+      else if (draggedType === 'functional-area' && targetType === 'functional-area') {
+        const draggedFA = draggedNodeData.functionalArea;
+        const draggedDept = draggedNodeData.department;
+        const targetNode = findNodeById(buildTreeData(), targetNodeId);
+        const targetFA = targetNode?.functionalArea;
+        const targetDept = targetNode?.department;
+        
+        // Only allow if same department
+        if (draggedDept.id === targetDept.id) {
+          const dept = project.departments.find(d => d.id === draggedDept.id);
+          if (dept) {
+            const draggedIndex = dept.functionalAreas.findIndex(f => f.id === draggedFA.id);
+            const targetIndex = dept.functionalAreas.findIndex(f => f.id === targetFA.id);
+            
+            if (draggedIndex !== -1 && targetIndex !== -1) {
+              const [removed] = dept.functionalAreas.splice(draggedIndex, 1);
+              dept.functionalAreas.splice(targetIndex, 0, removed);
+              saveProjects();
+              renderAll();
+            }
+          }
+        }
+      }
+      // Rooms can be reordered within same FA
+      else if (draggedType === 'room' && targetType === 'room') {
+        const draggedRoom = draggedNodeData.room;
+        const draggedFA = draggedNodeData.functionalArea;
+        const draggedDept = draggedNodeData.department;
+        const targetNode = findNodeById(buildTreeData(), targetNodeId);
+        const targetRoom = targetNode?.room;
+        const targetFA = targetNode?.functionalArea;
+        const targetDept = targetNode?.department;
+        
+        // Only allow if same FA and department
+        if (draggedDept.id === targetDept.id && draggedFA.id === targetFA.id) {
+          const dept = project.departments.find(d => d.id === draggedDept.id);
+          if (dept) {
+            const fa = dept.functionalAreas.find(f => f.id === draggedFA.id);
+            if (fa) {
+              const draggedIndex = fa.rooms.findIndex(r => r.id === draggedRoom.id);
+              const targetIndex = fa.rooms.findIndex(r => r.id === targetRoom.id);
+              
+              if (draggedIndex !== -1 && targetIndex !== -1) {
+                const [removed] = fa.rooms.splice(draggedIndex, 1);
+                fa.rooms.splice(targetIndex, 0, removed);
+                saveProjects();
+                renderAll();
+              }
+            }
+          }
+        }
+      }
+      
+      return false;
+    }
+
+    function handleTreeDragEnd(event) {
+      if (draggedNode) {
+        draggedNode.style.opacity = '';
+      }
+      
+      // Remove all visual feedback
+      document.querySelectorAll('.tree-item').forEach(item => {
+        item.classList.remove('drag-over');
+      });
+      
+      draggedNode = null;
+      draggedNodeData = null;
+      
+      // Clear dragging flag after a short delay to prevent click from firing
+      setTimeout(() => {
+        isDragging = false;
+      }, 100);
     }
 
     function renderTree() {
@@ -3421,6 +3659,11 @@
     }
 
     function handleNodeClick(nodeId) {
+      // Ignore clicks during or immediately after drag operations
+      if (isDragging || (Date.now() - dragStartTime < 200)) {
+        return;
+      }
+      
       // In compare mode, clicking doesn't select - only drag/drop or search
       if (currentMode === 'compare') {
         return;
@@ -5178,12 +5421,22 @@
         '104 (SPINAL CORD INJURY / DISORDERS CENTER (SCI/D))': '104',
         '106 (SMALL HOUSE (SH) MODEL)': '106',
         '208 (CHAPLAIN SERVICE)': '208',
+        '210 (CARDIOLOGY SERVICE)': '210',
+        '212 (PULMONARY MEDICINE SERVICE)': '212',
+        '214 (CLINICAL SERVICES ADMINISTRATION)': '214',
         '218 (VETERANS ASSISTANCE UNIT)': '218',
         '220 (CREDIT UNION)': '220',
+        '222 (DENTAL SERVICE)': '222',
+        '226 (ELECTROENCEPHALOGRAPHY (EEG) LABORATORY)': '226',
         '234 (FISCAL SERVICE)': '234',
         '238 (MEDICAL CENTER DIRECTOR\'S SUITE)': '238',
         '244 (LOBBY)': '244',
-        '254 (NURSING SERVICE ADMINISTRATION)': '254'
+        '254 (NURSING SERVICE ADMINISTRATION)': '254',
+        '274 (QUARTERS, ON-CALL)': '274',
+        '279 (POLICE SERVICE)': '279',
+        '280 (SERVICE ORGANIZATIONS)': '280',
+        '282 (SOCIAL WORK SERVICE)': '282',
+        '290 (VOLUNTARY SERVICE)': '290'
       };
       
       const chapterId = deptToChapter[departmentName];
@@ -5200,12 +5453,22 @@
         '104 (SPINAL CORD INJURY / DISORDERS CENTER (SCI/D))': '104',
         '106 (SMALL HOUSE (SH) MODEL)': '106',
         '208 (CHAPLAIN SERVICE)': '208',
+        '210 (CARDIOLOGY SERVICE)': '210',
+        '212 (PULMONARY MEDICINE SERVICE)': '212',
+        '214 (CLINICAL SERVICES ADMINISTRATION)': '214',
         '218 (VETERANS ASSISTANCE UNIT)': '218',
         '220 (CREDIT UNION)': '220',
+        '222 (DENTAL SERVICE)': '222',
+        '226 (ELECTROENCEPHALOGRAPHY (EEG) LABORATORY)': '226',
         '234 (FISCAL SERVICE)': '234',
         '238 (MEDICAL CENTER DIRECTOR\'S SUITE)': '238',
         '244 (LOBBY)': '244',
-        '254 (NURSING SERVICE ADMINISTRATION)': '254'
+        '254 (NURSING SERVICE ADMINISTRATION)': '254',
+        '274 (QUARTERS, ON-CALL)': '274',
+        '279 (POLICE SERVICE)': '279',
+        '280 (SERVICE ORGANIZATIONS)': '280',
+        '282 (SOCIAL WORK SERVICE)': '282',
+        '290 (VOLUNTARY SERVICE)': '290'
       };
       return deptToChapter[departmentName];
     }

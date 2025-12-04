@@ -103,7 +103,7 @@ function evaluateRoom(room, inputs, calculations) {
 
   return {
     id: room.id,
-    code: room.code,
+    code: room.code || room.id, // Use id as code if code is not provided
     name: room.name,
     quantity: quantity,
     nsfPerRoom: room.nsf,
