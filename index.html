@@ -177,6 +177,22 @@
       .layout {
         grid-template-columns: 1fr;
       }
+      
+      .layout.compare-mode {
+        grid-template-columns: 1fr;
+      }
+      
+      .layout.compare-mode #left-column {
+        order: 1;
+      }
+      
+      .layout.compare-mode #right-column {
+        order: 2;
+      }
+      
+      .layout.compare-mode #compare-column {
+        order: 3;
+      }
     }
 
     /* Tree View Styles */
@@ -2662,8 +2678,8 @@
       // Show/hide search box based on mode
       const searchBox = document.getElementById('tree-search-box');
       if (searchBox) {
-        // Show search in reference mode (project list shows tree in reference mode)
-        searchBox.style.display = mode === 'reference' ? 'block' : 'none';
+        // Show search in reference and compare modes
+        searchBox.style.display = (mode === 'reference' || mode === 'compare') ? 'block' : 'none';
         searchBox.value = ''; // Clear search when switching modes
       }
       
@@ -4136,40 +4152,80 @@
           // Helper to get attribute value (room.attributes overrides ROOM_SIZES)
           const getAttr = (attrName) => room.attributes?.[attrName] ?? roomAttrs[attrName];
           
-          // Consolidated Attributes Panel with columns
+          // Consolidated Attributes Panel with ALL available attributes in multi-column layout
           html += `
             <div class="detail-panel">
               <h3>📋 Room Attributes</h3>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                
+                <!-- Column 1: Materials & Finishes -->
                 <div>
                   <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--muted);">🏗️ Materials & Finishes</h4>
                   ${renderEditableAttribute('Ceiling Material', getAttr('ceilingMaterial'), `updateRoomAttribute('${room.id}', 'ceilingMaterial', this.value)`)}
+                  ${renderEditableAttribute('Ceiling Alt', getAttr('ceilingMaterialAlternate'), `updateRoomAttribute('${room.id}', 'ceilingMaterialAlternate', this.value)`)}
+                  ${renderEditableAttribute('Ceiling Finish', getAttr('ceilingFinish'), `updateRoomAttribute('${room.id}', 'ceilingFinish', this.value)`)}
                   ${renderEditableAttribute('Wall Material', getAttr('wallMaterial'), `updateRoomAttribute('${room.id}', 'wallMaterial', this.value)`)}
+                  ${renderEditableAttribute('Wall Alt', getAttr('wallMaterialAlternate'), `updateRoomAttribute('${room.id}', 'wallMaterialAlternate', this.value)`)}
+                  ${renderEditableAttribute('Wall Finish', getAttr('wallFinish'), `updateRoomAttribute('${room.id}', 'wallFinish', this.value)`)}
                   ${renderEditableAttribute('Floor Material', getAttr('floorMaterial'), `updateRoomAttribute('${room.id}', 'floorMaterial', this.value)`)}
+                  ${renderEditableAttribute('Floor Alt', getAttr('floorMaterialAlternate'), `updateRoomAttribute('${room.id}', 'floorMaterialAlternate', this.value)`)}
+                  ${renderEditableAttribute('Floor Base', getAttr('floorBaseMaterial'), `updateRoomAttribute('${room.id}', 'floorBaseMaterial', this.value)`)}
+                </div>
+                
+                <!-- Column 2: Door & Environmental -->
+                <div>
+                  <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--muted);">🚪 Door</h4>
                   ${renderEditableAttribute('Door Material', getAttr('doorMaterial'), `updateRoomAttribute('${room.id}', 'doorMaterial', this.value)`)}
-                  
-                  <h4 style="margin: 12px 0 8px 0; font-size: 0.9rem; color: var(--muted);">❄️ HVAC</h4>
-                  ${renderEditableAttribute('Min Total ACH', getAttr('minTotalAch'), `updateRoomAttribute('${room.id}', 'minTotalAch', this.value)`)}
-                  ${renderEditableAttribute('Min OA ACH', getAttr('minOaAch'), `updateRoomAttribute('${room.id}', 'minOaAch', this.value)`)}
-                  ${renderEditableAttribute('Temp Cooling (°C)', getAttr('indoorTempCoolingC'), `updateRoomAttribute('${room.id}', 'indoorTempCoolingC', this.value)`)}
-                  ${renderEditableAttribute('Temp Heating (°C)', getAttr('indoorTempHeatingC'), `updateRoomAttribute('${room.id}', 'indoorTempHeatingC', this.value)`)}
+                  ${renderEditableAttribute('Door Height', getAttr('doorHeight'), `updateRoomAttribute('${room.id}', 'doorHeight', this.value)`)}
+                  ${renderEditableAttribute('Door Width', getAttr('doorWidth'), `updateRoomAttribute('${room.id}', 'doorWidth', this.value)`)}
+                  ${renderEditableAttribute('Door Type', getAttr('doorType'), `updateRoomAttribute('${room.id}', 'doorType', this.value)`)}
+                  ${renderEditableAttribute('Door Rating', getAttr('doorRating'), `updateRoomAttribute('${room.id}', 'doorRating', this.value)`)}
                   
                   <h4 style="margin: 12px 0 8px 0; font-size: 0.9rem; color: var(--muted);">💡 Lighting & Acoustics</h4>
                   ${renderEditableAttribute('Lighting Level', getAttr('lightingLevel'), `updateRoomAttribute('${room.id}', 'lightingLevel', this.value)`)}
+                  ${renderEditableAttribute('Acoustical Criteria', getAttr('acousticalCriteria'), `updateRoomAttribute('${room.id}', 'acousticalCriteria', this.value)`)}
                   ${renderEditableAttribute('Max Noise (NC)', getAttr('maxNoiseLevelNc'), `updateRoomAttribute('${room.id}', 'maxNoiseLevelNc', this.value)`)}
+                  ${renderEditableAttribute('Floor Live Load', getAttr('floorLiveLoad'), `updateRoomAttribute('${room.id}', 'floorLiveLoad', this.value)`)}
                 </div>
+                
+                <!-- Column 3: HVAC -->
+                <div>
+                  <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--muted);">❄️ HVAC</h4>
+                  ${renderEditableAttribute('Min Total ACH', getAttr('minTotalAch'), `updateRoomAttribute('${room.id}', 'minTotalAch', this.value)`)}
+                  ${renderEditableAttribute('Min OA ACH', getAttr('minOaAch'), `updateRoomAttribute('${room.id}', 'minOaAch', this.value)`)}
+                  ${renderEditableAttribute('Unoccupied ACH', getAttr('unoccupiedAch'), `updateRoomAttribute('${room.id}', 'unoccupiedAch', this.value)`)}
+                  ${renderEditableAttribute('Air Balance', getAttr('roomAirBalance'), `updateRoomAttribute('${room.id}', 'roomAirBalance', this.value)`)}
+                  ${renderEditableAttribute('HEPA Filtration', getAttr('airHasHepaFiltration'), `updateRoomAttribute('${room.id}', 'airHasHepaFiltration', this.value)`)}
+                  ${renderEditableAttribute('100% Exhaust', getAttr('exhaustIs100Outside'), `updateRoomAttribute('${room.id}', 'exhaustIs100Outside', this.value)`)}
+                  ${renderEditableAttribute('Temp Cooling (°C)', getAttr('indoorTempCoolingC'), `updateRoomAttribute('${room.id}', 'indoorTempCoolingC', this.value)`)}
+                  ${renderEditableAttribute('Temp Heating (°C)', getAttr('indoorTempHeatingC'), `updateRoomAttribute('${room.id}', 'indoorTempHeatingC', this.value)`)}
+                  ${renderEditableAttribute('RH Max (%)', getAttr('indoorRelativeHumidityRhMax'), `updateRoomAttribute('${room.id}', 'indoorRelativeHumidityRhMax', this.value)`)}
+                  ${renderEditableAttribute('RH Min (%)', getAttr('indoorRelativeHumidityRhMin'), `updateRoomAttribute('${room.id}', 'indoorRelativeHumidityRhMin', this.value)`)}
+                </div>
+                
+                <!-- Column 4: Medical Gases & Plumbing -->
                 <div>
                   <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--muted);">🔧 Medical Gases</h4>
                   ${renderEditableAttribute('Medical Air', getAttr('medAir'), `updateRoomAttribute('${room.id}', 'medAir', this.value)`)}
                   ${renderEditableAttribute('Medical Vacuum', getAttr('medVac'), `updateRoomAttribute('${room.id}', 'medVac', this.value)`)}
                   ${renderEditableAttribute('Oxygen', getAttr('oxygen'), `updateRoomAttribute('${room.id}', 'oxygen', this.value)`)}
                   ${renderEditableAttribute('Nitrogen', getAttr('nitrogen'), `updateRoomAttribute('${room.id}', 'nitrogen', this.value)`)}
+                  ${renderEditableAttribute('Nitrous Oxide', getAttr('nitrousOxide'), `updateRoomAttribute('${room.id}', 'nitrousOxide', this.value)`)}
+                  ${renderEditableAttribute('WAGD', getAttr('wagd'), `updateRoomAttribute('${room.id}', 'wagd', this.value)`)}
+                  ${renderEditableAttribute('CO2', getAttr('co2'), `updateRoomAttribute('${room.id}', 'co2', this.value)`)}
+                  ${renderEditableAttribute('Inst Air', getAttr('instAir'), `updateRoomAttribute('${room.id}', 'instAir', this.value)`)}
+                  ${renderEditableAttribute('Lab Air', getAttr('labAir'), `updateRoomAttribute('${room.id}', 'labAir', this.value)`)}
+                  ${renderEditableAttribute('Lab Vacuum', getAttr('labVac'), `updateRoomAttribute('${room.id}', 'labVac', this.value)`)}
+                  ${renderEditableAttribute('Dental Air', getAttr('dentalAir'), `updateRoomAttribute('${room.id}', 'dentalAir', this.value)`)}
+                  ${renderEditableAttribute('Dental Vacuum', getAttr('dentalVac'), `updateRoomAttribute('${room.id}', 'dentalVac', this.value)`)}
+                  ${renderEditableAttribute('Oral Evac', getAttr('oralEvac'), `updateRoomAttribute('${room.id}', 'oralEvac', this.value)`)}
                   
                   <h4 style="margin: 12px 0 8px 0; font-size: 0.9rem; color: var(--muted);">💧 Plumbing</h4>
                   ${renderEditableAttribute('Cold Water', getAttr('domesticColdWater'), `updateRoomAttribute('${room.id}', 'domesticColdWater', this.value)`)}
                   ${renderEditableAttribute('Hot Water', getAttr('domesticHotWater'), `updateRoomAttribute('${room.id}', 'domesticHotWater', this.value)`)}
                   ${renderEditableAttribute('Floor Drain', getAttr('floorDrain'), `updateRoomAttribute('${room.id}', 'floorDrain', this.value)`)}
                   ${renderEditableAttribute('Natural Gas', getAttr('naturalGas'), `updateRoomAttribute('${room.id}', 'naturalGas', this.value)`)}
+                  ${renderEditableAttribute('Lab Natural Gas', getAttr('labNaturalGas'), `updateRoomAttribute('${room.id}', 'labNaturalGas', this.value)`)}
                 </div>
               </div>
             </div>
@@ -4342,46 +4398,91 @@
         </div>
       `;
 
-      // Room Attributes - show in compact three-column layout
+      // Room Attributes - show in compact multi-column layout with ALL available attributes
       if (roomData) {
         html += `
           <div class="detail-panel">
             <h3>📋 Attributes</h3>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; font-size: 0.75rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; font-size: 0.75rem;">
+              
+              <!-- Column 1: Materials & Finishes -->
               <div>
-                <h4 style="margin: 0 0 4px 0; font-size: 0.75rem; color: var(--muted);">🏗️ Materials</h4>
-                ${renderReadOnlyAttribute('Ceiling', roomData.ceilingMaterial)}
-                ${renderReadOnlyAttribute('Wall', roomData.wallMaterial)}
-                ${renderReadOnlyAttribute('Floor', roomData.floorMaterial)}
-                ${renderReadOnlyAttribute('Door', roomData.doorMaterial)}
-                
-                <h4 style="margin: 6px 0 4px 0; font-size: 0.75rem; color: var(--muted);">💡 Light/Sound</h4>
-                ${renderReadOnlyAttribute('Lighting', roomData.lightingLevel)}
-                ${renderReadOnlyAttribute('Max NC', roomData.maxNoiseLevelNc)}
+                <h4 style="margin: 0 0 4px 0; font-size: 0.75rem; color: var(--muted); font-weight: 600;">🏗️ Materials & Finishes</h4>
+                ${renderReadOnlyAttribute('Ceiling Mat', roomData.ceilingMaterial)}
+                ${renderReadOnlyAttribute('Ceiling Alt', roomData.ceilingMaterialAlternate)}
+                ${renderReadOnlyAttribute('Ceiling Finish', roomData.ceilingFinish)}
+                ${renderReadOnlyAttribute('Ceiling Cat', roomData.ceilingCategory)}
+                ${renderReadOnlyAttribute('Wall Mat', roomData.wallMaterial)}
+                ${renderReadOnlyAttribute('Wall Alt', roomData.wallMaterialAlternate)}
+                ${renderReadOnlyAttribute('Wall Finish', roomData.wallFinish)}
+                ${renderReadOnlyAttribute('Wall Finish Alt', roomData.wallFinishAlternate)}
+                ${renderReadOnlyAttribute('Floor Mat', roomData.floorMaterial)}
+                ${renderReadOnlyAttribute('Floor Alt', roomData.floorMaterialAlternate)}
+                ${renderReadOnlyAttribute('Floor Base', roomData.floorBaseMaterial)}
+                ${renderReadOnlyAttribute('Floor Base Alt', roomData.floorBaseMaterialAlternate)}
+                ${renderReadOnlyAttribute('Wain', roomData.wain)}
               </div>
+              
+              <!-- Column 2: Door & Environmental -->
               <div>
-                <h4 style="margin: 0 0 4px 0; font-size: 0.75rem; color: var(--muted);">❄️ HVAC</h4>
+                <h4 style="margin: 0 0 4px 0; font-size: 0.75rem; color: var(--muted); font-weight: 600;">🚪 Door</h4>
+                ${renderReadOnlyAttribute('Door Mat', roomData.doorMaterial)}
+                ${renderReadOnlyAttribute('Door Height', roomData.doorHeight)}
+                ${renderReadOnlyAttribute('Door Width', roomData.doorWidth)}
+                ${renderReadOnlyAttribute('Door Function', roomData.doorFunction)}
+                ${renderReadOnlyAttribute('Door Hardware', roomData.doorHardware)}
+                ${renderReadOnlyAttribute('Door Type', roomData.doorType)}
+                ${renderReadOnlyAttribute('Door Rating', roomData.doorRating)}
+                ${renderReadOnlyAttribute('Door Notes', roomData.doorNotes)}
+                
+                <h4 style="margin: 8px 0 4px 0; font-size: 0.75rem; color: var(--muted); font-weight: 600;">💡 Light/Sound</h4>
+                ${renderReadOnlyAttribute('Lighting Lvl', roomData.lightingLevel)}
+                ${renderReadOnlyAttribute('Acoustical', roomData.acousticalCriteria)}
+                ${renderReadOnlyAttribute('Max NC', roomData.maxNoiseLevelNc)}
+                ${renderReadOnlyAttribute('Floor Load', roomData.floorLiveLoad)}
+              </div>
+              
+              <!-- Column 3: HVAC -->
+              <div>
+                <h4 style="margin: 0 0 4px 0; font-size: 0.75rem; color: var(--muted); font-weight: 600;">❄️ HVAC</h4>
                 ${renderReadOnlyAttribute('Total ACH', roomData.minTotalAch)}
                 ${renderReadOnlyAttribute('OA ACH', roomData.minOaAch)}
+                ${renderReadOnlyAttribute('Unocc ACH', roomData.unoccupiedAch)}
                 ${renderReadOnlyAttribute('Air Balance', roomData.roomAirBalance)}
-                ${renderReadOnlyAttribute('Cool', roomData.indoorTempCoolingC ? roomData.indoorTempCoolingC + '°C' : null)}
-                ${renderReadOnlyAttribute('Heat', roomData.indoorTempHeatingC ? roomData.indoorTempHeatingC + '°C' : null)}
+                ${renderReadOnlyAttribute('Room Air', roomData.roomAir)}
+                ${renderReadOnlyAttribute('HEPA Filter', roomData.airHasHepaFiltration)}
+                ${renderReadOnlyAttribute('100% Exhaust', roomData.exhaustIs100Outside)}
+                ${renderReadOnlyAttribute('Cool Temp', roomData.indoorTempCoolingC ? roomData.indoorTempCoolingC + '°C' : null)}
+                ${renderReadOnlyAttribute('Heat Temp', roomData.indoorTempHeatingC ? roomData.indoorTempHeatingC + '°C' : null)}
                 ${renderReadOnlyAttribute('RH Max', roomData.indoorRelativeHumidityRhMax ? roomData.indoorRelativeHumidityRhMax + '%' : null)}
                 ${renderReadOnlyAttribute('RH Min', roomData.indoorRelativeHumidityRhMin ? roomData.indoorRelativeHumidityRhMin + '%' : null)}
+                ${renderReadOnlyAttribute('Temp Ctrl', roomData.individualRoomControlTemp)}
+                ${renderReadOnlyAttribute('Flow Ctrl', roomData.individualRoomControlFlow)}
               </div>
+              
+              <!-- Column 4: Medical Gases & Services -->
               <div>
-                <h4 style="margin: 0 0 4px 0; font-size: 0.75rem; color: var(--muted);">🔧 Med Gas</h4>
+                <h4 style="margin: 0 0 4px 0; font-size: 0.75rem; color: var(--muted); font-weight: 600;">🔧 Medical Gases</h4>
                 ${renderReadOnlyAttribute('Med Air', roomData.medAir)}
                 ${renderReadOnlyAttribute('Med Vac', roomData.medVac)}
                 ${renderReadOnlyAttribute('O₂', roomData.oxygen)}
                 ${renderReadOnlyAttribute('N₂', roomData.nitrogen)}
                 ${renderReadOnlyAttribute('N₂O', roomData.nitrousOxide)}
+                ${renderReadOnlyAttribute('WAGD', roomData.wagd)}
+                ${renderReadOnlyAttribute('CO₂', roomData.co2)}
+                ${renderReadOnlyAttribute('Inst Air', roomData.instAir)}
+                ${renderReadOnlyAttribute('Lab Air', roomData.labAir)}
+                ${renderReadOnlyAttribute('Lab Vac', roomData.labVac)}
+                ${renderReadOnlyAttribute('Lab Gas', roomData.labNaturalGas)}
+                ${renderReadOnlyAttribute('Dental Air', roomData.dentalAir)}
+                ${renderReadOnlyAttribute('Dental Vac', roomData.dentalVac)}
+                ${renderReadOnlyAttribute('Oral Evac', roomData.oralEvac)}
                 
-                <h4 style="margin: 6px 0 4px 0; font-size: 0.75rem; color: var(--muted);">💧 Plumbing</h4>
-                ${renderReadOnlyAttribute('Cold', roomData.domesticColdWater)}
-                ${renderReadOnlyAttribute('Hot', roomData.domesticHotWater)}
-                ${renderReadOnlyAttribute('Drain', roomData.floorDrain)}
-                ${renderReadOnlyAttribute('Gas', roomData.naturalGas)}
+                <h4 style="margin: 8px 0 4px 0; font-size: 0.75rem; color: var(--muted); font-weight: 600;">💧 Plumbing</h4>
+                ${renderReadOnlyAttribute('Cold Water', roomData.domesticColdWater)}
+                ${renderReadOnlyAttribute('Hot Water', roomData.domesticHotWater)}
+                ${renderReadOnlyAttribute('Floor Drain', roomData.floorDrain)}
+                ${renderReadOnlyAttribute('Nat Gas', roomData.naturalGas)}
               </div>
             </div>
           </div>
