@@ -5,6 +5,30 @@
   <title>Hospital Programming Workbench</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  
+  <!-- Room Logic System -->
+  <script type="module" src="room-logic/index.js"></script>
+  <script type="module" src="room-logic/engine.js"></script>
+  <script type="module">
+    // Import room logic functions and make them globally available
+    import { getChapter, getAllChapters, searchChapters } from './room-logic/index.js';
+    import { evaluateChapter, formatForDisplay, exportResults, importResults } from './room-logic/engine.js';
+    
+    // Make available globally for onclick handlers
+    window.RoomLogic = {
+      getChapter,
+      getAllChapters,
+      searchChapters,
+      evaluateChapter,
+      formatForDisplay,
+      exportResults,
+      importResults
+    };
+    
+    console.log('Room Logic System loaded');
+    console.log('Available chapters:', getAllChapters());
+  </script>
+  
   <style>
     :root {
       --bg: #060606;
@@ -886,6 +910,171 @@
     .tree-item.search-highlight {
       background-color: rgba(0, 184, 148, 0.3);
     }
+
+    /* Room Logic Indicators */
+    .logic-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .logic-badge.enabled {
+      background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+      color: white;
+      box-shadow: 0 2px 4px rgba(0, 184, 148, 0.3);
+    }
+
+    .logic-badge.disabled {
+      background: var(--pill-inactive);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    .logic-badge::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .logic-badge.enabled::before {
+      background: white;
+      box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+    }
+
+    .logic-badge.disabled::before {
+      background: var(--muted);
+    }
+
+    .import-tree-item.has-logic {
+      border-left: 3px solid #00b894;
+      padding-left: 12px;
+    }
+
+    .import-tree-item.no-logic {
+      opacity: 0.7;
+    }
+
+    /* Logic Toggle Switch */
+    .logic-toggle-switch {
+      position: relative;
+      display: inline-block !important;
+      width: 24px !important;
+      height: 14px !important;
+      margin-left: 4px !important;
+      margin-right: 4px !important;
+      vertical-align: middle;
+      flex-shrink: 0;
+      min-width: 24px !important;
+      max-width: 24px !important;
+    }
+
+    .logic-toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .logic-toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--pill-inactive);
+      border: 1px solid var(--border);
+      transition: .3s;
+      border-radius: 14px;
+    }
+
+    .logic-toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 10px;
+      width: 10px;
+      left: 2px;
+      bottom: 1px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    .logic-toggle-switch input:checked + .logic-toggle-slider {
+      background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+      border-color: #00b894;
+    }
+
+    .logic-toggle-switch input:checked + .logic-toggle-slider:before {
+      transform: translateX(10px);
+    }
+
+    .logic-toggle-switch:hover .logic-toggle-slider {
+      box-shadow: 0 0 8px rgba(0, 184, 148, 0.4);
+    }
+
+    /* Department Input Modal */
+    .input-modal {
+      background: var(--bg-card);
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 16px;
+      border: 1px solid var(--border);
+    }
+
+    .input-field {
+      margin-bottom: 16px;
+    }
+
+    .input-field label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .input-field input[type="number"],
+    .input-field input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .input-field .help-text {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .calculation-result {
+      background: rgba(0, 184, 148, 0.1);
+      border-left: 3px solid var(--accent);
+      padding: 12px;
+      border-radius: 4px;
+      margin-top: 16px;
+    }
+
+    .calculation-result h4 {
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    .calculation-summary {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
   </style>
 </head>
 <body>
@@ -989,7 +1178,7 @@
         <button class="modal-close" onclick="closeImportModal()">&times;</button>
       </div>
       <div id="import-modal-body">
-        <p class="muted">Expand the tree and check items to add to your project. You can select departments, functional areas, or individual rooms.</p>
+        <p class="muted">Expand the tree and check items to add to your project. Departments with <span class="logic-badge enabled" style="display: inline-flex; font-size: 0.7rem;">⚡ LOGIC</span> have automated room calculation available.</p>
         <div style="margin-bottom: 12px;">
           <input type="text" id="import-search" placeholder="Search departments, functional areas, or rooms..." style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.95rem;" oninput="filterImportTree()" />
         </div>
@@ -1004,6 +1193,25 @@
       <div class="modal-footer">
         <button class="btn-secondary" onclick="closeImportModal()">Cancel</button>
         <button class="btn-primary" onclick="confirmImport()">Add Selected</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Department Logic Modal -->
+  <div id="department-logic-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 700px;">
+      <div class="modal-header">
+        <h2 id="logic-modal-title">Add Department with Room Logic</h2>
+        <button class="modal-close" onclick="closeDepartmentLogicModal()">&times;</button>
+      </div>
+      <div style="padding: 20px;">
+        <div id="logic-modal-content">
+          <!-- Dynamic content will be inserted here -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeDepartmentLogicModal()">Cancel</button>
+        <button class="btn-primary" id="calculate-rooms-btn" onclick="calculateAndAddDepartment()" style="display: none;">Calculate & Add to Project</button>
       </div>
     </div>
   </div>
@@ -4954,6 +5162,291 @@
       selectedImportItems.clear();
     }
 
+    // Room Logic Functions
+    let currentLogicDepartment = null;
+    let currentLogicInputs = {};
+    let departmentLogicToggles = new Map(); // Track which departments have logic enabled
+
+    function checkDepartmentHasLogic(departmentName) {
+      if (!window.RoomLogic) return false;
+      
+      // Map department names to chapter IDs
+      // Department names come from Equipment_Guide_parsed_v2.txt format: "100 (NAME)"
+      const deptToChapter = {
+        '100 (MEDICAL / SURGICAL PATIENT CARE UNIT (M/S PCU))': '100',
+        '102 (INTENSIVE CARE PATIENT CARE UNIT (IC PCU))': '102',
+        '104 (SPINAL CORD INJURY / DISORDERS CENTER (SCI/D))': '104',
+        '106 (SMALL HOUSE (SH) MODEL)': '106',
+        '208 (CHAPLAIN SERVICE)': '208',
+        '218 (VETERANS ASSISTANCE UNIT)': '218',
+        '220 (CREDIT UNION)': '220',
+        '234 (FISCAL SERVICE)': '234',
+        '238 (MEDICAL CENTER DIRECTOR\'S SUITE)': '238',
+        '244 (LOBBY)': '244',
+        '254 (NURSING SERVICE ADMINISTRATION)': '254'
+      };
+      
+      const chapterId = deptToChapter[departmentName];
+      if (!chapterId) return false;
+      
+      const chapter = window.RoomLogic.getChapter(chapterId);
+      return chapter !== null;
+    }
+
+    function getDepartmentChapterId(departmentName) {
+      const deptToChapter = {
+        '100 (MEDICAL / SURGICAL PATIENT CARE UNIT (M/S PCU))': '100',
+        '102 (INTENSIVE CARE PATIENT CARE UNIT (IC PCU))': '102',
+        '104 (SPINAL CORD INJURY / DISORDERS CENTER (SCI/D))': '104',
+        '106 (SMALL HOUSE (SH) MODEL)': '106',
+        '208 (CHAPLAIN SERVICE)': '208',
+        '218 (VETERANS ASSISTANCE UNIT)': '218',
+        '220 (CREDIT UNION)': '220',
+        '234 (FISCAL SERVICE)': '234',
+        '238 (MEDICAL CENTER DIRECTOR\'S SUITE)': '238',
+        '244 (LOBBY)': '244',
+        '254 (NURSING SERVICE ADMINISTRATION)': '254'
+      };
+      return deptToChapter[departmentName];
+    }
+
+    function showAvailableLogicDepartments() {
+      if (!window.RoomLogic) {
+        alert('Room logic system not loaded!');
+        return;
+      }
+      
+      const chapters = window.RoomLogic.getAllChapters();
+      
+      let html = `
+        <div style="margin-bottom: 16px;">
+          <h3 style="margin-bottom: 12px;">Departments with Automated Logic</h3>
+          <p class="muted" style="margin-bottom: 16px;">These departments have automated room calculation based on your inputs.</p>
+        </div>
+      `;
+      
+      chapters.forEach(chapter => {
+        html += `
+          <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s;" 
+               onmouseover="this.style.borderColor='var(--accent)'" 
+               onmouseout="this.style.borderColor='var(--border)'"
+               onclick="openDepartmentLogicWorkflowById('${chapter.id}')">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span class="logic-badge enabled">⚡ LOGIC</span>
+              <div style="flex: 1;">
+                <h4 style="margin-bottom: 4px;">Chapter ${chapter.id}: ${chapter.name}</h4>
+                <p class="muted" style="font-size: 0.85rem;">${chapter.description}</p>
+                <p class="muted" style="font-size: 0.75rem; margin-top: 4px;">${chapter.inputCount} inputs required • ${chapter.functionalAreaCount} functional areas</p>
+              </div>
+              <button class="btn-primary" style="padding: 6px 12px; font-size: 0.85rem;">Configure →</button>
+            </div>
+          </div>
+        `;
+      });
+      
+      document.getElementById('logic-modal-content').innerHTML = html;
+      document.getElementById('logic-modal-title').textContent = 'Add Department with Room Logic';
+      document.getElementById('calculate-rooms-btn').style.display = 'none';
+      document.getElementById('department-logic-modal').classList.add('active');
+      closeImportModal();
+    }
+
+    function toggleDepartmentLogic(departmentName, enabled) {
+      departmentLogicToggles.set(departmentName, enabled);
+      renderImportTree(); // Re-render to update badge
+    }
+
+    function openDepartmentLogicWorkflow(departmentName) {
+      const chapterId = getDepartmentChapterId(departmentName);
+      if (chapterId) {
+        openDepartmentLogicWorkflowById(chapterId);
+      }
+    }
+
+    function openDepartmentLogicWorkflowById(chapterId) {
+      if (!window.RoomLogic) {
+        alert('Room logic system not loaded!');
+        return;
+      }
+      
+      const chapter = window.RoomLogic.getChapter(chapterId);
+      if (!chapter) {
+        alert(`Chapter ${chapterId} not found!`);
+        return;
+      }
+      
+      currentLogicDepartment = chapter;
+      currentLogicInputs = {};
+      
+      // Initialize default values
+      chapter.inputs.forEach(input => {
+        currentLogicInputs[input.id] = input.defaultValue || (input.min || 0);
+      });
+      
+      let html = `
+        <div style="margin-bottom: 20px;">
+          <h3 style="margin-bottom: 8px;">Chapter ${chapter.chapter}: ${chapter.name}</h3>
+          <p class="muted">${chapter.description}</p>
+        </div>
+        
+        <div class="input-modal">
+          <h4 style="margin-bottom: 16px; color: var(--accent);">Project Inputs</h4>
+      `;
+      
+      chapter.inputs.forEach(input => {
+        html += `
+          <div class="input-field">
+            <label for="input-${input.id}">${input.label}</label>
+            <input type="${input.type}" 
+                   id="input-${input.id}" 
+                   ${input.min !== undefined ? `min="${input.min}"` : ''}
+                   ${input.max !== undefined ? `max="${input.max}"` : ''}
+                   value="${currentLogicInputs[input.id]}"
+                   onchange="updateLogicInput('${input.id}', this.value)"
+                   style="width: 100%;">
+            ${input.helpText ? `<div class="help-text">${input.helpText}</div>` : ''}
+          </div>
+        `;
+      });
+      
+      html += `
+        </div>
+        
+        <div id="preview-results" style="margin-top: 20px; display: none;">
+          <div class="calculation-result">
+            <h4>📊 Calculation Preview</h4>
+            <div id="preview-content" class="calculation-summary"></div>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('logic-modal-content').innerHTML = html;
+      document.getElementById('logic-modal-title').textContent = `Add ${chapter.name}`;
+      document.getElementById('calculate-rooms-btn').style.display = 'block';
+      document.getElementById('department-logic-modal').classList.add('active');
+      closeImportModal();
+      
+      // Show initial preview
+      updateCalculationPreview();
+    }
+
+    function updateLogicInput(inputId, value) {
+      currentLogicInputs[inputId] = parseFloat(value) || 0;
+      updateCalculationPreview();
+    }
+
+    function updateCalculationPreview() {
+      if (!currentLogicDepartment) return;
+      
+      // Validate inputs against min/max
+      let validationError = null;
+      for (const input of currentLogicDepartment.inputs) {
+        const value = currentLogicInputs[input.id];
+        if (input.min !== undefined && value < input.min) {
+          validationError = `${input.label}: Value must be at least ${input.min} (you entered ${value})`;
+          break;
+        }
+        if (input.max !== undefined && value > input.max) {
+          validationError = `${input.label}: Value must be at most ${input.max} (you entered ${value})`;
+          break;
+        }
+      }
+      
+      if (validationError) {
+        document.getElementById('preview-content').innerHTML = 
+          `<p style="color: #ff6b6b;"><strong>⚠️ Validation Error:</strong> ${validationError}</p>`;
+        document.getElementById('preview-results').style.display = 'block';
+        document.getElementById('calculate-rooms-btn').disabled = true;
+        return;
+      }
+      
+      try {
+        const results = window.RoomLogic.evaluateChapter(currentLogicDepartment, currentLogicInputs);
+        
+        let html = '';
+        
+        if (results.totalRooms === 0) {
+          html = `<p style="color: #ff6b6b;"><strong>⚠️ No rooms calculated:</strong> Your input values may be outside the valid range or don't match any calculation rules.</p>`;
+          document.getElementById('calculate-rooms-btn').disabled = true;
+        } else {
+          html = `
+            <p><strong>Total Rooms:</strong> ${results.totalRooms}</p>
+            <p><strong>Total NSF:</strong> ${results.totalNSF.toLocaleString()} sq ft</p>
+            <p><strong>Functional Areas:</strong> ${results.functionalAreas.length}</p>
+          `;
+          document.getElementById('calculate-rooms-btn').disabled = false;
+        }
+        
+        if (results.errors.length > 0) {
+          html += `<p style="color: #ff6b6b; margin-top: 8px;"><strong>⚠️ Errors:</strong> ${results.errors[0].message}</p>`;
+          document.getElementById('calculate-rooms-btn').disabled = true;
+        }
+        
+        document.getElementById('preview-content').innerHTML = html;
+        document.getElementById('preview-results').style.display = 'block';
+      } catch (error) {
+        console.error('Preview error:', error);
+        document.getElementById('preview-content').innerHTML = 
+          `<p style="color: #ff6b6b;"><strong>⚠️ Calculation Error:</strong> ${error.message}</p>`;
+        document.getElementById('preview-results').style.display = 'block';
+        document.getElementById('calculate-rooms-btn').disabled = true;
+      }
+    }
+
+    function calculateAndAddDepartment() {
+      if (!currentLogicDepartment) return;
+      
+      try {
+        const results = window.RoomLogic.evaluateChapter(currentLogicDepartment, currentLogicInputs);
+        
+        if (results.errors.length > 0) {
+          alert(`Calculation errors:\n${results.errors.map(e => e.message).join('\n')}`);
+          return;
+        }
+        
+        // Convert results to department structure
+        const project = getCurrentProject();
+        const newDept = {
+          id: generateId(),
+          name: currentLogicDepartment.name,
+          chapterId: currentLogicDepartment.chapter,
+          logicInputs: {...currentLogicInputs},
+          functionalAreas: results.functionalAreas.map(fa => ({
+            id: generateId(),
+            name: fa.name,
+            description: fa.description,
+            rooms: fa.rooms.filter(r => r.type !== 'calculation').map(room => ({
+              id: generateId(),
+              code: room.code,
+              name: room.name,
+              quantity: room.quantity,
+              nsf: room.nsfPerRoom,
+              totalNSF: room.totalNSF,
+              notes: room.notes || '',
+              equipment: [],
+              logicGenerated: true
+            }))
+          }))
+        };
+        
+        project.departments.push(newDept);
+        saveProjects();
+        renderAll();
+        closeDepartmentLogicModal();
+        
+        alert(`✅ Added ${currentLogicDepartment.name}\n\n${results.totalRooms} rooms • ${results.totalNSF.toLocaleString()} NSF`);
+      } catch (error) {
+        console.error('Calculation error:', error);
+        alert('Error calculating rooms: ' + error.message);
+      }
+    }
+
+    function closeDepartmentLogicModal() {
+      document.getElementById('department-logic-modal').classList.remove('active');
+      currentLogicDepartment = null;
+      currentLogicInputs = {};
+    }
+
     function filterImportTree() {
       const searchTerm = document.getElementById('import-search').value.toLowerCase();
       
@@ -5078,15 +5571,28 @@
         // Calculate department checkbox state
         const deptState = getCheckboxState(dept, deptMap);
         
+        // Check if department has room logic available
+        const hasLogic = checkDepartmentHasLogic(dept);
+        const logicEnabled = departmentLogicToggles.get(dept) || false;
+        const logicBadge = hasLogic 
+          ? `<span class="logic-badge ${logicEnabled ? 'enabled' : 'disabled'}">${logicEnabled ? '⚡ LOGIC' : 'MANUAL'}</span>` 
+          : '<span class="logic-badge disabled">MANUAL</span>';
+        
         html += `
           <div style="margin-bottom: 8px;">
-            <div class="import-tree-item">
+            <div class="import-tree-item ${hasLogic ? 'has-logic' : 'no-logic'}">
               <span onclick="toggleImportNode('${deptId}')" style="cursor: pointer; margin-right: 4px;">${isDeptExpanded ? '▼' : '▶'}</span>
               <input type="checkbox" id="import-${dept}" value="${dept}" 
                 ${deptState.checked ? 'checked' : ''}
                 ${deptState.indeterminate ? 'data-indeterminate="true"' : ''}
                 onchange="toggleImportItem('${dept}', this.checked)">
               <label for="import-${dept}" style="font-weight: 600;">${dept}</label>
+              ${logicBadge}
+              ${hasLogic ? `<label class="logic-toggle-switch" onclick="event.stopPropagation();">
+                <input type="checkbox" ${logicEnabled ? 'checked' : ''} 
+                  onchange="toggleDepartmentLogic('${dept.replace(/'/g, "\\'")}', this.checked)">
+                <span class="logic-toggle-slider"></span>
+              </label>` : ''}
               <span style="font-size: 0.75rem; color: var(--muted); margin-left: 8px;">(${faCount} FAs, ${totalRooms} rooms)</span>
             </div>
             ${isDeptExpanded ? `
@@ -5321,21 +5827,227 @@
         return;
       }
 
-      const mergeMode = document.getElementById('merge-on-import').checked;
-      const project = getCurrentProject();
-
+      // Collect departments with logic enabled from selected items
+      const logicDepartments = [];
+      const manualDepartments = [];
+      
       selectedImportItems.forEach(itemKey => {
         const parts = itemKey.split('::');
         if (parts.length === 1) {
-          // Department
-          importDepartment(project, itemKey, mergeMode);
-        } else if (parts.length === 2) {
-          // Functional Area
-          const [dept, fa] = parts;
+          const deptName = itemKey;
+          if (departmentLogicToggles.get(deptName)) {
+            logicDepartments.push(deptName);
+          } else {
+            manualDepartments.push({ type: 'department', data: itemKey });
+          }
+        } else if (!departmentLogicToggles.get(parts[0])) {
+          // Only add if parent department doesn't have logic enabled
+          if (parts.length === 2) {
+            manualDepartments.push({ type: 'fa', data: itemKey });
+          } else if (parts.length === 3) {
+            manualDepartments.push({ type: 'room', data: itemKey });
+          }
+        }
+      });
+
+      // If there are logic departments, collect all inputs first
+      if (logicDepartments.length > 0) {
+        showCombinedLogicInputDialog(logicDepartments, manualDepartments);
+      } else {
+        // No logic departments, proceed with normal import
+        executeImport([], manualDepartments);
+      }
+    }
+
+    function showCombinedLogicInputDialog(logicDepartments, manualDepartments) {
+      if (!window.RoomLogic) {
+        alert('Room logic system not loaded!');
+        return;
+      }
+
+      // Collect all inputs from all logic departments
+      const allInputs = [];
+      const chapterMap = new Map();
+      
+      logicDepartments.forEach(deptName => {
+        const chapterId = getDepartmentChapterId(deptName);
+        if (chapterId) {
+          const chapter = window.RoomLogic.getChapter(chapterId);
+          if (chapter) {
+            chapterMap.set(deptName, chapter);
+            chapter.inputs.forEach(input => {
+              allInputs.push({
+                deptName,
+                chapterId,
+                chapterName: chapter.name,
+                input
+              });
+            });
+          }
+        }
+      });
+
+      if (allInputs.length === 0) {
+        alert('No logic inputs found for selected departments');
+        return;
+      }
+
+      // Build combined input dialog
+      let html = `
+        <div style="margin-bottom: 20px;">
+          <h3 style="margin-bottom: 8px;">Room Logic Inputs</h3>
+          <p class="muted">Provide inputs for ${logicDepartments.length} department(s) with logic enabled:</p>
+        </div>
+      `;
+
+      // Group inputs by department
+      logicDepartments.forEach(deptName => {
+        const chapter = chapterMap.get(deptName);
+        if (!chapter) return;
+
+        html += `
+          <div class="input-modal" style="margin-bottom: 20px; padding: 16px; background: rgba(255,255,255,0.03); border-radius: 8px;">
+            <h4 style="margin-bottom: 12px; color: var(--accent);">⚡ ${chapter.name}</h4>
+        `;
+
+        chapter.inputs.forEach(input => {
+          const inputId = `logic-input-${deptName}-${input.id}`.replace(/[^a-zA-Z0-9-]/g, '_');
+          const defaultValue = input.defaultValue || input.min || 0;
+          
+          html += `
+            <div class="input-field" style="margin-bottom: 12px;">
+              <label for="${inputId}">${input.label}</label>
+              <input type="${input.type}" 
+                     id="${inputId}" 
+                     ${input.min !== undefined ? `min="${input.min}"` : ''}
+                     ${input.max !== undefined ? `max="${input.max}"` : ''}
+                     value="${defaultValue}"
+                     data-dept="${deptName}"
+                     data-input-id="${input.id}"
+                     style="width: 100%;">
+              ${input.helpText ? `<div class="help-text">${input.helpText}</div>` : ''}
+            </div>
+          `;
+        });
+
+        html += `</div>`;
+      });
+
+      document.getElementById('logic-modal-content').innerHTML = html;
+      document.getElementById('logic-modal-title').textContent = 'Configure Logic Departments';
+      document.getElementById('calculate-rooms-btn').style.display = 'block';
+      document.getElementById('calculate-rooms-btn').textContent = 'Calculate & Add to Project';
+      document.getElementById('calculate-rooms-btn').onclick = () => {
+        executeCombinedLogicImport(chapterMap, manualDepartments);
+      };
+      document.getElementById('department-logic-modal').classList.add('active');
+    }
+
+    function executeCombinedLogicImport(chapterMap, manualDepartments) {
+      const project = getCurrentProject();
+      const mergeMode = document.getElementById('merge-on-import').checked;
+      const logicResults = [];
+
+      // Collect inputs and calculate for each logic department
+      chapterMap.forEach((chapter, deptName) => {
+        const inputs = {};
+        
+        // Gather input values for this department
+        chapter.inputs.forEach(input => {
+          const inputId = `logic-input-${deptName}-${input.id}`.replace(/[^a-zA-Z0-9-]/g, '_');
+          const element = document.getElementById(inputId);
+          if (element) {
+            inputs[input.id] = parseFloat(element.value) || 0;
+          }
+        });
+
+        // Validate inputs
+        for (const input of chapter.inputs) {
+          const value = inputs[input.id];
+          if (input.min !== undefined && value < input.min) {
+            alert(`${chapter.name} - ${input.label}: Value must be at least ${input.min} (you entered ${value})`);
+            return;
+          }
+          if (input.max !== undefined && value > input.max) {
+            alert(`${chapter.name} - ${input.label}: Value must be at most ${input.max} (you entered ${value})`);
+            return;
+          }
+        }
+
+        try {
+          const results = window.RoomLogic.evaluateChapter(chapter, inputs);
+          
+          if (results.errors.length > 0) {
+            alert(`${chapter.name} calculation errors:\n${results.errors.map(e => e.message).join('\n')}`);
+            return;
+          }
+
+          logicResults.push({
+            deptName,
+            chapter,
+            inputs,
+            results
+          });
+        } catch (error) {
+          console.error(`Error calculating ${deptName}:`, error);
+          alert(`Error calculating ${chapter.name}: ${error.message}`);
+          return;
+        }
+      });
+
+      // Add all logic departments to project
+      logicResults.forEach(({ deptName, chapter, inputs, results }) => {
+        const newDept = {
+          id: generateId(),
+          name: chapter.name,
+          chapterId: chapter.chapter,
+          logicInputs: {...inputs},
+          functionalAreas: results.functionalAreas.map(fa => ({
+            id: generateId(),
+            name: fa.name,
+            description: fa.description,
+            rooms: fa.rooms.filter(r => r.type !== 'calculation').map(room => ({
+              id: generateId(),
+              code: room.code,
+              name: room.name,
+              quantity: room.quantity,
+              nsf: room.nsfPerRoom,
+              totalNSF: room.totalNSF,
+              notes: room.notes || '',
+              equipment: [],
+              logicGenerated: true
+            }))
+          }))
+        };
+        project.departments.push(newDept);
+      });
+
+      // Execute manual imports
+      executeImport([], manualDepartments);
+
+      saveProjects();
+      closeDepartmentLogicModal();
+      closeImportModal();
+      renderAll();
+
+      const totalLogicRooms = logicResults.reduce((sum, r) => sum + r.results.totalRooms, 0);
+      const totalLogicNSF = logicResults.reduce((sum, r) => sum + r.results.totalNSF, 0);
+      
+      alert(`✅ Import Complete\n\nLogic Departments: ${logicResults.length}\nRooms: ${totalLogicRooms}\nNSF: ${totalLogicNSF.toLocaleString()}\n\nManual Items: ${manualDepartments.length}`);
+    }
+
+    function executeImport(logicDepartments, manualDepartments) {
+      const mergeMode = document.getElementById('merge-on-import').checked;
+      const project = getCurrentProject();
+
+      manualDepartments.forEach(item => {
+        if (item.type === 'department') {
+          importDepartment(project, item.data, mergeMode);
+        } else if (item.type === 'fa') {
+          const [dept, fa] = item.data.split('::');
           importFunctionalArea(project, dept, fa, mergeMode);
-        } else if (parts.length === 3) {
-          // Room
-          const [dept, fa, roomCode] = parts;
+        } else if (item.type === 'room') {
+          const [dept, fa, roomCode] = item.data.split('::');
           importRoom(project, dept, fa, roomCode, mergeMode);
         }
       });
