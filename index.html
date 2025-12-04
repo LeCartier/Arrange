@@ -3065,7 +3065,7 @@
       return tree;
     }
 
-    function renderTreeNode(node, level = 0) {
+    function renderTreeNode(node, level = 0, parentId = null) {
       const isExpanded = expandedNodes.has(node.id);
       const hasChildren = node.children && node.children.length > 0;
       const isSelected = selectedNode?.id === node.id;
@@ -3079,7 +3079,7 @@
 
       let html = `
         <div class="tree-node" data-level="${level}">
-          <div class="tree-item ${isSelected ? 'selected' : ''}" ${draggableAttrs} onclick="handleNodeClick('${escapedNodeId}')" style="${isDraggable ? 'cursor: grab;' : ''}">
+          <div class="tree-item ${isSelected ? 'selected' : ''}" ${draggableAttrs} onclick="handleNodeClick('${escapedNodeId}')" style="${isDraggable ? 'cursor: grab;' : ''}" data-node-id="${escapedNodeId}" ${parentId ? `data-parent-id="${parentId}"` : ''}>
             <span class="tree-toggle ${hasChildren ? (isExpanded ? 'expanded' : 'collapsed') : 'leaf'}" 
                   onclick="event.stopPropagation(); toggleNode('${escapedNodeId}')"></span>
             <span class="tree-icon">${node.icon}</span>
@@ -3091,7 +3091,7 @@
       if (hasChildren) {
         html += `<div class="tree-children ${isExpanded ? 'expanded' : ''}" id="children-${escapedNodeId}">`;
         node.children.forEach(child => {
-          html += renderTreeNode(child, level + 1);
+          html += renderTreeNode(child, level + 1, escapedNodeId);
         });
         html += `</div>`;
       }
@@ -3205,6 +3205,31 @@
       const treeData = buildTreeData();
       selectedNode = findNodeById(treeData, nodeId);
       console.log('Node clicked:', nodeId, 'Found:', selectedNode);
+      
+      // If there's an active search, collapse all and only expand the path to this node
+      const searchBox = document.getElementById('tree-search-box');
+      const hasActiveSearch = searchBox && searchBox.value.trim() !== '';
+      
+      if (hasActiveSearch) {
+        // Clear expanded nodes
+        expandedNodes.clear();
+        
+        // Expand only the parent path for this node
+        const nodeElement = document.querySelector(`[data-node-id="${nodeId.replace(/'/g, "\\'")}"]`);
+        if (nodeElement) {
+          let parentId = nodeElement.dataset.parentId;
+          while (parentId) {
+            expandedNodes.add(parentId);
+            const parentElement = document.querySelector(`[data-node-id="${parentId}"]`);
+            if (parentElement) {
+              parentId = parentElement.dataset.parentId;
+            } else {
+              break;
+            }
+          }
+        }
+      }
+      
       renderTree();
       renderDetail();
     }
