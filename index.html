@@ -5729,6 +5729,7 @@
               <div style="flex: 1;">
                 <h4 style="margin-bottom: 4px;">Chapter ${chapter.id}: ${chapter.name}</h4>
                 <p class="muted" style="font-size: 0.85rem;">${chapter.description}</p>
+                ${chapter.status ? `<p style="font-size: 0.8rem; margin-top: 6px; color: #856404; background: #fff3cd; padding: 6px 10px; border-radius: 4px; display: inline-block;">${chapter.status}</p>` : ''}
                 <p class="muted" style="font-size: 0.75rem; margin-top: 4px;">${chapter.inputCount} inputs required • ${chapter.functionalAreaCount} functional areas</p>
               </div>
               <button class="btn-primary" style="padding: 6px 12px; font-size: 0.85rem;">Configure →</button>
@@ -5780,6 +5781,7 @@
         <div style="margin-bottom: 20px;">
           <h3 style="margin-bottom: 8px;">Chapter ${chapter.chapter}: ${chapter.name}</h3>
           <p class="muted">${chapter.description}</p>
+          ${chapter.status ? `<div style="margin-top: 12px; padding: 12px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; font-size: 0.9rem;">${chapter.status}</div>` : ''}
         </div>
         
         <div class="input-modal">

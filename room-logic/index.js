@@ -5,9 +5,8 @@ import { CHAPTER_100 } from './chapter-100-medical-surgical.js';
 import { CHAPTER_102 } from './chapter-102-intensive-care.js';
 import { CHAPTER_104 } from './chapter-104-sci-acute-care.js';
 import { CHAPTER_106 } from './chapter-106-small-house.js';
-import { CHAPTER_202 } from './chapter-202-primary-care.js';
-import { CHAPTER_204 } from './chapter-204-pharmacy-outpatient.js';
-import { CHAPTER_206 } from './chapter-206-laboratory.js';
+// Chapter 202 - DELETED in VA index (merged into Mental Health Clinic Chapter 260)
+// import { CHAPTER_202 } from './chapter-202-primary-care.js';
 import { CHAPTER_208 } from './chapter-208-chaplain.js';
 import CHAPTER_210 from './chapter-210-cardiology.js';
 import { CHAPTER_212 } from './chapter-212-pulmonary.js';
@@ -20,9 +19,12 @@ import { CHAPTER_226 } from './chapter-226-eeg.js';
 import { CHAPTER_228 } from './chapter-228-radiology.js';
 import { CHAPTER_234 } from './chapter-234-fiscal-service.js';
 import { CHAPTER_238 } from './chapter-238-director-suite.js';
+import { CHAPTER_240 } from './chapter-240-laboratory.js';
 import { CHAPTER_244 } from './chapter-244-lobby.js';
 import { CHAPTER_254 } from './chapter-254-nursing-admin.js';
-import { CHAPTER_260 } from './chapter-260-pmr.js';
+import { CHAPTER_256 } from './chapter-256-emergency-department.js';
+import { CHAPTER_268 } from './chapter-268-pharmacy-outpatient.js';
+import { CHAPTER_270 } from './chapter-270-pmr.js';
 import { CHAPTER_274_CONFIG } from './chapter-274-quarters-oncall.js';
 import { CHAPTER_279_CONFIG } from './chapter-279-police.js';
 import { CHAPTER_280_CONFIG } from './chapter-280-service-orgs.js';
@@ -35,9 +37,7 @@ export const CHAPTERS = {
   '102': CHAPTER_102,
   '104': CHAPTER_104,
   '106': CHAPTER_106,
-  '202': CHAPTER_202,
-  '204': CHAPTER_204,
-  '206': CHAPTER_206,
+  // '202': CHAPTER_202, // DELETED in VA index (merged into Chapter 260)
   '208': CHAPTER_208,
   '210': CHAPTER_210,
   '212': CHAPTER_212,
@@ -50,9 +50,12 @@ export const CHAPTERS = {
   '228': CHAPTER_228,
   '234': CHAPTER_234,
   '238': CHAPTER_238,
+  '240': CHAPTER_240,
   '244': CHAPTER_244,
   '254': CHAPTER_254,
-  '260': CHAPTER_260,
+  '256': CHAPTER_256,
+  '268': CHAPTER_268,
+  '270': CHAPTER_270,
   '274': CHAPTER_274_CONFIG,
   '279': CHAPTER_279_CONFIG,
   '280': CHAPTER_280_CONFIG,
@@ -78,6 +81,7 @@ export function getAllChapters() {
     id: chapter.chapter,
     name: chapter.name,
     description: chapter.description,
+    status: chapter.status || null,
     inputCount: chapter.inputs.length,
     functionalAreaCount: chapter.functionalAreas.length
   }));

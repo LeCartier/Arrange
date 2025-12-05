@@ -463,70 +463,139 @@ Potential features for future development:
 
 ## Chapter Logic Implementation Status
 
-### Completed Chapters (27 Chapters)
+### Completed Chapters (28 of 51 Active Chapters - 55% Complete)
 
-**Patient Care Units (4 chapters)**
-- ✅ **Chapter 100**: Medical / Surgical Patient Care Unit (3 FAs, ~90 rooms)
-- ✅ **Chapter 102**: Intensive Care Patient Care Unit (4 FAs, ~40 rooms)
-- ✅ **Chapter 104**: SCI/D Center - Acute Care (7 FAs, ~80 rooms)
-- ✅ **Chapter 106**: Small House Model (10 FAs, ~150 rooms)
+**Patient Care Units (6 chapters - 6 complete)**
+- ✅ **Chapter 100**: Medical/Surgical Patient Care Unit (MS PCU) (3 FAs, ~90 rooms)
+- ✅ **Chapter 102**: Intensive Care Patient Care Unit (IC PCU) (4 FAs, ~40 rooms)
+- ✅ **Chapter 104**: Spinal Cord Injury / Disorders Center (SCI/D) (7 FAs, ~80 rooms)
+- ✅ **Chapter 106**: Small House (SH) Model (10 FAs, ~150 rooms)
+- ✅ **Chapter 110**: Mental Health Patient Care Unit (MH PCU)
+- ✅ **Chapter 111**: Polytrauma Rehabilitation Center (PRC)
 
-**Clinical Services (8 chapters)**
+**Clinical Services (15 chapters - 10 complete)**
+- 🗑️ **Chapter 202**: DELETED – merged into Mental Health Clinic Chapter 260
+- ✅ **Chapter 204**: Audiology and Speech-Language Pathology (ASLP) Service
 - ✅ **Chapter 208**: Chaplain Service (4 FAs, ~20 rooms)
 - ✅ **Chapter 210**: Cardiology Service (6 FAs, ~60 rooms)
 - ✅ **Chapter 212**: Pulmonary Medicine Service (6 FAs, ~50 rooms)
 - ✅ **Chapter 214**: Clinical Services Administration (10 FAs, ~100 rooms)
 - ✅ **Chapter 222**: Dental Service (7 FAs, ~80 rooms)
-- ✅ **Chapter 226**: EEG Laboratory (6 FAs, ~40 rooms)
-- ✅ **Chapter 228**: Radiology / Imaging Service (10 FAs, ~50 rooms)
-- ✅ **Chapter 260**: Physical Medicine & Rehabilitation (9 FAs, ~45 rooms)
+- ✅ **Chapter 226**: Electroencephalography (EEG) Laboratory (6 FAs, ~40 rooms)
+- ⏳ **Chapter 233**: Eye Clinic: Ophthalmology and Optometry Services
+- ✅ **Chapter 268**: Pharmacy Service
+- ⏳ **Chapter 269**: Recreation Therapy Service
+- ✅ **Chapter 270**: Physical Medicine and Rehabilitation Service (9 FAs, ~45 rooms)
+- ⏳ **Chapter 285**: Sterile Processing Service
+- ✅ **Chapter 286**: Surgical/Endovascular Service
+- ⏳ **Chapter 287**: Gastroenterology/Endoscopy Service
 
-**Administrative Services (5 chapters)**
+**Administrative Services (8 chapters - 7 complete)**
 - ✅ **Chapter 218**: Veterans Assistance Unit (2 FAs, ~8 rooms)
 - ✅ **Chapter 220**: Credit Union (3 FAs, ~15 rooms)
 - ✅ **Chapter 234**: Fiscal Service (3 FAs, ~30 rooms)
-- ✅ **Chapter 238**: Director's Suite (3 FAs, ~20 rooms)
+- ✅ **Chapter 238**: Medical Center Director Suite (3 FAs, ~20 rooms)
+- ✅ **Chapter 246**: Health Administration Service
 - ✅ **Chapter 254**: Nursing Service Administration (3 FAs, ~25 rooms)
+- ✅ **Chapter 266**: Human Resources Management
+- ✅ **Chapter 278**: Research and Development
 
-**Facility Services (6 chapters)**
+**Facility Services (14 chapters - 5 complete)**
+- ⏳ **Chapter 206**: Veterans Canteen Service (VCS)
+- ⏳ **Chapter 230**: Engineering Service
+- ⏳ **Chapter 232**: Telecommunications Facilities
 - ✅ **Chapter 244**: Lobby (1 FA, ~15 rooms)
+- ⏳ **Chapter 248**: Medical Media Service
 - ✅ **Chapter 274**: Quarters, On-Call (1 FA, ~10 rooms)
 - ✅ **Chapter 279**: Police Service (2 FAs, ~20 rooms)
 - ✅ **Chapter 280**: Service Organizations (3 FAs, ~8 rooms)
-- ✅ **Chapter 282**: Social Work Service (4 FAs, ~15 rooms)
+- ⏳ **Chapter 282**: Social Work Service (4 FAs, ~15 rooms)
+- ⏳ **Chapter 284**: Logistics Service
 - ✅ **Chapter 290**: Voluntary Service (4 FAs, ~12 rooms)
+- ⏳ **Chapter 400**: Library Service
+- ✅ **Chapter 402**: Educational Facilities
+- ✅ **Chapter 406**: Environmental Management Service (EMS) Administration
 
-### Next Priority Chapters (Recommended for Implementation)
+### Remaining Chapters (23 of 51 Active Chapters)
 
-**Ambulatory Care (4 chapters)**
-- ✅ **Chapter 202**: Ambulatory Care / Primary Care Clinic (5 FAs, ~30 rooms)
-- ✅ **Chapter 204**: Pharmacy Service - Outpatient (5 FAs, ~30 rooms)
-- ✅ **Chapter 206**: Laboratory Service (8 FAs, ~40 rooms)
+**Imaging & Diagnostics (4 chapters)**
+- ⏳ **Chapter 228**: Radiology/Imaging (10 FAs, ~50 rooms) - **NOTE: May be replaced by Chapter 295**
+- ⏳ **Chapter 240**: Pathology and Laboratory Medicine Service
+- 🗑️ **Chapter 252**: DELETED - replaced by Imaging Service Chapter 295
+- 🗑️ **Chapter 275**: DELETED - replaced by Imaging Service Chapter 295
+- 🗑️ **Chapter 276**: DELETED - replaced by Imaging Service Chapter 295
+- ⏳ **Chapter 295**: Imaging Service (consolidated imaging chapter)
+
+**Emergency & Urgent Care (3 chapters)**
+- ✅ **Chapter 230**: Emergency Department (ED) (12 FAs, ~60 rooms) - **NOTE: Listed as Ch 256 in VA index**
+- ✅ **Chapter 256**: Emergency Department (ED) - **DUPLICATE: Same as Ch 230**
+- ⏳ **Chapter 257**: Urgent Care Center
+
+**Ambulatory Care (5 chapters)**
+- ✅ **Chapter 202**: Primary Care Clinic (5 FAs, ~30 rooms) - **NOTE: VA index shows deleted**
+- ⏳ **Chapter 204**: Audiology and Speech-Language Pathology (ASLP) Service
+- ✅ **Chapter 206**: Laboratory Service (8 FAs, ~40 rooms) - **NOTE: VA index shows as VCS**
 - ✅ **Chapter 216**: Ambulatory Surgery Service (12 FAs, ~50 rooms)
+- ⏳ **Chapter 258**: Women Veterans Clinical Service (WVCS) (For Models 2 and 3)
+- ⏳ **Chapter 260**: Mental Health Clinic – UNDER REVISION
+- 🗑️ **Chapter 261**: DELETED – merged into Mental Health Clinic Chapter 260
+- ⏳ **Chapter 263**: Community Based Outpatient Clinic (PACT) Interim
+- 🗑️ **Chapter 265**: Community Based Outpatient Clinic (CBOC) – ARCHIVED
 
-**High Priority - Core Clinical Services**
+**Specialty Clinical Services (5 chapters)**
+- ⏳ **Chapter 277**: Radiation Oncology
+- ⏳ **Chapter 308**: Prosthetic and Sensory Aids Service
+- ⏳ **Chapter 312**: Mental Health Residential Care Unit (MH RCU)
+- ⏳ **Chapter 316**: Dialysis Center
+- 🗑️ **Chapter 300**: DELETED – merged into Mental Health Clinic Chapter 260
 
-1. ⏳ **Chapter 230**: Emergency Department
-   - Treatment bays and trauma rooms
-   - Annual visits based
-   - High complexity
+**Support Services (6 chapters)**
+- ⏳ **Chapter 408**: Environmental Management Service (EMS) Laundry and Linen Operation
+- ⏳ **Chapter 410**: Environmental Management Service (EMS) Lockers, Lounges, Toilets and Showers
+- ⏳ **Chapter 420**: Childcare Development Center
+- ⏳ **Chapter 421**: Drop-in Childcare Center
 
-2. ⏳ **Chapter 250**: Mental Health Service
-   - Outpatient behavioral health
-   - Visit volume based
-   - Medium complexity
+**Under Revision (2 chapters)**
+- ⏳ **Chapter 224**: Nutrition and Food Service – UNDER REVISION
+- ⏳ **Chapter 260**: Mental Health Clinic – UNDER REVISION
+
+**Deleted/Merged Chapters (9 total)**
+- 🗑️ **Chapter 202**: DELETED – merged into Mental Health Clinic Chapter 260
+- 🗑️ **Chapter 252**: DELETED - replaced by Imaging Service Chapter 295
+- 🗑️ **Chapter 261**: DELETED – merged into Mental Health Clinic Chapter 260
+- 🗑️ **Chapter 262**: DELETED
+- 🗑️ **Chapter 264**: DELETED
+- 🗑️ **Chapter 265**: Community Based Outpatient Clinic (CBOC) – ARCHIVED
+- 🗑️ **Chapter 272**: DELETED – merged into Mental Health Clinic Chapter 260
+- 🗑️ **Chapter 275**: DELETED - replaced by Imaging Service Chapter 295
+- 🗑️ **Chapter 276**: DELETED - replaced by Imaging Service Chapter 295
+- 🗑️ **Chapter 300**: DELETED – merged into Mental Health Clinic Chapter 260
 
 ### Implementation Notes
 
 **Two Export Patterns in Use:**
-- **Object Pattern** (21 chapters): Direct object export with `functionalAreas` array
+- **Object Pattern** (22 chapters): Direct object export with `functionalAreas` array
 - **Function Pattern** (6 chapters): Function-based export returning room arrays
 
 **Statistics:**
-- Total Functional Areas: ~129
-- Total Room Definitions: ~1045+
+- **Active VA Chapters**: 51 (excluding 9 deleted/archived)
+- **Completed**: 28 chapters (55%)
+- **Remaining**: 23 chapters (45%)
+- **Total Functional Areas**: ~141
+- **Total Room Definitions**: ~1105+
 - All chapters feature multi-tier conditional logic and NSF calculations
 - Helper functions used for complex room count calculations
+
+**Chapter Number Discrepancies:**
+
+The following chapters retain their original numbering but include status warnings in the UI:
+- **Chapter 202** (Primary Care) - VA index shows as DELETED/merged into Ch 260. Logic preserved with warning.
+- **Chapter 204** (Pharmacy Outpatient) - VA Ch 204 is ASLP; Pharmacy is Ch 268. Logic preserved with warning.
+- **Chapter 206** (Laboratory) - VA Ch 206 is VCS; Laboratory is Ch 240. Logic preserved with warning.
+- **Chapter 230** (Emergency Department) - VA Ch 230 is Engineering; ED is Ch 256. Logic preserved with warning.
+- **Chapter 260** (PM&R) - VA Ch 260 is Mental Health Clinic; PM&R is Ch 270. Logic preserved with warning.
+
+All chapters with discrepancies display a ⚠️ status note in the Logic Portal and chapter configuration screens explaining the difference from official VA numbering.
 
 ## Support & Credits
 

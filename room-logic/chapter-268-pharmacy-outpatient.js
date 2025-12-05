@@ -1,10 +1,10 @@
-// Chapter 204: Ambulatory Care - Pharmacy Outpatient
+// Chapter 268: Pharmacy Service - Outpatient
 // Based on VA PG-18-9 Space Planning Criteria
 // NTDG Factor: 1.35
 
-export const CHAPTER_204 = {
-  id: '204',
-  name: 'Ambulatory Care - Pharmacy Outpatient',
+export const CHAPTER_268 = {
+  id: '268',
+  name: 'Pharmacy Service',
   ntdgFactor: 1.35,
   
   inputs: [
@@ -51,7 +51,7 @@ export const CHAPTER_204 = {
 
   // Helper function to calculate waiting area size
   calculateWaitingNSF(inputs) {
-    const windows = CHAPTER_204.calculateDispensingWindows(inputs);
+    const windows = CHAPTER_268.calculateDispensingWindows(inputs);
     return windows * 60; // 60 NSF per window
   },
 
@@ -74,7 +74,7 @@ export const CHAPTER_204 = {
           id: 'PH-WAIT',
           name: 'Pharmacy Waiting Area',
           calculate: (inputs) => {
-            const nsf = CHAPTER_204.calculateWaitingNSF(inputs);
+            const nsf = CHAPTER_268.calculateWaitingNSF(inputs);
             return [{ 
               roomCode: 'SB003', 
               roomName: 'Pharmacy Waiting Area', 
@@ -87,7 +87,7 @@ export const CHAPTER_204 = {
           id: 'PH-WINDOW',
           name: 'Pharmacy Dispensing Window',
           calculate: (inputs) => {
-            const quantity = CHAPTER_204.calculateDispensingWindows(inputs);
+            const quantity = CHAPTER_268.calculateDispensingWindows(inputs);
             return [{ 
               roomCode: 'SR001', 
               roomName: 'Pharmacy Dispensing Window', 
@@ -139,7 +139,7 @@ export const CHAPTER_204 = {
           id: 'PH-PHARMACIST-WS',
           name: 'Pharmacist Workstation',
           calculate: (inputs) => {
-            const quantity = CHAPTER_204.calculatePharmacistStations(inputs);
+            const quantity = CHAPTER_268.calculatePharmacistStations(inputs);
             return [{ 
               roomCode: 'SS218', 
               roomName: 'Pharmacist Workstation', 

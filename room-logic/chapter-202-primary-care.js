@@ -5,6 +5,7 @@
 export const CHAPTER_202 = {
   id: '202',
   name: 'Ambulatory Care - Primary Care Clinic',
+  status: '⚠️ NOTE: VA Chapter 202 was DELETED and merged into Mental Health Clinic Chapter 260. This logic represents legacy Primary Care planning.',
   ntdgFactor: 1.35,
   
   inputs: [

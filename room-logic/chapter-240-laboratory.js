@@ -1,10 +1,10 @@
-// Chapter 206: Ambulatory Care - Laboratory Service
+// Chapter 240: Pathology and Laboratory Medicine Service
 // Based on VA PG-18-9 Space Planning Criteria
 // NTDG Factor: 1.35
 
-export const CHAPTER_206 = {
-  id: '206',
-  name: 'Ambulatory Care - Laboratory Service',
+export const CHAPTER_240 = {
+  id: '240',
+  name: 'Pathology and Laboratory Medicine Service',
   ntdgFactor: 1.35,
   
   inputs: [
@@ -80,7 +80,7 @@ export const CHAPTER_206 = {
           name: 'Laboratory Waiting Area',
           calculate: (inputs) => {
             if (!inputs.has_phlebotomy) return [];
-            const stations = CHAPTER_206.calculatePhlebotomyStations(inputs);
+            const stations = CHAPTER_240.calculatePhlebotomyStations(inputs);
             const nsf = stations * 50;
             return [{ 
               roomCode: 'SB003', 
@@ -95,7 +95,7 @@ export const CHAPTER_206 = {
           name: 'Phlebotomy Station',
           calculate: (inputs) => {
             if (!inputs.has_phlebotomy) return [];
-            const quantity = CHAPTER_206.calculatePhlebotomyStations(inputs);
+            const quantity = CHAPTER_240.calculatePhlebotomyStations(inputs);
             return [{ 
               roomCode: 'SE159', 
               roomName: 'Phlebotomy Station', 
@@ -141,7 +141,7 @@ export const CHAPTER_206 = {
           id: 'LAB-CORE',
           name: 'Core Laboratory (Chemistry/Hematology)',
           calculate: (inputs) => {
-            const nsf = CHAPTER_206.calculateCoreLabNSF(inputs);
+            const nsf = CHAPTER_240.calculateCoreLabNSF(inputs);
             return [{ 
               roomCode: 'SR020', 
               roomName: 'Core Laboratory', 

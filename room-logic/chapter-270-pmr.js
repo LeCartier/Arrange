@@ -1,9 +1,9 @@
-// Chapter 260: Physical Medicine & Rehabilitation Service
+// Chapter 270: Physical Medicine & Rehabilitation Service
 // Based on VA PG-18-9 Space Planning Criteria
 // NTDG Factor: 1.35
 
-export const CHAPTER_260 = {
-  id: '260',
+export const CHAPTER_270 = {
+  id: '270',
   name: 'Physical Medicine & Rehabilitation Service',
   ntdgFactor: 1.35,
   
@@ -91,7 +91,7 @@ export const CHAPTER_260 = {
           id: 'PMR-WAIT',
           name: 'PM&R Waiting Area',
           calculate: (inputs) => {
-            const nsf = CHAPTER_260.calculateWaitingNSF(inputs);
+            const nsf = CHAPTER_270.calculateWaitingNSF(inputs);
             return [{ 
               roomCode: 'SB003', 
               roomName: 'PM&R Waiting Area', 
@@ -154,7 +154,7 @@ export const CHAPTER_260 = {
           name: 'PT Treatment Cubicle / Station',
           calculate: (inputs) => {
             if (!inputs.has_physical_therapy) return [];
-            const quantity = CHAPTER_260.calculatePTStations(inputs);
+            const quantity = CHAPTER_270.calculatePTStations(inputs);
             return [{ 
               roomCode: 'SE402', 
               roomName: 'PT Treatment Station', 
