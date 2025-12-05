@@ -1521,27 +1521,6 @@
     </div>
   </div>
 
-  <!-- Equipment Selection Modal -->
-  <div id="equipment-modal" class="modal-overlay">
-    <div class="modal-content" style="max-width: 700px;">
-      <div class="modal-header">
-        <h2>Add Equipment to Room</h2>
-        <button class="modal-close" onclick="closeEquipmentModal()">&times;</button>
-      </div>
-      <div style="padding: 20px;">
-        <div style="margin-bottom: 16px;">
-          <input type="text" id="equipment-search" placeholder="Search by JSN, name, or description..." style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.95rem;" oninput="filterEquipmentList()" />
-        </div>
-        <div id="equipment-list" style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border); border-radius: 4px;">
-          <!-- Equipment items will be populated here -->
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-secondary" onclick="closeEquipmentModal()">Cancel</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Report Generation Modal -->
   <div id="report-modal" class="modal-overlay">
     <div class="modal-content" style="max-width: 500px;">
@@ -1767,10 +1746,20 @@
           EQUIPMENT_LIST.forEach(eq => equipLookup.set(eq.jsn, eq));
           
           window.ROOM_EQUIPMENT = {};
+          const roomJSNSeen = {}; // Track JSNs per room to avoid duplicates
+          
           enrichedMappings.forEach(mapping => {
             if (!window.ROOM_EQUIPMENT[mapping.roomCode]) {
               window.ROOM_EQUIPMENT[mapping.roomCode] = [];
+              roomJSNSeen[mapping.roomCode] = new Set();
             }
+            
+            // Skip if we've already added this JSN to this room
+            if (roomJSNSeen[mapping.roomCode].has(mapping.equipmentJsn)) {
+              return;
+            }
+            roomJSNSeen[mapping.roomCode].add(mapping.equipmentJsn);
+            
             const equipItem = equipLookup.get(mapping.equipmentJsn);
             if (equipItem) {
               window.ROOM_EQUIPMENT[mapping.roomCode].push({
@@ -1782,7 +1771,7 @@
               });
             }
           });
-          console.log('Built ROOM_EQUIPMENT lookup for', Object.keys(window.ROOM_EQUIPMENT).length, 'room codes');
+          console.log('Built ROOM_EQUIPMENT lookup for', Object.keys(window.ROOM_EQUIPMENT).length, 'room codes (deduplicated by JSN)');
           
           // Now trigger initial render with enriched data
           viewState = 'project-list';
@@ -1872,8 +1861,27 @@
     }
 
     function saveProjects() {
-      localStorage.setItem('va-user-projects', JSON.stringify(USER_PROJECTS));
-      getCurrentProject().modifiedAt = new Date().toISOString();
+      try {
+        const data = JSON.stringify(USER_PROJECTS);
+        const sizeKB = (data.length / 1024).toFixed(1);
+        
+        // Check if data is too large (localStorage typically has 5-10MB limit)
+        if (data.length > 5000000) { // 5MB
+          console.warn(`Project data is large (${sizeKB} KB). Consider exporting to file.`);
+        }
+        
+        localStorage.setItem('va-user-projects', data);
+        getCurrentProject().modifiedAt = new Date().toISOString();
+        console.log(`Saved projects (${sizeKB} KB)`);
+      } catch (e) {
+        if (e.name === 'QuotaExceededError') {
+          alert(`Storage quota exceeded!\n\nYour project data is too large to save automatically.\n\nPlease use File > Export Project to save your work to a file instead.\n\nTip: Remove unused equipment or departments to reduce size.`);
+          console.error('localStorage quota exceeded. Data size:', (JSON.stringify(USER_PROJECTS).length / 1024).toFixed(1), 'KB');
+        } else {
+          console.error('Error saving projects:', e);
+          alert('Error saving project: ' + e.message);
+        }
+      }
     }
 
     function generateId() {
@@ -5717,9 +5725,14 @@
         }
       });
       
-      // Add equipment
+      // Add equipment (deduplicate by JSN)
       const equipForRoom = ROOM_EQUIPMENT_MAPPINGS.filter(m => m.roomCode === roomCode);
+      const seenJSNs = new Set();
       equipForRoom.forEach(eq => {
+        // Skip if we've already added this JSN
+        if (seenJSNs.has(eq.jsn)) return;
+        seenJSNs.add(eq.jsn);
+        
         const equipDetail = EQUIPMENT_LIST.find(e => e.jsn === eq.jsn);
         if (equipDetail) {
           room.equipment.push({
@@ -5832,9 +5845,14 @@
         }
       });
       
-      // Add equipment
+      // Add equipment (deduplicate by JSN)
       const equipForRoom = ROOM_EQUIPMENT_MAPPINGS.filter(m => m.roomCode === roomCode);
+      const seenJSNs = new Set();
       equipForRoom.forEach(eq => {
+        // Skip if we've already added this JSN
+        if (seenJSNs.has(eq.jsn)) return;
+        seenJSNs.add(eq.jsn);
+        
         const equipDetail = EQUIPMENT_LIST.find(e => e.jsn === eq.jsn);
         if (equipDetail) {
           room.equipment.push({
@@ -6175,20 +6193,37 @@
         // Helper function to get equipment for a room code
         function getEquipmentForRoomCode(roomCode) {
           const equipment = [];
-          const mappings = window.ROOM_EQUIPMENT_MAPPINGS || ROOM_EQUIPMENT_MAPPINGS || [];
-          const equipList = window.EQUIPMENT_LIST || EQUIPMENT_LIST || [];
+          
+          // Try multiple sources for equipment data
+          const mappings = window.ROOM_EQUIPMENT_MAPPINGS || 
+                          (typeof ROOM_EQUIPMENT_MAPPINGS !== 'undefined' ? ROOM_EQUIPMENT_MAPPINGS : []);
+          const equipList = window.EQUIPMENT_LIST || 
+                           (typeof EQUIPMENT_LIST !== 'undefined' ? EQUIPMENT_LIST : []);
+          
+          if (mappings.length === 0 || equipList.length === 0) {
+            console.warn('Equipment data not loaded:', { 
+              mappingsCount: mappings.length, 
+              equipListCount: equipList.length,
+              roomCode 
+            });
+            return [];
+          }
           
           const equipForRoom = mappings.filter(m => m.roomCode === roomCode);
+          console.log(`Found ${equipForRoom.length} equipment items for room ${roomCode}`);
+          
           equipForRoom.forEach(eq => {
-            const equipDetail = equipList.find(e => e.jsn === eq.jsn);
+            const equipDetail = equipList.find(e => e.jsn === eq.jsn || e.jsn === eq.equipmentJsn);
             if (equipDetail) {
               equipment.push({
-                jsn: eq.jsn,
+                jsn: eq.jsn || eq.equipmentJsn,
                 name: equipDetail.name,
                 quantity: eq.qty || eq.quantity || 1,
-                acqIns: equipDetail.acqIns,
+                acqIns: equipDetail.acqIns || eq.acqIns,
                 description: equipDetail.description
               });
+            } else {
+              console.warn(`Equipment detail not found for JSN: ${eq.jsn || eq.equipmentJsn}`);
             }
           });
           

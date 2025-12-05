@@ -75,6 +75,7 @@ export function evaluateChapter(chapter, userInputs) {
  */
 function evaluateRoom(room, inputs, calculations) {
   let quantity = 0;
+  let nsfPerRoom = room.nsf; // Default NSF from room definition
 
   // Evaluate each rule until one matches
   for (const rule of room.rules) {
@@ -94,6 +95,12 @@ function evaluateRoom(room, inputs, calculations) {
       } else if (typeof rule.quantity === 'number') {
         quantity = rule.quantity;
       }
+      
+      // Check if rule specifies a custom NSF value
+      if (rule.nsf !== undefined) {
+        nsfPerRoom = rule.nsf;
+      }
+      
       break; // Stop at first matching rule
     }
   }
@@ -106,8 +113,8 @@ function evaluateRoom(room, inputs, calculations) {
     code: room.code || room.id, // Use id as code if code is not provided
     name: room.name,
     quantity: quantity,
-    nsfPerRoom: room.nsf,
-    totalNSF: quantity * room.nsf,
+    nsfPerRoom: nsfPerRoom,
+    totalNSF: quantity * nsfPerRoom,
     type: room.type || 'room',
     notes: room.notes
   };

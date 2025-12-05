@@ -83,14 +83,24 @@ export function getChapter(chapterId) {
  * @returns {Array} Array of chapter metadata
  */
 export function getAllChapters() {
-  return Object.values(CHAPTERS).map(chapter => ({
-    id: chapter.chapter,
-    name: chapter.name,
-    description: chapter.description,
-    status: chapter.status || null,
-    inputCount: chapter.inputs.length,
-    functionalAreaCount: chapter.functionalAreas.length
-  }));
+  return Object.values(CHAPTERS).map(chapter => {
+    // Handle both array-based and object-based functionalAreas
+    let faCount = 0;
+    if (Array.isArray(chapter.functionalAreas)) {
+      faCount = chapter.functionalAreas.length;
+    } else if (chapter.functionalAreas && typeof chapter.functionalAreas === 'object') {
+      faCount = Object.keys(chapter.functionalAreas).length;
+    }
+    
+    return {
+      id: chapter.chapter,
+      name: chapter.name,
+      description: chapter.description,
+      status: chapter.status || null,
+      inputCount: chapter.inputs ? chapter.inputs.length : 0,
+      functionalAreaCount: faCount
+    };
+  });
 }
 
 /**
