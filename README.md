@@ -520,27 +520,28 @@ Potential features for future development:
 
 **Imaging & Diagnostics (4 chapters)**
 - ⏳ **Chapter 228**: Radiology/Imaging (10 FAs, ~50 rooms) - **NOTE: May be replaced by Chapter 295**
-- ⏳ **Chapter 240**: Pathology and Laboratory Medicine Service
+- ✅ **Chapter 240**: Pathology and Laboratory Medicine Service (8 FAs, ~40 rooms)
 - 🗑️ **Chapter 252**: DELETED - replaced by Imaging Service Chapter 295
 - 🗑️ **Chapter 275**: DELETED - replaced by Imaging Service Chapter 295
 - 🗑️ **Chapter 276**: DELETED - replaced by Imaging Service Chapter 295
 - ⏳ **Chapter 295**: Imaging Service (consolidated imaging chapter)
 
-**Emergency & Urgent Care (3 chapters)**
-- ✅ **Chapter 230**: Emergency Department (ED) (12 FAs, ~60 rooms) - **NOTE: Listed as Ch 256 in VA index**
-- ✅ **Chapter 256**: Emergency Department (ED) - **DUPLICATE: Same as Ch 230**
+**Emergency & Urgent Care (2 chapters)**
+- ✅ **Chapter 256**: Emergency Department (ED) (12 FAs, ~60 rooms)
 - ⏳ **Chapter 257**: Urgent Care Center
 
 **Ambulatory Care (5 chapters)**
-- ✅ **Chapter 202**: Primary Care Clinic (5 FAs, ~30 rooms) - **NOTE: VA index shows deleted**
 - ⏳ **Chapter 204**: Audiology and Speech-Language Pathology (ASLP) Service
-- ✅ **Chapter 206**: Laboratory Service (8 FAs, ~40 rooms) - **NOTE: VA index shows as VCS**
 - ✅ **Chapter 216**: Ambulatory Surgery Service (12 FAs, ~50 rooms)
 - ⏳ **Chapter 258**: Women Veterans Clinical Service (WVCS) (For Models 2 and 3)
 - ⏳ **Chapter 260**: Mental Health Clinic – UNDER REVISION
 - 🗑️ **Chapter 261**: DELETED – merged into Mental Health Clinic Chapter 260
 - ⏳ **Chapter 263**: Community Based Outpatient Clinic (PACT) Interim
 - 🗑️ **Chapter 265**: Community Based Outpatient Clinic (CBOC) – ARCHIVED
+
+**Pharmacy & Rehabilitation Services (2 chapters)**
+- ✅ **Chapter 268**: Pharmacy Service (5 FAs, ~30 rooms)
+- ✅ **Chapter 270**: Physical Medicine and Rehabilitation Service (9 FAs, ~45 rooms)
 
 **Specialty Clinical Services (5 chapters)**
 - ⏳ **Chapter 277**: Radiation Oncology
@@ -586,16 +587,16 @@ Potential features for future development:
 - All chapters feature multi-tier conditional logic and NSF calculations
 - Helper functions used for complex room count calculations
 
-**Chapter Number Discrepancies:**
+**Chapter Alignment with VA Official Index:**
 
-The following chapters retain their original numbering but include status warnings in the UI:
-- **Chapter 202** (Primary Care) - VA index shows as DELETED/merged into Ch 260. Logic preserved with warning.
-- **Chapter 204** (Pharmacy Outpatient) - VA Ch 204 is ASLP; Pharmacy is Ch 268. Logic preserved with warning.
-- **Chapter 206** (Laboratory) - VA Ch 206 is VCS; Laboratory is Ch 240. Logic preserved with warning.
-- **Chapter 230** (Emergency Department) - VA Ch 230 is Engineering; ED is Ch 256. Logic preserved with warning.
-- **Chapter 260** (PM&R) - VA Ch 260 is Mental Health Clinic; PM&R is Ch 270. Logic preserved with warning.
+All implemented chapters now use official VA Space Planning Criteria Index numbering:
+- ✅ **Chapter 240**: Pathology and Laboratory Medicine Service (corrected from 206)
+- ✅ **Chapter 256**: Emergency Department (corrected from 230)
+- ✅ **Chapter 268**: Pharmacy Service (corrected from 204)
+- ✅ **Chapter 270**: Physical Medicine and Rehabilitation Service (corrected from 260)
+- 🗑️ **Chapter 202**: Primary Care - Commented out (VA shows as DELETED, merged into Ch 260)
 
-All chapters with discrepancies display a ⚠️ status note in the Logic Portal and chapter configuration screens explaining the difference from official VA numbering.
+Chapter files have been renamed and all internal references updated to match the official VA numbering system. Chapter 202 logic is preserved in the codebase but excluded from the active registry.
 
 ## Support & Credits
 

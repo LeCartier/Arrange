@@ -1820,6 +1820,32 @@
     let USER_PROJECTS = JSON.parse(localStorage.getItem('va-user-projects') || '[]');
     let CURRENT_PROJECT_ID = localStorage.getItem('va-current-project-id') || null;
 
+    // Migrate existing projects to add cost fields
+    USER_PROJECTS.forEach(project => {
+      // Add cost factors if missing
+      if (project.costPerNSF === undefined) project.costPerNSF = 0;
+      if (project.costPerGSF === undefined) project.costPerGSF = 0;
+      
+      // Add cost to equipment if missing
+      if (project.departments) {
+        project.departments.forEach(dept => {
+          if (dept.functionalAreas) {
+            dept.functionalAreas.forEach(fa => {
+              if (fa.rooms) {
+                fa.rooms.forEach(room => {
+                  if (room.equipment) {
+                    room.equipment.forEach(eq => {
+                      if (eq.cost === undefined) eq.cost = 0;
+                    });
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+
     // Initialize default project if none exist
     if (USER_PROJECTS.length === 0) {
       const defaultProject = {
@@ -1828,6 +1854,8 @@
         siteName: "",
         description: "",
         departments: [],
+        costPerNSF: 0,
+        costPerGSF: 0,
         createdAt: new Date().toISOString(),
         modifiedAt: new Date().toISOString()
       };
@@ -4155,6 +4183,8 @@
         html += renderFunctionalAreaDetail();
       } else if (selectedNode.type === 'room') {
         html += renderRoomDetail();
+      } else if (selectedNode.type === 'reference-root') {
+        html += renderGuideRootDetail();
       } else if (selectedNode.type === 'department-reference') {
         html += renderDepartmentReferenceDetail();
       } else if (selectedNode.type === 'functional-area-reference') {
@@ -4177,6 +4207,8 @@
       let equipCount = 0;
       const totalNSF = calculateDeptNSF(dept);
       const allRooms = [];
+      const project = getCurrentProject();
+      const totalCost = calculateDeptCost(dept, project);
 
       if (dept.functionalAreas) {
         dept.functionalAreas.forEach(fa => {
@@ -4212,6 +4244,10 @@
           <div class="detail-row">
             <div class="detail-label">Total NSF:</div>
             <div class="detail-value">${totalNSF.toLocaleString()} SF</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Total Cost:</div>
+            <div class="detail-value" style="font-weight: 600; color: var(--accent);">$${totalCost.toLocaleString()}</div>
           </div>
         </div>
         <div class="detail-panel" style="padding: 8px 12px;">
@@ -4293,6 +4329,8 @@
       const roomCount = fa.rooms ? fa.rooms.length : 0;
       let equipCount = 0;
       const totalNSF = calculateFANSF(fa);
+      const project = getCurrentProject();
+      const totalCost = calculateFACost(fa, project);
 
       if (fa.rooms) {
         fa.rooms.forEach(room => {
@@ -4322,6 +4360,10 @@
           <div class="detail-row">
             <div class="detail-label">Total NSF:</div>
             <div class="detail-value">${totalNSF.toLocaleString()} SF</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Total Cost:</div>
+            <div class="detail-value" style="font-weight: 600; color: var(--accent);">$${totalCost.toLocaleString()}</div>
           </div>
         </div>
         <div class="detail-panel" style="padding: 8px 12px;">
@@ -4379,6 +4421,100 @@
       return html;
     }
 
+    function renderGuideRootDetail() {
+      const allInstances = window.ALL_ROOM_INSTANCES || [];
+      
+      // Group by department and functional area
+      const deptMap = new Map();
+      allInstances.forEach(instance => {
+        if (!deptMap.has(instance.department)) {
+          deptMap.set(instance.department, {
+            name: instance.department,
+            fas: new Set(),
+            rooms: 0,
+            nsf: 0
+          });
+        }
+        const dept = deptMap.get(instance.department);
+        dept.fas.add(instance.functionalArea);
+        dept.rooms++;
+        const roomData = getRoomAttributes(instance.roomCode);
+        if (roomData && roomData.nsf) {
+          dept.nsf += roomData.nsf;
+        }
+      });
+      
+      const totalDepts = deptMap.size;
+      let totalFAs = 0;
+      let totalRooms = 0;
+      let totalNSF = 0;
+      
+      deptMap.forEach(dept => {
+        totalFAs += dept.fas.size;
+        totalRooms += dept.rooms;
+        totalNSF += dept.nsf;
+      });
+      
+      let html = `
+        <div class="detail-panel">
+          <h3>📚 Equipment Guide</h3>
+          <div class="detail-row">
+            <div class="detail-label">Departments:</div>
+            <div class="detail-value">${totalDepts}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Functional Areas:</div>
+            <div class="detail-value">${totalFAs}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Total Rooms:</div>
+            <div class="detail-value">${totalRooms}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Total NSF:</div>
+            <div class="detail-value">${totalNSF.toLocaleString()} SF</div>
+          </div>
+        </div>
+        <div class="detail-panel">
+          <h3>🏢 Departments</h3>
+          <div style="max-height: 500px; overflow-y: auto;">
+      `;
+      
+      // Sort departments and render them with collapsible FAs
+      const sortedDepts = Array.from(deptMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+      sortedDepts.forEach(([deptName, dept], index) => {
+        const deptId = `guide-dept-${index}`;
+        html += `
+          <div style="margin-bottom: 8px; padding: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px;">
+            <div style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;" onclick="toggleDetailSection('${deptId}')">
+              <span id="toggle-${deptId}" style="font-size: 0.9rem;">▶</span>
+              <div style="flex: 1;">
+                <div style="font-weight: 600; font-size: 0.95rem;">🏢 ${deptName}</div>
+                <div style="font-size: 0.85rem; color: var(--muted); margin-top: 2px;">
+                  ${dept.fas.size} FAs • ${dept.rooms} rooms • ${dept.nsf.toLocaleString()} SF
+                </div>
+              </div>
+            </div>
+            <div id="content-${deptId}" style="display: none; margin-top: 8px; margin-left: 16px; font-size: 0.85rem; color: var(--muted);">
+              Click department in tree to view functional areas
+            </div>
+          </div>
+        `;
+      });
+      
+      html += `
+          </div>
+        </div>
+        <div class="detail-panel">
+          <p style="color: var(--muted); font-size: 0.9rem;">
+            Reference mode - viewing equipment guide data. Switch to Program Mode to work with your project.
+          </p>
+        </div>
+      `;
+      
+      return html;
+    }
+
     function renderDepartmentReferenceDetail() {
       const deptName = selectedNode.label;
 
@@ -4387,22 +4523,31 @@
       const deptInstances = allInstances.filter(instance => instance.department === deptName);
       const roomCount = deptInstances.length;
       
-      // Count functional areas from room instances
-      const fas = new Set();
+      // Group by functional areas
+      const faMap = new Map();
       deptInstances.forEach(instance => {
-        fas.add(instance.functionalArea);
-      });
-      const faCount = fas.size;
-      
-      let totalNSF = 0;
-      deptInstances.forEach(instance => {
+        if (!faMap.has(instance.functionalArea)) {
+          faMap.set(instance.functionalArea, {
+            name: instance.functionalArea,
+            rooms: 0,
+            nsf: 0
+          });
+        }
+        const fa = faMap.get(instance.functionalArea);
+        fa.rooms++;
         const roomData = getRoomAttributes(instance.roomCode);
         if (roomData && roomData.nsf) {
-          totalNSF += roomData.nsf;
+          fa.nsf += roomData.nsf;
         }
       });
+      
+      const faCount = faMap.size;
+      let totalNSF = 0;
+      faMap.forEach(fa => {
+        totalNSF += fa.nsf;
+      });
 
-      return `
+      let html = `
         <div class="detail-panel">
           <h3>🏢 ${deptName}</h3>
           <div class="detail-row">
@@ -4423,11 +4568,43 @@
           </div>
         </div>
         <div class="detail-panel">
+          <h3>📂 Functional Areas</h3>
+          <div style="max-height: 400px; overflow-y: auto;">
+      `;
+      
+      // Sort FAs and render them with collapsible rooms list
+      const sortedFAs = Array.from(faMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+      sortedFAs.forEach(([faName, fa], index) => {
+        const faId = `dept-fa-${index}`;
+        html += `
+          <div style="margin-bottom: 8px; padding: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px;">
+            <div style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;" onclick="toggleDetailSection('${faId}')">
+              <span id="toggle-${faId}" style="font-size: 0.9rem;">▶</span>
+              <div style="flex: 1;">
+                <div style="font-weight: 600; font-size: 0.95rem;">📂 ${faName}</div>
+                <div style="font-size: 0.85rem; color: var(--muted); margin-top: 2px;">
+                  ${fa.rooms} rooms • ${fa.nsf.toLocaleString()} SF
+                </div>
+              </div>
+            </div>
+            <div id="content-${faId}" style="display: none; margin-top: 8px; margin-left: 16px; font-size: 0.85rem; color: var(--muted);">
+              Click functional area in tree to view rooms
+            </div>
+          </div>
+        `;
+      });
+      
+      html += `
+          </div>
+        </div>
+        <div class="detail-panel">
           <p style="color: var(--muted); font-size: 0.9rem;">
             Reference mode - viewing equipment guide data. Switch to Program Mode to work with your project.
           </p>
         </div>
       `;
+      
+      return html;
     }
 
     function renderFunctionalAreaReferenceDetail() {
@@ -4441,15 +4618,27 @@
       );
       const roomCount = faInstances.length;
       
-      let totalNSF = 0;
+      // Group rooms by code
+      const roomMap = new Map();
       faInstances.forEach(instance => {
-        const roomData = getRoomAttributes(instance.roomCode);
-        if (roomData && roomData.nsf) {
-          totalNSF += roomData.nsf;
+        if (!roomMap.has(instance.roomCode)) {
+          const roomData = getRoomAttributes(instance.roomCode);
+          roomMap.set(instance.roomCode, {
+            code: instance.roomCode,
+            name: instance.roomName,
+            nsf: roomData?.nsf || 0,
+            count: 0
+          });
         }
+        roomMap.get(instance.roomCode).count++;
+      });
+      
+      let totalNSF = 0;
+      roomMap.forEach(room => {
+        totalNSF += room.nsf * room.count;
       });
 
-      return `
+      let html = `
         <div class="detail-panel">
           <h3>📂 ${faName}</h3>
           <div class="detail-row">
@@ -4470,11 +4659,41 @@
           </div>
         </div>
         <div class="detail-panel">
+          <h3>🚪 Rooms (${roomMap.size} unique)</h3>
+          <div style="max-height: 400px; overflow-y: auto;">
+      `;
+      
+      // Sort rooms by code and display them
+      const sortedRooms = Array.from(roomMap.values()).sort((a, b) => a.code.localeCompare(b.code));
+      sortedRooms.forEach(room => {
+        html += `
+          <div style="padding: 6px 8px; margin-bottom: 4px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; font-size: 0.85rem;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="min-width: 30px; text-align: center; font-weight: 600; color: var(--primary);">
+                ${room.count}
+              </div>
+              <div style="flex: 1; min-width: 0;">
+                <strong>${room.code}</strong> - ${room.name}
+              </div>
+              <div style="white-space: nowrap; color: var(--muted);">
+                ${room.nsf.toLocaleString()} SF
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      
+      html += `
+          </div>
+        </div>
+        <div class="detail-panel">
           <p style="color: var(--muted); font-size: 0.9rem;">
             Reference mode - viewing equipment guide data. Switch to Program Mode to work with your project.
           </p>
         </div>
       `;
+      
+      return html;
     }
 
     function renderProjectDetail() {
@@ -4542,7 +4761,43 @@
             <div class="detail-label">Last Modified:</div>
             <div class="detail-value">${new Date(project.modifiedAt).toLocaleString()}</div>
           </div>
-          <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+        </div>
+        <div class="detail-panel">
+          <h3>💰 Cost Settings & Summary</h3>
+          <div class="detail-row">
+            <div class="detail-label">Cost per NSF:</div>
+            <div class="detail-value">
+              $<input type="number" 
+                     value="${project.costPerNSF || 0}" 
+                     min="0"
+                     step="10"
+                     onchange="updateProjectCostFactor('costPerNSF', this.value)"
+                     style="width: 100px; padding: 4px 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Cost per GSF:</div>
+            <div class="detail-value">
+              $<input type="number" 
+                     value="${project.costPerGSF || 0}" 
+                     min="0"
+                     step="10"
+                     onchange="updateProjectCostFactor('costPerGSF', this.value)"
+                     style="width: 100px; padding: 4px 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+            </div>
+          </div>
+          <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+            <div class="detail-row">
+              <div class="detail-label">Equipment Cost:</div>
+              <div class="detail-value" style="font-weight: 600; color: var(--accent);">$${calculateProjectCost(project).toLocaleString()}</div>
+            </div>
+          </div>
+          <div style="margin-top: 8px; padding: 8px; background: var(--bg); border-radius: 4px; font-size: 0.85rem; color: var(--muted);">
+            Set construction cost per NSF or GSF to calculate total project costs including construction.
+          </div>
+        </div>
+        <div class="detail-panel">
+          <div style="margin-top: 0px;">
             <button onclick="openReportModal()" class="btn-primary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
               📄 Generate Report
             </button>
@@ -4789,6 +5044,9 @@
         const room = selectedNode.room;
         const equipCount = room.equipment ? room.equipment.length : 0;
         const nsf = room.nsf || 0;
+        const project = getCurrentProject();
+        const roomCost = calculateRoomCost(room, project);
+        const equipmentCost = calculateEquipmentCost(room.equipment);
         
         // Get room attributes from ROOM_SIZES
         const roomAttrs = getRoomAttributes(room.code);
@@ -4820,6 +5078,14 @@
             <div class="detail-row">
               <div class="detail-label">Equipment Items:</div>
               <div class="detail-value">${equipCount}</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Equipment Cost:</div>
+              <div class="detail-value" style="font-weight: 600; color: var(--accent);">$${equipmentCost.toLocaleString()}</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Total Cost:</div>
+              <div class="detail-value" style="font-weight: 600; color: var(--accent);">$${roomCost.toLocaleString()}</div>
             </div>
           </div>
           <div class="detail-panel" style="padding: 8px 12px; display: flex; gap: 8px;">
@@ -4924,6 +5190,7 @@
           `;
 
           room.equipment.forEach(eq => {
+            const eqCost = (eq.cost || 0) * (eq.quantity || 1);
             html += `
               <div class="equipment-item">
                 <div class="equipment-item-header">
@@ -4933,6 +5200,12 @@
                     <input type="number" value="${eq.quantity}" min="1"
                       onchange="updateEquipmentQuantity('${room.id}', '${eq.id}', this.value)"
                       style="width: 60px; padding: 2px 6px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+                    <span>| $</span>
+                    <input type="number" value="${eq.cost || 0}" min="0" step="100"
+                      onchange="updateEquipmentCost('${room.id}', '${eq.id}', this.value)"
+                      style="width: 80px; padding: 2px 6px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;"
+                      title="Unit cost">
+                    <span>= $${eqCost.toLocaleString()}</span>
                     <span>| ${eq.acqIns}</span>
                     <button onclick="removeEquipment('${room.id}', '${eq.id}')" 
                       style="padding: 2px 8px; background: var(--error); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.75rem;"
@@ -7510,6 +7783,59 @@
       }
     }
 
+    function updateEquipmentCost(roomId, equipmentId, newCost) {
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      const cost = parseFloat(newCost);
+      if (isNaN(cost) || cost < 0) {
+        alert('Please enter a valid cost (minimum 0)');
+        renderAll();
+        return;
+      }
+
+      for (const dept of project.departments) {
+        if (!dept.functionalAreas) continue;
+        for (const fa of dept.functionalAreas) {
+          if (!fa.rooms) continue;
+          const room = fa.rooms.find(r => r.id === roomId);
+          if (room && room.equipment) {
+            const equipment = room.equipment.find(e => e.id === equipmentId);
+            if (equipment) {
+              equipment.cost = cost;
+              saveProjects();
+              renderAll();
+              return;
+            }
+          }
+        }
+      }
+    }
+
+    function updateProjectCostFactor(factorType, newValue) {
+      const project = getCurrentProject();
+      const value = parseFloat(newValue);
+      
+      if (isNaN(value) || value < 0) {
+        alert('Please enter a valid cost factor (minimum 0)');
+        renderAll();
+        return;
+      }
+
+      if (factorType === 'costPerNSF') {
+        project.costPerNSF = value;
+        // Clear GSF when NSF is set
+        if (value > 0) project.costPerGSF = 0;
+      } else if (factorType === 'costPerGSF') {
+        project.costPerGSF = value;
+        // Clear NSF when GSF is set
+        if (value > 0) project.costPerNSF = 0;
+      }
+
+      saveProjects();
+      renderAll();
+    }
+
     let currentRoomIdForEquipment = null;
 
     function addEquipmentToRoom(roomId) {
@@ -7592,7 +7918,8 @@
               name: equipItem.name,
               quantity: parseInt(quantity) || 1,
               acqIns: equipItem.acqIns,
-              description: equipItem.description
+              description: equipItem.description,
+              cost: 0
             });
             saveProjects();
             closeEquipmentModal();
@@ -7620,6 +7947,47 @@
     function calculateProjectNSF(project) {
       if (!project.departments) return 0;
       return project.departments.reduce((sum, dept) => sum + calculateDeptNSF(dept), 0);
+    }
+
+    // COST CALCULATION FUNCTIONS
+    function calculateEquipmentCost(equipment) {
+      if (!equipment) return 0;
+      return equipment.reduce((sum, eq) => sum + ((eq.cost || 0) * (eq.quantity || 1)), 0);
+    }
+
+    function calculateRoomCost(room, project) {
+      let cost = 0;
+      // Equipment cost
+      if (room.equipment) {
+        cost += calculateEquipmentCost(room.equipment);
+      }
+      // Construction cost (NSF * costPerNSF or GSF * costPerGSF)
+      const nsf = room.nsf || 0;
+      const costPerNSF = project?.costPerNSF || 0;
+      const costPerGSF = project?.costPerGSF || 0;
+      if (costPerNSF > 0) {
+        cost += nsf * costPerNSF;
+      } else if (costPerGSF > 0 && nsf > 0) {
+        // Assuming a default 1.35 grossing factor if using GSF
+        const gsf = nsf * 1.35;
+        cost += gsf * costPerGSF;
+      }
+      return cost;
+    }
+
+    function calculateFACost(fa, project) {
+      if (!fa.rooms) return 0;
+      return fa.rooms.reduce((sum, room) => sum + calculateRoomCost(room, project), 0);
+    }
+
+    function calculateDeptCost(dept, project) {
+      if (!dept.functionalAreas) return 0;
+      return dept.functionalAreas.reduce((sum, fa) => sum + calculateFACost(fa, project), 0);
+    }
+
+    function calculateProjectCost(project) {
+      if (!project.departments) return 0;
+      return project.departments.reduce((sum, dept) => sum + calculateDeptCost(dept, project), 0);
     }
 
     // -----------------------------
