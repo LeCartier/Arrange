@@ -48,6 +48,11 @@ class IsometricWorkbench {
     this.lassoStartX = 0;
     this.lassoStartY = 0;
     
+    // Pan with middle mouse button
+    this.isPanning = false;
+    this.panStartX = 0;
+    this.panStartY = 0;
+    
     // Background style: 'pixel-art', 'terminal', 'minimal'
     this.backgroundStyle = 'pixel-art';
     
@@ -778,6 +783,16 @@ class IsometricWorkbench {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     
+    // Middle mouse button (button 1) starts panning
+    if (e.button === 1) {
+      this.isPanning = true;
+      this.panStartX = x;
+      this.panStartY = y;
+      this.canvas.style.cursor = 'grabbing';
+      e.preventDefault();
+      return;
+    }
+    
     const cube = this.getCubeAtPosition(x, y);
     
     if (cube) {
@@ -836,7 +851,19 @@ class IsometricWorkbench {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     
-    if (this.isLassoing) {
+    if (this.isPanning) {
+      // Pan the view by adjusting offsets
+      const dx = x - this.panStartX;
+      const dy = y - this.panStartY;
+      
+      this.offsetX += dx;
+      this.offsetY += dy;
+      
+      this.panStartX = x;
+      this.panStartY = y;
+      
+      this.render();
+    } else if (this.isLassoing) {
       // Add point to lasso path
       this.lassoPoints.push({x, y});
       this.render();
@@ -877,6 +904,13 @@ class IsometricWorkbench {
   }
   
   handleMouseUp(e) {
+    if (this.isPanning) {
+      this.isPanning = false;
+      this.canvas.style.cursor = this.hoveredCube ? 'grab' : 'default';
+      this.render();
+      return;
+    }
+    
     if (this.isLassoing) {
       // Complete lasso and select cubes inside
       this.selectCubesInLasso();
@@ -901,21 +935,33 @@ class IsometricWorkbench {
   handleWheel(e) {
     e.preventDefault();
     
-    // Calculate table center position
+    // Calculate table center position (matching drawTable calculations)
     const tableLeft = 80;
     const tableRight = this.width - 340;
     const tableW = (tableRight - tableLeft) / 2;
-    const tableCenterX = tableLeft + tableW;
-    const tableCenterY = this.height - 180 - this.tableDepth / 2;
+    const centerX = tableLeft + tableW;
+    const tableTop = this.height - 180;
+    const tableD = this.tableDepth;
+    
+    // Table center in screen space (center of the visible table surface)
+    const tableCenterX = centerX;
+    const tableCenterY = tableTop - tableD / 2;
+    
+    // Get mouse position relative to canvas
+    const rect = this.canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
     
     // Zoom factor
     const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
     const newZoom = Math.max(this.minZoom, Math.min(this.maxZoom, this.zoom * zoomFactor));
     
-    // Zoom towards table center instead of mouse position
+    // Zoom towards mouse position, but keep the point under the mouse stationary
     const zoomRatio = newZoom / this.zoom;
-    this.offsetX = tableCenterX - (tableCenterX - this.offsetX) * zoomRatio;
-    this.offsetY = tableCenterY - (tableCenterY - this.offsetY) * zoomRatio;
+    
+    // Adjust offsets so the point under the mouse stays in the same place
+    this.offsetX = mouseX - (mouseX - this.offsetX) * zoomRatio;
+    this.offsetY = mouseY - (mouseY - this.offsetY) * zoomRatio;
     
     this.zoom = newZoom;
     this.render();
