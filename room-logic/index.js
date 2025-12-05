@@ -7,6 +7,8 @@ import { CHAPTER_104 } from './chapter-104-sci-acute-care.js';
 import { CHAPTER_106 } from './chapter-106-small-house.js';
 // Chapter 202 - DELETED in VA index (merged into Mental Health Clinic Chapter 260)
 // import { CHAPTER_202 } from './chapter-202-primary-care.js';
+import { CHAPTER_204 } from './chapter-204-audiology.js';
+import { CHAPTER_206 } from './chapter-206-canteen.js';
 import { CHAPTER_208 } from './chapter-208-chaplain.js';
 import CHAPTER_210 from './chapter-210-cardiology.js';
 import { CHAPTER_212 } from './chapter-212-pulmonary.js';
@@ -17,6 +19,7 @@ import { CHAPTER_220 } from './chapter-220-credit-union.js';
 import CHAPTER_222 from './chapter-222-dental.js';
 import { CHAPTER_226 } from './chapter-226-eeg.js';
 import { CHAPTER_228 } from './chapter-228-radiology.js';
+import { CHAPTER_230 } from './chapter-230-engineering.js';
 import { CHAPTER_234 } from './chapter-234-fiscal-service.js';
 import { CHAPTER_238 } from './chapter-238-director-suite.js';
 import { CHAPTER_240 } from './chapter-240-laboratory.js';
@@ -38,6 +41,8 @@ export const CHAPTERS = {
   '104': CHAPTER_104,
   '106': CHAPTER_106,
   // '202': CHAPTER_202, // DELETED in VA index (merged into Chapter 260)
+  '204': CHAPTER_204,
+  '206': CHAPTER_206,
   '208': CHAPTER_208,
   '210': CHAPTER_210,
   '212': CHAPTER_212,
@@ -48,6 +53,7 @@ export const CHAPTERS = {
   '222': CHAPTER_222,
   '226': CHAPTER_226,
   '228': CHAPTER_228,
+  '230': CHAPTER_230,
   '234': CHAPTER_234,
   '238': CHAPTER_238,
   '240': CHAPTER_240,

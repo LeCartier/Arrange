@@ -6172,6 +6172,29 @@
           return;
         }
         
+        // Helper function to get equipment for a room code
+        function getEquipmentForRoomCode(roomCode) {
+          const equipment = [];
+          const mappings = window.ROOM_EQUIPMENT_MAPPINGS || ROOM_EQUIPMENT_MAPPINGS || [];
+          const equipList = window.EQUIPMENT_LIST || EQUIPMENT_LIST || [];
+          
+          const equipForRoom = mappings.filter(m => m.roomCode === roomCode);
+          equipForRoom.forEach(eq => {
+            const equipDetail = equipList.find(e => e.jsn === eq.jsn);
+            if (equipDetail) {
+              equipment.push({
+                jsn: eq.jsn,
+                name: equipDetail.name,
+                quantity: eq.qty || eq.quantity || 1,
+                acqIns: equipDetail.acqIns,
+                description: equipDetail.description
+              });
+            }
+          });
+          
+          return equipment;
+        }
+        
         // Convert results to department structure
         const project = getCurrentProject();
         const newDept = {
@@ -6191,7 +6214,7 @@
               nsf: room.nsfPerRoom,
               totalNSF: room.totalNSF,
               notes: room.notes || '',
-              equipment: [],
+              equipment: getEquipmentForRoomCode(room.code),
               logicGenerated: true
             }))
           }))

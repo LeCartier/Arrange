@@ -475,7 +475,7 @@ Potential features for future development:
 
 **Clinical Services (15 chapters - 10 complete)**
 - 🗑️ **Chapter 202**: DELETED – merged into Mental Health Clinic Chapter 260
-- ✅ **Chapter 204**: Audiology and Speech-Language Pathology (ASLP) Service
+- ✅ **Chapter 204**: Audiology and Speech-Language Pathology (ASLP) Service (7 FAs, ~49 rooms)
 - ✅ **Chapter 208**: Chaplain Service (4 FAs, ~20 rooms)
 - ✅ **Chapter 210**: Cardiology Service (6 FAs, ~60 rooms)
 - ✅ **Chapter 212**: Pulmonary Medicine Service (6 FAs, ~50 rooms)
@@ -500,9 +500,9 @@ Potential features for future development:
 - ✅ **Chapter 266**: Human Resources Management
 - ✅ **Chapter 278**: Research and Development
 
-**Facility Services (14 chapters - 5 complete)**
-- ⏳ **Chapter 206**: Veterans Canteen Service (VCS)
-- ⏳ **Chapter 230**: Engineering Service
+**Facility Services (14 chapters - 7 complete)**
+- ✅ **Chapter 206**: Veterans Canteen Service (VCS) (10 FAs, ~39 rooms)
+- ✅ **Chapter 230**: Engineering Service (7 FAs, ~61 rooms)
 - ⏳ **Chapter 232**: Telecommunications Facilities
 - ✅ **Chapter 244**: Lobby (1 FA, ~15 rooms)
 - ⏳ **Chapter 248**: Medical Media Service
@@ -531,7 +531,7 @@ Potential features for future development:
 - ⏳ **Chapter 257**: Urgent Care Center
 
 **Ambulatory Care (5 chapters)**
-- ⏳ **Chapter 204**: Audiology and Speech-Language Pathology (ASLP) Service
+- ✅ **Chapter 204**: Audiology and Speech-Language Pathology (ASLP) Service (7 FAs, ~49 rooms)
 - ✅ **Chapter 216**: Ambulatory Surgery Service (12 FAs, ~50 rooms)
 - ⏳ **Chapter 258**: Women Veterans Clinical Service (WVCS) (For Models 2 and 3)
 - ⏳ **Chapter 260**: Mental Health Clinic – UNDER REVISION
@@ -580,8 +580,8 @@ Potential features for future development:
 
 **Statistics:**
 - **Active VA Chapters**: 51 (excluding 9 deleted/archived)
-- **Completed**: 28 chapters (55%)
-- **Remaining**: 23 chapters (45%)
+- **Completed**: 31 chapters (61%)
+- **Remaining**: 20 chapters (39%)
 - **Total Functional Areas**: ~141
 - **Total Room Definitions**: ~1105+
 - All chapters feature multi-tier conditional logic and NSF calculations
