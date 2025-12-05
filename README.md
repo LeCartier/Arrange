@@ -461,6 +461,73 @@ Potential features for future development:
 - Template projects
 - Version control for projects
 
+## Chapter Logic Implementation Status
+
+### Completed Chapters (27 Chapters)
+
+**Patient Care Units (4 chapters)**
+- ✅ **Chapter 100**: Medical / Surgical Patient Care Unit (3 FAs, ~90 rooms)
+- ✅ **Chapter 102**: Intensive Care Patient Care Unit (4 FAs, ~40 rooms)
+- ✅ **Chapter 104**: SCI/D Center - Acute Care (7 FAs, ~80 rooms)
+- ✅ **Chapter 106**: Small House Model (10 FAs, ~150 rooms)
+
+**Clinical Services (8 chapters)**
+- ✅ **Chapter 208**: Chaplain Service (4 FAs, ~20 rooms)
+- ✅ **Chapter 210**: Cardiology Service (6 FAs, ~60 rooms)
+- ✅ **Chapter 212**: Pulmonary Medicine Service (6 FAs, ~50 rooms)
+- ✅ **Chapter 214**: Clinical Services Administration (10 FAs, ~100 rooms)
+- ✅ **Chapter 222**: Dental Service (7 FAs, ~80 rooms)
+- ✅ **Chapter 226**: EEG Laboratory (6 FAs, ~40 rooms)
+- ✅ **Chapter 228**: Radiology / Imaging Service (10 FAs, ~50 rooms)
+- ✅ **Chapter 260**: Physical Medicine & Rehabilitation (9 FAs, ~45 rooms)
+
+**Administrative Services (5 chapters)**
+- ✅ **Chapter 218**: Veterans Assistance Unit (2 FAs, ~8 rooms)
+- ✅ **Chapter 220**: Credit Union (3 FAs, ~15 rooms)
+- ✅ **Chapter 234**: Fiscal Service (3 FAs, ~30 rooms)
+- ✅ **Chapter 238**: Director's Suite (3 FAs, ~20 rooms)
+- ✅ **Chapter 254**: Nursing Service Administration (3 FAs, ~25 rooms)
+
+**Facility Services (6 chapters)**
+- ✅ **Chapter 244**: Lobby (1 FA, ~15 rooms)
+- ✅ **Chapter 274**: Quarters, On-Call (1 FA, ~10 rooms)
+- ✅ **Chapter 279**: Police Service (2 FAs, ~20 rooms)
+- ✅ **Chapter 280**: Service Organizations (3 FAs, ~8 rooms)
+- ✅ **Chapter 282**: Social Work Service (4 FAs, ~15 rooms)
+- ✅ **Chapter 290**: Voluntary Service (4 FAs, ~12 rooms)
+
+### Next Priority Chapters (Recommended for Implementation)
+
+**Ambulatory Care (4 chapters)**
+- ✅ **Chapter 202**: Ambulatory Care / Primary Care Clinic (5 FAs, ~30 rooms)
+- ✅ **Chapter 204**: Pharmacy Service - Outpatient (5 FAs, ~30 rooms)
+- ✅ **Chapter 206**: Laboratory Service (8 FAs, ~40 rooms)
+- ✅ **Chapter 216**: Ambulatory Surgery Service (12 FAs, ~50 rooms)
+
+**High Priority - Core Clinical Services**
+
+1. ⏳ **Chapter 230**: Emergency Department
+   - Treatment bays and trauma rooms
+   - Annual visits based
+   - High complexity
+
+2. ⏳ **Chapter 250**: Mental Health Service
+   - Outpatient behavioral health
+   - Visit volume based
+   - Medium complexity
+
+### Implementation Notes
+
+**Two Export Patterns in Use:**
+- **Object Pattern** (21 chapters): Direct object export with `functionalAreas` array
+- **Function Pattern** (6 chapters): Function-based export returning room arrays
+
+**Statistics:**
+- Total Functional Areas: ~129
+- Total Room Definitions: ~1045+
+- All chapters feature multi-tier conditional logic and NSF calculations
+- Helper functions used for complex room count calculations
+
 ## Support & Credits
 
 **Data Source**: VA TIL/MS Space Criteria

@@ -36,10 +36,20 @@ class IsometricWorkbench {
     this.gridSize = 20;
     this.cubes = [];
     this.selectedCube = null;
+    this.selectedCubes = []; // Multiple selection via lasso
     this.hoveredCube = null;
     this.isDragging = false;
     this.dragStartX = 0;
     this.dragStartY = 0;
+    
+    // Lasso selection
+    this.isLassoing = false;
+    this.lassoPoints = [];
+    this.lassoStartX = 0;
+    this.lassoStartY = 0;
+    
+    // Background style: 'pixel-art', 'terminal', 'minimal'
+    this.backgroundStyle = 'pixel-art';
     
     // Pastel color palette for departments
     this.departmentColors = {
@@ -92,6 +102,9 @@ class IsometricWorkbench {
     this.canvas.addEventListener('mouseup', this.handleMouseUp.bind(this));
     this.canvas.addEventListener('wheel', this.handleWheel.bind(this), { passive: false });
     
+    // Keyboard events for selection control
+    window.addEventListener('keydown', this.handleKeyDown.bind(this));
+    
     // Touch support for pinch zoom
     this.canvas.addEventListener('touchstart', this.handleTouchStart.bind(this));
     this.canvas.addEventListener('touchmove', this.handleTouchMove.bind(this));
@@ -114,6 +127,14 @@ class IsometricWorkbench {
     this.offsetX = this.width / 2;
     this.offsetY = this.height / 3;
     this.render();
+  }
+  
+  // Change background style
+  setBackgroundStyle(style) {
+    if (['pixel-art', 'terminal', 'minimal'].includes(style)) {
+      this.backgroundStyle = style;
+      this.render();
+    }
   }
   
   addDemoCubes() {
@@ -158,6 +179,9 @@ class IsometricWorkbench {
     const nsfValue = room.nsf || 100;
     const heightUnits = Math.max(1, Math.min(5, Math.ceil(nsfValue / 200)));
     
+    const cubeColor = this.getDepartmentColor(department);
+    console.log(`Adding cube for dept "${department}" -> color:`, cubeColor);
+    
     const cube = {
       id: `cube_${Date.now()}_${Math.random()}`,
       room: room,
@@ -168,7 +192,7 @@ class IsometricWorkbench {
       width: 1.2, // Consistent width for clean grid
       depth: 1.2, // Consistent depth for clean grid
       height: heightUnits, // Varies by NSF
-      color: this.getDepartmentColor(department),
+      color: cubeColor,
       pattern: this.getFunctionalAreaPattern(room.functional_area)
     };
     
@@ -229,6 +253,7 @@ class IsometricWorkbench {
     const d = cube.depth * this.cubeDepth * 0.3 * this.zoom; // Cube depth (shows as tilt)
     
     const color = cube.color;
+    const isInSelection = this.selectedCubes.includes(cube);
     
     this.ctx.save();
     
@@ -274,7 +299,7 @@ class IsometricWorkbench {
     // Draw front face (main visible face)
     this.ctx.beginPath();
     this.ctx.rect(baseX - w/2, baseY - h, w, h);
-    this.ctx.fillStyle = isSelected ? color.highlight : color.base;
+    this.ctx.fillStyle = (isSelected || isInSelection) ? color.highlight : color.base;
     this.ctx.fill();
     
     // Apply hatch pattern ONLY to front face with correct clipping
@@ -286,9 +311,9 @@ class IsometricWorkbench {
     this.applyHatchPatternToFace(cube, baseX - w/2, baseY - h, w, h);
     this.ctx.restore();
     
-    // Outline front - emphasized
-    this.ctx.strokeStyle = isHovered ? '#000' : '#333';
-    this.ctx.lineWidth = isHovered || isSelected ? 3 : 2;
+    // Outline front - emphasized for selected cubes
+    this.ctx.strokeStyle = (isSelected || isInSelection) ? '#ff6b35' : (isHovered ? '#000' : '#333');
+    this.ctx.lineWidth = (isSelected || isInSelection) ? 4 : (isHovered ? 3 : 2);
     this.ctx.stroke();
     
     this.ctx.restore();
@@ -709,6 +734,38 @@ class IsometricWorkbench {
     return null;
   }
   
+  // Check if point is inside polygon (ray casting algorithm)
+  isPointInPolygon(point, polygon) {
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      const xi = polygon[i].x, yi = polygon[i].y;
+      const xj = polygon[j].x, yj = polygon[j].y;
+      
+      const intersect = ((yi > point.y) !== (yj > point.y))
+          && (point.x < (xj - xi) * (point.y - yi) / (yj - yi) + xi);
+      if (intersect) inside = !inside;
+    }
+    return inside;
+  }
+  
+  // Select all cubes inside the lasso polygon
+  selectCubesInLasso() {
+    if (this.lassoPoints.length < 3) return; // Need at least 3 points for a polygon
+    
+    this.cubes.forEach(cube => {
+      const { x: baseX, y: baseY } = this.gridToScreen(cube.gridX, cube.gridY, cube.stackHeight * this.cubeHeight);
+      
+      // Check if cube center is inside lasso
+      if (this.isPointInPolygon({x: baseX, y: baseY}, this.lassoPoints)) {
+        if (!this.selectedCubes.includes(cube)) {
+          this.selectedCubes.push(cube);
+        }
+      }
+    });
+    
+    this.selectedCube = this.selectedCubes.length > 0 ? this.selectedCubes[0] : null;
+  }
+  
   // Event handlers
   handleMouseDown(e) {
     const rect = this.canvas.getBoundingClientRect();
@@ -718,13 +775,51 @@ class IsometricWorkbench {
     const cube = this.getCubeAtPosition(x, y);
     
     if (cube) {
-      this.selectedCube = cube;
-      this.isDragging = true;
-      this.dragStartX = x;
-      this.dragStartY = y;
+      // Shift-click: Toggle cube in/out of selection
+      if (e.shiftKey) {
+        const index = this.selectedCubes.indexOf(cube);
+        if (index >= 0) {
+          // Remove from selection
+          this.selectedCubes.splice(index, 1);
+          this.selectedCube = this.selectedCubes.length > 0 ? this.selectedCubes[0] : null;
+        } else {
+          // Add to selection
+          this.selectedCubes.push(cube);
+          this.selectedCube = cube;
+        }
+      }
+      // Ctrl-click: Add only (no removal)
+      else if (e.ctrlKey) {
+        if (!this.selectedCubes.includes(cube)) {
+          this.selectedCubes.push(cube);
+        }
+        this.selectedCube = cube;
+      }
+      // Regular click on selected cube: Start dragging all selected
+      else if (this.selectedCubes.includes(cube)) {
+        this.isDragging = true;
+        this.dragStartX = x;
+        this.dragStartY = y;
+      }
+      // Regular click on unselected cube: Select only this one
+      else {
+        this.selectedCube = cube;
+        this.selectedCubes = [cube];
+        this.isDragging = true;
+        this.dragStartX = x;
+        this.dragStartY = y;
+      }
       this.canvas.style.cursor = 'grabbing';
     } else {
-      this.selectedCube = null;
+      // Start lasso selection on empty space
+      this.isLassoing = true;
+      this.lassoPoints = [{x, y}];
+      this.lassoStartX = x;
+      this.lassoStartY = y;
+      if (!e.shiftKey && !e.ctrlKey) {
+        this.selectedCube = null;
+        this.selectedCubes = [];
+      }
     }
     
     this.render();
@@ -735,13 +830,19 @@ class IsometricWorkbench {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     
-    if (this.isDragging && this.selectedCube) {
+    if (this.isLassoing) {
+      // Add point to lasso path
+      this.lassoPoints.push({x, y});
+      this.render();
+    } else if (this.isDragging && this.selectedCubes.length > 0) {
       const dx = x - this.dragStartX;
       const dy = y - this.dragStartY;
       
-      // Direct 1:1 mapping for straight-on view
-      this.selectedCube.gridX += dx / this.tileWidth;
-      this.selectedCube.gridY += dy / this.cubeDepth;
+      // Move all selected cubes
+      this.selectedCubes.forEach(cube => {
+        cube.gridX += dx / this.tileWidth;
+        cube.gridY += dy / this.cubeDepth;
+      });
       
       this.dragStartX = x;
       this.dragStartY = y;
@@ -758,8 +859,25 @@ class IsometricWorkbench {
   }
   
   handleMouseUp(e) {
+    if (this.isLassoing) {
+      // Complete lasso and select cubes inside
+      this.selectCubesInLasso();
+      this.isLassoing = false;
+      this.lassoPoints = [];
+    }
+    
     this.isDragging = false;
     this.canvas.style.cursor = this.hoveredCube ? 'grab' : 'default';
+    this.render();
+  }
+  
+  handleKeyDown(e) {
+    // Escape key clears selection
+    if (e.key === 'Escape') {
+      this.selectedCube = null;
+      this.selectedCubes = [];
+      this.render();
+    }
   }
   
   handleWheel(e) {
@@ -822,6 +940,135 @@ class IsometricWorkbench {
     // DGSF calculated with NTDG factors would go here
   }
   
+  // Background drawing methods
+  drawPixelArtBackground(tableTop) {
+    // Retro game-style background with vibrant colors
+    
+    // Top portion - indoor wallpaper pattern (mint green base)
+    const wallGradient = this.ctx.createLinearGradient(0, 0, 0, tableTop);
+    wallGradient.addColorStop(0, '#a8d8a0');
+    wallGradient.addColorStop(0.5, '#90c088');
+    wallGradient.addColorStop(1, '#78a870');
+    this.ctx.fillStyle = wallGradient;
+    this.ctx.fillRect(0, 0, this.width, tableTop);
+    
+    // Wallpaper diamond pattern (darker green)
+    this.ctx.fillStyle = '#60a060';
+    const diamondSize = 24;
+    for (let y = 0; y < tableTop; y += diamondSize * 2) {
+      for (let x = 0; x < this.width; x += diamondSize * 2) {
+        // Offset every other row
+        const offsetX = (Math.floor(y / (diamondSize * 2)) % 2) * diamondSize;
+        const dx = x + offsetX;
+        
+        // Draw small diamond
+        this.ctx.beginPath();
+        this.ctx.moveTo(dx + diamondSize/2, y);
+        this.ctx.lineTo(dx + diamondSize, y + diamondSize/2);
+        this.ctx.lineTo(dx + diamondSize/2, y + diamondSize);
+        this.ctx.lineTo(dx, y + diamondSize/2);
+        this.ctx.closePath();
+        this.ctx.fill();
+      }
+    }
+    
+    // Floor - warm brown carpet/rug pattern
+    const floorBase = '#c84c0c';
+    const floorDark = '#a84000';
+    const floorLight = '#e86428';
+    
+    this.ctx.fillStyle = floorBase;
+    this.ctx.fillRect(0, tableTop, this.width, this.height - tableTop);
+    
+    // Carpet checkerboard pattern (subtle)
+    const tileSize = 32;
+    for (let y = tableTop; y < this.height; y += tileSize) {
+      for (let x = 0; x < this.width; x += tileSize) {
+        if ((Math.floor(x / tileSize) + Math.floor(y / tileSize)) % 2 === 0) {
+          this.ctx.fillStyle = floorDark;
+          this.ctx.fillRect(x, y, tileSize, tileSize);
+        }
+      }
+    }
+    
+    // Floor highlight stripes (horizontal)
+    this.ctx.fillStyle = floorLight;
+    for (let y = tableTop + 8; y < this.height; y += tileSize) {
+      this.ctx.fillRect(0, y, this.width, 4);
+    }
+  }
+  
+  drawTerminalBackground(tableTop) {
+    // Dark terminal background
+    this.ctx.fillStyle = '#0a0a0a';
+    this.ctx.fillRect(0, 0, this.width, this.height);
+    
+    // ASCII art wall pattern
+    this.ctx.fillStyle = '#00ff00';
+    this.ctx.font = '12px "Courier New", monospace';
+    const chars = ['░', '▒', '▓', '█', '│', '─', '┼', '┌', '┐', '└', '┘'];
+    
+    // Sparse random character pattern on wall
+    for (let y = 10; y < tableTop; y += 20) {
+      for (let x = 10; x < this.width; x += 15) {
+        if (Math.random() > 0.7) {
+          const char = chars[Math.floor(Math.random() * chars.length)];
+          this.ctx.fillStyle = `rgba(0, 255, 0, ${0.1 + Math.random() * 0.15})`;
+          this.ctx.fillText(char, x, y);
+        }
+      }
+    }
+    
+    // Terminal floor with grid lines
+    this.ctx.strokeStyle = '#00ff00';
+    this.ctx.globalAlpha = 0.2;
+    this.ctx.lineWidth = 1;
+    
+    // Horizontal lines
+    for (let y = tableTop; y < this.height; y += 20) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(0, y);
+      this.ctx.lineTo(this.width, y);
+      this.ctx.stroke();
+    }
+    
+    // Vertical lines
+    for (let x = 0; x < this.width; x += 20) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(x, tableTop);
+      this.ctx.lineTo(x, this.height);
+      this.ctx.stroke();
+    }
+    
+    this.ctx.globalAlpha = 1.0;
+  }
+  
+  drawMinimalBackground(tableTop) {
+    // Clean white background
+    this.ctx.fillStyle = '#ffffff';
+    this.ctx.fillRect(0, 0, this.width, tableTop);
+    
+    // Light gray floor
+    this.ctx.fillStyle = '#e8e8e8';
+    this.ctx.fillRect(0, tableTop, this.width, this.height - tableTop);
+    
+    // Subtle grid on floor
+    this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.05)';
+    this.ctx.lineWidth = 1;
+    for (let x = 50; x < this.width; x += 50) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(x, tableTop);
+      this.ctx.lineTo(x, this.height);
+      this.ctx.stroke();
+    }
+    for (let y = tableTop + 50; y < this.height; y += 50) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(0, y);
+      this.ctx.lineTo(this.width, y);
+      this.ctx.stroke();
+    }
+  }
+  
   // Draw the elevated tabletop workbench (straight-on elevated view)
   drawTable() {
     this.ctx.save();
@@ -839,26 +1086,13 @@ class IsometricWorkbench {
     // Position near bottom, leaving room for stats overlay at top
     const tableTop = this.height - 180;
     
-    // Draw white wall background (behind everything)
-    this.ctx.fillStyle = '#f5f5f0';
-    this.ctx.fillRect(0, 0, this.width, tableTop);
-    
-    // Draw wood floor below table
-    const floorGradient = this.ctx.createLinearGradient(0, tableTop, 0, this.height);
-    floorGradient.addColorStop(0, '#5a4a3a');
-    floorGradient.addColorStop(0.5, '#6b5646');
-    floorGradient.addColorStop(1, '#4a3a2a');
-    this.ctx.fillStyle = floorGradient;
-    this.ctx.fillRect(0, tableTop, this.width, this.height - tableTop);
-    
-    // Floor wood planks (vertical)
-    this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
-    this.ctx.lineWidth = 2;
-    for (let x = 80; x < this.width; x += 80) {
-      this.ctx.beginPath();
-      this.ctx.moveTo(x, tableTop);
-      this.ctx.lineTo(x, this.height);
-      this.ctx.stroke();
+    // Draw background based on style
+    if (this.backgroundStyle === 'terminal') {
+      this.drawTerminalBackground(tableTop);
+    } else if (this.backgroundStyle === 'minimal') {
+      this.drawMinimalBackground(tableTop);
+    } else {
+      this.drawPixelArtBackground(tableTop);
     }
     
     // Draw table legs (4 corners, thick wooden style)
@@ -871,26 +1105,22 @@ class IsometricWorkbench {
     ];
     
     legPositions.forEach(leg => {
-      // Leg (wood color)
-      this.ctx.fillStyle = '#8b6f47';
+      // Leg - bold solid color
+      this.ctx.fillStyle = '#c07840';
       this.ctx.fillRect(leg.x - legWidth/2, leg.y, legWidth, tableH - 150);
       
-      // Leg highlight (left edge)
-      this.ctx.fillStyle = '#a67c52';
+      // Leg highlight (left edge) - bright
+      this.ctx.fillStyle = '#f8b888';
       this.ctx.fillRect(leg.x - legWidth/2, leg.y, 6, tableH - 150);
       
-      // Leg shadow (right edge)
-      this.ctx.fillStyle = '#6b5535';
+      // Leg shadow (right edge) - dark
+      this.ctx.fillStyle = '#904020';
       this.ctx.fillRect(leg.x + legWidth/2 - 6, leg.y, 6, tableH - 150);
       
-      // Wood grain on legs
-      this.ctx.strokeStyle = 'rgba(107, 85, 53, 0.3)';
-      this.ctx.lineWidth = 1;
-      for (let i = 0; i < tableH - 150; i += 20) {
-        this.ctx.beginPath();
-        this.ctx.moveTo(leg.x - legWidth/2 + 5, leg.y + i);
-        this.ctx.lineTo(leg.x + legWidth/2 - 5, leg.y + i);
-        this.ctx.stroke();
+      // Simple horizontal bands on legs
+      this.ctx.fillStyle = '#904020';
+      for (let i = 30; i < tableH - 150; i += 40) {
+        this.ctx.fillRect(leg.x - legWidth/2, leg.y + i, legWidth, 4);
       }
     });
     
@@ -980,25 +1210,21 @@ class IsometricWorkbench {
     this.ctx.lineTo(centerX - tableW + cornerRadius, tableTop - thickness - tableD);
     this.ctx.closePath();
     
-    // Wood grain texture color
-    const gradient = this.ctx.createLinearGradient(centerX - tableW/2, tableTop - tableD, centerX - tableW/2, tableTop);
-    gradient.addColorStop(0, '#b88550');
-    gradient.addColorStop(0.5, '#c9965f');
-    gradient.addColorStop(1, '#d4a574');
-    this.ctx.fillStyle = gradient;
+    // Retro game-style table - solid bold colors
+    this.ctx.fillStyle = '#f8b888'; // Light wood/tan
     this.ctx.fill();
     
-    // Top edge outline
-    this.ctx.strokeStyle = '#8b6f47';
-    this.ctx.lineWidth = 3;
+    // Top edge outline - darker border
+    this.ctx.strokeStyle = '#c07840';
+    this.ctx.lineWidth = 4;
     this.ctx.stroke();
     
-    // Wood plank details - simulate planks running horizontally (side to side)
-    const plankDepth = 100; // Depth of each plank
-    this.ctx.strokeStyle = 'rgba(139, 111, 71, 0.3)';
-    this.ctx.lineWidth = 2;
+    // Simple plank lines - bold and graphic
+    const plankDepth = 80;
+    this.ctx.strokeStyle = '#c07840';
+    this.ctx.lineWidth = 3;
     
-    // Horizontal plank seams (running left to right)
+    // Horizontal plank seams
     for (let i = plankDepth; i < tableD; i += plankDepth) {
       this.ctx.beginPath();
       this.ctx.moveTo(centerX - tableW + 10, tableTop - thickness - i);
@@ -1036,31 +1262,35 @@ class IsometricWorkbench {
   drawHouseplant(x, y) {
     this.ctx.save();
     
-    // Pot (terracotta)
-    this.ctx.fillStyle = '#d4704a';
+    // Pot - bright terracotta retro style
+    this.ctx.fillStyle = '#f87858';
     this.ctx.fillRect(x - 35, y, 70, 50);
-    this.ctx.fillStyle = '#b85c3a';
+    this.ctx.fillStyle = '#d85030';
     this.ctx.fillRect(x - 28, y + 8, 56, 35);
     
-    // Pot rim
-    this.ctx.fillStyle = '#e88060';
+    // Pot rim - bright highlight
+    this.ctx.fillStyle = '#ff9870';
     this.ctx.fillRect(x - 38, y - 5, 76, 5);
     
-    // Cactus color
-    const cactusGreen = '#6b9b6e';
-    const cactusHighlight = '#7fb082';
-    const cactusShadow = '#5a8a5d';
+    // Pot shadow band
+    this.ctx.fillStyle = '#b03820';
+    this.ctx.fillRect(x - 35, y + 35, 70, 8);
     
-    // Main trunk (tall cylinder)
+    // Cactus - vibrant green
+    const cactusGreen = '#58d878';
+    const cactusHighlight = '#88f0a8';
+    const cactusShadow = '#30a050';
+    
+    // Main trunk
     const trunkWidth = 30;
     const trunkHeight = 120;
     this.ctx.fillStyle = cactusGreen;
     this.ctx.fillRect(x - trunkWidth/2, y - trunkHeight, trunkWidth, trunkHeight);
     
-    // Trunk highlights (vertical ridges)
+    // Trunk highlights - bold
     this.ctx.fillStyle = cactusHighlight;
-    this.ctx.fillRect(x - trunkWidth/2 + 5, y - trunkHeight, 4, trunkHeight);
-    this.ctx.fillRect(x + trunkWidth/2 - 9, y - trunkHeight, 4, trunkHeight);
+    this.ctx.fillRect(x - trunkWidth/2 + 4, y - trunkHeight, 5, trunkHeight);
+    this.ctx.fillRect(x + trunkWidth/2 - 9, y - trunkHeight, 5, trunkHeight);
     
     // Trunk shadows
     this.ctx.fillStyle = cactusShadow;
@@ -1102,9 +1332,10 @@ class IsometricWorkbench {
     this.ctx.save();
     
     // Base (pixel-art circular base using rectangles)
-    const baseColor = '#2a2a3e';
-    const baseHighlight = '#3a3a4e';
-    const baseShadow = '#1a1a2e';
+    // Base colors - dark gray/black
+    const baseColor = '#484858';
+    const baseHighlight = '#686878';
+    const baseShadow = '#282838';
     
     // Base bottom layer (darkest)
     this.ctx.fillStyle = baseShadow;
@@ -1175,11 +1406,11 @@ class IsometricWorkbench {
     this.ctx.fillStyle = baseHighlight;
     this.ctx.fillRect(armEndX - 4, armEndY - 4, 4, 4);
     
-    // Lampshade (pixel-art bell shape pointing down)
+    // Lampshade - warm yellow/orange retro style
     const lampX = armEndX;
-    const shadeColor = '#feca57';
-    const shadeHighlight = '#ffe87c';
-    const shadeShadow = '#e8b647';
+    const shadeColor = '#f8d030';
+    const shadeHighlight = '#fff898';
+    const shadeShadow = '#d0a008';
     const shadeHeight = 80;
     
     // Shade top (narrow attachment point)
@@ -1194,7 +1425,7 @@ class IsometricWorkbench {
     this.ctx.fillStyle = shadeColor;
     this.ctx.fillRect(lampX - 28, lampHeadY + 10, 56, 8);
     this.ctx.fillStyle = shadeHighlight;
-    this.ctx.fillRect(lampX - 28, lampHeadY + 10, 8, 8);
+    this.ctx.fillRect(lampX - 28, lampHeadY + 10, 10, 8);
     
     // Shade middle section
     this.ctx.fillStyle = shadeShadow;
@@ -1278,6 +1509,22 @@ class IsometricWorkbench {
       this.drawCube(cube, isHovered, isSelected);
     }
     
+    // Draw lasso selection if active
+    if (this.isLassoing && this.lassoPoints.length > 1) {
+      this.ctx.save();
+      this.ctx.strokeStyle = '#ff6b35';
+      this.ctx.lineWidth = 2;
+      this.ctx.setLineDash([5, 5]);
+      this.ctx.beginPath();
+      this.ctx.moveTo(this.lassoPoints[0].x, this.lassoPoints[0].y);
+      for (let i = 1; i < this.lassoPoints.length; i++) {
+        this.ctx.lineTo(this.lassoPoints[i].x, this.lassoPoints[i].y);
+      }
+      this.ctx.stroke();
+      this.ctx.setLineDash([]);
+      this.ctx.restore();
+    }
+    
     // Draw stats overlay
     this.drawStatsOverlay();
   }
@@ -1308,7 +1555,7 @@ class IsometricWorkbench {
     // Retro terminal-style overlay
     const padding = 16;
     const boxWidth = 280;
-    const boxHeight = 120;
+    const boxHeight = 160;
     
     // Background
     this.ctx.fillStyle = 'rgba(26, 26, 46, 0.9)';
@@ -1323,14 +1570,19 @@ class IsometricWorkbench {
     this.ctx.fillStyle = '#64c8ff';
     this.ctx.font = '12px "Courier New", monospace';
     
+    const selectedCount = this.selectedCubes.length;
     const lines = [
       '╔════════════════════════════╗',
       '║  WORKBENCH v1.0  [ACTIVE] ║',
       '╠════════════════════════════╣',
       `║  CUBES: ${this.stats.cubeCount.toString().padStart(4, ' ')}               ║`,
+      `║  SELECTED: ${selectedCount.toString().padStart(3, ' ')}             ║`,
       `║  TOTAL NSF: ${this.stats.totalNSF.toLocaleString().padStart(10, ' ')}     ║`,
       '║                            ║',
-      '║  [DRAG] Move  [CLICK] Info ║',
+      '║  [LASSO] Select Multiple   ║',
+      '║  [SHIFT] Toggle Selection  ║',
+      '║  [CTRL] Add to Selection   ║',
+      '║  [ESC] Clear Selection     ║',
       '╚════════════════════════════╝'
     ];
     

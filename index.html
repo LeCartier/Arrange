@@ -1322,6 +1322,9 @@
         <button class="workbench-btn" onclick="workbenchToggleView()" id="view-toggle-btn">📐 45°/45° View</button>
         <button class="workbench-btn" onclick="workbenchAutoArrange()">🎯 Auto-Arrange</button>
         <button class="workbench-btn" onclick="workbenchReload()">🔄 Reload</button>
+        <button class="workbench-btn" onclick="workbenchSetBackground('pixel-art')">🎨 Pixel Art</button>
+        <button class="workbench-btn" onclick="workbenchSetBackground('terminal')">💻 Terminal</button>
+        <button class="workbench-btn" onclick="workbenchSetBackground('minimal')">⚪ Minimal</button>
         <button class="workbench-btn danger" onclick="toggleWorkbench()">✕ Close</button>
       </div>
     </div>
@@ -7687,6 +7690,11 @@
     function workbenchAutoArrange() {
       if (!workbench) return;
       workbench.autoArrange();
+    }
+    
+    function workbenchSetBackground(style) {
+      if (!workbench) return;
+      workbench.setBackgroundStyle(style);
     }
 
     function workbenchToggleView() {
