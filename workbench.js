@@ -182,15 +182,21 @@ class IsometricWorkbench {
     const cubeColor = this.getDepartmentColor(department);
     console.log(`Adding cube for dept "${department}" -> color:`, cubeColor);
     
+    // Constrain initial position to table bounds
+    const width = 1.2;
+    const depth = 1.2;
+    const constrainedX = this.constrainToTable(gridX, width, this.tableWidth / this.tileWidth);
+    const constrainedY = this.constrainToTable(gridY, depth, this.tableDepth / this.cubeDepth);
+    
     const cube = {
       id: `cube_${Date.now()}_${Math.random()}`,
       room: room,
       department: department,
-      gridX: gridX,
-      gridY: gridY,
+      gridX: constrainedX,
+      gridY: constrainedY,
       stackHeight: stackHeight,
-      width: 1.2, // Consistent width for clean grid
-      depth: 1.2, // Consistent depth for clean grid
+      width: width, // Consistent width for clean grid
+      depth: depth, // Consistent depth for clean grid
       height: heightUnits, // Varies by NSF
       color: cubeColor,
       pattern: this.getFunctionalAreaPattern(room.functional_area)
@@ -838,10 +844,14 @@ class IsometricWorkbench {
       const dx = x - this.dragStartX;
       const dy = y - this.dragStartY;
       
-      // Move all selected cubes
+      // Move all selected cubes with proper zoom scaling
       this.selectedCubes.forEach(cube => {
-        cube.gridX += dx / this.tileWidth;
-        cube.gridY += dy / this.cubeDepth;
+        const newGridX = cube.gridX + (dx / (this.tileWidth * this.zoom));
+        const newGridY = cube.gridY + (dy / (this.cubeDepth * this.zoom));
+        
+        // Constrain to table boundaries
+        cube.gridX = this.constrainToTable(newGridX, cube.width, this.tableWidth / this.tileWidth);
+        cube.gridY = this.constrainToTable(newGridY, cube.depth, this.tableDepth / this.cubeDepth);
       });
       
       this.dragStartX = x;
@@ -856,6 +866,14 @@ class IsometricWorkbench {
         this.render();
       }
     }
+  }
+  
+  // Constrain a cube position to stay within table bounds
+  constrainToTable(position, cubeSize, maxGridSize) {
+    const halfSize = cubeSize / 2;
+    const min = -maxGridSize / 2 + halfSize;
+    const max = maxGridSize / 2 - halfSize;
+    return Math.max(min, Math.min(max, position));
   }
   
   handleMouseUp(e) {
@@ -1069,6 +1087,142 @@ class IsometricWorkbench {
     }
   }
   
+  // Draw ASCII art plant
+  drawTerminalPlant(x, y) {
+    this.ctx.fillStyle = '#00ff00';
+    const lines = [
+      '  \\|/',
+      ' \\\\|//',
+      '---█---',
+      '  |||',
+      ' [___]'
+    ];
+    
+    lines.forEach((line, i) => {
+      this.ctx.fillText(line, x, y + i * 14);
+    });
+  }
+  
+  // Draw ASCII art desk lamp
+  drawTerminalLamp(x, y) {
+    this.ctx.fillStyle = '#00ff00';
+    const lines = [
+      '  ___',
+      ' /   \\',
+      '/     \\',
+      '|  ☼  |',
+      ' \\   /',
+      '  \\_/',
+      '   |',
+      '  ═╪═'
+    ];
+    
+    lines.forEach((line, i) => {
+      this.ctx.fillText(line, x, y + i * 14);
+    });
+  }
+  
+  // Draw terminal-style ASCII art table
+  drawTerminalTable(centerX, tableW, tableD, tableTop, thickness, tableH) {
+    this.ctx.save();
+    this.ctx.fillStyle = '#00ff00'; // Terminal green
+    this.ctx.font = '12px "Courier New", monospace';
+    
+    const charWidth = 7;  // Approximate character width
+    const charHeight = 14; // Approximate character height
+    
+    // Calculate table edges
+    const tableLeft = centerX - tableW;
+    const tableRight = centerX + tableW;
+    const tableBack = tableTop - tableD;
+    const tableFront = tableTop;
+    
+    // Draw table legs (4 corners with ASCII art)
+    const legPositions = [
+      { x: tableLeft + 50, y: tableFront, label: 'FL' },      // Front-left
+      { x: tableRight - 50, y: tableFront, label: 'FR' },     // Front-right
+      { x: tableLeft + 50, y: tableBack, label: 'BL' },       // Back-left
+      { x: tableRight - 50, y: tableBack, label: 'BR' }       // Back-right
+    ];
+    
+    legPositions.forEach(leg => {
+      // Draw vertical leg with | characters
+      const legHeight = tableH - 150;
+      for (let i = 0; i < legHeight; i += charHeight) {
+        this.ctx.fillText('║', leg.x - charWidth/2, leg.y + i);
+      }
+      
+      // Top of leg (decorative)
+      this.ctx.fillText('╔', leg.x - charWidth/2 - charWidth, leg.y - charHeight);
+      this.ctx.fillText('═', leg.x - charWidth/2, leg.y - charHeight);
+      this.ctx.fillText('╗', leg.x - charWidth/2 + charWidth, leg.y - charHeight);
+      
+      // Bottom of leg (base)
+      const legBottom = leg.y + legHeight;
+      this.ctx.fillText('╚', leg.x - charWidth/2 - charWidth, legBottom);
+      this.ctx.fillText('═', leg.x - charWidth/2, legBottom);
+      this.ctx.fillText('╝', leg.x - charWidth/2 + charWidth, legBottom);
+    });
+    
+    // Draw table top edge (front edge)
+    const edgeY = tableFront - thickness;
+    let x = tableLeft;
+    
+    // Front left corner
+    this.ctx.fillText('/', x, edgeY);
+    x += charWidth;
+    
+    // Front edge with underscores
+    while (x < tableRight - charWidth) {
+      this.ctx.fillText('_', x, edgeY);
+      x += charWidth;
+    }
+    
+    // Front right corner
+    this.ctx.fillText('\\', x, edgeY);
+    
+    // Draw back edge (back of table)
+    x = tableLeft;
+    const backEdgeY = tableBack - thickness;
+    
+    // Back left corner
+    this.ctx.fillText('/', x, backEdgeY);
+    x += charWidth;
+    
+    // Back edge with underscores
+    while (x < tableRight - charWidth) {
+      this.ctx.fillText('_', x, backEdgeY);
+      x += charWidth;
+    }
+    
+    // Back right corner
+    this.ctx.fillText('\\', x, backEdgeY);
+    
+    // Draw left side edge
+    for (let y = backEdgeY; y < edgeY; y += charHeight) {
+      this.ctx.fillText('/', tableLeft + charWidth, y);
+    }
+    
+    // Draw right side edge
+    for (let y = backEdgeY; y < edgeY; y += charHeight) {
+      this.ctx.fillText('\\', tableRight - charWidth * 2, y);
+    }
+    
+    // ASCII ART DECORATIONS
+    
+    // Houseplant (small cactus in back-left corner on table)
+    const plantX = tableLeft + 80;
+    const plantY = tableBack + 40;
+    this.drawTerminalPlant(plantX, plantY);
+    
+    // Desk lamp (back-right corner on table)
+    const lampX = tableRight - 120;
+    const lampY = tableBack + 30;
+    this.drawTerminalLamp(lampX, lampY);
+    
+    this.ctx.restore();
+  }
+  
   // Draw the elevated tabletop workbench (straight-on elevated view)
   drawTable() {
     this.ctx.save();
@@ -1089,6 +1243,10 @@ class IsometricWorkbench {
     // Draw background based on style
     if (this.backgroundStyle === 'terminal') {
       this.drawTerminalBackground(tableTop);
+      // Terminal mode: use ASCII art for table instead of pixel graphics
+      this.drawTerminalTable(centerX, tableW, tableD, tableTop, thickness, tableH);
+      this.ctx.restore();
+      return;
     } else if (this.backgroundStyle === 'minimal') {
       this.drawMinimalBackground(tableTop);
     } else {
