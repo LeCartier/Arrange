@@ -20,7 +20,7 @@ export const CHAPTER_228 = {
     {
       id: 'has_xray',
       label: 'Provide General X-Ray (Radiographic)?',
-      type: 'boolean',
+      type: 'checkbox',
       default: true
     },
     {
@@ -36,7 +36,7 @@ export const CHAPTER_228 = {
     {
       id: 'has_fluoro',
       label: 'Provide Fluoroscopy (R/F)?',
-      type: 'boolean',
+      type: 'checkbox',
       default: true
     },
     {
@@ -52,7 +52,7 @@ export const CHAPTER_228 = {
     {
       id: 'has_ct',
       label: 'Provide CT (Computed Tomography)?',
-      type: 'boolean',
+      type: 'checkbox',
       default: true
     },
     {
@@ -68,7 +68,7 @@ export const CHAPTER_228 = {
     {
       id: 'has_mri',
       label: 'Provide MRI (Magnetic Resonance Imaging)?',
-      type: 'boolean',
+      type: 'checkbox',
       default: true
     },
     {
@@ -84,7 +84,7 @@ export const CHAPTER_228 = {
     {
       id: 'has_ultrasound',
       label: 'Provide Ultrasound?',
-      type: 'boolean',
+      type: 'checkbox',
       default: true
     },
     {
@@ -100,25 +100,25 @@ export const CHAPTER_228 = {
     {
       id: 'has_mammography',
       label: 'Provide Mammography?',
-      type: 'boolean',
+      type: 'checkbox',
       default: true
     },
     {
       id: 'has_nuclear_med',
       label: 'Provide Nuclear Medicine?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     },
     {
       id: 'has_pet_ct',
       label: 'Provide PET/CT?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     },
     {
       id: 'has_interventional',
       label: 'Provide Interventional Radiology?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     }
   ],

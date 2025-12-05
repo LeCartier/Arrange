@@ -20,43 +20,43 @@ export const CHAPTER_260 = {
     {
       id: 'has_physical_therapy',
       label: 'Provide Physical Therapy?',
-      type: 'boolean',
+      type: 'checkbox',
       default: true
     },
     {
       id: 'has_occupational_therapy',
       label: 'Provide Occupational Therapy?',
-      type: 'boolean',
+      type: 'checkbox',
       default: true
     },
     {
       id: 'has_speech_therapy',
       label: 'Provide Speech/Language Therapy?',
-      type: 'boolean',
+      type: 'checkbox',
       default: true
     },
     {
       id: 'has_prosthetics',
       label: 'Provide Prosthetics & Orthotics?',
-      type: 'boolean',
+      type: 'checkbox',
       default: true
     },
     {
       id: 'has_aquatic',
       label: 'Provide Aquatic Therapy (Pool)?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     },
     {
       id: 'has_driver_eval',
       label: 'Provide Driver Evaluation & Training?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     },
     {
       id: 'has_kinesiotherapy',
       label: 'Provide Kinesiotherapy?',
-      type: 'boolean',
+      type: 'checkbox',
       default: true
     }
   ],

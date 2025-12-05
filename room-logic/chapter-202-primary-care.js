@@ -29,7 +29,7 @@ export const CHAPTER_202 = {
     {
       id: 'has_womens_health',
       label: 'Is Women\'s Health Clinic co-located?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     }
   ],

@@ -34,7 +34,7 @@ export const CHAPTER_106 = {
     {
       id: 'community_center',
       label: 'Is a Community Center authorized?',
-      type: 'boolean',
+      type: 'checkbox',
       defaultValue: false
     }
   ],

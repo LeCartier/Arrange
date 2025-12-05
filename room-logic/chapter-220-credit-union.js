@@ -10,19 +10,19 @@ export const CHAPTER_220 = {
     {
       id: 'level_1',
       label: 'Is a Level 1 Credit Union authorized?',
-      type: 'boolean',
+      type: 'checkbox',
       defaultValue: false
     },
     {
       id: 'level_2',
       label: 'Is a Level 2 Credit Union authorized?',
-      type: 'boolean',
+      type: 'checkbox',
       defaultValue: false
     },
     {
       id: 'full_service',
       label: 'Is a full service Credit Union authorized?',
-      type: 'boolean',
+      type: 'checkbox',
       defaultValue: true
     }
   ],

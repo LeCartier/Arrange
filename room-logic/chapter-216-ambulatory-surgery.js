@@ -29,7 +29,7 @@ export const CHAPTER_216 = {
     {
       id: 'has_endoscopy',
       label: 'Provide Endoscopy (GI) Services?',
-      type: 'boolean',
+      type: 'checkbox',
       default: true
     },
     {
@@ -45,19 +45,19 @@ export const CHAPTER_216 = {
     {
       id: 'has_cystoscopy',
       label: 'Provide Cystoscopy (Urology) Services?',
-      type: 'boolean',
+      type: 'checkbox',
       default: true
     },
     {
       id: 'has_ophthalmology',
       label: 'Provide Ophthalmology (Eye) Surgery?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     },
     {
       id: 'has_podiatry',
       label: 'Provide Podiatry (Foot) Surgery?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     }
   ],

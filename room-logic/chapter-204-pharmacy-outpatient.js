@@ -20,19 +20,19 @@ export const CHAPTER_204 = {
     {
       id: 'has_compounding',
       label: 'Does pharmacy provide compounding services?',
-      type: 'boolean',
+      type: 'checkbox',
       default: true
     },
     {
       id: 'has_oncology',
       label: 'Does pharmacy provide oncology/chemotherapy compounding?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     },
     {
       id: 'has_clinic_satellite',
       label: 'Are clinic satellite pharmacies included?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     }
   ],

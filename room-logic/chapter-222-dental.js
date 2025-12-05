@@ -18,19 +18,19 @@ const CHAPTER_222 = {
     {
       id: 'dental_surgery_authorized',
       label: 'Is a Dental Surgery Suite authorized?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     },
     {
       id: 'pan_ceph_authorized',
       label: 'Is a Panoramic / Cephalometric x-ray authorized?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     },
     {
       id: 'ct_cone_beam_authorized',
       label: 'Is a Computerized Tomography (CT) Cone-Beam Room authorized?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     }
   ],

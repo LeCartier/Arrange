@@ -13,61 +13,61 @@ export const CHAPTER_214 = {
     {
       id: 'medical_service',
       label: 'Is Medical Service authorized?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     },
     {
       id: 'hospital_medicine',
       label: 'Is Hospital Medicine authorized?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     },
     {
       id: 'endocrinology',
       label: 'Is Endocrinology Medicine authorized?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     },
     {
       id: 'rheumatology',
       label: 'Is Rheumatology Medicine authorized?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     },
     {
       id: 'infectious_disease',
       label: 'Is Infectious Disease authorized?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     },
     {
       id: 'homeless_cwt',
       label: 'Is Homeless / Compensated Work Therapy (CWT) authorized?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     },
     {
       id: 'neurology_service',
       label: 'Is Neurology Service authorized?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     },
     {
       id: 'dermatology_service',
       label: 'Is Dermatology Service authorized?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     },
     {
       id: 'geriatrics_hbpc',
       label: 'Is Geriatrics Home Based Primary Care (HBPC) authorized?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     },
     {
       id: 'oncology',
       label: 'Is Oncology authorized?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     }
   ],

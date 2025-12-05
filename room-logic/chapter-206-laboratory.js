@@ -20,31 +20,31 @@ export const CHAPTER_206 = {
     {
       id: 'has_phlebotomy',
       label: 'Is Phlebotomy/Blood Draw provided?',
-      type: 'boolean',
+      type: 'checkbox',
       default: true
     },
     {
       id: 'has_microbiology',
       label: 'Is Microbiology provided?',
-      type: 'boolean',
+      type: 'checkbox',
       default: true
     },
     {
       id: 'has_blood_bank',
       label: 'Is Blood Bank provided?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     },
     {
       id: 'has_molecular',
       label: 'Is Molecular Diagnostics provided?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     },
     {
       id: 'has_anatomic_path',
       label: 'Is Anatomic Pathology provided?',
-      type: 'boolean',
+      type: 'checkbox',
       default: false
     }
   ],
