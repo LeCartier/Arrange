@@ -109,6 +109,16 @@
       color: white;
     }
 
+    header .icon-btn.workbench {
+      background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+      color: white;
+    }
+
+    header .icon-btn.workbench.active {
+      background: linear-gradient(135deg, #feca57 0%, #ff6b6b 100%);
+      box-shadow: 0 0 20px rgba(254, 202, 87, 0.5);
+    }
+
     header p {
       margin-top: 8px;
       color: var(--muted);
@@ -1130,6 +1140,162 @@
       font-size: 0.85rem;
       color: var(--muted);
     }
+
+    /* Workbench Mode */
+    #workbench-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #1a1a2e;
+      z-index: 9999;
+      display: none;
+      flex-direction: column;
+    }
+
+    #workbench-container.active {
+      display: flex;
+    }
+
+    #workbench-header {
+      background: rgba(26, 26, 46, 0.95);
+      border-bottom: 2px solid #64c8ff;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #workbench-header h2 {
+      color: #64c8ff;
+      font-family: 'Courier New', monospace;
+      font-size: 1.5rem;
+      margin: 0;
+      text-shadow: 0 0 10px rgba(100, 200, 255, 0.5);
+    }
+
+    #workbench-controls {
+      display: flex;
+      gap: 12px;
+    }
+
+    .workbench-btn {
+      background: rgba(100, 200, 255, 0.2);
+      border: 2px solid #64c8ff;
+      color: #64c8ff;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .workbench-btn:hover {
+      background: rgba(100, 200, 255, 0.4);
+      box-shadow: 0 0 15px rgba(100, 200, 255, 0.5);
+    }
+
+    .workbench-btn.danger {
+      border-color: #ff6b6b;
+      color: #ff6b6b;
+      background: rgba(255, 107, 107, 0.2);
+    }
+
+    .workbench-btn.danger:hover {
+      background: rgba(255, 107, 107, 0.4);
+      box-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
+    }
+
+    #workbench-canvas-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #workbench-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      image-rendering: pixelated;
+    }
+
+    #workbench-legend {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(26, 26, 46, 0.95);
+      border: 2px solid #64c8ff;
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'Courier New', monospace;
+      color: #64c8ff;
+      font-size: 0.85rem;
+      max-width: 300px;
+    }
+
+    #workbench-legend h4 {
+      margin: 0 0 12px 0;
+      color: #feca57;
+      text-shadow: 0 0 10px rgba(254, 202, 87, 0.5);
+    }
+
+    .legend-section {
+      margin-bottom: 16px;
+    }
+
+    .legend-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 8px 0;
+    }
+
+    .legend-color-box {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #64c8ff;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .legend-pattern-box {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #64c8ff;
+      border-radius: 4px;
+      flex-shrink: 0;
+      background: #fff;
+      position: relative;
+    }
+
+    .pattern-dots {
+      background-image: radial-gradient(circle, #000 2px, transparent 2px);
+      background-size: 8px 8px;
+    }
+
+    .pattern-diagonal {
+      background: repeating-linear-gradient(45deg, transparent, transparent 4px, #000 4px, #000 5px);
+    }
+
+    .pattern-crosshatch {
+      background: 
+        repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(0,0,0,0.5) 4px, rgba(0,0,0,0.5) 5px),
+        repeating-linear-gradient(-45deg, transparent, transparent 4px, rgba(0,0,0,0.5) 4px, rgba(0,0,0,0.5) 5px);
+    }
+
+    .pattern-horizontal {
+      background: repeating-linear-gradient(0deg, transparent, transparent 4px, #000 4px, #000 5px);
+    }
+
+    .pattern-vertical {
+      background: repeating-linear-gradient(90deg, transparent, transparent 4px, #000 4px, #000 5px);
+    }
   </style>
 </head>
 <body>
@@ -1144,8 +1310,68 @@
     <div class="header-actions">
       <button class="icon-btn portal" onclick="openLogicPortal()" title="Logic Portal">⚙️</button>
       <button class="icon-btn sync" onclick="openDataSyncModal()" title="Sync Data">🔄</button>
+      <button class="icon-btn workbench" id="workbench-toggle" onclick="toggleWorkbench()" title="3D Workbench">🧊</button>
     </div>
   </header>
+
+  <!-- Workbench Mode Overlay -->
+  <div id="workbench-container">
+    <div id="workbench-header">
+      <h2>╔═══════════════ WORKBENCH v1.0 ═══════════════╗</h2>
+      <div id="workbench-controls">
+        <button class="workbench-btn" onclick="workbenchToggleView()" id="view-toggle-btn">📐 45°/45° View</button>
+        <button class="workbench-btn" onclick="workbenchAutoArrange()">🎯 Auto-Arrange</button>
+        <button class="workbench-btn" onclick="workbenchReload()">🔄 Reload</button>
+        <button class="workbench-btn danger" onclick="toggleWorkbench()">✕ Close</button>
+      </div>
+    </div>
+    <div id="workbench-canvas-container">
+      <canvas id="workbench-canvas" width="1600" height="900"></canvas>
+      <div id="workbench-legend">
+        <h4>═══ LEGEND ═══</h4>
+        
+        <div class="legend-section">
+          <strong>Department Colors:</strong>
+          <div class="legend-item">
+            <div class="legend-color-box" style="background: #FFB3BA;"></div>
+            <span>Inpatient</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color-box" style="background: #BAFFC9;"></div>
+            <span>Clinical</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color-box" style="background: #BAE1FF;"></div>
+            <span>Support</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color-box" style="background: #FFFFBA;"></div>
+            <span>Admin</span>
+          </div>
+        </div>
+
+        <div class="legend-section">
+          <strong>Functional Area Patterns:</strong>
+          <div class="legend-item">
+            <div class="legend-pattern-box pattern-dots"></div>
+            <span>Reception</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-pattern-box pattern-diagonal"></div>
+            <span>Patient Area</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-pattern-box pattern-crosshatch"></div>
+            <span>Treatment</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-pattern-box pattern-horizontal"></div>
+            <span>Staff/Admin</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <main class="layout">
     <!-- LEFT COLUMN: Tree Navigation -->
@@ -1406,6 +1632,7 @@
   <script src="equipment-data-part1.js"></script>
   <script src="equipment-data-part2.js"></script>
   <script src="room-sizes.js"></script>
+  <script src="workbench.js"></script>
   <script>
     // Build room code to department/FA mapping from equipment guide
     console.log('Building room metadata...');
@@ -7395,6 +7622,85 @@
     // -----------------------------
 
     let roomLogicData = {};
+    let workbench = null;
+
+    function toggleWorkbench() {
+      const container = document.getElementById('workbench-container');
+      const button = document.getElementById('workbench-toggle');
+      
+      if (container.classList.contains('active')) {
+        // Close workbench
+        container.classList.remove('active');
+        button.classList.remove('active');
+      } else {
+        // Open workbench
+        container.classList.add('active');
+        button.classList.add('active');
+        
+        // Initialize or refresh workbench
+        if (!workbench) {
+          workbench = new IsometricWorkbench('workbench-canvas');
+        }
+        
+        // Load current project data
+        workbenchReload();
+      }
+    }
+
+    function workbenchReload() {
+      if (!workbench) return;
+      
+      // Get current project departments from the tree
+      const departments = [];
+      const project = getCurrentProject();
+      
+      Object.keys(project.departments || {}).forEach(deptName => {
+        const dept = project.departments[deptName];
+        const rooms = [];
+        
+        Object.keys(dept.functionalAreas || {}).forEach(faName => {
+          const fa = dept.functionalAreas[faName];
+          (fa.rooms || []).forEach(room => {
+            const qty = room.quantity || 1;
+            // Create one room entry per quantity so each gets a cube
+            for (let i = 0; i < qty; i++) {
+              rooms.push({
+                room_code: room.roomCode,
+                room_name: room.roomName + (qty > 1 ? ` #${i + 1}` : ''),
+                functional_area: faName,
+                nsf: room.nsf || 100,
+                quantity: 1
+              });
+            }
+          });
+        });
+        
+        departments.push({
+          name: deptName,
+          rooms: rooms
+        });
+      });
+      
+      workbench.loadFromProject(departments);
+    }
+
+    function workbenchAutoArrange() {
+      if (!workbench) return;
+      workbench.autoArrange();
+    }
+
+    function workbenchToggleView() {
+      if (!workbench) return;
+      workbench.toggleViewMode();
+      
+      // Update button text
+      const btn = document.getElementById('view-toggle-btn');
+      if (workbench.viewMode === 'elevation') {
+        btn.textContent = '📐 45°/45° View';
+      } else {
+        btn.textContent = '📐 Top-Down View';
+      }
+    }
 
     function openLogicPortal() {
       document.getElementById('password-modal').classList.add('active');
