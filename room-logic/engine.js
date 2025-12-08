@@ -81,26 +81,38 @@ function evaluateRoom(room, inputs, calculations) {
   for (const rule of room.rules) {
     let conditionMet = false;
 
-    // Evaluate condition (can be a function or simple value)
-    if (typeof rule.condition === 'function') {
-      conditionMet = rule.condition(inputs, calculations);
-    } else if (typeof rule.condition === 'boolean') {
-      conditionMet = rule.condition;
+    // Check for calculate function (new pattern)
+    if (typeof rule.calculate === 'function') {
+      const result = rule.calculate(inputs, calculations);
+      if (result) {
+         quantity = result.roomCount !== undefined ? result.roomCount : (result.quantity || 0);
+         if (result.nsf !== undefined) nsfPerRoom = result.nsf;
+         conditionMet = true;
+      }
+    } else {
+        // Evaluate condition (can be a function or simple value)
+        if (typeof rule.condition === 'function') {
+          conditionMet = rule.condition(inputs, calculations);
+        } else if (typeof rule.condition === 'boolean') {
+          conditionMet = rule.condition;
+        }
+
+        if (conditionMet) {
+          // Calculate quantity based on rule
+          if (typeof rule.quantity === 'function') {
+            quantity = rule.quantity(inputs, calculations);
+          } else if (typeof rule.quantity === 'number') {
+            quantity = rule.quantity;
+          }
+          
+          // Check if rule specifies a custom NSF value
+          if (rule.nsf !== undefined) {
+            nsfPerRoom = rule.nsf;
+          }
+        }
     }
 
     if (conditionMet) {
-      // Calculate quantity based on rule
-      if (typeof rule.quantity === 'function') {
-        quantity = rule.quantity(inputs, calculations);
-      } else if (typeof rule.quantity === 'number') {
-        quantity = rule.quantity;
-      }
-      
-      // Check if rule specifies a custom NSF value
-      if (rule.nsf !== undefined) {
-        nsfPerRoom = rule.nsf;
-      }
-      
       break; // Stop at first matching rule
     }
   }

@@ -5,6 +5,8 @@ import { CHAPTER_100 } from './chapter-100-medical-surgical.js';
 import { CHAPTER_102 } from './chapter-102-intensive-care.js';
 import { CHAPTER_104 } from './chapter-104-sci-acute-care.js';
 import { CHAPTER_106 } from './chapter-106-small-house.js';
+import { CHAPTER_110 } from './chapter-110-mental-health.js';
+import { CHAPTER_111 } from './chapter-111-polytrauma.js';
 // Chapter 202 - DELETED in VA index (merged into Mental Health Clinic Chapter 260)
 // import { CHAPTER_202 } from './chapter-202-primary-care.js';
 import { CHAPTER_204 } from './chapter-204-audiology.js';
@@ -20,12 +22,18 @@ import CHAPTER_222 from './chapter-222-dental.js';
 import { CHAPTER_226 } from './chapter-226-eeg.js';
 import { CHAPTER_228 } from './chapter-228-radiology.js';
 import { CHAPTER_230 } from './chapter-230-engineering.js';
+import { CHAPTER_232 } from './chapter-232-telecommunication.js';
+import { CHAPTER_233 } from './chapter-233-eye-clinic.js';
 import { CHAPTER_234 } from './chapter-234-fiscal-service.js';
 import { CHAPTER_238 } from './chapter-238-director-suite.js';
 import { CHAPTER_240 } from './chapter-240-laboratory.js';
 import { CHAPTER_244 } from './chapter-244-lobby.js';
+import { CHAPTER_246 } from './chapter-246-health-admin.js';
+import { CHAPTER_248 } from './chapter-248-medical-media.js';
 import { CHAPTER_254 } from './chapter-254-nursing-admin.js';
 import { CHAPTER_256 } from './chapter-256-emergency-department.js';
+import { CHAPTER_257 } from './chapter-257-urgent-care.js';
+import { CHAPTER_286 } from './chapter-286-surgical.js';
 import { CHAPTER_268 } from './chapter-268-pharmacy-outpatient.js';
 import { CHAPTER_270 } from './chapter-270-pmr.js';
 import { CHAPTER_274_CONFIG } from './chapter-274-quarters-oncall.js';
@@ -40,6 +48,8 @@ export const CHAPTERS = {
   '102': CHAPTER_102,
   '104': CHAPTER_104,
   '106': CHAPTER_106,
+  '110': CHAPTER_110,
+  '111': CHAPTER_111,
   // '202': CHAPTER_202, // DELETED in VA index (merged into Chapter 260)
   '204': CHAPTER_204,
   '206': CHAPTER_206,
@@ -54,12 +64,18 @@ export const CHAPTERS = {
   '226': CHAPTER_226,
   '228': CHAPTER_228,
   '230': CHAPTER_230,
+  '232': CHAPTER_232,
+  '233': CHAPTER_233,
   '234': CHAPTER_234,
   '238': CHAPTER_238,
   '240': CHAPTER_240,
   '244': CHAPTER_244,
+  '246': CHAPTER_246,
+  '248': CHAPTER_248,
   '254': CHAPTER_254,
   '256': CHAPTER_256,
+  '257': CHAPTER_257,
+  '286': CHAPTER_286,
   '268': CHAPTER_268,
   '270': CHAPTER_270,
   '274': CHAPTER_274_CONFIG,

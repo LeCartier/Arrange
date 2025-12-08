@@ -159,8 +159,9 @@ class IsometricWorkbench {
   
   // Convert screen coordinates to grid position (straight-on view)
   screenToGrid(screenX, screenY) {
-    const x = screenX - this.offsetX;
-    const y = screenY - this.offsetY;
+    // Reverse the projection - remove offset first, then divide by zoom
+    const x = (screenX - this.offsetX) / this.zoom;
+    const y = (screenY - this.offsetY) / this.zoom;
     
     // Simple orthographic projection (no rotation)
     const gridX = x / this.tileWidth;
@@ -172,8 +173,9 @@ class IsometricWorkbench {
   // Convert grid position to screen coordinates (straight-on elevated view)
   gridToScreen(gridX, gridY, height = 0) {
     // Straight on: X maps to X, Y shows as depth (tilted), Z is vertical
-    const screenX = (gridX * this.tileWidth + this.offsetX) * this.zoom;
-    const screenY = (gridY * this.cubeDepth + this.offsetY - height) * this.zoom;
+    // Apply zoom to grid coordinates first, then add offset
+    const screenX = (gridX * this.tileWidth) * this.zoom + this.offsetX;
+    const screenY = (gridY * this.cubeDepth - height) * this.zoom + this.offsetY;
     
     return { x: screenX, y: screenY };
   }
