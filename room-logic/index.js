@@ -33,6 +33,9 @@ import { CHAPTER_248 } from './chapter-248-medical-media.js';
 import { CHAPTER_254 } from './chapter-254-nursing-admin.js';
 import { CHAPTER_256 } from './chapter-256-emergency-department.js';
 import { CHAPTER_257 } from './chapter-257-urgent-care.js';
+import { CHAPTER_258 } from './chapter-258-women-veterans.js';
+import { CHAPTER_263 } from './chapter-263-cboc-pact.js';
+import { CHAPTER_266 } from './chapter-266-human-resources.js';
 import { CHAPTER_286 } from './chapter-286-surgical.js';
 import { CHAPTER_268 } from './chapter-268-pharmacy-outpatient.js';
 import { CHAPTER_270 } from './chapter-270-pmr.js';
@@ -75,6 +78,9 @@ export const CHAPTERS = {
   '254': CHAPTER_254,
   '256': CHAPTER_256,
   '257': CHAPTER_257,
+  '258': CHAPTER_258,
+  '263': CHAPTER_263,
+  '266': CHAPTER_266,
   '286': CHAPTER_286,
   '268': CHAPTER_268,
   '270': CHAPTER_270,

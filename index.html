@@ -3768,6 +3768,7 @@
               label: displayLabel,
               icon: '📂',
               department: deptName,
+              functionalArea: faName,
               children: []
             };
 
@@ -4903,7 +4904,7 @@
 
     function renderFunctionalAreaReferenceDetail() {
       const deptName = selectedNode.department;
-      const faName = selectedNode.label;
+      const faName = selectedNode.functionalArea;
 
       // Count all room instances and calculate total NSF
       const allInstances = window.ALL_ROOM_INSTANCES || [];
