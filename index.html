@@ -1665,11 +1665,16 @@
               const roomCode = match[1];
               const roomName = roomNameField.split(' - ').slice(2).join(' - ').trim();
               
+              // Look up FA number from ROOM_SIZES
+              const roomAttrs = ROOM_SIZES.find(r => r.id === roomCode);
+              const faNumber = roomAttrs?.functionalAreaNumber || '';
+              
               // Store ALL instances, not just first occurrence
               allRoomInstances.push({
                 roomCode: roomCode,
                 department: dept,
                 functionalArea: fa,
+                functionalAreaNumber: faNumber,
                 roomName: roomName
               });
               
@@ -3404,8 +3409,11 @@
       if (currentMode === 'reference' || currentMode === 'compare') {
         const mappings = window.ROOM_EQUIPMENT_MAPPINGS || [];
         
+        // Cache version for forcing tree rebuild when logic changes
+        const TREE_VERSION = 2; // Increment to invalidate cache
+        
         // Return cached tree if data hasn't changed (and we have data)
-        if (cachedReferenceTree && mappings.length > 0 && lastMappingsLength === mappings.length) {
+        if (cachedReferenceTree && cachedReferenceTree._version === TREE_VERSION && mappings.length > 0 && lastMappingsLength === mappings.length) {
           return cachedReferenceTree;
         }
         
@@ -3443,6 +3451,7 @@
             if (!dept.functionalAreas.has(instance.functionalArea)) {
               dept.functionalAreas.set(instance.functionalArea, {
                 name: instance.functionalArea,
+                number: instance.functionalAreaNumber || '',
                 rooms: new Map()
               });
             }
@@ -3470,6 +3479,7 @@
             if (!dept.functionalAreas.has(mapping.functionalArea)) {
               dept.functionalAreas.set(mapping.functionalArea, {
                 name: mapping.functionalArea,
+                number: mapping.functionalAreaNumber || '',
                 rooms: new Map()
               });
             }
@@ -3494,12 +3504,36 @@
             children: []
           };
 
-          Array.from(dept.functionalAreas.keys()).sort().forEach(faName => {
+          // Sort functional areas by FA number (numerically), falling back to alphabetical by name
+          const sortedFaNames = Array.from(dept.functionalAreas.keys()).sort((a, b) => {
+            const faA = dept.functionalAreas.get(a);
+            const faB = dept.functionalAreas.get(b);
+            
+            // Parse FA numbers as integers for proper numerical sorting
+            const numA = parseInt(faA.number) || 0;
+            const numB = parseInt(faB.number) || 0;
+            
+            // If both have numbers, sort numerically
+            if (numA && numB) {
+              return numA - numB;
+            }
+            
+            // If only one has a number, it comes first
+            if (numA) return -1;
+            if (numB) return 1;
+            
+            // Otherwise sort alphabetically by name
+            return a.localeCompare(b);
+          });
+
+          sortedFaNames.forEach(faName => {
             const fa = dept.functionalAreas.get(faName);
+            // Include FA number in the label if available
+            const displayLabel = fa.number ? `FA${fa.number}: ${faName}` : faName;
             const faNode = {
               id: `fa-ref-${deptName}-${faName}`,
               type: 'functional-area-reference',
-              label: faName,
+              label: displayLabel,
               icon: '📂',
               department: deptName,
               children: []
@@ -3525,7 +3559,8 @@
           tree.children.push(deptNode);
         });
 
-        // Cache the tree for next time
+        // Cache the tree for next time with version number
+        tree._version = 2; // Match TREE_VERSION above
         cachedReferenceTree = tree;
         lastMappingsLength = mappings.length;
         console.log('Reference tree cached with', tree.children.length, 'departments');
@@ -5119,22 +5154,33 @@
                   ${renderEditableAttribute('Ceiling Material', getAttr('ceilingMaterial'), `updateRoomAttribute('${room.id}', 'ceilingMaterial', this.value)`)}
                   ${renderEditableAttribute('Ceiling Alt', getAttr('ceilingMaterialAlternate'), `updateRoomAttribute('${room.id}', 'ceilingMaterialAlternate', this.value)`)}
                   ${renderEditableAttribute('Ceiling Finish', getAttr('ceilingFinish'), `updateRoomAttribute('${room.id}', 'ceilingFinish', this.value)`)}
+                  ${renderEditableAttribute('Ceiling Spec', getAttr('finishCeiling'), `updateRoomAttribute('${room.id}', 'finishCeiling', this.value)`)}
+                  
+                  <div style="height: 8px;"></div>
                   ${renderEditableAttribute('Wall Material', getAttr('wallMaterial'), `updateRoomAttribute('${room.id}', 'wallMaterial', this.value)`)}
                   ${renderEditableAttribute('Wall Alt', getAttr('wallMaterialAlternate'), `updateRoomAttribute('${room.id}', 'wallMaterialAlternate', this.value)`)}
                   ${renderEditableAttribute('Wall Finish', getAttr('wallFinish'), `updateRoomAttribute('${room.id}', 'wallFinish', this.value)`)}
+                  ${renderEditableAttribute('Wall Spec', getAttr('finishWall'), `updateRoomAttribute('${room.id}', 'finishWall', this.value)`)}
+                  ${renderEditableAttribute('Wainscot Spec', getAttr('finishWain'), `updateRoomAttribute('${room.id}', 'finishWain', this.value)`)}
+                  
+                  <div style="height: 8px;"></div>
                   ${renderEditableAttribute('Floor Material', getAttr('floorMaterial'), `updateRoomAttribute('${room.id}', 'floorMaterial', this.value)`)}
                   ${renderEditableAttribute('Floor Alt', getAttr('floorMaterialAlternate'), `updateRoomAttribute('${room.id}', 'floorMaterialAlternate', this.value)`)}
+                  ${renderEditableAttribute('Floor Spec', getAttr('finishFloor'), `updateRoomAttribute('${room.id}', 'finishFloor', this.value)`)}
                   ${renderEditableAttribute('Floor Base', getAttr('floorBaseMaterial'), `updateRoomAttribute('${room.id}', 'floorBaseMaterial', this.value)`)}
+                  ${renderEditableAttribute('Base Spec', getAttr('finishBase'), `updateRoomAttribute('${room.id}', 'finishBase', this.value)`)}
                 </div>
                 
                 <!-- Column 2: Door & Environmental -->
                 <div>
                   <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--muted);">🚪 Door</h4>
                   ${renderEditableAttribute('Door Material', getAttr('doorMaterial'), `updateRoomAttribute('${room.id}', 'doorMaterial', this.value)`)}
+                  ${renderEditableAttribute('Door Spec', getAttr('finishDoor'), `updateRoomAttribute('${room.id}', 'finishDoor', this.value)`)}
                   ${renderEditableAttribute('Door Height', getAttr('doorHeight'), `updateRoomAttribute('${room.id}', 'doorHeight', this.value)`)}
                   ${renderEditableAttribute('Door Width', getAttr('doorWidth'), `updateRoomAttribute('${room.id}', 'doorWidth', this.value)`)}
                   ${renderEditableAttribute('Door Type', getAttr('doorType'), `updateRoomAttribute('${room.id}', 'doorType', this.value)`)}
                   ${renderEditableAttribute('Door Rating', getAttr('doorRating'), `updateRoomAttribute('${room.id}', 'doorRating', this.value)`)}
+                  ${renderEditableAttribute('Hardware Spec', getAttr('finishHardware'), `updateRoomAttribute('${room.id}', 'finishHardware', this.value)`)}
                   
                   <h4 style="margin: 12px 0 8px 0; font-size: 0.9rem; color: var(--muted);">💡 Lighting & Acoustics</h4>
                   ${renderEditableAttribute('Lighting Level', getAttr('lightingLevel'), `updateRoomAttribute('${room.id}', 'lightingLevel', this.value)`)}
@@ -5254,6 +5300,9 @@
         er => er.roomRequirementId === rr.id
       );
 
+      // Get room attributes from ROOM_SIZES
+      const roomAttrs = getRoomAttributes(room.id);
+
       let html = `
         <div class="detail-panel">
           <h3>🚪 ${room.id} - ${room.name}</h3>
@@ -5273,6 +5322,88 @@
             <div class="detail-label">Total NSF:</div>
             <div class="detail-value">${(room.nsf * rr.requiredCount).toLocaleString()} SF</div>
           </div>
+          ${roomAttrs && roomAttrs.functionalAreaName ? `
+          <div class="detail-row" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+            <div class="detail-label">Functional Area:</div>
+            <div class="detail-value">FA${roomAttrs.functionalAreaNumber}: ${roomAttrs.functionalAreaName}</div>
+          </div>
+          ` : ''}
+        </div>
+      `;
+
+      // Room Attributes - show in read-only mode for program mode rooms
+      if (roomAttrs) {
+        html += `
+          <div class="detail-panel">
+            <h3>📋 Room Attributes</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+              
+              <!-- Column 1: Materials & Finishes -->
+              <div>
+                <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--muted);">🏗️ Materials & Finishes</h4>
+                ${renderReadOnlyAttribute('Ceiling Material', roomAttrs.ceilingMaterial)}
+                ${renderReadOnlyAttribute('Ceiling Alt', roomAttrs.ceilingMaterialAlternate)}
+                ${renderReadOnlyAttribute('Ceiling Finish', roomAttrs.ceilingFinish)}
+                ${renderReadOnlyAttribute('Ceiling Spec', roomAttrs.finishCeiling)}
+                
+                <div style="height: 8px;"></div>
+                ${renderReadOnlyAttribute('Wall Material', roomAttrs.wallMaterial)}
+                ${renderReadOnlyAttribute('Wall Alt', roomAttrs.wallMaterialAlternate)}
+                ${renderReadOnlyAttribute('Wall Finish', roomAttrs.wallFinish)}
+                ${renderReadOnlyAttribute('Wall Spec', roomAttrs.finishWall)}
+                ${renderReadOnlyAttribute('Wainscot Spec', roomAttrs.finishWain)}
+                
+                <div style="height: 8px;"></div>
+                ${renderReadOnlyAttribute('Floor Material', roomAttrs.floorMaterial)}
+                ${renderReadOnlyAttribute('Floor Alt', roomAttrs.floorMaterialAlternate)}
+                ${renderReadOnlyAttribute('Floor Spec', roomAttrs.finishFloor)}
+                ${renderReadOnlyAttribute('Floor Base', roomAttrs.floorBaseMaterial)}
+                ${renderReadOnlyAttribute('Base Spec', roomAttrs.finishBase)}
+              </div>
+              
+              <!-- Column 2: Door & Environmental -->
+              <div>
+                <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--muted);">🚪 Door</h4>
+                ${renderReadOnlyAttribute('Door Material', roomAttrs.doorMaterial)}
+                ${renderReadOnlyAttribute('Door Spec', roomAttrs.finishDoor)}
+                ${renderReadOnlyAttribute('Door Height', roomAttrs.doorHeight)}
+                ${renderReadOnlyAttribute('Door Width', roomAttrs.doorWidth)}
+                ${renderReadOnlyAttribute('Door Type', roomAttrs.doorType)}
+                ${renderReadOnlyAttribute('Door Rating', roomAttrs.doorRating)}
+                ${renderReadOnlyAttribute('Hardware Spec', roomAttrs.finishHardware)}
+                
+                <h4 style="margin: 12px 0 8px 0; font-size: 0.9rem; color: var(--muted);">💡 Lighting & Acoustics</h4>
+                ${renderReadOnlyAttribute('Lighting Level', roomAttrs.lightingLevel)}
+                ${renderReadOnlyAttribute('Acoustical Criteria', roomAttrs.acousticalCriteria)}
+                ${renderReadOnlyAttribute('Max Noise (NC)', roomAttrs.maxNoiseLevelNc)}
+                ${renderReadOnlyAttribute('Floor Live Load', roomAttrs.floorLiveLoad)}
+              </div>
+              
+              <!-- Column 3: HVAC -->
+              <div>
+                <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--muted);">❄️ HVAC</h4>
+                ${renderReadOnlyAttribute('Min Total ACH', roomAttrs.minTotalAch)}
+                ${renderReadOnlyAttribute('Min OA ACH', roomAttrs.minOaAch)}
+                ${renderReadOnlyAttribute('Room Air', roomAttrs.roomAir)}
+                ${renderReadOnlyAttribute('Room Air Balance', roomAttrs.roomAirBalance)}
+                ${renderReadOnlyAttribute('Unoccupied ACH', roomAttrs.unoccupiedAch)}
+                ${renderReadOnlyAttribute('HEPA Filtration', roomAttrs.airHasHepaFiltration)}
+                ${renderReadOnlyAttribute('100% Outside Exhaust', roomAttrs["exhaustIs100%Outside"])}
+                ${renderReadOnlyAttribute('Temp Cooling (C)', roomAttrs.indoorTempCoolingC)}
+                ${renderReadOnlyAttribute('Temp Heating (C)', roomAttrs.indoorTempHeatingC)}
+                ${renderReadOnlyAttribute('RH Max (%)', roomAttrs["indoorRelativeHumidity%rhMax"])}
+                ${renderReadOnlyAttribute('RH Min (%)', roomAttrs["indoorRelativeHumidity%rhMin"])}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      html += `
+        <div class="detail-panel">
+          <p style="color: var(--muted); font-size: 0.9rem;">
+            💡 Program Mode - rooms are generated by rules. Import to Project Mode to customize.
+          </p>
         </div>
       `;
 
@@ -6837,22 +6968,24 @@
           name: chapter.name,
           chapterId: chapter.chapter,
           logicInputs: {...inputs},
-          functionalAreas: results.functionalAreas.map(fa => ({
-            id: generateId(),
-            name: fa.name,
-            description: fa.description,
-            rooms: fa.rooms.filter(r => r.type !== 'calculation').map(room => ({
+          functionalAreas: results.functionalAreas
+            .map(fa => ({
               id: generateId(),
-              code: room.code,
-              name: room.name,
-              quantity: room.quantity,
-              nsf: room.nsfPerRoom,
-              totalNSF: room.totalNSF,
-              notes: room.notes || '',
-              equipment: [],
-              logicGenerated: true
+              name: fa.name,
+              description: fa.description,
+              rooms: fa.rooms.filter(r => r.type !== 'calculation').map(room => ({
+                id: generateId(),
+                code: room.code,
+                name: room.name,
+                quantity: room.quantity,
+                nsf: room.nsfPerRoom,
+                totalNSF: room.totalNSF,
+                notes: room.notes || '',
+                equipment: [],
+                logicGenerated: true
+              }))
             }))
-          }))
+            .filter(fa => fa.rooms.length > 0) // Exclude FAs with only calculation rooms
         };
         project.departments.push(newDept);
       });
