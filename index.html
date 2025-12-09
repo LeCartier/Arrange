@@ -1614,6 +1614,14 @@
   <script src="equipment-data-part1.js"></script>
   <script src="equipment-data-part2.js"></script>
   <script src="room-sizes.js"></script>
+  <script src="src/finish-room-data.js"></script>
+  <script>
+    // Merge finish-only rooms into ROOM_SIZES for complete coverage
+    if (typeof FINISH_ONLY_ROOMS !== 'undefined') {
+      ROOM_SIZES = ROOM_SIZES.concat(FINISH_ONLY_ROOMS);
+      console.log(`Merged finish-only rooms. Total rooms now: ${ROOM_SIZES.length}`);
+    }
+  </script>
   <script src="workbench.js"></script>
   <script>
     // Build room code to department/FA mapping from equipment guide
@@ -1631,12 +1639,32 @@
       console.log(`Starting with ${ROOM_EQUIPMENT_MAPPINGS.length} equipment mappings`);
       console.log(`Have ${ROOM_SIZES.length} rooms and ${EQUIPMENT_LIST.length} equipment items`);
       
-      // Load room finishes first to get room names, then chapter-fa-mapping
+      // Load room finishes first to get room names, then chapter-fa-mapping, and crosswalk
       Promise.all([
         fetch('src/room_finishes.tsv').then(r => r.text()),
-        fetch('chapter-fa-mapping.tsv').then(r => r.text())
+        fetch('chapter-fa-mapping.tsv').then(r => r.text()),
+        fetch('src/LegacyRC-Crosswalk.txt').then(r => r.text())
       ])
-      .then(([finishText, mappingText]) => {
+      .then(([finishText, mappingText, crosswalkText]) => {
+        // Build VARF to Legacy code map from crosswalk
+        const varfToLegacy = new Map();
+        const legacyToVarf = new Map();
+        const crosswalkLines = crosswalkText.split('\n');
+        for (let i = 1; i < crosswalkLines.length; i++) {
+          const line = crosswalkLines[i].trim();
+          if (!line || line.startsWith('#')) continue;
+          const parts = line.split('\t');
+          if (parts.length >= 3) {
+            const varf = parts[1]?.trim();
+            const legacy = parts[2]?.trim();
+            if (varf && legacy && legacy !== 'n/a') {
+              varfToLegacy.set(varf, legacy);
+              legacyToVarf.set(legacy, varf);
+            }
+          }
+        }
+        console.log(`Loaded crosswalk: ${varfToLegacy.size} VARF codes with legacy mappings`);
+        
         // Build room code to name map from finish data
         const roomCodeToName = new Map();
         const finishLines = finishText.split('\n');
@@ -1702,12 +1730,16 @@
           console.log(`Loaded FA mappings: ${chapterFaNumberMap.size} chapters, ${roomCodeFaMap.size} unique room codes, ${totalRoomCodeMappings} total room/FA combinations, ${equipFaNameMap.size} equipment FA names`);
           console.log(`Loaded ${roomCodeToName.size} room names from finish data`);
           
+          // Store crosswalk maps globally
+          window.VARF_TO_LEGACY = varfToLegacy;
+          window.LEGACY_TO_VARF = legacyToVarf;
+          
           // Now fetch the equipment guide
           return fetch('src/Equipment_Guide_parsed_v2.txt')
             .then(response => response.text())
-            .then(text => ({ text, chapterFaNumberMap, roomCodeFaMap, equipFaNameMap, roomCodeToName }));
+            .then(text => ({ text, chapterFaNumberMap, roomCodeFaMap, equipFaNameMap, roomCodeToName, varfToLegacy, legacyToVarf }));
         })
-        .then(({ text, chapterFaNumberMap, roomCodeFaMap, equipFaNameMap, roomCodeToName }) => {
+        .then(({ text, chapterFaNumberMap, roomCodeFaMap, equipFaNameMap, roomCodeToName, varfToLegacy, legacyToVarf }) => {
           const lines = text.split('\n');
           const deptFaMap = new Map();
           
@@ -3741,15 +3773,38 @@
 
             Array.from(fa.rooms.keys()).sort().forEach(roomCode => {
               const room = fa.rooms.get(roomCode);
+              
+              // Check if this is a legacy room code (from finish data only, not in room_criteria.tsv)
+              const roomData = ROOM_SIZES.find(r => r.id === roomCode);
+              const isLegacy = roomData && roomData.source === 'finish_data';
+              
+              // Check if this VARF code has a legacy code mapping
+              const legacyCode = window.VARF_TO_LEGACY?.get(roomCode);
+              const varfCode = window.LEGACY_TO_VARF?.get(roomCode);
+              
+              // Build the label with appropriate indicators
+              let label = room.code;
+              if (isLegacy) {
+                label += ' (Legacy)';
+              } else if (legacyCode) {
+                label += ` [was ${legacyCode}]`;
+              } else if (varfCode) {
+                label += ` (Legacy → ${varfCode})`;
+              }
+              label += ` - ${room.name}`;
+              
               faNode.children.push({
                 id: `room-ref-${deptName}-${faName}-${roomCode}`,
                 type: 'room-reference',
-                label: `${room.code} - ${room.name}`,
+                label: label,
                 icon: '🚪',
                 department: deptName,
                 functionalArea: faName,
                 roomCode: room.code,
-                roomName: room.name
+                roomName: room.name,
+                isLegacy: isLegacy,
+                legacyCode: legacyCode,
+                varfCode: varfCode
               });
             });
 
@@ -5677,8 +5732,8 @@
 
       let html = `
         <div class="detail-panel">
-          <h3>🚪 ${roomCode} - ${roomName}</h3>
-          ${renderReadOnlyAttribute('Room Code', roomCode)}
+          <h3>🚪 ${roomCode}${roomData?.source === 'finish_data' ? ' (Legacy)' : ''} - ${roomName}</h3>
+          ${renderReadOnlyAttribute('Room Code', roomCode + (roomData?.source === 'finish_data' ? ' (Legacy)' : '') + (window.VARF_TO_LEGACY?.get(roomCode) ? ` [Legacy: ${window.VARF_TO_LEGACY.get(roomCode)}]` : '') + (window.LEGACY_TO_VARF?.get(roomCode) ? ` [VARF: ${window.LEGACY_TO_VARF.get(roomCode)}]` : ''))}
           ${renderReadOnlyAttribute('Department', department)}
           ${renderReadOnlyAttribute('Functional Area', functionalArea)}
           ${renderReadOnlyAttribute('NSF', roomData?.nsf ? roomData.nsf + ' SF' : 'Not specified')}
