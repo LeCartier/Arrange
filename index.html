@@ -1631,13 +1631,103 @@
       console.log(`Starting with ${ROOM_EQUIPMENT_MAPPINGS.length} equipment mappings`);
       console.log(`Have ${ROOM_SIZES.length} rooms and ${EQUIPMENT_LIST.length} equipment items`);
       
-      // Since ROOM_EQUIPMENT_MAPPINGS only has roomCode, jsn, qty, we need to add the missing fields
-      // We'll fetch the source file to get department and functional area data
-      fetch('src/Equipment_Guide_parsed_v2.txt')
-        .then(response => response.text())
-        .then(text => {
+      // Load room finishes first to get room names, then chapter-fa-mapping
+      Promise.all([
+        fetch('src/room_finishes.tsv').then(r => r.text()),
+        fetch('chapter-fa-mapping.tsv').then(r => r.text())
+      ])
+      .then(([finishText, mappingText]) => {
+        // Build room code to name map from finish data
+        const roomCodeToName = new Map();
+        const finishLines = finishText.split('\n');
+        for (let i = 1; i < finishLines.length; i++) {
+          const line = finishLines[i].trim();
+          if (!line) continue;
+          const parts = line.split('\t');
+          if (parts.length >= 6) {
+            const roomCode = parts[4]?.trim();
+            const roomName = parts[5]?.trim();
+            if (roomCode && roomName && !roomCodeToName.has(roomCode)) {
+              roomCodeToName.set(roomCode, roomName);
+            }
+          }
+        }
+        
+        const mappingLines = mappingText.split('\n');
+          
+        // Build three lookups:
+        // 1. Map<chapter|roomCode, Array<{faNumber, faName}>> - for VARF room code lookup (can be in multiple FAs)
+        // 2. Map<chapter|equipFaName, {faNumber, faName}> - for equipment FA name lookup
+        // 3. Map<chapter, Map<faName, faNumber>> - for finish FA name fallback
+        const roomCodeFaMap = new Map();
+        const equipFaNameMap = new Map();
+        const chapterFaNumberMap = new Map();
+          
+          for (let i = 1; i < mappingLines.length; i++) {
+            const line = mappingLines[i].trim();
+            if (!line) continue;
+            
+            const parts = line.split('\t');
+            if (parts.length < 4) continue;
+            
+            const chapter = parts[0].trim();
+            const faNumber = parts[1].trim();
+            const faName = parts[2].trim();
+            const varfOrEquipFa = parts[3].trim();
+            
+            // Check if column 4 is a room code (VARF) or equipment FA name
+            // Room codes are short alphanumeric (e.g., SB136, IMS25)
+            // Equipment FA names have spaces (e.g., VISITOR AREA, PATIENT AREA)
+            if (varfOrEquipFa.includes(' ')) {
+              // This is an equipment FA name mapping
+              const key = `${chapter}|${varfOrEquipFa}`;
+              equipFaNameMap.set(key, { faNumber, faName });
+            } else {
+              // This is a VARF room code mapping - can appear in multiple FAs
+              const key = `${chapter}|${varfOrEquipFa}`;
+              if (!roomCodeFaMap.has(key)) {
+                roomCodeFaMap.set(key, []);
+              }
+              roomCodeFaMap.get(key).push({ faNumber, faName });
+            }
+            
+            // Also build finish FA name lookup for fallback
+            if (!chapterFaNumberMap.has(chapter)) {
+              chapterFaNumberMap.set(chapter, new Map());
+            }
+            chapterFaNumberMap.get(chapter).set(faName, faNumber);
+          }
+          
+          const totalRoomCodeMappings = Array.from(roomCodeFaMap.values()).reduce((sum, arr) => sum + arr.length, 0);
+          console.log(`Loaded FA mappings: ${chapterFaNumberMap.size} chapters, ${roomCodeFaMap.size} unique room codes, ${totalRoomCodeMappings} total room/FA combinations, ${equipFaNameMap.size} equipment FA names`);
+          console.log(`Loaded ${roomCodeToName.size} room names from finish data`);
+          
+          // Now fetch the equipment guide
+          return fetch('src/Equipment_Guide_parsed_v2.txt')
+            .then(response => response.text())
+            .then(text => ({ text, chapterFaNumberMap, roomCodeFaMap, equipFaNameMap, roomCodeToName }));
+        })
+        .then(({ text, chapterFaNumberMap, roomCodeFaMap, equipFaNameMap, roomCodeToName }) => {
           const lines = text.split('\n');
           const deptFaMap = new Map();
+          
+          // Build a map of chapter number to full department name
+          const chapterToDeptName = new Map();
+          
+          // Add chapter names for chapters that don't have equipment data
+          chapterToDeptName.set('202', '202 (Primary Care)');
+          chapterToDeptName.set('224', '224 (Nutrition and Food Service)');
+          chapterToDeptName.set('232', '232 (Telecommunications Facilities)');
+          chapterToDeptName.set('252', '252 (DELETED - replaced by Imaging Service Chapter 295)');
+          chapterToDeptName.set('260', '260 (Mental Health Clinic)');
+          chapterToDeptName.set('261', '261 (DELETED - merged into Mental Health Clinic Chapter 260)');
+          chapterToDeptName.set('262', '262 (DELETED)');
+          chapterToDeptName.set('264', '264 (DELETED)');
+          chapterToDeptName.set('265', '265 (Community Based Outpatient Clinic (CBOC) - ARCHIVED)');
+          chapterToDeptName.set('272', '272 (DELETED - merged into Mental Health Clinic Chapter 260)');
+          chapterToDeptName.set('275', '275 (DELETED - replaced by Imaging Service Chapter 295)');
+          chapterToDeptName.set('276', '276 (DELETED - replaced by Imaging Service Chapter 295)');
+          chapterToDeptName.set('300', '300 (DELETED - merged into Mental Health Clinic Chapter 260)');
           
           // Skip header line
           // Build map of ALL room instances (not just first occurrence)
@@ -1659,21 +1749,73 @@
             // Skip if essential fields are missing
             if (!dept || !fa || !roomNameField) continue;
             
+            // Extract chapter number from department field (e.g., "100 (MEDICAL / SURGICAL...)" -> "100")
+            const chapterMatch = dept.match(/^(\d+)/);
+            const chapterNum = chapterMatch ? chapterMatch[1] : '';
+            
+            // Store the full department name for this chapter
+            if (chapterNum && !chapterToDeptName.has(chapterNum)) {
+              chapterToDeptName.set(chapterNum, dept);
+            }
+            
             // Extract room code from "Order - CODE - Name" format
             const match = roomNameField.match(/- ([A-Z0-9]+) -/);
             if (match) {
               const roomCode = match[1];
               const roomName = roomNameField.split(' - ').slice(2).join(' - ').trim();
               
-              // Look up FA number from ROOM_SIZES
-              const roomAttrs = ROOM_SIZES.find(r => r.id === roomCode);
-              const faNumber = roomAttrs?.functionalAreaNumber || '';
+              // Priority 1: Look up by chapter + room code (most reliable - VARF codes)
+              let faNumber = '';
+              let mappedFaName = '';
+              
+              if (chapterNum) {
+                const roomKey = `${chapterNum}|${roomCode}`;
+                const roomMappings = roomCodeFaMap.get(roomKey);
+                if (roomMappings && roomMappings.length > 0) {
+                  // Find the mapping that matches the current FA name
+                  const matchingMapping = roomMappings.find(m => m.faName === fa);
+                  if (matchingMapping) {
+                    faNumber = matchingMapping.faNumber;
+                    mappedFaName = matchingMapping.faName;
+                  } else {
+                    // If no exact match, use the first one
+                    faNumber = roomMappings[0].faNumber;
+                    mappedFaName = roomMappings[0].faName;
+                  }
+                }
+              }
+              
+              // Priority 2: Look up by chapter + equipment FA name
+              if (!faNumber && chapterNum) {
+                const equipFaKey = `${chapterNum}|${fa}`;
+                const equipFaMapping = equipFaNameMap.get(equipFaKey);
+                if (equipFaMapping) {
+                  faNumber = equipFaMapping.faNumber;
+                  mappedFaName = equipFaMapping.faName;
+                }
+              }
+              
+              // Priority 3: Check ROOM_SIZES for FA number (finish data)
+              if (!faNumber) {
+                const roomAttrs = ROOM_SIZES.find(r => r.id === roomCode);
+                faNumber = roomAttrs?.functionalAreaNumber || '';
+              }
+              
+              // Priority 4: Look up by chapter + finish FA name
+              if (!faNumber && chapterNum && chapterFaNumberMap.has(chapterNum)) {
+                const chapterMap = chapterFaNumberMap.get(chapterNum);
+                faNumber = chapterMap.get(fa) || '';
+              }
+              
+              // Use mapped FA name if available, otherwise use equipment FA name
+              const finalFaName = mappedFaName || fa;
               
               // Store ALL instances, not just first occurrence
               allRoomInstances.push({
                 roomCode: roomCode,
                 department: dept,
-                functionalArea: fa,
+                departmentChapter: chapterNum,
+                functionalArea: finalFaName,
                 functionalAreaNumber: faNumber,
                 roomName: roomName
               });
@@ -1682,7 +1824,7 @@
               if (!deptFaMap.has(roomCode)) {
                 deptFaMap.set(roomCode, {
                   department: dept,
-                  functionalArea: fa,
+                  functionalArea: finalFaName,
                   roomName: roomName
                 });
               }
@@ -1691,6 +1833,64 @@
           
           console.log(`Built metadata for ${deptFaMap.size} unique room codes`);
           console.log(`Found ${allRoomInstances.length} total room instances (including duplicates across departments)`);
+          
+          // Add rooms from finish data (chapter-fa-mapping) that don't exist in equipment data
+          // This ensures rooms with attributes show in the tree even if they have no equipment yet
+          // Key by chapter|roomCode|FA to allow same room in multiple FAs
+          const equipmentRoomCodes = new Set(allRoomInstances.map(i => `${i.departmentChapter}|${i.roomCode}|${i.functionalArea}`));
+          let addedFromFinish = 0;
+          
+          console.log(`Equipment room codes Set size: ${equipmentRoomCodes.size}`);
+          console.log(`roomCodeFaMap size: ${roomCodeFaMap.size}`);
+          
+          let ch100FA7Rooms = [];
+          roomCodeFaMap.forEach((mappings, key) => {
+            const [chapter, roomCode] = key.split('|');
+            
+            // Each room code can have multiple FA mappings (e.g., SS218 in FA5, FA7, FA8)
+            for (const mapping of mappings) {
+              const checkKey = `${chapter}|${roomCode}|${mapping.faName}`;
+              
+              // Debug Chapter 100 FA7
+              if (chapter === '100' && mapping.faNumber === '7') {
+                ch100FA7Rooms.push(roomCode);
+              }
+              
+              if (!equipmentRoomCodes.has(checkKey)) {
+                // Get the proper department name from the chapter
+                const deptName = chapterToDeptName.get(chapter) || `${chapter}`;
+                
+                // This room has finish data but no equipment in this FA
+                // Add it as an instance so it appears in the tree
+                // Try to get room name from: 1) finish data, 2) ROOM_SIZES, 3) fallback to code
+                const roomName = roomCodeToName.get(roomCode) || 
+                                ROOM_SIZES.find(r => r.id === roomCode)?.name || 
+                                roomCode;
+                
+                allRoomInstances.push({
+                  roomCode: roomCode,
+                  department: deptName,
+                  departmentChapter: chapter,
+                  functionalArea: mapping.faName,
+                  functionalAreaNumber: mapping.faNumber,
+                  roomName: roomName
+                });
+                addedFromFinish++;
+              }
+            }
+          });
+          
+          console.log(`Added ${addedFromFinish} rooms from finish data (have attributes but no equipment)`);
+          console.log(`Total instances now: ${allRoomInstances.length}`);
+          console.log(`Chapter 100 FA7 rooms: ${ch100FA7Rooms.length}`, ch100FA7Rooms.slice(0, 5));
+          
+          // Debug: Check if FA7 was added for Chapter 100
+          const ch100FA7 = allRoomInstances.filter(i => i.departmentChapter === '100' && i.functionalAreaNumber === '7');
+          console.log(`Chapter 100 FA7 rooms: ${ch100FA7.length}`, ch100FA7.map(r => r.roomCode));
+          
+          // Count how many instances have FA numbers
+          const instancesWithFaNumber = allRoomInstances.filter(i => i.functionalAreaNumber).length;
+          console.log(`FA Number coverage: ${instancesWithFaNumber} of ${allRoomInstances.length} instances (${Math.round(instancesWithFaNumber/allRoomInstances.length*100)}%)`);
           console.log('Sample metadata:', Array.from(deptFaMap.entries()).slice(0, 3));
           
           // Store globally for compare mode

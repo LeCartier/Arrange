@@ -1,5 +1,13 @@
 // Equipment data loader
 // This file coordinates loading of equipment data
+//
+// DATA SOURCE: Equipment_Guide_parsed_v2.txt (CURRENT/CANONICAL)
+// - Paired with room_criteria.tsv as the authoritative equipment source
+// - Uses current VARF room codes (extracted from room names)
+// - Most maintained and up-to-date equipment specifications
+//
+// Room codes extracted from format: "Order - CODE - Name"
+// These codes match the canonical VARF codes in room_criteria.tsv
 
 // Will be populated by external files
 let EQUIPMENT_LIST = [];

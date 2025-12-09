@@ -1,0 +1,1549 @@
+#	VARF RC	LEGACY RC	MASTER ROOM NAME	NSF
+1	CAS01	AURH2	"Audiology Rehabilitation / Counseling Room, ASLP Svc"	140
+2	CAS06	AUD02	"Audiology Hearing Aid Repair Room, ASLP Svc"	160
+3	CAS11	AUDE2	"Audiology Audiometric Examination Room w/Control Room, ASLP Svc"	300
+4	CAS16	EXAU1	"Audiology Audiometric Examination Room, ASLP Svc"	150
+5	CAS17	n/a	"Audiology Audiometric Examination Control Room, ASLP Svc"	150
+6	CAS21	AUGR2	"Audiology Group Room, ASLP Svc"	240
+7	CAS26	AUD03	"Audiology Programming / Fitting Room, ASLP Svc"	140
+8	CAS31	AUD04	"Audiology Cerumen Management Room, ASLP Svc"	160
+9	CAS36	AUDP1	"Audiology Electrophysiology Room, ASLP Svc"	140
+10	CAS41	AUDP2	"Audiology Posturography Room, ASLP Svc"	200
+11	CAS46	AUDP3	"Audiology Vestibulography Room, ASLP Svc"	240
+12	CAS51	n/a	"Speech-Language Pathology Exam, ASLP Svc"	125
+13	CAS54	n/a	"Speech-Language Pathology Assistive Technology Room, ASLP Svc"	400
+14	CAS57	n/a	"Speech-Language Pathology Voice Treatment Room, ASLP Svc"	240
+15	CAS61	n/a	"Speech-Language Pathology Procedure Room, ASLP Svc"	300
+16	CAS64	SLGR2	"Speech-Language Pathology Group Room, ASLP Svc"	240
+17	CAS67	AUDS1	"Audiology Hearing Aid Lab, ASLP Svc"	180
+18	CAS71	AUDS2	"Audiology Hearing Aid Processing, ASLP Svc"	180
+19	CAS76	SRSP1	"Audiology Supply Storage Room, ASLP Svc"	80
+20	CAS81	n/a	"Speech-Language Pathology Supply Storage Room, ASLP Svc"	120
+21	CAS86	STEQ1	"Audiology Equipment Storage Room, ASLP Svc"	120
+22	CAS91	STEQ1	"Speech-Language Pathology Equipment Storage, ASLP Svc"	120
+23	CAS94	HAFR1	"CBOC Hearing Aid Fitting Patient Care Room, ASLP Svc"	140
+24	CCD01	OPEC1	"EKG Testing Room, Cardio Svc"	150
+25	CCD06	EXRC1	"Exam Room, Cardio Svc"	120
+26	CCD11	EXRC2	"Pacemaker ICD Interrogation Room, Cardio Svc"	120
+27	CCD16	OPHM1	"Holter Monitor Room, Cardio Svc"	150
+28	CCD21	OPPE1	"Echocardiograph Room, Cardio Svc"	150
+29	CCD26	OPPE2	"Stress Echocardiograph Room, Cardio Svc"	300
+30	CCD31	OPTM1	"Stress Testing Treadmill Room, Cardio Svc"	300
+31	CCD36	OPTM2	"Tilt Table Testing Room, Cardio Svc"	180
+32	CCD46	n/a	"Echocardiograph Reading Room, Cardio Svc"	160
+33	CCD51	n/a	"EKG Reading Room, Cardio Svc"	120
+34	CCD56	OPHM1	"Event / Holter Monitor Workroom, Cardio Svc"	160
+35	CCD61	SRS01	"Storage Room, Cardio Svc"	120
+36	CCD71	STEQ1	"ICD Equipment Storage Room, Cardio Svc"	120
+37	CCD81	STEQ1	"Equipment Storage Room, Cardio Svc"	160
+38	CDL01	RDC02	"Bed Station, Dlsys Ctr"	150
+39	CDL03	RDC02	"Isolation Negative Pressure Bed Station, Dlsys Ctr"	150
+40	CDL05	RCD01	"Chair Station Cubicle, Dlsys Ctr"	80
+41	CDL07	RDC02	"Bed Station Cubicle, Dlsys Ctr"	100
+42	CDL11	EXRG3	"Exam Room, Dlsys Ctr"	120
+43	CDL13	EXRG3	"Renal Transplant Follow-up Exam Room, Dlsys Ctr"	120
+44	CDL21	SRS01	"Clean Supply Storage Room, Dlsys Ctr"	80
+45	CDL28	SRS01	"Sterile Supply Storage Room, Dlsys Ctr"	80
+46	CDL31	STEQ1	"Equipment Storage Room, Dlsys Ctr"	100
+47	CDL41	n/a	"Biochemistry Laboratory, Dlsys Ctr"	180
+48	CDL46	LBVP2	"Venipuncture Laboratory, Dlsys Ctr"	80
+49	CDL51	n/a	"Equipment Processing / Soiled Receiving, Dlsys Ctr"	150
+50	CDL61	n/a	"Equipment Processing / Clean Preparation, Dlsys Ctr"	200
+51	CDL64	STEQ1	"Equipment Processing / Clean Storage Room, Dlsys Ctr"	200
+52	CDL71	BMER1	"Medical Repair Room, Dlsys Ctr"	150
+53	CDL73	n/a	"Dialysate Preparation Room, Dlsys Ctr"	150
+54	CDL81	RDWT1	"Water Treatment Room, Dlsys Ctr"	200
+55	CDS03	DNXS1	"Panoramic / Cephalometric X-Ray Room, Dental Clnc"	120
+56	CDS05	DNXC1	"Cone-Beam CT Room, Dental Clnc"	120
+57	CDS06	DNXC2	"Cone-Beam CT Control Room, Dental Clnc"	30
+58	CDS11	DNTG1	"Multifunctional Dental Treatment Room (DTR), Dental Clnc"	120
+59	CDS13	DNTG5	"Special Needs Dental Treatment Room (DTR), Dental Clnc"	150
+60	CDS15	DNTE1	"Endodontics Dental Treatment Room (DTR), Dental Clnc"	120
+61	CDS21	UCCL1	"Clean Supply Room, Dental Clnc"	120
+62	CDS26	SRS01	"Supply Storage Room, Dental Clnc"	100
+63	CDS41	DNTR1	"Surgery Patient Prep / Recovery Room, Dental Clnc"	80
+64	CDS46	ORSA1	"Surgery Scrub Area, Dental Clnc"	60
+65	CDS47	DNTS1	"Surgery Operating Room (OR), Dental Clnc"	225
+66	CDS49	STEQ1	"Surgery Equipment Storage Room, Dental Clnc"	120
+67	CDS51	DNPL1	"General Purpose Laboratory, Dental Clnc"	280
+68	CDS61	DNPC1	"Porcelain / Ceramics Laboratory, Dental Clnc"	120
+69	CDS63	DNPL5	"Maxillo-Facial Laboratory, Dental Clnc"	120
+70	CDS65	DNPL6	"Machine Milled Restorations Laboratory, Dental Clnc"	60
+71	CDS67	DNPL7	"Acrylic Processing Laboratory, Dental Clnc"	50
+72	CDS69	DNPL8	"Acrylic Finishing Laboratory, Dental Clnc"	50
+73	CDS71	DNPL9	"Cast Metal Laboratory, Dental Clnc"	60
+74	CDS73	DNSR2	"Laboratory Shipping / Receiving Room, Dental Clnc"	180
+75	CDS76	SRS01	"Expendable Laboratory Supplies Storage Room, Dental Clnc"	180
+76	CDS81	SRS01	"Laboratory Models Storage Room, Dental Clnc"	120
+77	CDS91	SRS01	"Precious Metals Storage Room, Dental Clnc"	15
+78	CDS92	DNMP1	"Dental Models Processing Workroom, Dental Clnc"	120
+79	CDS93	STEQ1	"Laboratory Equipment Storage Room, Dental Clnc"	180
+80	CDS94	DNSR1	"Instrument Supply / Receiving, Dental Clnc"	90
+81	CDS95	MECH1	"Dental Equipment Mechanical Room, Dental Clnc"	120
+82	CED06	n/a	"MH Sally Port, ED"	100
+83	CED11	n/a	"First Look Station, ED"	60
+84	CED12	n/a	"Triage Room, ED"	150
+85	CED13	n/a	"Bariatric Triage Room, ED"	180
+86	CED16	n/a	"Eye / ENT Treatment Room, ED"	190
+87	CED17	n/a	"Orthopedic Treatment Room, ED"	190
+88	CED21	n/a	"General Exam / Treatment Room, ED"	160
+89	CED22	n/a	"Fast Track Exam / Treatment Room, ED"	160
+90	CED23	n/a	"Bariatric Patient Exam / Treatment Room, ED"	190
+91	CED24	n/a	"GYN Exam / Treatment Room, ED"	160
+92	CED25	n/a	"Mental Health Exam / Treatment Room, ED"	190
+93	CED26	n/a	"Mental Health Intervention Room, ED"	115
+94	CED27	n/a	"Airborne Infection Isolation (AII) Exam / Treatment Room, ED"	200
+95	CED28	n/a	"Airborne Infection Isolation (AII) Anteroom, ED"	170
+96	CED29	n/a	"Airborne Infection Isolation (AII) Patient Toilet, ED"	60
+97	CED31	n/a	"Resuscitation Room, ED"	350
+98	CED32	n/a	"Resuscitation Storage Room, ED"	80
+99	CED33	n/a	"Point-of-Care (POC) Testing Alcove, ED"	50
+100	CED34	n/a	"Outbound / Inbound Staging / Holding Bay, ED"	100
+101	CED36	n/a	"Protective Environment (PE) Exam / Treatment Room, ED"	200
+102	CED37	n/a	"Protective Environment (PE) Anteroom, ED"	170
+103	CED38	n/a	"Protective Environment (PE) Patient Toilet, ED"	60
+104	CED41	n/a	"Fast Track PPE / O.R. Equipment Alcove, ED"	5
+105	CED44	n/a	"Provider Workroom, ED"	120
+106	CED46	n/a	"Tele-Health Room, ED"	120
+107	CED47	n/a	"PPE Storage Room, ED"	100
+108	CED48	n/a	"Mobile Equipment Storage Room, ED"	160
+109	CED49	n/a	"Simulation / Resuscitation Viewing Room, ED"	180
+110	CED51	n/a	"EMS Patient Drop-off, ED"	0
+111	CED52	n/a	"EMS Decontamination Shower, ED"	120
+112	CED53	n/a	"EMS Decontamination Patient Changing Room, ED"	120
+113	CED54	n/a	"EMS Decontamination Storage Room, ED"	80
+114	CED55	n/a	"EMS Drop-off Storage Room, ED"	80
+115	CED56	n/a	"EMS Staging, ED"	100
+116	CED57	n/a	"EMS Staff Workstation, ED"	55
+117	CED58	n/a	"EMS Supply Room, ED"	60
+118	CED59	n/a	"EMS Ambulance Garage, ED"	850
+119	CED61	n/a	"Medical Supplies Storage Room, ED"	80
+120	CED62	n/a	"Emergency Cart Alcove, ED"	20
+121	CED63	n/a	"Clean Equipment Storage Room, ED"	100
+122	CED66	n/a	"General Storage Room, ED"	160
+123	CEE01	OPEE1	"EEG Exam Room, EEG Lab"	170
+124	CEE06	EXRE2	"EMG Exam Room, EEG Lab"	170
+125	CEE11	OPPF8	"Patient Preparation Room, EEG Lab"	120
+126	CEE21	XVC01	"EEG / EMG Reading Room, EEG Lab"	120
+127	CEE51	STEQ1	"Equipment Storage Room, EEG Lab"	100
+128	CEY01	OPET1	"Ophthalmology Consult Room / Viewing Room, Eye Clnc"	185
+129	CEY02	OPPT1	"Ophthalmology Pre-Testing / Intake Room, Eye Clnc"	130
+130	CEY03	OPET1	"Ophthalmology Exam / Treatment Room, Eye Clnc"	130
+131	CEY04	OPET1	"Ophthalmology PA Exam Room, Eye Clnc"	130
+132	CEY11	OPPR1	"Ophthalmology Procedure Room, Eye Clnc"	225
+133	CEY12	OPVF1	"Ophthalmology Visual Fields Room, Eye Clnc"	130
+134	CEY13	OPPH1	"Ophthalmology Photography Room, Eye Clnc"	185
+135	CEY14	OPUS1	"Ophthalmology Ultrasound Room, Eye Clnc"	130
+136	CEY15	OPOC1	"Ophthalmology Tomography Room, Eye Clnc"	130
+137	CEY16	OPIM1	"Ophthalmology Imaging Room, Eye Clnc"	130
+138	CEY21	OPLS1	"Ophthalmology YAG Laser Room, Eye Clnc"	130
+139	CEY22	OPLS2	"Ophthalmology Retinal Photocoagulation Laser Room, Eye Clnc"	130
+140	CEY23	OPLS3	"Ophthalmology SLT Laser Room, Eye Clnc"	130
+141	CEY24	OPED1	"Ophthalmology Electrodiagnostics Room, Eye Clnc"	130
+142	CEY25	OPST1	"Ophthalmology Specialty Testing Room, Eye Clnc"	130
+143	CEY26	OPLV1	"Ophthalmology Low Vision / Polytrauma Training Room, Eye Clnc"	185
+144	CEY31	SRS01	"Ophthalmology Low Vision / Polytrauma Training Storage Room, Eye Clnc"	130
+145	CEY34	STEQ1	"Ophthalmology Equipment Storage Room, Eye Clnc"	80
+146	CEY41	SRS01	"Ophthalmology Supply Storage Room, Eye Clnc"	80
+147	CEY48	SPRM1	"Ophthalmology Reusable Medical Equipment (RME) Room, Eye Clnc"	80
+148	CEY49	STEQ1	"Ophthalmology Support Equipment Room, Eye Clnc"	120
+149	CEY51	PTSC1	"Optometry Consult Room / Viewing Room, Eye Clnc"	185
+150	CEY52	OPPT2	"Optometry Pre-Testing / Intake Room, Eye Clnc"	130
+151	CEY53	OPET2	"Optometry Exam / Treatment Room, Eye Clnc"	130
+152	CEY54	OPVF2	"Optometry Visual Fields Room, Eye Clnc"	130
+153	CEY55	OPPH2	"Optometry Photography Room, Eye Clnc"	185
+154	CEY56	OPUS2	"Optometry Ultrasound Room, Eye Clnc"	130
+155	CEY61	OPOC2	"Optometry Tomography Room, Eye Clnc"	130
+156	CEY62	OPIM2	"Optometry Imaging Room, Eye Clnc"	130
+157	CEY63	OPED2	"Optometry Electrodiagnostics Room, Eye Clnc"	130
+158	CEY64	OPST2	"Optometry Specialty Testing Room, Eye Clnc"	185
+159	CEY66	OPLV2	"Optometry Low Vision Exam Room, Eye Clnc"	185
+160	CEY67	SRS01	"Optometry Low Vision Storage Room, Eye Clnc"	80
+161	CEY68	OPLV2	"Optometry Low Vision / Polytrauma Training Room, Eye Clnc"	185
+162	CEY69	SRS01	"Optometry Low Vision / Polytrauma Training Storage Room, Eye Clnc"	80
+163	CEY73	SRS01	"Optometry BROS Storage Room, Eye Clnc"	80
+164	CEY74	STEQ1	"Optometry Equipment Storage Room, Eye Clnc"	80
+165	CEY81	SRS01	"Optometry Supply Storage Room, Eye Clnc"	80
+166	CEY88	SPRM1	"Optometry Reusable Equipment (RME) Room, Eye Clnc"	80
+167	CEY89	SRS01	"Optometry Support Equipment Room, Eye Clnc"	100
+168	CEY91	EYFD1	"Optical Fitting Area Eyeglass Fitting / Dispensing Room, Eye Clnc"	200
+169	CEY93	OPCL1	"Optical Fitting Area Contact Lens Fitting / Dispensing, Eye Clnc"	160
+170	CEY95	SRS01	"Optical Fitting Area Eyeglass Frame Storage Room, Eye Clnc"	80
+171	CEY97	SRS01	"Optical Fitting Area Contact Lens Storage Room, Eye Clnc"	80
+172	CGE11	TREE1	"Endoscopy Procedure Room, GI-Endo Svc"	300
+173	CGE14	TREE2	"ERCP / Endoscopic Ultrasound Procedure Room, GI-Endo Svc"	360
+174	CGE17	EXRG0	"Assessment Room, GI-Endo Svc"	120
+175	CGE21	RRSS1	"Patient Prep / Recovery Room, GI-Endo Svc"	120
+176	CGE26	RROP1	"Patient Prep / Recovery Cubicle, GI-Endo Svc"	120
+177	CGE31	STEQ1	"Equipment Storage Room, GI-Endo Svc"	100
+178	CGE41	USCL2	"Scope Decontamination Room, GI-Endo Svc"	120
+179	CGE46	USCL3	"Scope Reprocessing Room, GI-Endo Svc"	120
+180	CGE51	SRS01	"Clean Scope Storage Room, GI-Endo Svc"	60
+181	CGE56	SRS01	"Sterile Instruments Storage Room, GI-Endo Svc"	80
+182	CGE61	STEQ1	"Equipment Storage Room, GI-Endo Svc"	200
+183	CT011	n/a	"Exam Room, PMR Svc"	145
+184	CT012	n/a	"Bariatric Exam Room, PMR Svc"	170
+185	CT013	n/a	"Procedure Room, PMR Svc"	200
+186	CT014	n/a	"General Treatment Room, PMR Svc"	165
+187	CT015	n/a	"Specialty Treatment Room, PMR Svc"	200
+188	CT018	n/a	"Specialty Care Exam Room, PMR Svc"	175
+189	CT019	n/a	"Specialty Care Exam Storage Room, PMR Svc"	30
+190	CT021	n/a	"Cardiopulmonary Rehabilitation Room, PMR Svc"	400
+191	CT024	n/a	"Multipurpose Group Room, PMR Svc"	425
+192	CT025	n/a	"Group Room Storage Room, PMR Svc"	100
+193	CT026	n/a	"Multi-function Room, PMR Svc"	"4,700"
+194	CT027	n/a	"Multi-function Storage Room, PMR Svc"	200
+195	CT031	n/a	"PT Treatment Station A, PMR Svc"	10
+196	CT032	n/a	"PT Treatment Station B, PMR Svc"	20
+197	CT033	n/a	"PT Treatment Station C, PMR Svc"	40
+198	CT034	n/a	"PT Treatment Station D, PMR Svc"	50
+199	CT035	n/a	"PT Treatment Station E, PMR Svc"	60
+200	CT036	n/a	"PT Treatment Station F, PMR Svc"	80
+201	CT037	n/a	"PT Treatment Station G, PMR Svc"	100
+202	CT038	n/a	"PT Treatment Station H, PMR Svc"	180
+203	CT039	n/a	"PT Treatment Station I, PMR Svc"	200
+204	CT041	n/a	"PT Treatment Cubicle, PMR Svc"	150
+205	CT042	n/a	"PT Gait Lane, PMR Svc"	550
+206	CT043	n/a	"PT Veteran Wellness Station, PMR Svc"	10
+207	CT044	n/a	"PT Equipment Storage Room, PMR Svc"	250
+208	CT045	n/a	"PT Supply Storage Room, PMR Svc"	150
+209	CT046	n/a	"PT Prosthetic / Sensory Aids Supplies Storage Room, PMR Svc"	150
+210	CT047	n/a	"PT Exoskeleton Storage Room, PMR Svc"	150
+211	CT051	n/a	"KT Treatment Station A, PMR Svc"	10
+212	CT052	n/a	"KT Treatment Station B, PMR Svc"	20
+213	CT053	n/a	"KT Treatment Station C, PMR Svc"	40
+214	CT054	n/a	"KT Treatment Station D, PMR Svc"	50
+215	CT055	n/a	"KT Treatment Station E, PMR Svc"	60
+216	CT056	n/a	"KT Treatment Station F, PMR Svc"	80
+217	CT057	n/a	"KT Treatment Station G, PMR Svc"	100
+218	CT058	n/a	"KT Treatment Station H, PMR Svc"	180
+219	CT059	n/a	"KT Treatment Station I, PMR Svc"	200
+220	CT062	n/a	"KT Veteran Wellness Station, PMR Svc"	10
+221	CT063	n/a	"KT Group Room, PMR Svc"	340
+222	CT064	n/a	"KT Equipment Storage Room, PMR Svc"	150
+223	CT065	n/a	"KT Supply Storage Room, PMR Svc"	150
+224	CT066	n/a	"KT Prosthetic / Sensory Aids Supplies Storage Room, PMR Svc"	150
+225	CT071	n/a	"CC Exam / Treatment Room, PMR Svc"	180
+226	CT072	n/a	"CC Exam / Treatment Cubicle, PMR Svc"	200
+227	CT076	n/a	"CC Supply Storage Room, PMR Svc"	60
+228	CT081	n/a	"OT Treatment Station A, PMR Svc"	75
+229	CT082	n/a	"OT Treatment Station B, PMR Svc"	80
+230	CT083	n/a	"OT Treatment Station C, PMR Svc"	140
+231	CT084	n/a	"OT Treatment Station D, PMR Svc"	160
+232	CT091	n/a	"OT Treatment Cubicle, PMR Svc"	155
+233	CT092	n/a	"OT Veteran Wellness Station, PMR Svc"	10
+234	CT101	n/a	"OT Hand Therapy Room, PMR Svc"	155
+235	CT102	n/a	"KT Cognitive Skills Training Room, PMR Svc"	155
+236	CT103	n/a	"OT Multiple-Skill Training Room, PMR Svc"	250
+237	CT104	n/a	"OT Community Skills Training Room, PMR Svc"	200
+238	CT105	n/a	"OT Rehab Technology Room, PMR Svc"	155
+239	CT106	n/a	"OT Equipment Storage Room, PMR Svc"	200
+240	CT107	n/a	"OT Supply Storage Room, PMR Svc"	100
+241	CT108	n/a	"OT Hand Therapy Alcove, PMR Svc, PMR Svc"	60
+242	CT111	n/a	"OT ADL Kitchen, PMR Svc"	450
+243	CT112	n/a	"OT ADL Bathroom, PMR Svc"	185
+244	CT113	n/a	"OT ADL Laundry Room, PMR Svc"	40
+245	CT114	n/a	"OT ADL Bedroom, PMR Svc"	220
+246	CT115	n/a	"OT ADL Bedroom Closet, PMR Svc"	20
+247	CT116	n/a	"OT Indoor Training Vehicle Station, PMR Svc"	100
+248	CT117	n/a	"OT ADL Community Skills Storage Room, PMR Svc"	80
+249	CT118	n/a	"OT ADL Clinic Equipment Storage Room, PMR Svc"	120
+250	CT121	n/a	"DT Patient Assessment Room, PMR Svc"	145
+251	CT122	n/a	"DT Simulator Station, PMR Svc"	240
+252	CT123	n/a	"DT Outdoor Training Vehicle Area, PMR Svc"	0
+253	CT126	n/a	"DT Equipment Storage Room, PMR Svc"	80
+254	CT131	n/a	"ATech Lab, PMR Svc"	240
+255	CT132	n/a	"ATech Individual Treatment Room, PMR Svc"	145
+256	CT133	n/a	"ATech Speech-Language Pathology Room, PMR Svc"	200
+257	CT134	n/a	"ATech Lab Equipment Storage Room, PMR Svc"	180
+258	CT141	n/a	"ATech 3-D Printing Station, PMR Svc"	120
+259	CT143	n/a	"ATech 3-D Printing Room Design Post Processing, PMR Svc"	200
+260	CT144	n/a	"ATech 3-D Printing Design Equipment Storage Room, PMR Svc"	200
+261	CT151	n/a	"ATech Virtual Reality (VR) Station, PMR Svc"	200
+262	CT152	n/a	"ATech VR Equipment Storage Room, PMR Svc"	120
+263	CT153	n/a	"ATech Smart Home Training Room, PMR Svc"	200
+264	CT161	n/a	"ATech Outdoor Therapeutic Area, PMR Svc"	0
+265	CT162	n/a	"ATech Outdoor Passive Recreational Area, PMR Svc"	0
+266	CT163	n/a	"ATech Outdoor Active Recreational Area, PMR Svc"	0
+267	CT164	n/a	"ATech Outdoor Equipment Storage Room, PMR Svc"	300
+268	CT171	n/a	"AT Pool, PMR Svc"	"1,500"
+269	CT172	n/a	"AT Treadmill Pool, PMR Svc"	640
+270	CT173	n/a	"AT Exercise Pool Deck, PMR Svc"	"2,000"
+271	CT174	n/a	"AT Exercise Pool Wheelchair Lift, PMR Svc"	25
+272	CT181	n/a	"AT Exercise Equipment Storage Room, PMR Svc"	150
+273	CT182	n/a	"AT Recreational Equipment Storage Room, PMR Svc"	150
+274	CT183	n/a	"AT Safety Equipment Storage Room, PMR Svc"	80
+275	CT184	n/a	"AT Specialized Equipment Storage Room, PMR Svc"	80
+276	CT185	n/a	"AT Chemical / Pump Room Storage Room, PMR Svc"	50
+277	CT186	n/a	"AT Treadmill Pool Equipment Room, PMR Svc"	700
+278	CT187	n/a	"AT Underwater Treadmill Observation Equipment Room, PMR Svc"	150
+279	CT188	n/a	"AT Underwater Treadmill Control Room, PMR Svc"	100
+280	CT191	n/a	"AT Therapist Treatment Station, PMR Svc"	56
+281	CT201	n/a	"PT Wheelchair Workshop Receiving / Pick-up, PMR Svc"	120
+282	CT202	n/a	"PT Wheelchair Fitting / Repair, PMR Svc"	550
+283	CT203	n/a	"PT Wheelchair Parts Storage Room, PMR Svc"	200
+284	CT204	n/a	"PT Wheelchair Washroom, PMR Svc"	120
+285	CT205	n/a	"PT Wheelchair Storage Room, PMR Svc"	180
+286	CT207	n/a	"Equipment Cleaning / Sanitation Room, PMR Svc"	120
+287	CT211	n/a	"Supply Room, PMR Svc"	60
+288	CT231	PTPR1	"CBOC PT/OT Patient Care Room, PMR Svc"	140
+289	CT232	PTEA1	"CBOC PT/OT Multiple Treatment Station Room, PMR Svc"	400
+290	CT233	STEQ1	"CBOC PT/OT Equipment Storage Room, PMR Svc"	120
+291	CT234	BTPU2	"CBOC Activities of Daily Living (ADL) Toilet / Tub Training, PMR Svc"	140
+292	CT235	n/a	"CBOC Accupuncture Patient Care Room, PMR Svc"	140
+293	CT236	PTBT1	"CBOC Chiropractic Patient Care Room, PMR Svc"	140
+294	CT237	SRS01	"CBOC Clinical Supply Storage Room, PMR Svc"	40
+295	CT238	n/a	"CBOC Outdoor Courtyard, PMR Svc"	0
+296	CT302	EXRA1	"Assessment Room, Rec Thrpy Svc"	140
+297	CT303	n/a	"Group Room, Rec Thrpy Svc"	240
+298	CT306	CMR01	"Group Room Monitoring Room, Rec Thrpy Svc"	120
+299	CT307	SRS01	"Storage Room, Rec Thrpy Svc"	60
+300	CT311	SRS01	"Dance Program Storage Room, Rec Thrpy Svc"	60
+301	CT314	SRS01	"Music Program Storage Room, Rec Thrpy Svc"	80
+302	CT318	RHKA1	"ADL Kitchen, Rec Thrpy Svc"	240
+303	CT319	SRS01	"ADL Kitchen Storage Room, Rec Thrpy Svc"	60
+304	CT321	n/a	"Creative Arts Group Therapy Room, Rec Thrpy Svc"	200
+305	CT324	SRS01	"Creative Arts Storage Room, Rec Thrpy Svc"	60
+306	CT331	n/a	"Adaptive Technology (AT) Room, Rec Thrpy Svc"	400
+307	CT334	SRS01	"Adaptive Technology (AT) Storage Room, Rec Thrpy Svc"	180
+308	CT337	OFA07	"Adaptive Technology (AT) Provider Workstation, Rec Thrpy Svc"	56
+309	CT341	RTGY1	"Gymnasium, Rec Thrpy Svc"	2000
+310	CT344	SRS01	"Gymnasium Storage Room, Rec Thrpy Svc"	120
+311	CT347	SRS01	"Enclosed Gymnasium, Rec Thrpy Svc"	800
+312	CT351	SRS01	"Enclosed Gymnasium Storage Room, Rec Thrpy Svc"	120
+313	CT354	n/a	"Exercise / Weight Room, Rec Thrpy Svc"	400
+314	CT357	SRS01	"Exercise / Weight Room Storage Room, Rec Thrpy Svc"	120
+315	CT361	RTWE1	"Wellness Room, Rec Thrpy Svc"	140
+316	CT364	SRS01	"Wellness Room Storage Room, Rec Thrpy Svc"	80
+317	CT367	n/a	"Gross Motor Activity Room, Rec Thrpy Svc"	240
+318	CT368	SRS01	"Gross Motor Activity Storage Room, Rec Thrpy Svc"	80
+319	CT371	RTTP1	"Aquatic Therapy Pool, Rec Thrpy Svc"	500
+320	CT374	SRS01	"Aquatic Therapy Pool Storage Room, Rec Thrpy Svc"	100
+321	CT377	RTTP2	"Aquatic Therapy Recreational Pool, Rec Thrpy Svc"	500
+322	CT381	SRS01	"Aquatic Therapy Recreational Pool Storage Room, Rec Thrpy Svc"	100
+323	CT386	RTTP3	"Aquatic Therapy Assessment Room, Rec Thrpy Svc"	140
+324	CT387	LAU05	"Aquatic Therapy Laundry Room, Rec Thrpy Svc"	80
+325	CT388	STEQ1	"Aquatic Therapy Safety Equipment Storage Room, Rec Thrpy Svc"	100
+326	CT389	n/a	"Aquatic Therapy Chemical / Pump Room, Rec Thrpy Svc"	100
+327	CI011	n/a	"Class 1 Radiology Imaging Room, Imgng Svcs"	325
+328	CI012	n/a	"Class 1 Radiology Control Alcove, Imgng Svcs"	75
+329	CI013	n/a	"Class 1 Radiology System Component Room, Imgng Svcs"	20
+330	CI014	n/a	"Class 1 Radiology Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+331	CI016	n/a	"Class 2 Radiology Imaging Room, Imgng Svcs"	350
+332	CI017	n/a	"Class 2 Radiology Control Room, Imgng Svcs"	75
+333	CI018	n/a	"Class 2 Radiology System Component Alcove, Imgng Svcs"	20
+334	CI019	n/a	"Class 2 Radiology Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+335	CI021	n/a	"Chest Imaging Room, Imgng Svcs"	200
+336	CI022	n/a	"Chest Imaging Control Alcove, Imgng Svcs"	50
+337	CI023	n/a	"Chest Imaging System Component Alcove, Imgng Svcs"	20
+338	CI024	n/a	"Chest Imaging Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+339	CI031	n/a	"Class 1 R/F Imaging Room, Imgng Svcs"	415
+340	CI032	n/a	"Class 1 R/F Control Room, Imgng Svcs"	105
+341	CI033	n/a	"Class 1 R/F System Component Room, Imgng Svcs"	45
+342	CI034	n/a	"Class 1 R/F Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+343	CI036	n/a	"Class 2 R/F Imaging Room, Imgng Svcs"	435
+344	CI037	n/a	"Class 2 R/F Control Room, Imgng Svcs"	105
+345	CI038	n/a	"Class 2 R/F System Component Room, Imgng Svcs"	45
+346	CI039	n/a	"Class 2 R/F Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+347	CI041	n/a	"Class 2 Multipurpose R/F Imaging Room, Imgng Svcs"	490
+348	CI042	n/a	"Class 2 Multipurpose R/F Control Room, Imgng Svcs"	110
+349	CI043	n/a	"Class 2 Multipurpose R/F System Component Room, Imgng Svcs"	60
+350	CI045	n/a	"Class 2 Multipurpose R/F Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+351	CI053	n/a	"Class 2 Prone Breast Imaging Room, Imgng Svcs"	300
+352	CI054	n/a	"Class 2 Prone Breast Imaging Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+353	CI056	n/a	"Class 2 Standing Breast Imaging Room, Imgng Svcs"	290
+354	CI057	n/a	"Class 2 Standing Breast Imaging System Component Alcove, Imgng Svcs"	20
+355	CI058	n/a	"Class 2 Standing Breast Imaging Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+356	CI059	n/a	"Breast Imaging Quality Assurance, Imgng Svcs"	80
+357	CI063	n/a	"Class 1 Ultrasound Scanning Room, Imgng Svcs"	255
+358	CI064	n/a	"Class 1 Ultrasound Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+359	CI065	n/a	"Class 2 Ultrasound Scanning Room, Imgng Svcs"	325
+360	CI066	n/a	"Class 2 Ultrasound Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+361	CI067	n/a	"ABUS Scanning Room, Imgng Svcs"	255
+362	CI068	n/a	"ABUS Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+363	CI069	n/a	"ED Ultrasound Storage Room, Imgng Svcs"	80
+364	CI071	n/a	"ED Ultrasound Transducer Room, Imgng Svcs"	80
+365	CI074	n/a	"CT IV Start Room, Imgng Svcs"	120
+366	CI076	n/a	"Bone Densitometry Scanning Room, Imgng Svcs"	255
+367	CI081	n/a	"Class 1 CT Scanning Room, Imgng Svcs"	560
+368	CI082	n/a	"Class 1 CT Control Room, Imgng Svcs"	210
+369	CI083	n/a	"Class 1 CT System Component Room, Imgng Svcs"	105
+370	CI084	n/a	"Class 1 CT Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+371	CI086	n/a	"Class 2 CT Scanning Room, Imgng Svcs"	600
+372	CI087	n/a	"Class 2 CT Control Room, Imgng Svcs"	210
+373	CI088	n/a	"Class 2 CT System Component Room, Imgng Svcs"	105
+374	CI089	n/a	"Class 2 CT Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+375	CI091	n/a	"ED CT Storage Room, Imgng Svcs"	80
+376	CI104	n/a	"MRI IV Start Room, Imgng Svcs"	120
+377	CI111	n/a	"Class 1 MRI Scanning Room, Imgng Svcs"	590
+378	CI112	n/a	"Class 1 MRI Control Room, Imgng Svcs"	200
+379	CI113	n/a	"Class 1 MRI System Component Room, Imgng Svcs"	160
+380	CI114	n/a	"Class 1 MRI Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+381	CI121	n/a	"Class 2 MRI Scanning Room, Imgng Svcs"	590
+382	CI122	n/a	"Class 2 MRI Control Room, Imgng Svcs"	200
+383	CI123	n/a	"Class 2 MRI System Component Room, Imgng Svcs"	160
+384	CI124	n/a	"Class 2 MRI Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+385	CI132	n/a	"MRI Quarantine Closet, Imgng Svcs"	35
+386	CI151	n/a	"Equipment Storage Room, Imgng Svcs"	80
+387	CI204	n/a	"NM IV Start Room, Imgng Svcs"	120
+388	CI211	n/a	"Class 1 NM Scanning Room, Imgng Svcs"	500
+389	CI212	n/a	"Class 1 NM System Component Alcove, Imgng Svcs"	20
+390	CI213	n/a	"Class 1 NM Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+391	CI214	n/a	"Class 1 SPECT/CT Scanning Room, Imgng Svcs"	530
+392	CI216	n/a	"Class 1 SPECT/CT Control Room, Imgng Svcs"	210
+393	CI217	n/a	"Class 1 SPECT/CT System Component Room, Imgng Svcs"	105
+394	CI218	n/a	"Class 1 SPECT/CT Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+395	CI221	n/a	"Class 2 SPECT/CT Scanning Room, Imgng Svcs"	560
+396	CI222	n/a	"Class 2 SPECT/CT Control Room, Imgng Svcs"	210
+397	CI223	n/a	"Class 2 SPECT/CT System Component Room, Imgng Svcs"	105
+398	CI224	n/a	"Class 2 SPECT/CT Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+399	CI226	n/a	"Thyroid Probe Scanning Room, Imgng Svcs"	120
+400	CI227	n/a	"NM Radiopharmacy / Hot Lab, Imgng Svcs"	240
+401	CI228	n/a	"NM Radioactive Waste Decay Room, Imgng Svcs"	120
+402	CI236	n/a	"PET/CT IV Start Room, Imgng Svcs"	120
+403	CI242	n/a	"Class 1 PET/CT Scanning Room, Imgng Svcs"	600
+404	CI243	n/a	"Class 1 PET/CT Control Room, Imgng Svcs"	210
+405	CI244	n/a	"Class 1 PET/CT System Component Room, Imgng Svcs"	105
+406	CI245	n/a	"Class 1 PET/CT Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+407	CI251	n/a	"Class 2 PET/CT Scanning Room, Imgng Svcs"	600
+408	CI252	n/a	"Class 2 PET/CT Control Room, Imgng Svcs"	210
+409	CI253	n/a	"Class 2 PET/CT System Component Room, Imgng Svcs"	105
+410	CI254	n/a	"Class 2 PET/CT Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+411	CI256	n/a	"PET/CT Uptake Room, Imgng Svcs"	145
+412	CI257	n/a	"PET/CT Short Term Holding Decay Room, Imgng Svcs"	30
+413	CI265	n/a	"PET/MRI IV Start Room, Imgng Svcs"	120
+414	CI271	n/a	"Class 1 PET/MRI Scanning Room, Imgng Svcs"	630
+415	CI272	n/a	"Class 1 PET/MRI Control Room, Imgng Svcs"	200
+416	CI273	n/a	"Class 1 PET/MRI System Component Room, Imgng Svcs"	160
+417	CI274	n/a	"Class 1 PET/MRI Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+418	CI281	n/a	"Class 2 PET/MRI Scanning Room, Imgng Svcs"	630
+419	CI282	n/a	"Class 2 PET/MRI Control Room, Imgng Svcs"	200
+420	CI283	n/a	"Class 2 PET/MRI System Component Room, Imgng Svcs"	160
+421	CI284	n/a	"Class 2 PET/MRI Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+422	CI291	n/a	"PET/MRI Uptake Room, Imgng Svcs"	120
+423	CI292	n/a	"PET/MRI Short Term Holding Decay Room, Imgng Svcs"	30
+424	CI301	n/a	"Equipment Storage Room, Imgng Svcs"	120
+425	CI304	n/a	"Imaging Sterile Consumables (Soft Goods) Storage Room, Imgng Svcs"	80
+426	CI401	n/a	"Imaging Physician Reading Room, Imgng Svcs"	145
+427	CI402	n/a	"Tele-Radiology Workroom, Imgng Svcs"	150
+428	CI403	n/a	"PACS Digital Quality Control Workroom, Imgng Svcs"	150
+429	CI404	n/a	"PACS Administrator Workroom, Imgng Svcs"	150
+430	CI405	n/a	"PACS 3D Workstation, Imgng Svcs"	56
+431	CI411	n/a	"Teaching Reading / Consultation Room, Imgng Svcs"	240
+432	CI501	n/a	"PACS Viewing Room, Imgng Svcs"	120
+433	CI521	n/a	"Lead Apron Alcove, Imgng Svcs"	15
+434	CI531	n/a	"CT Medication Preparation, Imgng Svcs"	80
+435	CI536	n/a	"Standing Breast Class 1 Imaging Room, Imgng Svcs"	290
+436	CI537	n/a	"Standing Breast Class 1 Imaging System Component Room, Imgng Svcs"	20
+437	CI538	n/a	"Standing Breast Class 1 Imaging Supply Alcove, Imgng Svcs"	20
+438	CI539	n/a	"CT Automated Supply Dispenser Unit (ASDU) Alcove, Imgng Svcs"	20
+439	CL101	LBBD1	"Blood Specimen Collection Room, Path Svc"	100
+440	CL111	LBBD2	"Core Lab Specimen Room, Path Svc"	350
+441	CL121	n/a	"Core Lab Automated Data Processing Control Room, Path Svc"	120
+442	CL131	n/a	"Core Lab Automated Data Processing Processor Area, Path Svc"	50
+443	CL201	LMCH3	"Clinical Pathology Chemistry Laboratory, Path Svc"	500
+444	CL211	LMCH4	"Clinical Pathology Special Chemistry Laboratory, Path Svc"	580
+445	CL221	LBRI1	"Clinical Pathology Radioimmunoassay (RIA) Room, Path Svc"	250
+446	CL226	LMU03	"Clinical Pathology Urinalysis Room, Path Svc"	50
+447	CL231	LMHI3	"Clinical Pathology Routine Hematology Laboratory, Path Svc"	200
+448	CL241	LMHI3	"Clinical Pathology Coagulation Hematology Laboratory, Path Svc"	100
+449	CL251	LMBB2	"Clinical Pathology Blood Bank Transfusion Storage Room, Path Svc"	150
+450	CL261	LMBB3	"Clinical Pathology Blood Bank Product Prep Room, Path Svc"	120
+451	CL266	LMBB1	"Clinical Pathology Blood Bank Hemotherapeutics Room, Path Svc"	200
+452	CL267	n/a	"Clinical Pathology Blood Bank Donor Room, Path Svc"	600
+453	CL271	LMM02	"Clinical Pathology Microbiology Laboratory, Path Svc"	200
+454	CL276	LMM03	"Clinical Pathology Microbiology Biosafety Laboratory, Path Svc"	150
+455	CL279	LMM02	"Clinical Pathology Microbiology Mycology Laboratory, Path Svc"	150
+456	CL281	LMM02	"Clinical Pathology Mycobacteriology (TB) Laboratory, Path Svc"	150
+457	CL282	LBSM1	"Clinical Pathology Microbiology Media Prep Room, Path Svc"	200
+458	CL286	LMHC1	"Clinical Pathology Immunopathology Laboratory, Path Svc"	400
+459	CL291	n/a	"Clinical Pathology Fluorescent Microscopy Room, Path Svc"	100
+460	CL296	n/a	"Clinical Pathology Automated Data Processing Room, Path Svc"	100
+461	CL301	LMML2	"Molecular Testing Reagent Prep Preamp Room, Path Svc"	300
+462	CL306	LMML3	"Molecular Testing Specimen Processing Preamp Room, Path Svc"	400
+463	CL311	LMML4	"Molecular Testing Amplification Room, Path Svc"	500
+464	CL316	n/a	"Molecular Testing Darkroom, Path Svc"	120
+465	CL321	n/a	"Molecular Testing Data Processing, Path Svc"	100
+466	CL401	LMHS2	"Anatomical Pathology Histology Laboratory, Path Svc"	150
+467	CL411	LMHC1	"Anatomical Pathology Frozen / Gross Section Laboratory, Path Svc"	100
+468	CL421	LMCY3	"Anatomical Pathology Cytology Laboratory, Path Svc"	150
+469	CL431	FILE1	"Anatomical Pathology Records Files, Path Svc"	200
+470	CL441	n/a	"Anatomical Pathology Data Processing, Path Svc"	100
+471	CL501	LBEM2	"Microscopy Suite Scope Room, Path Svc"	200
+472	CL511	n/a	"Microscopy Suite Dark Room, Path Svc"	50
+473	CL521	LBEM3	"Microscopy Suite Preparation Room, Path Svc"	200
+474	CL531	n/a	"Microscopy Suite Cutting Room, Path Svc"	200
+475	CL541	n/a	"Microscopy Suite Dark Room, Path Svc"	120
+476	CL551	n/a	"Microscopy Suite Finishing Room, Path Svc"	120
+477	CL561	n/a	"Microscopy Suite Data Processing Room, Path Svc"	100
+478	CL601	LBAR1	"Autopsy Room, Path Svc"	400
+479	CL611	n/a	"Autopsy Isolation / Teaching Room, Path Svc"	360
+480	CL621	LBMR1	"Autopsy Mortuary Refrigerator, Path Svc"	100
+481	CL631	LBTS1	"Autopsy Gross Specimen Storage Room, Path Svc"	100
+482	CL701	SRS01	"Sterilization / Preparation Storage Room, Path Svc"	250
+483	CL711	SRS01	"Bulk Storage Room, Path Svc"	800
+484	CL721	n/a	"Refrigerated Storage Room, Path Svc"	100
+485	CL731	SRS01	"Flammables Storage Room, Path Svc"	100
+486	CL811	LIBB1	"Library, Path Svc"	240
+487	CL821	LBVP1	"Blood Draw Station, Path Svc"	80
+488	CL822	n/a	"Bariatric Blood Draw Station, Path Svc"	100
+489	CL823	LBBD2	"Laboratory Specimen Processing, Path Svc"	150
+490	CL831	SRS01	"Laboratory Clean Supply Storage Room, Path Svc"	20
+491	CL832	SRS01	"Laboratory Soiled Supply Storage Room, Path Svc"	20
+492	CL851	LBSP1	"Wm Vet Svc Satellite Laboratory, Path Svc"	120
+493	CL856	LBSP2	"Surg Svc Satellite Laboratory, Path Svc"	140
+494	CL861	LMHC1	"Surg Svc Frozen Section Laboratory, Path Svc"	120
+495	CPL01	OPPF1	"Pulmonary Function Testing Laboratory, Pulm Svc"	120
+496	CPL02	OPPF2	"Extended Pulmonary Function Testing Laboratory, Pulm Svc"	120
+497	CPL03	OPPF5	"Pulmonary Physiology Exercise Laboratory, Pulm Svc"	240
+498	CPL11	TRPE2	"Bronchoscopy Procedure Room, Pulm Svc"	300
+499	CPL12	CSSS1	"Bronchoscopy Equipment Cleaning Room, Pulm Svc"	80
+500	CPL21	OPPF6	"Sleep Study Room, Pulm Svc"	210
+501	CPL22	OPPF7	"Sleep Study Monitoring Room, Pulm Svc"	150
+502	CPL23	OPPF8	"Sleep Study Patient Prep Room, Pulm Svc"	150
+503	CPL31	RRSS1	"Prep / Recovery Room, Pulm Svc"	120
+504	CPL32	RROP1	"Prep / Recovery Cubicle, Pulm Svc"	120
+505	CPL41	OPRT1	"Respiratory Therapy Room, Pulm Svc"	120
+506	CPL42	SRS01	"Medical Gas Storage Room, Pulm Svc"	80
+507	CPL43	SRS01	"Ventilator Storage Room, Pulm Svc"	100
+508	CPL47	STEQ1	"Equipment Storage Room, Pulm Svc"	160
+509	CPR01	EXRG3	"Soft Goods Fabrication Fitting / Exam Room, Prsthtcs Svc"	120
+510	CPR02	EXRG3	"Custom Fabrication Fitting / Exam Room, Prsthtcs Svc"	120
+511	CPR04	EXRG3	"Dynamic Alignment Room, Prsthtcs Svc"	150
+512	CPR05	EYPL1	"Eye Fitting Studio, Prsthtcs Svc"	100
+513	CPR06	APFR1	"Facial / Body Fitting Studio, Prsthtcs Svc"	200
+514	CPR08	n/a	"Prosthetics Fitting Room, Prsthtcs Svc"	140
+515	CPR11	n/a	"Prosthetics Workshop, Prsthtcs Svc"	120
+516	CPR12	APFB1	"Restoration Laboratory, Prsthtcs Svc"	300
+517	CPR16	CFE01	"Team Evaluation / Multi-Purpose Room, Prsthtcs Svc"	240
+518	CPR17	OPCR1	"Cast Room, Prsthtcs Svc"	160
+519	CPR18	STEQ1	"Equipment Storage Room, Prsthtcs Svc"	120
+520	CPR21	APLA1	"Prosthetic / Orthotic Laboratory Fume Room, Prsthtcs Svc"	200
+521	CPR22	APMS1	"Prosthetic / Orthotic Laboratory Dust Room, Prsthtcs Svc"	300
+522	CPR23	n/a	"Prosthetic / Orthotic Laboratory Workstation, Prsthtcs Svc"	100
+523	CPR24	n/a	"Prosthetic / Orthotic Laboratory Maintenance Room, Prsthtcs Svc"	150
+524	CPR26	SRS01	"Shoe Modification Materials Storage Room, Prsthtcs Svc"	100
+525	CPR31	BMCW1	"Wheelchair Repair Shop, Prsthtcs Svc"	200
+526	CPR32	SRS01	"Wheelchair Active Storage Room, Prsthtcs Svc"	200
+527	CPR34	SRS01	"Dirty Wheelchair / DME Active Storage Room, Prsthtcs Svc"	200
+528	CPR36	SRS01	"Wheelchair Parts Storage Room, Prsthtcs Svc"	200
+529	CPR41	n/a	"Computer Aided Design / Computer Aided Manufacturing, Prsthtcs Svc"	80
+530	CPR46	APSH1	"Sewing Room, Prsthtcs Svc"	120
+531	CPR51	SRS01	"Wheelchair / Stretcher Storage Room, Prsthtcs Svc"	40
+532	CPR56	SRS01	"Orthotics / Prosthetic Parts / Materials Storage Room, Prsthtcs Svc"	100
+533	CPR61	MRRS1	"Prosthetic Appliances Mailing Room, Prsthtcs Svc"	80
+534	CRT02	XTLA1	"IMRT Linear Accelerator Room, Rad Thrpy Svc"	1240
+535	CRT03	XTEM1	"Linear Accelerator Entrance Maze, Rad Thrpy Svc"	140
+536	CRT04	XACR1	"Linear Accelerator Control Room, Rad Thrpy Svc"	120
+537	CRT06	EXRG3	"Procedure / Exam Room, Rad Thrpy Svc"	160
+538	CRT08	EXRG3	"Exam Room, Rad Thrpy Svc"	120
+539	CRT11	XTSG1	"CT Simulator Unit Room, Rad Thrpy Svc"	400
+540	CRT12	XACR1	"CT Simulator Control Room, Rad Thrpy Svc"	120
+541	CRT16	XFSA1	"Film Processing Room, Rad Thrpy Svc"	120
+542	CRT17	XTMF1	"Block / Mold Room, Rad Thrpy Svc"	220
+543	CRT21	XDUS1	"Ultrasound Planning Unit, Rad Thrpy Svc"	180
+544	CRT26	XTTP1	"Treatment Planning Computer Room / Dosimetry, Rad Thrpy Svc"	300
+545	CRT31	XTRT1	"Sealed Source Room, Rad Thrpy Svc"	120
+546	CRT34	XTLB1	"Physics Laboratory, Rad Thrpy Svc"	300
+547	CRT36	XACR1	"PACS Quality Control Room, Rad Thrpy Svc"	100
+548	CRT37	SRS01	"PACS Files Storage Room, Rad Thrpy Svc"	140
+549	CRT41	n/a	"3D Workstation, Rad Thrpy Svc"	120
+550	CRT42	n/a	"Computed Radiology (CR) Reader, Rad Thrpy Svc"	40
+551	CRT46	n/a	"Film Processing Darkroom, Rad Thrpy Svc"	100
+552	CRT47	XFP03	"Daylight Processing Room, Rad Thrpy Svc"	100
+553	CRT48	XFSA1	"Film Sorting Room, Rad Thrpy Svc"	80
+554	CRT51	STEQ1	"Equipment Storage Room, Rad Thrpy Svc"	200
+555	CRT61	SRS01	"Film Files Storage Room, Rad Thrpy Svc"	250
+556	CRT62	SRS01	"Film Storage Room, Rad Thrpy Svc"	60
+557	CRT66	SRS01	"Chemical Storage Room, Rad Thrpy Svc"	40
+558	CRT71	n/a	"Telehealth Workstation, Rad Thrpy Svc"	120
+559	CRT76	SRS01	"Storage Room, Rad Thrpy Svc"	120
+560	CRT81	XVC01	"Non-Teaching Viewing / Consultation Room, Rad Thrpy Svc"	120
+561	CRT82	XVC01	"Teaching Viewing / Consultation Room, Rad Thrpy Svc"	240
+562	CS111	EXRG3	"Pre-Op Assessment Exam Room, Surg Svc"	120
+563	CS116	STEQ1	"Pre-Op Assessment Equipment Storage Room, Surg Svc"	120
+564	CS121	STEQ1	"Pre-Op / Phase II Equipment Storage Room, Surg Svc"	120
+565	CS126	ORPP3	"Anesthesia Induction / Procedure Room, Surg Svc"	360
+566	CS131	ANCW2	"Clean Anesthesia Workroom, Surg Svc"	240
+567	CS136	SRE02	"Anesthesia Equipment Room, Surg Svc"	120
+568	CS139	NSTA5	"Surgical Control Station, Surg Svc"	120
+569	CS141	ORGS1	"General Operating Room (OR), Surg Svc"	650
+570	CS142	ORGE1	"General OR Equipment Room, Surg Svc"	200
+571	CS146	OROS1	"Orthopedic Operating Room (OR), Surg Svc"	750
+572	CS147	OROE1	"Orthopedic OR Equipment Room, Surg Svc"	180
+573	CS151	ORCS1	"Urology / Cystoscopy Operating Room (OR), Surg Svc"	650
+574	CS152	ORCE1	"Urology / Cystoscopy OR Equipment Room, Surg Svc"	100
+575	CS156	ORCT1	"Cardiothoracic Operating Room (OR), Surg Svc"	750
+576	CS157	n/a	"Cardiothoracic OR Equipment Room, Surg Svc"	180
+577	CS158	ORHL1	"Cardiothoracic OR Pump Room, Surg Svc"	260
+578	CS161	ORNS1	"Neurosurgical Operating Room (OR), Surg Svc"	750
+579	CS162	ORNE1	"Neurosurgical OR Equipment Room, Surg Svc"	180
+580	CS166	ORRB1	"Robotics Operating Room (OR), Surg Svc"	750
+581	CS167	ORRE1	"Robotics OR Equipment Room, Surg Svc"	180
+582	CS171	ORTR1	"Transplant Operating Room (OR), Surg Svc"	750
+583	CS172	ORTE1	"Transplant OR Equipment Room, Surg Svc"	180
+584	CS181	ORHY1	"Hybrid Monoplane Operating Room (OR), Surg Svc"	900
+585	CS182	ORHY2	"Hybrid Biplane Operating Room (OR), Surg Svc"	900
+586	CS183	XACR1	"Hybrid OR Control Room, Surg Svc"	220
+587	CS184	XCCA1	"Hybrid OR System Component Room, Surg Svc"	150
+588	CS185	ORHE1	"Hybrid OR Equipment Room, Surg Svc"	200
+589	CS186	ORHL1	"Hybrid OR Pump Room, Surg Svc"	260
+590	CS191	XCCE1	"Cardiac Catheterization Laboratory, Surg Svc"	900
+591	CS192	XACR1	"Cardiac Catheterization Control Room, Surg Svc"	250
+592	CS193	XCCA1	"Cardiac Catheterization System Component Room, Surg Svc"	150
+593	CS211	XCEP1	"Electrophysiology Procedure Room, Surg Svc"	900
+594	CS212	XACR1	"Electrophysiology Control Room, Surg Svc"	250
+595	CS213	XCCA1	"Electrophysiology System Component Room, Surg Svc"	150
+596	CS221	OREE1	"Cardiac Catheterization / Electrophysiology Equipment Room, Surg Svc"	180
+597	CS222	TRTE1	"Transesophageal Echocardiograph (TEE) Procedure Room, Surg Svc"	350
+598	CS223	TRTE2	"TEE Probe Decontamination Room, Surg Svc"	160
+599	CS224	SRS01	"TEE Probe Storage Room, Surg Svc"	70
+600	CS231	ORCC2	"Clean Core, Surg Svc"	660
+601	CS232	ORSR1	"Immediate Use Sterilization Room, Surg Svc"	185
+602	CS236	RCA03	"Blood Bank Alcove, Surg Svc"	30
+603	CS241	RRBP1	"PACU / Phase I Recovery Patient Bay, Surg Svc"	110
+604	CS242	RRIR1	"PACU / Phase I Recovery Airborne Infection Isolation (AII) Room, Surg Svc"	150
+605	CS243	BRAR1	"PACU / Phase I Recovery Airborne Infection Isolation (AII) Anteroom, Surg Svc"	80
+606	CS251	SRS01	"PACU / Phase I Recovery Equipment Storage Room, Surg Svc"	100
+607	CS256	n/a	"Instrument Room, Surg Svc"	100
+608	CWV02	LAC01	"CBOC Lactation Room, Wm Vet Svc"	80
+609	CWV11	LAC01	"Lactation Room, Wm Vet Svc"	75
+610	CWV16	EXW01	"Multipurpose Exam Room, Wm Vet Svc"	120
+611	CWV21	EXW01	"Gynecology Exam Room, Wm Vet Svc"	140
+612	CWV26	EXW01	"Cancer Screening Exam Room, Wm Vet Svc"	140
+613	CWV31	EXW02	"Breast Clinic Exam Room, Wm Vet Svc"	140
+614	CWV36	TROB1	"Gynecology Procedure Room, Wm Vet Svc"	180
+615	CWV41	TROB2	"Urology-Gynecology Procedure Room, Wm Vet Svc"	240
+616	CWV46	TRAT1	"Alternative Therapy Procedure Room, Wm Vet Svc"	180
+617	CWV51	CLSC4	"Shared Medical Appointment Room, Wm Vet Svc"	240
+618	CWV61	STEQ1	"Equipment Storage Room, Wm Vet Svc"	80
+619	CWV81	STEQ1	"Portable Imaging Equipment Storage Room, Wm Vet Svc"	120
+620	CWV91	SRS01	"Women's Health Storage Room, Wm Vet Svc"	80
+621	IIC11	NCWD1	"Family Pantry, IC PCU"	80
+622	IIC21	BRIC1	"Sigle Universal Bedroom, IC PCU"	300
+623	IIC26	BRII1	"Airborne Infection Isolation (AII) Bedroom, IC PCU"	300
+624	IIC27	BRAR1	"Airborne Infection Isolation (AII) Anteroom, IC PCU"	65
+625	IIC31	BRII2	"Protective Environment Isolation Bedroom, IC PCU"	300
+626	IIC32	BRAR2	"Protective Environment Isolation Anteroom, IC PCU"	65
+627	IIC46	NSTA3	"Nurse Observation Alcove, IC PCU"	20
+628	IIC51	NCWD1	"Nourishment Station, IC PCU"	100
+629	IIC61	STEQ1	"Equipment Storage Room, IC PCU"	220
+630	IIC62	SRS01	"Medical Gas Storage Room, IC PCU"	50
+631	IIC63	XRM01	"Mobile X-Ray Machine Alcove, IC PCU"	40
+632	IMH11	n/a	"Sally Port, MH PCU"	125
+633	IMH13	n/a	"Visitation Room, MH PCU"	125
+634	IMH15	n/a	"Intake / Interview Room, MH PCU"	125
+635	IMH17	n/a	"Exam Room, MH PCU"	125
+636	IMH18	n/a	"Conference / Hearing Room, MH PCU"	240
+637	IMH21	n/a	"Group Room, MH PCU"	270
+638	IMH26	n/a	"Single Universal Bedroom, MH PCU"	220
+639	IMH27	n/a	"Double Universal Bedroom, MH PCU"	440
+640	IMH31	n/a	"Seclusion Room, MH PCU"	140
+641	IMH32	n/a	"Seclusion Anteroom, MH PCU"	85
+642	IMH41	n/a	"Day Room, MH PCU"	220
+643	IMH51	n/a	"Veteran Relaxation Room, MH PCU"	125
+644	IMH61	n/a	"Equipment Storage Room A, MH PCU"	100
+645	IMH64	n/a	"Patient Property Storage Room D, MH PCU"	160
+646	IMH81	n/a	"Storage Room A, MH PCU"	100
+647	IMH91	n/a	"Nurse Station, MH PCU"	110
+648	IMS11	CLHPY	"Famliy Pantry, MS PCU"	80
+649	IMS21	BRMS1	"Single Universal Bedroom, MS PCU"	280
+650	IMS23	BRIT1	"Airborne Infection Isolation (AII) Bedroom, MS PCU"	240
+651	IMS24	BRAR1	"Airborne Infection Isolation (AII) Anteroom, MS PCU"	65
+652	IMS25	BRIT2	"Protective Environment Isolation Bedroom, MS PCU"	240
+653	IMS26	BRAR2	"Protective Environment Isolation Anteroom, MS PCU"	65
+654	IMS27	BRBA1	"Bariatric / Physical Disabilities Bedroom, MS PCU"	280
+655	IMS31	DAYR1	"Dayroom, MS PCU"	240
+656	IMS44	NSTA3	"Telemetry Monitoring Alcove, MS PCU"	80
+657	IMS81	STEQ1	"Equipment Storage Room, MS PCU"	180
+658	IMS83	SRS01	"Medical Gas Storage Room, MS PCU"	50
+659	IMS85	XRM01	"Mobile X-Ray Machine Alcove, MS PCU"	40
+660	IMS86	SRS01	"Multipurpose / Specialty Storage Room, MS PCU"	160
+661	IPT01	BRMS1	"Single Universal Bedroom, Polytrauma"	300
+662	IPT03	BRIT1	"Airborne Infection Isolation (AII) Bedroom, Polytrauma"	300
+663	IPT04	BRAR1	"Airborne Infection Isolation (AII) Anteroom, Polytrauma"	65
+664	IPT06	STEQ1	"Equipment Storage Room, Polytrauma"	300
+665	IPT18	RCA02	"Equipment Alcove, Polytrauma"	20
+666	IPT21	PRD01	"Dining Room, Polytrauma"	1000
+667	IPT25	IPK01	"OT Training Kitchen, Polytrauma"	300
+668	IPT27	n/a	"Patient-Family Living Room, Polytrauma"	400
+669	IPT29	n/a	"Quiet Room, Polytrauma"	140
+670	IPT31	CLR09	"Family Wellness Multipurpose Room, Polytrauma"	400
+671	IPT33	PLAY1	"Playroom, Polytrauma"	80
+672	IPT34	CRA02	"Group Room, Polytrauma"	300
+673	IPT36	LAUN1	"Laundry Room, Polytrauma"	160
+674	IPT41	PRGY1	"Rehabilitation Therapy Room, Polytrauma"	2100
+675	IPT43	STEQ1	"Rehabilitation Therapy Equipment Storage Room, Polytrauma"	200
+676	IPT45	PREV1	"PT / OT Evaluation Room, Polytrauma"	180
+677	IPT46	OFDC2	"Therapy Consult Room, Polytrauma"	140
+678	IPT51	PRRT1	"Recreation Therapy Room, Polytrauma"	1400
+679	IPT53	SRS01	"Recreation Therapy Storage Room, Polytrauma"	120
+680	IPT55	CLR01	"Computer Room, Polytrauma"	200
+681	IPT61	PRDL1	"Apartment Living Skills Training Room, Polytrauma"	650
+682	IPT71	PRNT1	"Neuropsychology Testing Laboratory, Polytrauma"	140
+683	IPT73	n/a	"BROS Treatment Room, Polytrauma"	520
+684	IPT81	n/a	"Assistive Technology Laboratory, Polytrauma"	420
+685	IPT83	n/a	"Rehabilitation Engineering Room, Polytrauma"	240
+686	IPT85	SRS01	"Assistive Technology Storage Room, Polytrauma"	240
+687	ISC05	n/a	"Single Universal Bedroom, SCI"	350
+688	ISC06	n/a	"Double Universal Bedroom, SCI"	750
+689	ISC07	n/a	"Airborne Infection Isolation (AII) Bedroom, SCI"	320
+690	ISC08	n/a	"Airborne Infection Isolation (AII) Anteroom, SCI"	115
+691	ISC10	n/a	"Laundry Room, SCI"	140
+692	ISC13	n/a	"Evacuation Equipment Room, SCI"	100
+693	ISC17	n/a	"Equipment Room, SCI"	120
+694	ISC23	n/a	"Multipurpose Recreation Room, SCI"	1100
+695	ISC26	n/a	"Recreation Therapist Treatment Station, SCI"	56
+696	ISC27	n/a	"Dining Room, SCI"	1600
+697	ISC28	n/a	"Meditation Room, SCI"	100
+698	ISC29	n/a	"Dayroom, SCI"	400
+699	ISC37	n/a	"Multipurpose Recreation Storage Room, SCI"	150
+700	ISC41	n/a	"Dining Storage Room, SCI"	120
+701	ISC51	n/a	"Physical Therapy (PT) Room, SCI"	2400
+702	ISC52	n/a	"PT Wheelchair Fitting Room, SCI"	100
+703	ISC54	n/a	"PT Exam / Treatment Room, SCI"	195
+704	ISC55	n/a	"Physical Therapist Treatment Station, SCI"	56
+705	ISC56	n/a	"PT Full Body Immersion Tank, SCI"	380
+706	ISC57	n/a	"PT Arm Hip & Leg Whirlpool, SCI"	150
+707	ISC58	n/a	"PT Exoskeleton Storage Room, SCI"	100
+708	ISC59	n/a	"PT Equipment Storage Room, SCI"	350
+709	ISC63	n/a	"Kinesiotherapy (KT) Room, SCI"	1620
+710	ISC66	n/a	"Kinesiotherapist Treatment Station, SCI"	56
+711	ISC67	n/a	"KT Equipment Storage Room, SCI"	200
+712	ISC71	n/a	"Occupational Therapy (OT) Room, SCI"	1300
+713	ISC74	n/a	"Occupational Therapist Treatment Station, SCI"	56
+714	ISC75	n/a	"OT Driver Training Room, SCI"	400
+715	ISC76	n/a	"OT Equipment Storage Room, SCI"	200
+716	ISC79	n/a	"ADL Kitchen, SCI"	300
+717	ISC81	n/a	"ADL Bathroom, SCI"	100
+718	ISC82	n/a	"ADL Closet, SCI"	60
+719	ISC83	n/a	"ADL Staff Treatment Station, SCI"	56
+720	ISC91	n/a	"HE Living / Dining Room, SCI"	240
+721	ISC92	n/a	"HE Kitchen, SCI"	140
+722	ISC93	n/a	"HE Single Universal Bedroom, SCI"	210
+723	ISC94	n/a	"HE Bathroom, SCI"	70
+724	ISC95	n/a	"HE Storage Room, SCI"	40
+725	IST01	n/a	"Assistive Technology Room, SCI"	400
+726	IST02	n/a	"Assistive Technology Equipment Storage Room, SCI"	150
+727	IST03	n/a	"Full Court Gymnasium, SCI"	8000
+728	IST04	n/a	"Gym Equipment Storage Room, SCI"	600
+729	IST05	n/a	"Horticulture Therapy Room, SCI"	200
+730	IST11	n/a	"Wheelchair Workshop Receiving / Pick-up, SCI"	200
+731	IST14	n/a	"Wheelchair Repair Workarea, SCI"	200
+732	IST17	n/a	"Wheelchair Parts Storage Room, SCI"	160
+733	IST21	n/a	"Wheelchair Wash Room, SCI"	200
+734	IST37	n/a	"Outdoor Therapeutic Equipment Storage Room, SCI"	220
+735	IST38	n/a	"Outdoor Active Recreational Equipment Storage Room, SCI"	100
+736	IST39	n/a	"Outdoor Passive Recreational Equipment Storage Room, SCI"	140
+737	IST40	n/a	"Outdoor Social Activity Equipment Storage Room, SCI"	180
+738	IST61	n/a	"Aquatic Therapy (AT) Pool, SCI"	1500
+739	IST63	n/a	"Aquatic Therapist Treatment Station, SCI"	56
+740	IST64	n/a	"AT Laundry Room, SCI"	120
+741	IST67	n/a	"AT Equipment Storage Room, SCI"	100
+742	IST68	n/a	"AT Safety Equipment Storage Room, SCI"	100
+743	IST69	n/a	"AT Chemical / Pump Room Storage Room, SCI"	120
+744	IST71	n/a	"Laboratory, SCI"	600
+745	OCB11	EXRG3	"Interview Patient Care Room, CBOC"	140
+746	OCB16	SRS01	"Veteran Information / Welcome Area Storage Alcove, CBOC"	20
+747	OCB18	SRS01	"Veteran Information / Welcome Area Storage Room, CBOC"	60
+748	OCB21	CFR02	"Shared Group / Multifunction Room, CBOC"	360
+749	OCB24	SRS01	"Shared Group / Multifunction Storage Room, CBOC"	60
+750	OCB27	n/a	"Multifunction Room Assembly Area, CBOC"	40
+751	OCB31	EXRG3	"General Patient Care Room, CBOC"	140
+752	OCB37	EXEB1	"Multi-Use / Bariatric Patient Care Room, CBOC"	210
+753	OCB41	EXP01	"Podiatry Patient Care Room, CBOC"	140
+754	OCM05	OPMH3	"CBOC Counseling Patient Care Room, CB MH"	140
+755	OCM81	OPMH3	"CBOC Neuro-Psych Testing Patient Care Room, CB MH"	140
+756	OPT01	DAYR1	"Dayroom, Polytrauma"	180
+757	OPT11	EXRG0	"Exam Room, Polytrauma"	140
+758	OPT12	n/a	"Cognitive Therapy / Counseling Room, Polytrauma"	140
+759	OPT13	n/a	"EMG Exam Room, Polytrauma"	160
+760	OPT14	PTBT1	"Chiropractic Exam Room, Polytrauma"	160
+761	OPT15	PRP01	"Procedure Room, Polytrauma"	350
+762	OPT16	CRA02	"Group Room, Polytrauma"	240
+763	OPT17	WRTM2	"Telehealth Room, Polytrauma"	120
+764	OPT22	STEQ1	"Equipment Storage Room, Polytrauma"	100
+765	OPT31	PRDT1	"Driver Training Room, Polytrauma"	460
+766	OPT32	OTDL1	"Living Skills Training Room, Polytrauma"	300
+767	OPT33	PTGL1	"Gait Observation Laboratory, Polytrauma"	600
+768	OPT34	SRS01	"Gait Observation Storage Room, Polytrauma"	200
+769	OPT35	PREX1	"Gait Laboratory Exam Room, Polytrauma"	160
+770	OPT36	PRGY3	"Rehabilitation Therapy Room, Polytrauma"	3800
+771	OPT37	PREV1	"PT / OT Evaluation Room, Polytrauma"	180
+772	OPT42	PRST1	"Speech Therapy Laboratory, Polytrauma"	300
+773	OPT43	PRN01	"Patient Balance Testing Room, Polytrauma"	200
+774	OPT44	PRV01	"Vestibular Room, Polytrauma"	200
+775	OPT45	PRRT2	"Recreational Therapy Room, Polytrauma"	500
+776	OPT46	STEQ1	"Recreation Therapy Equipment Storage Room, Polytrauma"	200
+777	OPT47	OFA07	"Recreational Therapist Treatment Station, Polytrauma"	56
+778	OPT48	PRTM1	"BROS Treatment / Office, Polytrauma"	520
+779	OSC12	n/a	"Exam / Treatment Room, SCI"	195
+780	OSC13	n/a	"Alternative Medicine Exam / Treatment Room, SCI"	140
+781	OSC14	n/a	"Procedure Room, SCI"	325
+782	OSC15	n/a	"Group Therapy Room, SCI"	400
+783	OSC16	n/a	"Urodynamics Exam / Treatment Room, SCI"	195
+784	OSC17	n/a	"Urodynamics Cystoscopy Room, SCI"	480
+785	OSC18	n/a	"Scrub Sink Alcove, SCI"	20
+786	OSC19	n/a	"Cystoscopy Patient Recovery Room, SCI"	300
+787	OSC23	n/a	"Equipment Storage Room, SCI"	120
+788	OSC27	n/a	"HC Storage Room, SCI"	60
+789	OSC31	n/a	"Physical Therapy (PT) Room, SCI"	1730
+790	OSC32	n/a	"PT Wheelchair Fitting Room, SCI"	100
+791	OSC33	n/a	"Physical Therapist Treatment Station, SCI"	56
+792	OSC34	n/a	"PT Equipment Storage Room, SCI"	350
+793	OSC41	n/a	"Kinesiotherapy (KT) Room, SCI"	1300
+794	OSC43	n/a	"Kinesiotherapist Treatment Station, SCI"	56
+795	OSC44	n/a	"KT Equipment Storage Room, SCI"	200
+796	OSC51	n/a	"Occupational Therapy (OT) Room, SCI"	1040
+797	OSC53	n/a	"Occupational Therapist Treatment Station, SCI"	56
+798	OSC54	n/a	"OT Equipment Storage Room, SCI"	150
+799	OSC61	n/a	"ADL Kitchen, SCI"	360
+800	OSC62	n/a	"ADL Bathroom, SCI"	100
+801	OSC63	n/a	"ADL Laundry Room, SCI"	140
+802	OSC64	n/a	"ADL Bedroom, SCI"	240
+803	OSC65	n/a	"ADL Closet, SCI"	60
+804	OSC66	n/a	"ADL Staff Treatment Station, SCI"	56
+805	OSC71	n/a	"Spoke Intake / Triage Cubicle, SCI"	80
+806	OSC72	n/a	"Spoke Exam / Treatment Room, SCI"	195
+807	OSC76	n/a	"Spoke Multipurpose Storage Room, SCI"	150
+808	RMH11	n/a	"Family / Public Visitation Room, MH RCU"	125
+809	RMH21	n/a	"Community Room, MH RCU"	820
+810	RMH23	n/a	"16-Bed / 20-Bed RCU Community Room Kitchen, MH RCU"	200
+811	RMH24	n/a	"24-Bed / 28-Bed RCU Community Room Kitchen, MH RCU"	260
+812	RMH26	n/a	"16-Bed RCU Community Room Storage Room, MH RCU"	80
+813	RMH27	n/a	"20-Bed RCU Community Room Storage Room, MH RCU"	100
+814	RMH28	n/a	"24-Bed RCU Community Room Storage Room, MH RCU"	120
+815	RMH29	n/a	"28-Bed RCU Community Room Storage Room, MH RCU"	140
+816	RMH31	n/a	"Exercise Room, MH RCU"	300
+817	RMH34	n/a	"16-Bed / 20-Bed RCU Recreation Therapy (RT) Room, MH RCU"	300
+818	RMH35	n/a	"24-Bed / 28-Bed RCU Recreation Therapy (RT) Room, MH RCU"	480
+819	RMH37	n/a	"Small Group Therapy Room, MH RCU"	360
+820	RMH38	n/a	"16-Bed / 20-Bed RCU Large Group Therapy Room / Classroom, MH RCU"	960
+821	RMH39	n/a	"24-Bed / 28-Bed RCU Large Group Therapy Room / Classroom, MH RCU"	1200
+822	RMH41	n/a	"Resident Computer Room, MH RCU"	240
+823	RMH45	n/a	"16-Bed RCU Therapy Storage Room, MH RCU"	200
+824	RMH46	n/a	"20-Bed RCU Therapy Storage Room, MH RCU"	240
+825	RMH47	n/a	"24-Bed RCU Therapy Storage Room, MH RCU"	280
+826	RMH48	n/a	"28-Bed RCU Therapy Storage Room, MH RCU"	320
+827	RMH51	n/a	"Intake Processing Room, MH RCU"	140
+828	RMH54	n/a	"Exam Room, MH RCU"	125
+829	RMH56	n/a	"16-Bed / 20-Bed RCU Evaluation Area Storage Room, MH RCU"	80
+830	RMH57	n/a	"24-Bed / 28-Bed RCU Evaluation Area Storage Room, MH RCU"	100
+831	RMH61	n/a	"Single Universal Bedroom, MH RCU"	185
+832	RMH64	n/a	"Double Universal Bedroom, MH RCU"	380
+833	RMH71	n/a	"16-Bed / 20-Bed RCU Staff Hub, MH RCU"	120
+834	RMH72	n/a	"24-Bed / 28-Bed RCU Staff Hub, MH RCU"	240
+835	RMH81	n/a	"Drug Screening Room, MH RCU"	80
+836	RMH84	n/a	"16-Bed RCU Resident Belongings Storage Room, MH RCU"	140
+837	RMH85	n/a	"20-Bed RCU Resident Belongings Storage Room, MH RCU"	180
+838	RMH86	n/a	"24-Bed RCU Resident Belongings Storage Room, MH RCU"	220
+839	RMH87	n/a	"28-Bed RCU Resident Belongings Storage Room, MH RCU"	260
+840	RMH91	n/a	"Recreation Therapy Storage Room, MH RCU"	150
+841	RPT01	BRPT3	"Single Universal Bedroom, Polytrauma"	250
+842	RPT02	BTPU1	"Bathroom, Polytrauma"	70
+843	RPT11	PRAP1	"Apartment Living Room, Polytrauma"	200
+844	RPT12	BRPT1	"Apartment Bedroom, Polytrauma"	175
+845	RPT14	PRC03	"Apartment Kitchenette / Laundry, Polytrauma"	180
+846	RPT15	SRS01	"Apartment Storage Room, Polytrauma"	60
+847	RPT22	STEQ1	"Equipment Storage Room, Polytrauma"	100
+848	RPT23	STEQ1	"Equipment Storage Room, Polytrauma"	120
+849	RPT31	DAYR1	"Living Room, Polytrauma"	400
+850	RPT33	PRD01	"Dining Room, Polytrauma"	600
+851	RPT35	PRK01	"Kitchen, Polytrauma"	360
+852	RPT37	LAUN1	"Laundry Room, Polytrauma"	160
+853	RPT41	PRGY2	"Rehabilitation Therapy Room, Polytrauma"	1500
+854	RPT43	PREV1	"PT / OT Evaluation Room, Polytrauma"	180
+855	RPT52	CLR01	"Recreational Computer Activity Room, Polytrauma"	200
+856	RPT54	PRAT2	"Assistive Technology Laboratory, Polytrauma"	420
+857	RPT61	STEQ1	"Assistive Technology Equipment Storage Room, Polytrauma"	240
+858	RSC11	n/a	"Single Universal Bedroom, SCI"	380
+859	RSC12	n/a	"Double Universal Bedroom, SCI"	770
+860	RSC13	n/a	"Airborne Infection Isolation (AII) Bedroom, SCI"	380
+861	RSC14	n/a	"Airborne Infection Isolation (AII) Anteroom, SCI"	115
+862	RSC15	n/a	"Living Room, SCI"	200
+863	RSC16	n/a	"Dining Room, SCI"	200
+864	RSC17	n/a	"Kitchen, SCI"	200
+865	RSC18	n/a	"Den, SCI"	160
+866	RSC19	n/a	"Laundry Room, SCI"	140
+867	RSC21	n/a	"Computer Room, SCI"	140
+868	RSC28	n/a	"Evacuation Equipment Room, SCI"	100
+869	RSC29	n/a	"Storage Room, SCI"	100
+870	RSC35	n/a	"Equipment Room, SCI"	120
+871	RSC37	n/a	"Recreation Storage Room, SCI"	100
+872	RSC41	n/a	"Multipurpose Recreation Room, SCI"	650
+873	RSC43	n/a	"Recreation Therapist Treatment Station, SCI"	56
+874	RSC47	n/a	"Exam / Treatment Room, SCI"	195
+875	RSC48	n/a	"Multipurpose Recreation Storage Room, SCI"	100
+876	RSC51	n/a	"General Storage Room, SCI"	200
+877	RSC53	n/a	"Respiratory Therapy Equipment Storage Room, SCI"	240
+878	RSC61	n/a	"Physical Therapy (PT) Room, SCI"	1300
+879	RSC62	n/a	"Wheelchair Fitting Room, SCI"	100
+880	RSC63	n/a	"Physical Therapist Treatment Station, SCI"	56
+881	RSC64	n/a	"PT Equipment Storage Room, SCI"	200
+882	RSC71	n/a	"Kinesiotherapy (KT) Room, SCI"	980
+883	RSC73	n/a	"Kinesiotherapist Treatment Station, SCI"	56
+884	RSC74	n/a	"KT Equipment Storage Room, SCI"	150
+885	RSC81	n/a	"Occupational Therapy (OT) Room, SCI"	780
+886	RSC83	n/a	"Occupational Therapist Treatment Station, SCI"	56
+887	RSC84	n/a	"OT Equipment Storage Room, SCI"	100
+888	RSC91	n/a	"ADL Kitchen, SCI"	240
+889	RSC92	n/a	"ADL Bathroom, SCI"	100
+890	RSC93	n/a	"ADL Staff Treatment Station, SCI"	56
+891	RSC94	n/a	"ADL Closet, SCI"	40
+892	RSH01	PSPH1	"Front Porch, Sml Hs"	0
+893	RSH02	LOB02	"Vestibule, Sml Hs"	140
+894	RSH06	CLHFY	"Foyer, Sml Hs"	80
+895	RSH11	BRNP1	"Single Universal Bedroom, Sml Hs"	230
+896	RSH12	TLTS2	"Bedroom Closet, Sml Hs"	8
+897	RSH16	CLHAS	"Sitting Alcove, Sml Hs"	120
+898	RSH21	DAYR1	"Living Room, Sml Hs"	450
+899	RSH26	FSCD1	"Dining Room, Sml Hs"	525
+900	RSH31	IPK01	"Kitchen, Sml Hs"	360
+901	RSH36	SRS01	"Pantry, Sml Hs"	80
+902	RSH38	DAYR1	"Den, Sml Hs"	180
+903	RSH41	LAUN1	"Laundry Room, Sml Hs"	140
+904	RSH44	n/a	"Balcony, Sml Hs"	0
+905	RSH45	n/a	"Patio, Sml Hs"	0
+906	RSH46	n/a	"Garden, Sml Hs"	0
+907	RSH51	SRS01	"Specialty Storage Room, Sml Hs"	100
+908	RSH54	STEQ1	"Equipment Storage Room, Sml Hs"	120
+909	RSH57	n/a	"Garage / Receiving, Sml Hs"	480
+910	RSH61	n/a	"Covered Entrance, Sml Hs"	0
+911	RSH62	DAYR1	"Multipurpose Activity Room, Sml Hs"	1100
+912	RSH66	IPKO1	"Kitchenette, Sml Hs"	140
+913	RSH68	SRS01	"Multipurpose / Activity Room Storage Room, Sml Hs"	140
+914	RSH71	CLST1	"Snoezelen Sensory Therapy Room, Sml Hs"	160
+915	RSH73	CLST1	"Namaste Sensory Therapy Room, Sml Hs"	160
+916	RSH76	n/a	"Covered Entrance, Sml Hs"	0
+917	RSH81	EXRG0	"Exam Room, Sml Hs"	125
+918	RSH83	RHPO1	"PT / OT Exercise Gym, Sml Hs"	500
+919	RSH86	CLCGR	"Great Room, Sml Hs"	1400
+920	RSH91	PSTR1	"Theater, Sml Hs"	450
+921	RSH95	VACH1	"Hair Care Salon / Shop, Sml Hs"	300
+922	SB001	n/a	"Gowned Imaging Patient Waiting, Bldg Sprt"	60
+923	SB002	WRC03	"General Waiting Alcove, Bldg Sprt"	45
+924	SB003	WRC01	"General Waiting, Bldg Sprt"	60
+925	SB051	WTF01	"Family Waiting, Bldg Sprt"	125
+926	SB071	n/a	"Accessible Waiting, Bldg Sprt"	105
+927	SB086	WRF01	"Patient / Visitor Lounge, Bldg Sprt"	100
+928	SB091	RCIF1	"Contact / Information Station, Bldg Sprt"	30
+929	SB093	SRLW1	"Wheelchair Storage Room, Bldg Sprt"	100
+930	SB101	n/a	"Veteran Drop-off, Bldg Sprt"	0
+931	SB102	LOVP1	"Valet Parking Station, Bldg Sprt"	0
+932	SB103	n/a	"Bicycle Rack Area, Bldg Sprt"	0
+933	SB104	n/a	"Service Dog Walk Area, Bldg Sprt"	0
+934	SB105	n/a	"Veteran Appreciation Area, Bldg Sprt"	30
+935	SB106	n/a	"Covered Drop-off / Pick-Up, Bldg Sprt"	0
+936	SB108	VES01	"Entry / Lobby, Bldg Sprt"	80
+937	SB111	LOB01	"Lobby, Bldg Sprt"	300
+938	SB113	RCIF1	"Information Kiosk, Bldg Sprt"	40
+939	SB117	LOB01	"Staff Entrance Lobby, Bldg Sprt"	100
+940	SB121	LOB03	"Telephone Alcove, Bldg Sprt"	30
+941	SB122	LOB04	"Water Fountain Alcove, Bldg Sprt"	20
+942	SB123	n/a	"Water Fountain, Bldg Sprt"	30
+943	SB125	RCCS3	"Concierge Station, Bldg Sprt"	180
+944	SB131	RCIF2	"Information Desk, Bldg Sprt"	140
+945	SB132	RCIF1	"SCI Information Desk, Bldg Sprt"	65
+946	SB133	RCIF1	"Information Station, Bldg Sprt"	10
+947	SB134	TSPP1	"Polytrauma IP Patient Toilet / Shower, Bldg Sprt"	115
+948	SB135	TSPP1	"Polytrauma IP Airborne Infection Isolation (AII) Toilet / Shower, Bldg Sprt"	115
+949	SB136	TNPFM	"Family Toilet, Bldg Sprt"	80
+950	SB137	DR001	"Patient Dressing Cubicle, Bldg Sprt"	35
+951	SB138	DR001	"Patient Dressing Room, Bldg Sprt"	60
+952	SB139	LR001	"Patient Personal Property Locker Alcove, Bldg Sprt"	20
+953	SB142	TSPP1	"SCI AC Airborne Infection Isolation Patient Toilet / Shower, Bldg Sprt"	150
+954	SB143	TSPP1	"SCI LTC Airborne Infection Isolation Resident Toilet / Shower, Bldg Sprt"	150
+955	SB144	TNPG1	"SCI Ambulatory Universal Patient Toilet, Bldg Sprt"	60
+956	SB147	TSPG1	"Med Surg Inpatient Toilet / Shower, Bldg Sprt"	70
+957	SB148	TSPM1	"Mental Health Inpatient Toilet / Shower, Bldg Sprt"	75
+958	SB150	TSPP1	"SCI Ambulatory Patient Universal Toilet / Shower, Bldg Sprt"	85
+959	SB151	SHPMH	"MH Patient Shower, Bldg Sprt"	70
+960	SB154	BTSCI	"SCI AC Single Patient Bedroom Toilet / Shower, Bldg Sprt"	120
+961	SB155	BSCI3	"SCI AC Double Patient Bedroom Toilet / Shower, Bldg Sprt"	170
+962	SB156	BTSCI	"SCI LTC Single Resident Bedroom Toilet / Shower, Bldg Sprt"	130
+963	SB157	BSCI3	"SCI LTC Double Resident Bedroom Toilet / Shower, Bldg Sprt"	130
+964	SB158	BRPU1	"Small House Single-User Patient Bathroom, Bldg Sprt"	160
+965	SB159	TLTF2	"Women Veteran Patient Toilet, Bldg Sprt"	75
+966	SB160	TSPP1	"Polytrauma Resident Toilet / Shower, Bldg Sprt"	80
+967	SB161	TSPB1	"Bariatric Inpatient Toilet / Shower, Bldg Sprt"	85
+968	SB163	TPB01	"Bariatric Patient Toilet, Bldg Sprt"	75
+969	SB164	TPSP1	"Urine Specimen Collection Toilet, Bldg Sprt"	60
+970	SB165	n/a	"SCI Ambulatory Patient Female Toilet / Shower, Bldg Sprt"	85
+971	SB166	n/a	"SCI Ambulatory Patient Male Toilet / Shower, Bldg Sprt"	85
+972	SB167	TSPG1	"Universal Isolation Patient Toilet / Shower, Bldg Sprt"	70
+973	SB168	TNPG1	"Medical Media Photography Service Toilet / Changing Room, Bldg Sprt"	60
+974	SB171	TSPG1	"GYN Patient Toilet / Shower, Bldg Sprt"	80
+975	SB173	SHSF1	"Female Non-Patient Shower, Bldg Sprt"	70
+976	SB174	TSSF1	"Female Non-Patient Toilet / Shower, Bldg Sprt"	60
+977	SB176	TSSF1	"Female Patient Toilet / Shower, Bldg Sprt"	85
+978	SB177	TNPF1	"Female Six-Stall Non-Patient Multi-User Toilet, Bldg Sprt"	235
+979	SB179	n/a	"Female Two-Stall Non-Patient Multi-User Toilet, Bldg Sprt"	205
+980	SB180	BTPU1	"Polytrauma Apartment Toilet / Shower, Bldg Sprt"	80
+981	SB183	TNPM1	"Male Four-Stall Non-Patient Multi-User Toilet, Bldg Sprt"	250
+982	SB184	SHSM1	"Male Staff Shower, Bldg Sprt"	70
+983	SB185	TSSU1	"Male Non-Patient Toilet / Shower, Bldg Sprt"	85
+984	SB188	TSSM1	"Male Patient Toilet / Shower, Bldg Sprt"	85
+985	SB189	n/a	"Male Two-Stall Non-Patient Multi-User Toilet, Bldg Sprt"	235
+986	SB190	TPMH1	"MH Patient Toilet, Bldg Sprt"	60
+987	SB191	TNPG1	"Universal Non-Patient Toilet, Bldg Sprt"	60
+988	SB195	SHSU1	"Universal Non-Patient Shower, Bldg Sprt"	70
+989	SB196	TSSU1	"Universal Non-Patient Toilet / Shower, Bldg Sprt"	85
+990	SB198	TSPG1	"Universal Patient Specimen Collection Toilet, Bldg Sprt"	60
+991	SB199	TSPG1	"Universal Patient Toilet / Shower, Bldg Sprt"	60
+992	SB201	TPG01	"Universal Patient Toilet, Bldg Sprt"	60
+993	SB202	TLTF1	"Female Non-Patient Toilet, Bldg Sprt"	60
+994	SB203	TLTM1	"Male Non-Patient Toilet, Bldg Sprt"	60
+995	SB204	n/a	"Patient Toilet / Dressing Room, Bldg Sprt"	70
+996	SB205	n/a	"MH Enclosed Porch, Bldg Sprt"	240
+997	SB206	n/a	"MH Outdoor Courtyard, Bldg Sprt"	0
+998	SB207	n/a	"Outdoor Seating, Bldg Sprt"	0
+999	SB208	LR004	"Universal Patient Locker Room, Bldg Sprt"	80
+1000	SB209	LRFM1	"Female Patient Locker Room, Bldg Sprt"	100
+1001	SB210	LRML1	"Male Patient Locker Room, Bldg Sprt"	100
+1002	SB211	n/a	"Environmental Services Closet, Bldg Sprt"	60
+1003	SB212	n/a	"Environmental Services Storage Room, Bldg Sprt"	80
+1004	SB215	SRS01	"Building Management Storage Room, Bldg Sprt"	120
+1005	SB218	n/a	"Mobile Technology Docking Area, Bldg Sprt"	0
+1006	SB221	n/a	"Mobile Technology Covered Walkway, Bldg Sprt"	0
+1007	SB222	n/a	"Mobile Technology Utility / Power Conection, Bldg Sprt"	0
+1008	SB226	BSBO1	"Breakout Room, Bldg Sprt"	180
+1009	SB234	BSFY1	"Foyer, Bldg Sprt"	140
+1010	SB241	CLHGM	"Gas Manifold Room, Bldg Sprt"	40
+1011	SB244	JANC1	"Housekeeping Aides Closet (HAC), Bldg Sprt"	60
+1012	SB252	CSSW1	"Wheelchair / Stretcher Alcove, Bldg Sprt"	50
+1013	SB253	n/a	"Stretcher Alcove, Bldg Sprt"	20
+1014	SB254	n/a	"Stretcher Bay, Bldg Sprt"	80
+1015	SB255	n/a	"Stretcher Room, Bldg Sprt"	120
+1016	SB258	n/a	"Wheelchair / Stretcher / Lift Parking, Bldg Sprt"	60
+1017	SB259	SRS01	"Wheelchair / Stretcher / Lift Storage Room, Bldg Sprt"	80
+1018	SB261	SRLW2	"Wheelchair / Stretcher Storage Room, Bldg Sprt"	40
+1019	SB262	SRLW1	"Wheelchair Alcove, Bldg Sprt"	30
+1020	SB264	n/a	"Wheelchair / Lift Storage Room, Bldg Sprt"	60
+1021	SB267	UTR01	"Recycling Room, Bldg Sprt"	40
+1022	SB272	n/a	"Recycling Station, Bldg Sprt"	10
+1023	SB275	n/a	"Telephone Switchboard Room, Bldg Sprt"	120
+1024	SB280	n/a	"Trash / Recycling Holding, Bldg Sprt"	60
+1025	SB283	BSTC5	"Trash Collection Room, Bldg Sprt"	80
+1026	SB287	SRHM1	"Hazardous Materials Holding Room, Bldg Sprt"	30
+1027	SB289	n/a	"Trash Holding Room, Bldg Sprt"	60
+1028	SB291	VES01	"Walk-in Vestibule, Bldg Sprt"	60
+1029	SB295	VES01	"Security Vestibule, Bldg Sprt"	80
+1030	SB297	LR001	"Visitor Personal Property Locker, Bldg Sprt"	60
+1031	SB301	n/a	"Drafting Room, Eng Svc"	200
+1032	SB311	n/a	"ID Library Samples / Workroom, Eng Svc"	240
+1033	SB313	SRS01	"ID Furniture Warehouse / Storage Room, Eng Svc"	500
+1034	SB316	n/a	"Control Center, Eng Svc"	300
+1035	SB318	BMRA1	"Receiving / Cleaning Room, Eng Svc"	100
+1036	SB321	BMER1	"Biomedical Equipment Repair Room, Eng Svc"	400
+1037	SB327	STEQ1	"Biomedical Equipment Storage Room, Eng Svc"	400
+1038	SB334	BMWS1	"Biomedical Engineer Workroom, Eng Svc"	100
+1039	SB341	n/a	"Carpentry Floor Mounted Tools / Equipment Shop, Eng Svc"	500
+1040	SB342	n/a	"Carpentry Workbench / Worktable Shop, Eng Svc"	400
+1041	SB351	SRS01	"Carpentry Storage Room, Eng Svc"	250
+1042	SB357	n/a	"Air Conditioning Floor Mounted Tools / Equipment Shop, Eng Svc"	300
+1043	SB358	n/a	"Air Conditioning Workbench / Worktable Shop, Eng Svc"	400
+1044	SB367	SRS01	"Air Conditioning Storage Room, Eng Svc"	250
+1045	SB374	n/a	"Plumbing Floor Mounted Tools / Equipment Shop, Eng Svc"	200
+1046	SB375	n/a	"Plumbing Workbench / Worktable Shop, Eng Svc"	400
+1047	SB384	SRS01	"Plumbing Storage Room, Eng Svc"	200
+1048	SB391	n/a	"Electrical Floor Mounted Tools / Equipment Shop, Eng Svc"	150
+1049	SB392	n/a	"Electrical Workbench / Worktable Shop, Eng Svc"	400
+1050	SB401	SRS01	"Electrical Storage Room, Eng Svc"	250
+1051	SB407	n/a	"Painting Floor Mounted Tools / Equipment Shop, Eng Svc"	80
+1052	SB408	n/a	"Painting Workbench / Worktable Shop, Eng Svc"	400
+1053	SB417	SRS01	"Painting Storage Room, Eng Svc"	100
+1054	SB424	n/a	"Painting Shop, Eng Svc"	500
+1055	SB425	n/a	"Mechanical Floor Mounted Tools / Equipment Shop, Eng Svc"	300
+1056	SB426	n/a	"Mechanical Workbench / Worktable Shop, Eng Svc"	400
+1057	SB435	SRS01	"Mechanical Storage Room, Eng Svc"	100
+1058	SB443	n/a	"Masonry Workbench / Worktable Shop, Eng Svc"	400
+1059	SB452	SRS01	"Masonry Storage Room, Eng Svc"	100
+1060	SB458	n/a	"Grounds Maintenance Workbench / Worktable Shop, Eng Svc"	400
+1061	SB467	SRS01	"Grounds Maintenance Storage Room, Eng Svc"	100
+1062	SB474	SRS01	"Grounds Maintenance Covered Storage Room, Eng Svc"	400
+1063	SB475	n/a	"Locksmithing Workbench / Worktable Shop, Eng Svc"	120
+1064	SB477	SRS01	"Locksmithing Storage Room, Eng Svc"	80
+1065	SB478	n/a	"Multi-use Shop Floor Mounted Tools / Equipment, Eng Svc"	350
+1066	SB479	n/a	"Multi-use Workbench / Worktable Shop, Eng Svc"	450
+1067	SB481	SRS01	"Multi-use Storage Room, Eng Svc"	250
+1068	SB482	SRS01	"Multi-use Flammables Storage Room, Eng Svc"	100
+1069	SB483	SRS01	"Building Maintenance Storage Room, Eng Svc"	300
+1070	SB501	DOCK1	"Clean Receiving Dock, Lgstcs Svc"	200
+1071	SB511	DOCK1	"Soiled Receiving Dock, Lgstcs Svc"	200
+1072	SB517	DOCK1	"Nutrition and Food Service Receiving Dock, Lgstcs Svc"	100
+1073	SB521	CLNRB	"Receiving Room, Lgstcs Svc"	100
+1074	SB522	CLNRB	"Breakdown Room, Lgstcs Svc"	200
+1075	SB531	MMST1	"Logical Unit of Measure Delivery (LUM) Staging Room, Lgstcs Svc"	100
+1076	SB541	SRS01	"Full Gas Cylinder Storage Room, Lgstcs Svc"	40
+1077	SB551	SRS01	"Empty Gas Cylinder Storage Room, Lgstcs Svc"	40
+1078	SB561	SRS01	"Flammable Storage Room, Lgstcs Svc"	60
+1079	SB565	SRS01	"Corrosive Storage Room, Lgstcs Svc"	165
+1080	SB571	MMRP1	"Receiving / Issue Room, Lgstcs Svc"	400
+1081	SB581	SRS01	"Equipment Prep / Staging Storage Room, Lgstcs Svc"	80
+1082	SB591	SRS01	"Flex Storage Room, Lgstcs Svc"	80
+1083	SB601	SRS01	"Pandemic Storage Room, Lgstcs Svc"	200
+1084	SB611	SRS01	"Emergency Preparedness Storage Room, Lgstcs Svc"	200
+1085	SB621	SRS01	"Bulk Items Storage Room, Lgstcs Svc"	5100
+1086	SB631	SRS01	"Unit Items Storage Room, Lgstcs Svc"	780
+1087	SB641	MMRP1	"Receiving Breakdown / Inspection Room, Lgstcs Svc"	120
+1088	SB644	SRS01	"Sterile Consumables (Soft Goods) Storage Room, Lgstcs Svc"	270
+1089	SB652	NT001	"Pneumatic Tube Station, Lgstcs Svc"	30
+1090	SB653	MRMB1	"Mailroom, Lgstcs Svc"	120
+1091	SB658	RPR01	"Copy Room / Mail Distribution, Lgstcs Svc"	100
+1092	SB661	RPR02	"High Volume Reproduction Room, Lgstcs Svc"	260
+1093	SB662	MRCS1	"Courier Service Drop-off / Pick-up Room, Lgstcs Svc"	60
+1094	SB663	SRS01	"General Storage Room, Lgstcs Svc"	80
+1095	SB679	SRS01	"Sml Hs Comm Ctr Hair Care Salon / Shop Storage Room, Lgstcs Svc"	60
+1096	SB680	MMRP1	"Sml Hs Comm Ctr Receiving / Loading, Lgstcs Svc"	500
+1097	SB681	CLNRB	"Sml Hs Receiving / Breakdown Room, Lgstcs Svc"	100
+1098	SB682	CLNRB	"Sml Hs Nghbrhd Ctr Receiving / Breakdown Room, Lgstcs Svc"	280
+1099	SB684	DOCK1	"Receiving Dock, Lgstcs Svc"	200
+1100	SB687	CLNRB	"Receiving / Breakdown Room, Lgstcs Svc"	100
+1101	SB695	MMRP2	"Clean Materials Handling Room, Lgstcs Svc"	80
+1102	SB701	MMRP3	"Soiled Materials Handling Room, Lgstcs Svc"	80
+1103	SB707	SRS01	"Storage Alcove, Lgstcs Svc"	20
+1104	SB711	SRPB1	"Patient Belongings Room, Lgstcs Svc"	80
+1105	SB721	STEQ1	"Medical Equipment Storage Room, Lgstcs Svc"	80
+1106	SB735	UCCL1	"Clean Utility Alcove, Lgstcs Svc"	15
+1107	SB737	UCCL1	"Clean Utility Room, Lgstcs Svc"	60
+1108	SB741	USCL1	"Soiled Utility Alcove, Lgstcs Svc"	20
+1109	SB743	USCL1	"Soiled Utility Room, Lgstcs Svc"	40
+1110	SB746	SRS01	"Medical Specialty Supplies Storage Room, Lgstcs Svc"	80
+1111	SB763	SRS04	"Sterile Supplies Room, Lgstcs Svc"	60
+1112	SB773	SRS01	"Office Storage Room, Lgstcs Svc"	80
+1113	SB776	STEQ1	"Office Equipment Storage Room, Lgstcs Svc"	80
+1114	SB780	STEQ1	"Transfer Equipment Storage Room, Lgstcs Svc"	120
+1115	SB783	STEQ1	"HIMS Transcription Equipment Storage Room, Lgstcs Svc"	100
+1116	SB811	RCSS1	"Security Room, Police Svc"	60
+1117	SB816	POH01	"Holding Room, Police Svc"	60
+1118	SB821	n/a	"Secure Evidence Room, Police Svc"	30
+1119	SB831	SRS01	"Armory / Weapons Storage Room, Police Svc"	60
+1120	SB841	n/a	"Identification / Registration Issuance, Police Svc"	80
+1121	SB851	RCSS3	"Security Station, Police Svc"	80
+1122	SB853	n/a	"Metal Detector Station, Police Svc"	160
+1123	SB854	n/a	"Private Search Room, Police Svc"	120
+1124	SC001	DL001	"Patient Discharge Room, Clncl Sprt"	100
+1125	SC004	n/a	"SCI Admissions / Discharge, Clncl Sprt"	140
+1126	SC005	n/a	"Volunteer Welcome Station, Clncl Sprt"	80
+1127	SC007	RCA01	"AED Alcove, Clncl Sprt"	15
+1128	SC010	RCA04	"Blanket Warmer Alcove, Clncl Sprt"	10
+1129	SC013	RCA05	"CAD / CAM Alcove, Clncl Sprt"	30
+1130	SC016	CSCQ1	"Clean Cart Holding Room, Clncl Sprt"	80
+1131	SC049	PSBC1	"Covered Balcony, Clncl Sprt"	0
+1132	SC051	PSCP1	"Covered Patio, Clncl Sprt"	0
+1133	SC052	CSCC1	"Crash Cart Alcove, Clncl Sprt"	20
+1134	SC063	SRS01	"Clinical Training Materials Storage Room, Clncl Sprt"	80
+1135	SC066	PEHW2	"Height / Weight Accessible Station Alcove, Clncl Sprt"	60
+1136	SC067	EXR11	"Patient Height / Weight Alcove, Clncl Sprt"	40
+1137	SC072	CSIC3	"Isolation Cart / Wound Treatment Cart Alcove, Clncl Sprt"	30
+1138	SC075	CLHKH	"Kitchen Housekeeping Closet, Clncl Sprt"	15
+1139	SC078	n/a	"Linen Closet, Clncl Sprt"	20
+1140	SC079	CSME1	"Medical Equipment Alcove, Clncl Sprt"	20
+1141	SC083	CSMP1	"Medication Preparation Room, Clncl Sprt"	80
+1142	SC087	XRM02	"Mobile C-Arm Alcove, Clncl Sprt"	20
+1143	SC090	n/a	"Mobile Equipment Alcove, Clncl Sprt"	20
+1144	SC092	STEQ1	"Mobile Equipment Storage Room, Clncl Sprt"	80
+1145	SC093	CSPL1	"Mobile Patient Lift Alcove, Clncl Sprt"	20
+1146	SC096	CSMU2	"Mobile Ultrasound Alcove, Clncl Sprt"	20
+1147	SC099	XRM01	"Mobile X-Ray Machine Alcove, Clncl Sprt"	30
+1148	SC101	CALC1	"Number of LUM Staging based on total number of patient beds, Clncl Sprt"	40
+1149	SC102	CALC1	"Number of LUM Staging based on total number of Exam / Procedure Rooms, Clncl Sprt"	40
+1150	SC103	CALC1	"Number of Clean Truck Bays, Clncl Sprt"	0
+1151	SC105	CALC1	"Number of Bulk Items Storage Room based on total number of patient beds, Clncl Sprt"	4500
+1152	SC106	CALC1	"Number of Bulk Items Storage Room based on total number of Exam / Procedure Rooms, Clncl Sprt"	200
+1153	SC107	CALC1	"Number of ED Exam / Treatment Rooms, Clncl Sprt"	0
+1154	SC108	CALC1	"Number of Unit Items Storage Room based on total number of patient beds, Clncl Sprt"	620
+1155	SC109	CALC1	"Number of Unit Items Storage Room based on total number of Exam / Procedure Rooms, Clncl Sprt"	80
+1156	SC110	CALC1	"Bulk Items Storage Room NSF based on total number of Operating Rooms, Clncl Sprt"	400
+1157	SC111	CALC1	"Number of General Radiology Imaging Rooms, Clncl Sprt"	0
+1158	SC112	CALC1	"Number of Chest Imaging Rooms, Clncl Sprt"	0
+1159	SC113	CALC1	"Number of Radiology / Fluoroscopy (R/F) Imaging Rooms, Clncl Sprt"	0
+1160	SC114	CALC1	"Number of Multipurpose Radiology / Fluoroscopy (R/F) Imaging Rooms, Clncl Sprt"	0
+1161	SC115	CALC1	"Number of Prone Breast Imaging Rooms, Clncl Sprt"	0
+1162	SC116	CALC1	"Number of Standing Breast Imaging Rooms, Clncl Sprt"	0
+1163	SC117	CALC1	"Number of ABUS Scanning Rooms, Clncl Sprt"	0
+1164	SC118	CALC1	"Number of Ultrasound Scanning Rooms, Clncl Sprt"	0
+1165	SC119	CALC1	"Number of Bone Densitometry Scanning Rooms, Clncl Sprt"	0
+1166	SC121	CALC1	"Number of CT Scanning Rooms, Clncl Sprt"	0
+1167	SC122	CALC1	"Number of MRI Scanning Rooms, Clncl Sprt"	0
+1168	SC123	CALC1	"Number of Nuclear Medicine Scanning Rooms, Clncl Sprt"	0
+1169	SC124	CALC1	"Number of SPECT/CT Scanning Rooms, Clncl Sprt"	0
+1170	SC125	CALC1	"Number of Thyroid Probe Scanning Rooms, Clncl Sprt"	0
+1171	SC126	CALC1	"Number of PET/CT Scanning Rooms, Clncl Sprt"	0
+1172	SC127	CALC1	"Number of PET/MRI Scanning Rooms, Clncl Sprt"	0
+1173	SC128	CALC1	"Number of Unit Items Storage Room based on total number of Operating Rooms, Clncl Sprt"	80
+1174	SC130	CALC1	"Number of Intensive Care Nursing Units, Clncl Sprt"	0
+1175	SC131	CALC1	"Number of Medical / Surgical Inpatient Units, Clncl Sprt"	0
+1176	SC133	CALC1	"PMR Svc Physical Therapy (PT) Range, Clncl Sprt"	0
+1177	SC134	CALC1	"PMR Svc Kinesiotherapy (KT) Range, Clncl Sprt"	0
+1178	SC135	CALC1	"PMR Svc Occupational Therapy (OT) Range, Clncl Sprt"	0
+1179	SC136	CALC1	"PMR Svc Assistive Technology (ATech) Range, Clncl Sprt"	0
+1180	SC137	CALC1	"PMR Svc Chiropractic Care (CC) Range, Clncl Sprt"	0
+1181	SC138	CALC1	"PMR Svc Driver Training (DT), Clncl Sprt"	0
+1182	SC139	CALC1	"PMR Svc Aquatic Therapy (AT), Clncl Sprt"	0
+1183	SC145	CALC1	"Number of SCI Acute Care Patient Care Units (AC-PCU), Clncl Sprt"	0
+1184	SC146	CALC1	"Number of SCI Long Term Care Resident Homes (LTC-Hs), Clncl Sprt"	0
+1185	SC147	CALC1	"Number of Small House Model Neighborhood Centers, Clncl Sprt"	0
+1186	SC148	CALC1	"Number of Soiled Truck Bays, Clncl Sprt"	0
+1187	SC149	n/a	"MH Nurse Observation Alcove, Clncl Sprt"	10
+1188	SC152	NSTA1	"Nurse Station, Clncl Sprt"	60
+1189	SC156	WRCH1	"Nurse Report Room, Clncl Sprt"	200
+1190	SC162	CLHPY	"Pantry, Clncl Sprt"	80
+1191	SC164	IPK01	"Kitchenette / Pantry, Clncl Sprt"	80
+1192	SC165	RCHK2	"Patient Check-in Kiosk, Clncl Sprt"	55
+1193	SC170	CLSC1	"Patient Education Kiosk, Clncl Sprt"	40
+1194	SC171	CLSC3	"Patient Education Room, Clncl Sprt"	80
+1195	SC172	CLSC2	"Patient Education Workstation, Clncl Sprt"	60
+1196	SC174	PAIA1	"Patient Interview Room, Clncl Sprt"	120
+1197	SC176	FILE1	"Patient Records File Room, Clncl Sprt"	80
+1198	SC180	n/a	"Portable Imaging Equipment Alcove, Clncl Sprt"	20
+1199	SC183	RCP01	"Reception, Clncl Sprt"	85
+1200	SC189	SINK1	"Handwashing Station, Clncl Sprt"	10
+1201	SC192	LR005	"Scrubs Distribution Alcove, Clncl Sprt"	20
+1202	SC195	FILE1	"Secure Documents Storage Room, Clncl Sprt"	80
+1203	SC199	ORSA1	"Scrub Sink Alcove, Clncl Sprt"	20
+1204	SC202	CHS01	"Soiled Cart Holding Room, Clncl Sprt"	80
+1205	SC206	CSUS6	"Soiled Holding Room, Clncl Sprt"	60
+1206	SC213	UTLC3	"Soiled Linen Chute Room, Clncl Sprt"	40
+1207	SC228	RCA07	"Specimen Collection Alcove, Clncl Sprt"	20
+1208	SC231	WRCH1	"Staff Workroom, Clncl Sprt"	120
+1209	SC243	n/a	"Team Room (2 workstations), Clncl Sprt"	120
+1210	SC249	WRTM3	"Tele-Health Room, Clncl Sprt"	120
+1211	SC251	NSTA1	"PET/MRI Nurse Station, Clncl Sprt"	60
+1212	SC252	CSSW1	"Wheelchair / Stretcher Alcove, Clncl Sprt"	80
+1213	SC253	n/a	"Tele-Health Suite, Clncl Sprt"	200
+1214	SC256	SSWR1	"Touchdown Station, Clncl Sprt"	65
+1215	SC257	UTLC2	"Waste Disposal Chute Room, Clncl Sprt"	40
+1216	SC267	n/a	"Specialty Consult Room, Clncl Sprt"	125
+1217	SC271	OFDC2	"Universal Consult Room, Clncl Sprt"	100
+1218	SC273	n/a	"Women's Health Consult Room, Clncl Sprt"	120
+1219	SC274	n/a	"Veteran Video Connect Station, Clncl Sprt"	80
+1220	SC276	n/a	"Demonstration Kitchen, Clncl Sprt"	120
+1221	SC281	n/a	"Supply Alcove, Clncl Sprt"	40
+1222	SC282	n/a	"Medical Supplies Alcove, Clncl Sprt"	30
+1223	SC291	RRPR1	"Patient Holding Bay, Clncl Sprt"	80
+1224	SC293	RRPR2	"Patient Holding Room, Clncl Sprt"	140
+1225	SC294	NCWD3	"Nourishment Room, Clncl Sprt"	60
+1226	SC296	PSNS1	"Nourishment Alcove, Clncl Sprt"	40
+1227	SC391	TETR1	"Telecommunications Room (TR), OIT"	20
+1228	SC393	TEDR1	"Demarc Room, OIT"	420
+1229	SC394	n/a	"PMR Svc ATech High Bandwidth Access Equipment Closet, OIT"	60
+1230	SC399	CMP02	"Remote Server Room, OIT"	100
+1231	SC401	n/a	"Receiving Room, EMS"	300
+1232	SC407	n/a	"Sorting / Washing Room, EMS"	800
+1233	SC413	LCCL2	"Clean Linen Storage Room, EMS"	240
+1234	SC418	n/a	"Central Liquid Supply Room, EMS"	200
+1235	SC419	CWSH2	"Cart Washer Room, EMS"	140
+1236	SC420	LCCL1	"Clean Linen Processing, EMS"	1000
+1237	SC426	LCFA1	"Clean Linen Holding / Assembly Room, EMS"	300
+1238	SC432	LCCL2	"Distribution Cart Storage Room, EMS"	200
+1239	SC438	n/a	"Clean Linen Pack Preparation Room, EMS"	240
+1240	SC439	LCS01	"Linen Repair Room, EMS"	120
+1241	SC440	UTLC1	"Chute Room, EMS"	100
+1242	SC441	LCSL1	"Soiled Cart Staging Room, EMS"	120
+1243	SC445	LCCL2	"Clean Linen Cart Storage Room, EMS"	120
+1244	SC446	LCUC1	"Uniform Exchange, EMS"	140
+1245	SC450	n/a	"MH Patient Laundry Room, EMS"	80
+1246	SC452	LCSL1	"Soiled Linen Room, EMS"	40
+1247	SC455	LCSL1	"Soiled Linen Distribution Room, EMS"	120
+1248	SC459	LCCL1	"Clean Linen Distribution Room, EMS"	240
+1249	SC467	LCCL1	"Clean Linen Alcove, EMS"	15
+1250	SC471	LCCL1	"Clean Linen Room, EMS"	40
+1251	SC474	UTC01	"Trash Collection Room, EMS"	200
+1252	SC476	STEQ1	"Supplies / Large Equipment Storage Room, EMS"	200
+1253	SC488	SRS01	"Environmental Management Storage Room, EMS"	60
+1254	SC491	SRS01	"Patient Belongings Storage Room, EMS"	300
+1255	SC501	n/a	"Health Sciences Circulation Desk Area, Lbry Svc"	180
+1256	SC506	OFA10	"Health Sciences Computer Reference Workstation, Lbry Svc"	24
+1257	SC511	n/a	"Health Sciences Card Catalog Area, Lbry Svc"	50
+1258	SC516	n/a	"Health Sciences Audiovisual Room, Lbry Svc"	250
+1259	SC521	n/a	"Health Sciences Microfilm / Print Room, Lbry Svc"	80
+1260	SC524	LIBS1	"Health Sciences Seating Area, Lbry Svc"	300
+1261	SC531	LIBP1	"Health Sciences Current Periodicals Area, Lbry Svc"	15
+1262	SC536	LIBP1	"Health Sciences Bound Periodicals Area, Lbry Svc"	30
+1263	SC538	n/a	"Health Sciences Microfilm Area, Lbry Svc"	15
+1264	SC541	n/a	"Health Sciences Monograph Collection Area, Lbry Svc"	15
+1265	SC546	n/a	"Health Sciences Reference Collection Area, Lbry Svc"	15
+1266	SC551	n/a	"PERC Circulation Desk Area, Lbry Svc"	180
+1267	SC553	LIBP1	"PERC Shelving Area, Lbry Svc"	150
+1268	SC561	n/a	"PERC Reference Area, Lbry Svc"	100
+1269	SC565	LIBS1	"PERC Seating Area, Lbry Svc"	300
+1270	SC571	OFA10	"PERC Computer Reference Workstation, Lbry Svc"	24
+1271	SC574	SRS01	"PERC Storage Room, Lbry Svc"	100
+1272	SC576	STEQ1	"Audiovisual Equipment Storage Room, Lbry Svc"	200
+1273	SC581	WRCH1	"Staff Workroom, Lbry Svc"	240
+1274	SC601	CRA01	"MMS / MMEC Client Review Room, MM Svc"	120
+1275	SC602	MIPF1	"Photography Service Editing / Printing Room, MM Svc"	300
+1276	SC604	MIDR1	"Photography Service Darkroom, MM Svc"	150
+1277	SC605	MICL1	"Photography Service Camera Copy Room, MM Svc"	130
+1278	SC607	MICL1	"Photomicrography / Photomacrography Room, MM Svc"	180
+1279	SC608	MIST1	"Still Photography / Video Recording Studio, MM Svc"	750
+1280	SC611	n/a	"Illustration Service Workroom, MM Svc"	200
+1281	SC614	n/a	"Illustration Service Preparation Room, MM Svc"	280
+1282	SC617	n/a	"Illustration Service Design / Publishing Room, MM Svc"	100
+1283	SC621	n/a	"Audiovisual Service Video Editing / Distribution CCTV Control Room, MM Svc"	250
+1284	SC624	TEEQ1	"Audiovisual Service MATV / CCTV Distribution Headend Room, MM Svc"	150
+1285	SC631	n/a	"Central Copy Room, MM Svc"	500
+1286	SC637	SRS01	"Central Copy Room Storage Room, MM Svc"	150
+1287	SC641	SRS01	"Storage Room, MM Svc"	250
+1288	SC645	SRS01	"Expanded Core Storage Room, MM Svc"	350
+1289	SC646	STEQ1	"Audiovisual (AV) Equipment Storage / Check-out Room, MM Svc"	400
+1290	SC647	CRA01	"Video-Teleconferencing Room, MM Svc"	240
+1291	SC648	CRA01	"MMVSS Client Review Room, MM Svc"	240
+1292	SC651	n/a	"MMVSS Photography Support Editing / Printing Room, MM Svc"	300
+1293	SC652	MIDR1	"MMVSS Photography Support Darkroom, MM Svc"	190
+1294	SC653	MIST1	"MMVSS Photography Support Camera Copy Room, MM Svc"	130
+1295	SC655	MICL1	"MMVSS Photography Support Micro / Macro Room, MM Svc"	100
+1296	SC656	n/a	"MMVSS Photography Support Still Photo Studio, MM Svc"	300
+1297	SC661	n/a	"MMVSS Illustration Support Workroom, MM Svc"	200
+1298	SC664	n/a	"MMVSS Illustration Support Preparation Room, MM Svc"	360
+1299	SC667	n/a	"MMVSS Illustration Support Graphic Design Room, MM Svc"	100
+1300	SC671	n/a	"MMVSS Audiovisual Support Recording Studio, MM Svc"	1000
+1301	SC672	n/a	"MMVSS Audiovisual Support Preparation Room, MM Svc"	400
+1302	SC673	n/a	"MMVSS Audiovisual Support Video Editing Room, MM Svc"	200
+1303	SC674	n/a	"MMVSS Audiovisual Support Recording Room, MM Svc"	50
+1304	SC675	TEEQ1	"MMVSS Audiovisual Support MATV / CCTV Headend Room, MM Svc"	150
+1305	SC681	n/a	"MMVSS Copy Center Support Copy Room, MM Svc"	800
+1306	SC687	SRS01	"MMVSS Copy Center Support Supply Storage Room, MM Svc"	200
+1307	SC689	SRS01	"MMVSS Storage Room, MM Svc"	400
+1308	SC691	STEQ1	"MMVSS Audiovisual (AV) Equipment Storage / Check-out Room, MM Svc"	400
+1309	SC692	n/a	"MMVSS Video-Teleconferencing Room, MM Svc"	240
+1310	SC696	STEQ1	"Audiovisual Equipment Storage Room, MM Svc"	200
+1311	SC697	n/a	"Copy Room, MM Svc"	500
+1312	SC701	n/a	"BL Lab Access / Protocol Room, R&D"	165
+1313	SC702	n/a	"BL Bench Unit, R&D"	500
+1314	SC703	n/a	"BL Ghost Corridor, R&D"	135
+1315	SC704	n/a	"BL Bench Support, R&D"	55
+1316	SC711	n/a	"BL Core Room, R&D"	165
+1317	SC712	n/a	"BL Microscopy Room, R&D"	165
+1318	SC713	n/a	"BL Glassware Washing / Sterilization Room, R&D"	340
+1319	SC714	n/a	"BL Walk-in Refrigerator / Cold Room, R&D"	165
+1320	SC715	n/a	"Research Informatics Room, R&D"	100
+1321	SC716	n/a	"BL General Storage, R&D"	165
+1322	SC717	n/a	"BL Equipment Room, R&D"	165
+1323	SC718	n/a	"BL Service Core, R&D"	330
+1324	SC719	n/a	"BL Darkroom, R&D"	165
+1325	SC721	n/a	"BL Tissue Culture Room, R&D"	165
+1326	SC722	n/a	"BL Isotope Room, R&D"	165
+1327	SC723	n/a	"BL Isotope Work and Storage Room, R&D"	165
+1328	SC724	n/a	"BL Flow Cytometry, R&D"	165
+1329	SC725	n/a	"BL Fume Hood Room, R&D"	165
+1330	SC727	n/a	"Patient Interview Room, R&D"	100
+1331	SC728	n/a	"Exam Room, R&D"	120
+1332	SC729	n/a	"CSR&D Workroom, R&D"	120
+1333	SC741	n/a	"VMU General Procedure / Treatment Room, R&D"	220
+1334	SC747	n/a	"VMU Irradiator Room, R&D"	175
+1335	SC748	n/a	"VMU Diagnostic Laboratory, R&D"	175
+1336	SC751	n/a	"VMU Surgical Preparation Room, R&D"	150
+1337	SC752	n/a	"VMU Operating Room (OR), R&D"	410
+1338	SC753	n/a	"VMU Recovery Room, R&D"	150
+1339	SC754	n/a	"VMU Gown / Scrub Room, R&D"	80
+1340	SC755	n/a	"VMU Workroom, R&D"	175
+1341	SC756	n/a	"VMU Surgical Supply Storage Room, R&D"	80
+1342	SC761	n/a	"VMU Imaging / Behavioral Study Preparation Room, R&D"	340
+1343	SC762	n/a	"VMU Imaging / Behavioral Study Animal Holding Room, R&D"	165
+1344	SC763	n/a	"VMU Behavioral Study Room, R&D"	165
+1345	SC764	n/a	"VMU Imaging Study Room, R&D"	165
+1346	SC771	n/a	"VMU Small Animal Holding Room, R&D"	335
+1347	SC772	n/a	"VMU Behavioral / Metabolic Studies Small Animal Holding Room, R&D"	335
+1348	SC773	n/a	"VMU BSL-2 Small Animal Holding Room, R&D"	335
+1349	SC774	n/a	"VMU BSL-2 Small Animal Holding Anteroom, R&D"	80
+1350	SC775	n/a	"VMU Large Animal Holding Room, R&D"	420
+1351	SC778	n/a	"VMU Small Animal Quarantine Holding Room, R&D"	150
+1352	SC779	n/a	"VMU Large Animal Quarantine Holding Room, R&D"	200
+1353	SC781	n/a	"VMU Necropsy Room, R&D"	190
+1354	SC791	n/a	"VMU Soiled Cage Room, R&D"	500
+1355	SC792	n/a	"VMU Cagewash Equipment Room, R&D"	200
+1356	SC793	n/a	"VMU Clean Cage Room, R&D"	500
+1357	SC794	n/a	"VMU Sterilizer Equipment Room, R&D"	100
+1358	SC797	n/a	"VMU Cagewash Detergent Storage Room, R&D"	80
+1359	SC798	n/a	"VMU Bedding Storage Room, R&D"	150
+1360	SC799	n/a	"VMU Animal Food Preparation Room, R&D"	150
+1361	SC801	n/a	"VMU Receiving Room, R&D"	150
+1362	SC802	n/a	"VMU Laundry Room, R&D"	100
+1363	SC803	n/a	"VMU General Storage Room, R&D"	240
+1364	SC804	n/a	"VMU Carcass Freezer Room, R&D"	75
+1365	SC805	n/a	"VMU Waste Room, R&D"	120
+1366	SC806	n/a	"VMU Food Storage Room, R&D"	120
+1367	SC811	n/a	"Rehabilitation Service Records Storage Room, R&D"	100
+1368	SC812	n/a	"Clinical Service Records Storage Room, R&D"	100
+1369	SC813	n/a	"Health Service Records Storage Room, R&D"	100
+1370	SC814	n/a	"N-P Office Storage Room, R&D"	80
+1371	SC816	n/a	"Flex Storage Room, R&D"	240
+1372	SC821	n/a	"Chemical Waste Room, R&D"	165
+1373	SC822	n/a	"Radioactive Waste Room, R&D"	165
+1374	SC823	n/a	"Biological Waste Room, R&D"	165
+1375	SC851	n/a	"Soiled Transition / Drop-off Anteroom, SPS"	120
+1376	SC856	n/a	"PPE Alcove, SPS"	20
+1377	SC861	CSDE1	"Decontamination Room, SPS"	390
+1378	SC871	CWSH2	"Automated Cart Washer, SPS"	180
+1379	SC872	CWSH3	"Manual Cart Washer, SPS"	140
+1380	SC873	SRS01	"Water Treatment / Detergent Storage Room, SPS"	120
+1381	SC881	CSAR1	"Scope Processing Anteroom, SPS"	60
+1382	SC882	CSPE1	"Scope Processing PPE Alcove, SPS"	60
+1383	SC883	CSSD1	"Scope Processing Decontamination Room, SPS"	120
+1384	SC885	CSSP1	"Scope Processing Room, SPS"	150
+1385	SC891	CSST1	"Scope Staging Room, SPS"	80
+1386	SC892	CSIA1	"Clean Instrument Set Assembly Workroom, SPS"	480
+1387	SC901	SRS01	"Supplies Storage Room, SPS"	80
+1388	SC902	CSSS1	"Steam Sterilization Room, SPS"	200
+1389	SC911	CSLT1	"Low Temp Sterilization Room, SPS"	30
+1390	SC921	CSEO1	"Ethylene Oxide (EtO) Gas Sterilization Room, SPS"	100
+1391	SC922	CSEO2	"Ethylene Oxide (EtO) Gas Sterilization Abator Room, SPS"	100
+1392	SC923	n/a	"Cart Return Area, SPS"	30
+1393	SC931	n/a	"Unloading / Cooling, SPS"	60
+1394	SC936	CSCG1	"Steam Generator, SPS"	60
+1395	SC937	n/a	"Vendor Drop-off / Pick-up Room, SPS"	120
+1396	SC941	n/a	"Dispatch Room, SPS"	80
+1397	SC946	OFA07	"Case Cart Dispatch Workstation, SPS"	56
+1398	SC951	n/a	"Sterile Instruments Storage Room, SPS"	100
+1399	SC961	CSCQ1	"Case Cart Assembly, SPS"	120
+1400	SC971	n/a	"CBOC Soiled Instrument Holding Room, SPS"	60
+1401	SS001	SRS01	"Storage Alcove, Chldcr Ctr"	40
+1402	SS011	n/a	"Infant Activity / Support Room, Chldcr Ctr"	140
+1403	SS021	n/a	"Infant Crib Area, Chldcr Ctr"	80
+1404	SS031	n/a	"Pre-Toddler Activity / Support Room, Chldcr Ctr"	260
+1405	SS041	n/a	"Pre-Toddler Crib Area, Chldcr Ctr"	80
+1406	SS051	n/a	"Toddler Activity / Support Room, Chldcr Ctr"	175
+1407	SS061	n/a	"Pre-School Activity / Support Room, Chldcr Ctr"	260
+1408	SS071	n/a	"School-age Activity / Support Room, Chldcr Ctr"	260
+1409	SS078	NYIR1	"Isolation Room, Chldcr Ctr"	80
+1410	SS091	PLAY1	"Dental Clnc Playroom, Chldcr Ctr"	80
+1411	SS094	FSCD1	"Food Service Room, Chldcr Ctr"	250
+1412	SS097	n/a	"Laundry Room, Chldcr Ctr"	80
+1413	SS101	CFR02	"Conference Room, Educ Svc"	240
+1414	SS111	CFR02	"Multipurpose Classroom / Staff Training Room, Educ Svc"	100
+1415	SS121	AUD01	"Auditorium Seating Area, Educ Svc"	1000
+1416	SS126	STEQ1	"Auditorium Equipment Storage Room, Educ Svc"	120
+1417	SS131	AUD01	"Auditorium Stage / Instruction Area, Educ Svc"	200
+1418	SS136	SRS01	"Auditorium Moveable Furniture Storage Room, Educ Svc"	240
+1419	SS141	n/a	"Auditorium Media Control Room, Educ Svc"	50
+1420	SS146	CLC01	"Computer Training Room, Educ Svc"	545
+1421	SS151	CLR50	"Simulation Room, Educ Svc"	400
+1422	SS183	n/a	"Small House Library, Educ Svc"	300
+1423	SS186	SRS01	"Training Materials Storage Room, Educ Svc"	80
+1424	SS190	SRS01	"Nursing Education Storage Room, Educ Svc"	100
+1425	SS201	CASH1	"Agent Cashier Office, Stff Sprt"	120
+1426	SS202	OFA04	"Travel Office, Stff Sprt"	130
+1427	SS203	OFA04	"MH Provider / Advocate Office, Stff Sprt"	130
+1428	SS204	OFA09	"ServIce / Section: Chief / AO / Supervisor Office, Stff Sprt"	100
+1429	SS205	OFA09	"Nurse Manager / Supervisor Office, Stff Sprt"	80
+1430	SS207	OFA11	"Associate Director Office, Stff Sprt"	150
+1431	SS208	OFA12	"Director Office, Stff Sprt"	240
+1432	SS209	OFD02	"Shared Office, Stff Sprt"	120
+1433	SS211	OFA08	"Touch-down Office, Stff Sprt"	80
+1434	SS212	WRCH1	"Collaboration Station, Stff Sprt"	60
+1435	SS215	OFA07	"Clinical Staff Workstation, Stff Sprt"	50
+1436	SS216	OFA07	"Student / Trainee Workstation, Stff Sprt"	36
+1437	SS217	OFA07	"Resident  / Fellow / Intern Workstation, Stff Sprt"	48
+1438	SS218	OFA07	"Staff Workstation, Stff Sprt"	56
+1439	SS219	OFA03	"Veteran Identification Card (VIC) Issue Workstation, Stff Sprt"	64
+1440	SS221	RCP01	"Non-Clinical Reception, Stff Sprt"	56
+1441	SS222	SEC01	"Non-Clinical Waiting, Stff Sprt"	60
+1442	SS224	n/a	"Private Call Room, Stff Sprt"	80
+1443	SS227	MRWK1	"Document Scanning Room, Stff Sprt"	80
+1444	SS228	SRS01	"Document Scanning / Supply Room, Stff Sprt"	120
+1445	SS229	n/a	"Coat Closet, Stff Sprt"	40
+1446	SS232	LR002	"Female Locker Room, Stff Sprt"	60
+1447	SS238	n/a	"Locker Room Vestibule, Stff Sprt"	40
+1448	SS241	LR002	"Male Locker Room, Stff Sprt"	60
+1449	SS251	LR001	"Personal Property Locker, Stff Sprt"	30
+1450	SS254	MRS02	"Personnel Records File Room, Stff Sprt"	120
+1451	SS258	n/a	"Printer Station, Stff Sprt"	20
+1452	SS261	IPKO1	"Kitchenette, Stff Sprt"	80
+1453	SS262	SL001	"Breakroom, Stff Sprt"	100
+1454	SS268	RPR03	"Copy / Supply Alcove, Stff Sprt"	40
+1455	SS272	RPR01	"Copy / Supply Room, Stff Sprt"	60
+1456	SS275	n/a	"Outdoor Eating Area, Stff Sprt"	0
+1457	SS276	n/a	"Wellness / Fitness Room, Stff Sprt"	100
+1458	SS282	LR001	"Universal Locker Room, Stff Sprt"	80
+1459	SS285	n/a	"Huddle Room, Stff Sprt"	100
+1460	SS287	DUTY1	"On-Call Bedroom, Stff Sprt"	90
+1461	SS291	CFR01	"Non-Clinical Team Room, Stff Sprt"	240
+1462	SS294	CFR01	"Conference Room, Stff Sprt"	240
+1463	SS296	n/a	"Staff Workroom, Stff Sprt"	80
+1464	SV001	n/a	"Pre-Assembly Room, Chpln Svc"	100
+1465	SV007	OFDC2	"Family Consult Room, Chpln Svc"	140
+1466	SV011	RAMR1	"Multi-Denominational Service Room, Chpln Svc"	140
+1467	SV021	n/a	"Chaplain Space, Chpln Svc"	60
+1468	SV031	n/a	"Blessed Sacraments Room, Chpln Svc"	80
+1469	SV041	n/a	"Service Preparation Room, Chpln Svc"	100
+1470	SV064	RAMR1	"Resident Care Unit Chapel / Meditation Room, Chpln Svc"	300
+1471	SV081	SRS01	"Movable Furniture Storage Room, Chpln Svc"	100
+1472	SV091	SRS01	"Storage Room, Chpln Svc"	100
+1473	SV111	CASH1	"Teller Window, Cred Union"	60
+1474	SV121	n/a	"Teller Customer Area, Cred Union"	120
+1475	SV131	BF001	"Automatic Teller Machine (ATM), Cred Union"	30
+1476	SV141	SSV01	"Secure Vault, Cred Union"	80
+1477	SV151	SRS01	"Storage Room, Cred Union"	80
+1478	SV211	SRS01	"Food Storage Room, F&N Svc"	100
+1479	SV272	NCWD1	"Nourishment Room, F&N Svc"	60
+1480	SV366	FSCD1	"MH PCU Dining Room, F&N Svc"	220
+1481	SV381	NCWD4	"Refreshment Alcove, F&N Svc"	40
+1482	SV385	n/a	"Bulk Food Carts Holding Area, F&N Svc"	80
+1483	SV387	n/a	"Food Cart (Hot / Cold) Holding Room, F&N Svc"	60
+1484	SV388	n/a	"Retherm Room, F&N Svc"	100
+1485	SV392	SRS01	"Non-Food Storage Room, F&N Svc"	120
+1486	SV401	PHOW1	"OP Standard Window, Phrm Svc"	120
+1487	SV411	n/a	"OP Accessible Window, Phrm Svc"	180
+1488	SV422	OFDC2	"Consultation Room, Phrm Svc"	100
+1489	SV423	n/a	"OP Filling & Assembly Area, Phrm Svc"	600
+1490	SV431	SRS01	"OP Automated Filling / Storage, Phrm Svc"	360
+1491	SV432	n/a	"OP Processing Area, Phrm Svc"	56
+1492	SV433	n/a	"OP Secured Dispensing / Storage Room, Phrm Svc"	380
+1493	SV441	n/a	"OP Mail Out Area, Phrm Svc"	100
+1494	SV442	n/a	"OP Expired Drug Collection / Disposal, Phrm Svc"	30
+1495	SV443	n/a	"OP Inventory Receiving / Breakdown, Phrm Svc"	400
+1496	SV451	SRS01	"OP Prosthetics / Supplies Storage Room, Phrm Svc"	100
+1497	SV461	n/a	"IP Filling / Assembly Area, Phrm Svc"	540
+1498	SV467	n/a	"IP Processing Area, Phrm Svc"	56
+1499	SV471	SRS01	"IP Secured Dispensing / Storage, Phrm Svc"	280
+1500	SV477	n/a	"IP Management Workarea, Phrm Svc"	56
+1501	SV481	SRS01	"IP Filling / Assembly Storage, Phrm Svc"	420
+1502	SV491	n/a	"IP Filling / Assembly Carousel, Phrm Svc"	280
+1503	SV501	n/a	"IP Repackaging Area, Phrm Svc"	280
+1504	SV507	n/a	"IP Expired Drug Collection / Disposal, Phrm Svc"	30
+1505	SV508	n/a	"IP Non-Sterile Compounding, Phrm Svc"	40
+1506	SV511	n/a	"IP Sterile Non-Hazardous Drug Buffer Room, Phrm Svc"	360
+1507	SV521	n/a	"IP Sterile Hazardous Drug Buffer Room (C-SEC), Phrm Svc"	360
+1508	SV531	SRS01	"IP Sterile Compounding Storage Room, Phrm Svc"	300
+1509	SV541	SRS01	"IP Hazardous Drug Storage Room, Phrm Svc"	150
+1510	SV547	PHC01	"IP Sterile Compounding Workarea, Phrm Svc"	56
+1511	SV548	n/a	"IP Sterile Compounding Anteroom, Phrm Svc"	300
+1512	SV549	JANC1	"IP Sterile Compounding Housekeeping, Phrm Svc"	15
+1513	SV551	n/a	"IP Inventory Receiving / Breakdown Room, Phrm Svc"	400
+1514	SV552	SRS01	"IDS Records Storage Room, Phrm Svc"	80
+1515	SV557	n/a	"IDS Workroom, Phrm Svc"	300
+1516	SV561	PHCH1	"Pharmacy Cache, Phrm Svc"	2000
+1517	SV571	PHST1	"Satellite Pharmacy, Phrm Svc"	80
+1518	SV577	n/a	"IP Crash Cart Restock Area, Phrm Svc"	40
+1519	SV581	RCA06	"Medication Alcove, Phrm Svc"	40
+1520	SV582	RCA06	"Medication Station, Phrm Svc"	40
+1521	SV583	CSMR1	"Medication Room, Phrm Svc"	56
+1522	SV601	SRS01	"Retail Store Storage Room, VC Svc"	40
+1523	SV605	MMRP1	"Retail Store Receiving, VC Svc"	10
+1524	SV609	SRS01	"Retail Store Remote Receiving Storage Room, VC Svc"	10
+1525	SV614	n/a	"Retail Store, VC Svc"	150
+1526	SV618	n/a	"Secure Retail, VC Svc"	65
+1527	SV623	SRS01	"Retail Store Concessions Display / Storage, VC Svc"	25
+1528	SV626	n/a	"Coffee Shop, VC Svc"	100
+1529	SV627	SRS01	"Coffee Shop Storage Room, VC Svc"	30
+1530	SV628	FSCD1	"Coffee Shop Seating Area, VC Svc"	40
+1531	SV631	CLCHC	"Barber / Beauty Shop, VC Svc"	200
+1532	SV635	MMRP1	"Food Court Receiving, VC Svc"	65
+1533	SV639	SRS01	"Non-Food Storage Room, VC Svc"	30
+1534	SV644	SRS01	"Dry-Food Storage Room, VC Svc"	65
+1535	SV648	SRS01	"Refrigerated / Frozen Food Storage Room, VC Svc"	65
+1536	SV653	FSTD1	"Food Preparation / Production, VC Svc"	80
+1537	SV657	FSDW1	"Dining Utensils Washing Room, VC Svc"	340
+1538	SV663	FSPW1	"Pot Washing Room, VC Svc"	45
+1539	SV667	n/a	"Sanitation / Recycling Room, VC Svc"	65
+1540	SV672	n/a	"Trash Holding Refrigerated Room, VC Svc"	100
+1541	SV673	n/a	"Waste Pulper System Room, VC Svc"	50
+1542	SV674	FSSL1	"Cafeteria Serving Area, VC Svc"	80
+1543	SV678	FSCD1	"Dining Area, VC Svc"	1165
+1544	SV683	BX002	"Vending Machine Area, VC Svc"	40
+1545	SV692	BX002	"Vending Machine Alcove, VC Svc"	20
+1546	SV696	CASH1	"Secure Money Handling Room, VC Svc"	100
+1547	SV697	PSIC2	"Internet Cafe, VC Svc"	360
+1548	SV698	RTPO1	"Post Office, VC Svc"	400

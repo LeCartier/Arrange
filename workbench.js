@@ -131,6 +131,13 @@ class IsometricWorkbench {
     this.height = this.canvas.height;
     this.offsetX = this.width / 2;
     this.offsetY = this.height / 3;
+    
+    // Enable pixelated/crisp rendering for retro aesthetic
+    this.ctx.imageSmoothingEnabled = false;
+    this.ctx.webkitImageSmoothingEnabled = false;
+    this.ctx.mozImageSmoothingEnabled = false;
+    this.ctx.msImageSmoothingEnabled = false;
+    
     this.render();
   }
   
@@ -971,32 +978,154 @@ class IsometricWorkbench {
   
   // Touch handlers for pinch zoom
   handleTouchStart(e) {
-    if (e.touches.length === 2) {
+    e.preventDefault(); // Prevent scrolling and default touch behavior
+    
+    if (e.touches.length === 1) {
+      // Single touch - similar to mouse down
+      const rect = this.canvas.getBoundingClientRect();
+      const x = e.touches[0].clientX - rect.left;
+      const y = e.touches[0].clientY - rect.top;
+      
+      this.touchStartX = x;
+      this.touchStartY = y;
+      this.touchMoved = false;
+      
+      const cube = this.getCubeAtPosition(x, y);
+      
+      if (cube) {
+        // Select cube and prepare for dragging
+        if (!this.selectedCubes.includes(cube)) {
+          this.selectedCube = cube;
+          this.selectedCubes = [cube];
+        }
+        this.isDragging = true;
+        this.dragStartX = x;
+        this.dragStartY = y;
+      } else {
+        // Tapped empty space - start panning (on move)
+        this.touchPanning = false; // Will be set to true on move
+        this.selectedCube = null;
+        this.selectedCubes = [];
+      }
+      
+      this.render();
+    } else if (e.touches.length === 2) {
+      // Two finger touch - pinch zoom and pan
       const dx = e.touches[0].clientX - e.touches[1].clientX;
       const dy = e.touches[0].clientY - e.touches[1].clientY;
       this.lastTouchDistance = Math.sqrt(dx * dx + dy * dy);
+      
+      // Store center point for panning
+      const rect = this.canvas.getBoundingClientRect();
+      this.touchCenterX = ((e.touches[0].clientX + e.touches[1].clientX) / 2) - rect.left;
+      this.touchCenterY = ((e.touches[0].clientY + e.touches[1].clientY) / 2) - rect.top;
+      
+      // Cancel any single-touch dragging
+      this.isDragging = false;
+      this.touchPanning = false;
     }
   }
   
   handleTouchMove(e) {
-    if (e.touches.length === 2 && this.lastTouchDistance) {
-      e.preventDefault();
+    e.preventDefault(); // Prevent scrolling
+    
+    if (e.touches.length === 1) {
+      const rect = this.canvas.getBoundingClientRect();
+      const x = e.touches[0].clientX - rect.left;
+      const y = e.touches[0].clientY - rect.top;
+      
+      this.touchMoved = true;
+      
+      if (this.isDragging && this.selectedCubes.length > 0) {
+        // Drag selected cubes
+        const dx = x - this.dragStartX;
+        const dy = y - this.dragStartY;
+        
+        this.selectedCubes.forEach(cube => {
+          const newGridX = cube.gridX + (dx / (this.tileWidth * this.zoom));
+          const newGridY = cube.gridY + (dy / (this.cubeDepth * this.zoom));
+          
+          cube.gridX = this.constrainToTable(newGridX, cube.width, this.tableWidth / this.tileWidth);
+          cube.gridY = this.constrainToTable(newGridY, cube.depth, this.tableDepth / this.cubeDepth);
+        });
+        
+        this.dragStartX = x;
+        this.dragStartY = y;
+        
+        this.render();
+      } else {
+        // Pan view with single touch drag (when not dragging a cube)
+        if (!this.touchPanning) {
+          this.touchPanning = true;
+          this.panStartX = x;
+          this.panStartY = y;
+        } else {
+          const dx = x - this.panStartX;
+          const dy = y - this.panStartY;
+          
+          this.offsetX += dx;
+          this.offsetY += dy;
+          
+          this.panStartX = x;
+          this.panStartY = y;
+          
+          this.render();
+        }
+      }
+    } else if (e.touches.length === 2 && this.lastTouchDistance) {
+      // Two finger pinch zoom and pan
       const dx = e.touches[0].clientX - e.touches[1].clientX;
       const dy = e.touches[0].clientY - e.touches[1].clientY;
       const distance = Math.sqrt(dx * dx + dy * dy);
       
+      // Zoom
       const zoomFactor = distance / this.lastTouchDistance;
       this.zoom = Math.max(this.minZoom, Math.min(this.maxZoom, this.zoom * zoomFactor));
       this.lastTouchDistance = distance;
+      
+      // Pan based on center point movement
+      const rect = this.canvas.getBoundingClientRect();
+      const newCenterX = ((e.touches[0].clientX + e.touches[1].clientX) / 2) - rect.left;
+      const newCenterY = ((e.touches[0].clientY + e.touches[1].clientY) / 2) - rect.top;
+      
+      this.offsetX += newCenterX - this.touchCenterX;
+      this.offsetY += newCenterY - this.touchCenterY;
+      
+      this.touchCenterX = newCenterX;
+      this.touchCenterY = newCenterY;
       
       this.render();
     }
   }
   
   handleTouchEnd(e) {
-    if (e.touches.length < 2) {
+    if (e.touches.length === 0) {
+      // All touches ended
+      if (!this.touchMoved && this.touchStartX !== undefined) {
+        // This was a tap - cube selection already handled in touchStart
+        // Just ensure dragging is stopped
+      }
+      
+      this.isDragging = false;
+      this.touchPanning = false;
+      this.lastTouchDistance = null;
+      this.touchMoved = false;
+    } else if (e.touches.length === 1) {
+      // One finger left (was two-finger gesture)
+      this.lastTouchDistance = null;
+      
+      // Reset single touch tracking for remaining finger
+      const rect = this.canvas.getBoundingClientRect();
+      this.touchStartX = e.touches[0].clientX - rect.left;
+      this.touchStartY = e.touches[0].clientY - rect.top;
+      this.touchMoved = false;
+      this.isDragging = false;
+      this.touchPanning = false;
+    } else if (e.touches.length < 2) {
       this.lastTouchDistance = null;
     }
+    
+    this.render();
   }
   
   // Update statistics
