@@ -3782,14 +3782,10 @@
               const legacyCode = window.VARF_TO_LEGACY?.get(roomCode);
               const varfCode = window.LEGACY_TO_VARF?.get(roomCode);
               
-              // Build the label with appropriate indicators
+              // Build the label - only show (Legacy) for legacy-only codes in tree
               let label = room.code;
               if (isLegacy) {
                 label += ' (Legacy)';
-              } else if (legacyCode) {
-                label += ` [was ${legacyCode}]`;
-              } else if (varfCode) {
-                label += ` (Legacy → ${varfCode})`;
               }
               label += ` - ${room.name}`;
               
