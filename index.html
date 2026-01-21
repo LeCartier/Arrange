@@ -14,6 +14,14 @@
     import { getChapter, getAllChapters, searchChapters } from './room-logic/index.js';
     import { evaluateChapter, formatForDisplay, exportResults, importResults } from './room-logic/engine.js';
     
+    // Import care setting mapping for CBOC vs In-Hospital grouping
+    import { 
+      CARE_SETTINGS, 
+      CARE_SETTING_ICONS, 
+      getCareSettingForFA, 
+      shouldShowSettingGrouping 
+    } from './care-setting-mapping.js';
+    
     // Make available globally for onclick handlers
     window.RoomLogic = {
       getChapter,
@@ -23,6 +31,14 @@
       formatForDisplay,
       exportResults,
       importResults
+    };
+    
+    // Make care setting functions globally available
+    window.CareSettings = {
+      CARE_SETTINGS,
+      CARE_SETTING_ICONS,
+      getCareSettingForFA,
+      shouldShowSettingGrouping
     };
     
     console.log('Room Logic System loaded');
@@ -78,6 +94,54 @@
       display: flex;
       gap: 12px;
       padding-top: 4px;
+      align-items: center;
+    }
+
+    /* Revit Status Indicator */
+    .revit-status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 12px;
+    }
+
+    .revit-status-indicator:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .revit-status-indicator .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      transition: background 0.3s;
+    }
+
+    .revit-status-indicator .status-dot.disconnected {
+      background: #95a5a6;
+    }
+
+    .revit-status-indicator .status-dot.connecting {
+      background: #f39c12;
+      animation: pulse 1s infinite;
+    }
+
+    .revit-status-indicator .status-dot.connected {
+      background: #27ae60;
+    }
+
+    .revit-status-indicator .status-text {
+      color: rgba(255,255,255,0.8);
+      font-weight: 500;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
 
     header .icon-btn {
@@ -1308,6 +1372,11 @@
       </p>
     </div>
     <div class="header-actions">
+      <div id="revit-status" class="revit-status-indicator" title="Revit Connection Status">
+        <span class="status-dot disconnected"></span>
+        <span class="status-text">Revit</span>
+      </div>
+      <button class="icon-btn ifc-checker" onclick="openIFCChecker()" title="IFC Model Checker" style="background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);">🏗️</button>
       <button class="icon-btn portal" onclick="openLogicPortal()" title="Logic Portal">⚙️</button>
       <button class="icon-btn sync" onclick="openDataSyncModal()" title="Sync Data">🔄</button>
       <button class="icon-btn workbench" id="workbench-toggle" onclick="toggleWorkbench()" title="3D Workbench">🧊</button>
@@ -3642,7 +3711,7 @@
         const mappings = window.ROOM_EQUIPMENT_MAPPINGS || [];
         
         // Cache version for forcing tree rebuild when logic changes
-        const TREE_VERSION = 2; // Increment to invalidate cache
+        const TREE_VERSION = 3; // Increment to invalidate cache - v3 adds care setting grouping
         
         // Return cached tree if data hasn't changed (and we have data)
         if (cachedReferenceTree && cachedReferenceTree._version === TREE_VERSION && mappings.length > 0 && lastMappingsLength === mappings.length) {
@@ -3675,11 +3744,17 @@
             if (!deptMap.has(instance.department)) {
               deptMap.set(instance.department, {
                 name: instance.department,
+                chapterNum: instance.departmentChapter || '',
                 functionalAreas: new Map()
               });
             }
             
             const dept = deptMap.get(instance.department);
+            // Store chapter number if not already set
+            if (!dept.chapterNum && instance.departmentChapter) {
+              dept.chapterNum = instance.departmentChapter;
+            }
+            
             if (!dept.functionalAreas.has(instance.functionalArea)) {
               dept.functionalAreas.set(instance.functionalArea, {
                 name: instance.functionalArea,
@@ -3703,6 +3778,7 @@
             if (!deptMap.has(mapping.department)) {
               deptMap.set(mapping.department, {
                 name: mapping.department,
+                chapterNum: '',
                 functionalAreas: new Map()
               });
             }
@@ -3726,8 +3802,14 @@
           });
         }
 
+        // Get care setting functions if available
+        const careSettings = window.CareSettings || null;
+
         Array.from(deptMap.keys()).sort().forEach(deptName => {
           const dept = deptMap.get(deptName);
+          const chapterNum = dept.chapterNum || '';
+          const showCareSettings = careSettings && careSettings.shouldShowSettingGrouping(chapterNum);
+          
           const deptNode = {
             id: `dept-ref-${deptName}`,
             type: 'department-reference',
@@ -3758,61 +3840,149 @@
             return a.localeCompare(b);
           });
 
-          sortedFaNames.forEach(faName => {
-            const fa = dept.functionalAreas.get(faName);
-            // Include FA number in the label if available
-            const displayLabel = fa.number ? `FA${fa.number}: ${faName}` : faName;
-            const faNode = {
-              id: `fa-ref-${deptName}-${faName}`,
-              type: 'functional-area-reference',
-              label: displayLabel,
-              icon: '📂',
-              department: deptName,
-              functionalArea: faName,
-              children: []
-            };
-
-            Array.from(fa.rooms.keys()).sort().forEach(roomCode => {
-              const room = fa.rooms.get(roomCode);
+          // Group FAs by care setting if this chapter uses care setting grouping
+          if (showCareSettings) {
+            const careSettingGroups = new Map();
+            
+            sortedFaNames.forEach(faName => {
+              const fa = dept.functionalAreas.get(faName);
+              const careSetting = careSettings.getCareSettingForFA(chapterNum, fa.number, faName);
               
-              // Check if this is a legacy room code (from finish data only, not in room_criteria.tsv)
-              const roomData = ROOM_SIZES.find(r => r.id === roomCode);
-              const isLegacy = roomData && roomData.source === 'finish_data';
-              
-              // Check if this VARF code has a legacy code mapping
-              const legacyCode = window.VARF_TO_LEGACY?.get(roomCode);
-              const varfCode = window.LEGACY_TO_VARF?.get(roomCode);
-              
-              // Build the label - only show (Legacy) for legacy-only codes in tree
-              let label = room.code;
-              if (isLegacy) {
-                label += ' (Legacy)';
+              if (!careSettingGroups.has(careSetting)) {
+                careSettingGroups.set(careSetting, []);
               }
-              label += ` - ${room.name}`;
+              careSettingGroups.get(careSetting).push({ name: faName, data: fa });
+            });
+            
+            // Define care setting order: CBOC first, then In-Hospital, then Shared
+            const settingOrder = [
+              careSettings.CARE_SETTINGS.CBOC,
+              careSettings.CARE_SETTINGS.HOSPITAL,
+              careSettings.CARE_SETTINGS.SHARED
+            ];
+            
+            settingOrder.forEach(settingName => {
+              if (!careSettingGroups.has(settingName)) return;
               
-              faNode.children.push({
-                id: `room-ref-${deptName}-${faName}-${roomCode}`,
-                type: 'room-reference',
-                label: label,
-                icon: '🚪',
+              const settingIcon = careSettings.CARE_SETTING_ICONS[settingName] || '📋';
+              const settingNode = {
+                id: `setting-ref-${deptName}-${settingName}`,
+                type: 'care-setting-reference',
+                label: settingName,
+                icon: settingIcon,
+                department: deptName,
+                careSetting: settingName,
+                children: []
+              };
+              
+              careSettingGroups.get(settingName).forEach(({ name: faName, data: fa }) => {
+                const displayLabel = fa.number ? `FA${fa.number}: ${faName}` : faName;
+                const faNode = {
+                  id: `fa-ref-${deptName}-${faName}`,
+                  type: 'functional-area-reference',
+                  label: displayLabel,
+                  icon: '📂',
+                  department: deptName,
+                  functionalArea: faName,
+                  careSetting: settingName,
+                  children: []
+                };
+
+                Array.from(fa.rooms.keys()).sort().forEach(roomCode => {
+                  const room = fa.rooms.get(roomCode);
+                  
+                  const roomData = ROOM_SIZES.find(r => r.id === roomCode);
+                  const isLegacy = roomData && roomData.source === 'finish_data';
+                  const legacyCode = window.VARF_TO_LEGACY?.get(roomCode);
+                  const varfCode = window.LEGACY_TO_VARF?.get(roomCode);
+                  
+                  let label = room.code;
+                  if (isLegacy) {
+                    label += ' (Legacy)';
+                  }
+                  label += ` - ${room.name}`;
+                  
+                  faNode.children.push({
+                    id: `room-ref-${deptName}-${faName}-${roomCode}`,
+                    type: 'room-reference',
+                    label: label,
+                    icon: '🚪',
+                    department: deptName,
+                    functionalArea: faName,
+                    careSetting: settingName,
+                    roomCode: room.code,
+                    roomName: room.name,
+                    isLegacy: isLegacy,
+                    legacyCode: legacyCode,
+                    varfCode: varfCode
+                  });
+                });
+
+                settingNode.children.push(faNode);
+              });
+              
+              // Only add setting node if it has children
+              if (settingNode.children.length > 0) {
+                deptNode.children.push(settingNode);
+              }
+            });
+          } else {
+            // No care setting grouping - flat FA list
+            sortedFaNames.forEach(faName => {
+              const fa = dept.functionalAreas.get(faName);
+              const displayLabel = fa.number ? `FA${fa.number}: ${faName}` : faName;
+              const faNode = {
+                id: `fa-ref-${deptName}-${faName}`,
+                type: 'functional-area-reference',
+                label: displayLabel,
+                icon: '📂',
                 department: deptName,
                 functionalArea: faName,
-                roomCode: room.code,
-                roomName: room.name,
-                isLegacy: isLegacy,
-                legacyCode: legacyCode,
-                varfCode: varfCode
-              });
-            });
+                children: []
+              };
 
-            deptNode.children.push(faNode);
-          });
+              Array.from(fa.rooms.keys()).sort().forEach(roomCode => {
+                const room = fa.rooms.get(roomCode);
+                
+                // Check if this is a legacy room code (from finish data only, not in room_criteria.tsv)
+                const roomData = ROOM_SIZES.find(r => r.id === roomCode);
+                const isLegacy = roomData && roomData.source === 'finish_data';
+                
+                // Check if this VARF code has a legacy code mapping
+                const legacyCode = window.VARF_TO_LEGACY?.get(roomCode);
+                const varfCode = window.LEGACY_TO_VARF?.get(roomCode);
+                
+                // Build the label - only show (Legacy) for legacy-only codes in tree
+                let label = room.code;
+                if (isLegacy) {
+                  label += ' (Legacy)';
+                }
+                label += ` - ${room.name}`;
+                
+                faNode.children.push({
+                  id: `room-ref-${deptName}-${faName}-${roomCode}`,
+                  type: 'room-reference',
+                  label: label,
+                  icon: '🚪',
+                  department: deptName,
+                  functionalArea: faName,
+                  roomCode: room.code,
+                  roomName: room.name,
+                  isLegacy: isLegacy,
+                  legacyCode: legacyCode,
+                  varfCode: varfCode
+                });
+              });
+
+              deptNode.children.push(faNode);
+            });
+          }
 
           tree.children.push(deptNode);
         });
 
         // Cache the tree for next time with version number
-        tree._version = 2; // Match TREE_VERSION above
+        tree._version = 3; // Increment to invalidate cache for care setting changes
         cachedReferenceTree = tree;
         lastMappingsLength = mappings.length;
         console.log('Reference tree cached with', tree.children.length, 'departments');
@@ -4482,6 +4652,8 @@
         html += renderGuideRootDetail();
       } else if (selectedNode.type === 'department-reference') {
         html += renderDepartmentReferenceDetail();
+      } else if (selectedNode.type === 'care-setting-reference') {
+        html += renderCareSettingReferenceDetail();
       } else if (selectedNode.type === 'functional-area-reference') {
         html += renderFunctionalAreaReferenceDetail();
       } else if (selectedNode.type === 'room-reference') {
@@ -4493,6 +4665,53 @@
 
       console.log('Rendering HTML length:', html.length);
       container.innerHTML = html;
+    }
+    
+    function renderCareSettingReferenceDetail() {
+      const settingName = selectedNode.careSetting || selectedNode.label;
+      const deptName = selectedNode.department;
+      const faCount = selectedNode.children ? selectedNode.children.length : 0;
+      
+      // Count rooms across all FAs in this setting
+      let roomCount = 0;
+      if (selectedNode.children) {
+        selectedNode.children.forEach(fa => {
+          if (fa.children) {
+            roomCount += fa.children.length;
+          }
+        });
+      }
+      
+      return `
+        <div class="detail-panel">
+          <h3>${selectedNode.icon} ${settingName}</h3>
+          <div class="detail-row">
+            <div class="detail-label">Care Setting:</div>
+            <div class="detail-value">${settingName}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Department:</div>
+            <div class="detail-value">${deptName}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Functional Areas:</div>
+            <div class="detail-value">${faCount}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Total Rooms:</div>
+            <div class="detail-value">${roomCount}</div>
+          </div>
+        </div>
+        <div class="detail-panel">
+          <p style="margin: 0; color: var(--muted); font-size: 0.85rem;">
+            ${settingName === 'CBOC (Community Outpatient)' 
+              ? 'Community-Based Outpatient Clinic spaces designed for smaller, distributed care facilities.'
+              : settingName === 'In-Hospital'
+              ? 'Hospital-based spaces designed for larger medical facilities with expanded services.'
+              : 'Spaces that are shared between CBOC and In-Hospital settings.'}
+          </p>
+        </div>
+      `;
     }
 
     function renderDepartmentDetail() {
@@ -8973,7 +9192,139 @@
       if (e.target.id === 'logic-portal-modal') closeLogicPortal();
       if (e.target.id === 'import-modal') closeImportModal();
       if (e.target.id === 'equipment-modal') closeEquipmentModal();
+      if (e.target.id === 'ifc-checker-modal') closeIFCChecker();
     });
+
+    // -----------------------------
+    // IFC CHECKER INTEGRATION
+    // -----------------------------
+    
+    let ifcCheckerInstance = null;
+    
+    function openIFCChecker() {
+      let modal = document.getElementById('ifc-checker-modal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'ifc-checker-modal';
+        modal.className = 'modal';
+        modal.innerHTML = `
+          <div class="modal-content" style="max-width: 1200px; width: 95%; max-height: 90vh; overflow: auto;">
+            <div class="modal-header">
+              <h2>🏗️ IFC Model Checker</h2>
+              <span class="close-btn" onclick="closeIFCChecker()">&times;</span>
+            </div>
+            <div id="ifc-checker-container"></div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      }
+      modal.style.display = 'flex';
+      
+      // Initialize IFC Checker if not already done
+      if (!ifcCheckerInstance) {
+        initializeIFCChecker();
+      }
+    }
+    
+    function closeIFCChecker() {
+      const modal = document.getElementById('ifc-checker-modal');
+      if (modal) {
+        modal.style.display = 'none';
+      }
+    }
+    
+    async function initializeIFCChecker() {
+      try {
+        // Dynamically import the IFC Checker UI
+        const { IFCCheckerApp } = await import('./ifc-checker/ifc-checker-ui.js');
+        ifcCheckerInstance = new IFCCheckerApp('ifc-checker-container');
+        
+        // Make workbench data available for the checker
+        if (typeof workbenchResults !== 'undefined') {
+          window.workbenchResults = workbenchResults;
+        }
+        
+        // Make equipment data available
+        if (typeof EQUIPMENT_LIST !== 'undefined') {
+          window.EQUIPMENT_LIST = EQUIPMENT_LIST;
+        }
+        
+        console.log('IFC Checker initialized successfully');
+      } catch (error) {
+        console.error('Error initializing IFC Checker:', error);
+        document.getElementById('ifc-checker-container').innerHTML = `
+          <div style="padding: 40px; text-align: center;">
+            <h3>⚠️ IFC Checker Loading Error</h3>
+            <p style="color: var(--muted);">Could not load the IFC Checker module.</p>
+            <p style="color: var(--muted); font-size: 0.85rem;">Error: ${error.message}</p>
+            <p style="color: var(--muted); font-size: 0.85rem; margin-top: 20px;">
+              Note: The IFC Checker requires a web server to load modules properly.<br>
+              Try running: <code>npx serve</code> or <code>python -m http.server</code>
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    // -----------------------------
+    // REVIT CONNECTION
+    // -----------------------------
+    
+    let revitConnector = null;
+    let revitConnectionTimer = null;
+
+    async function initRevitConnection() {
+      try {
+        const { RevitConnector } = await import('./revit-connector.js');
+        revitConnector = new RevitConnector({
+          onStatusChange: updateRevitStatusUI
+        });
+        
+        // Try to connect
+        await revitConnector.connect();
+      } catch (error) {
+        console.log('Revit connector not available:', error.message);
+      }
+    }
+
+    function updateRevitStatusUI(connected, data) {
+      const indicator = document.getElementById('revit-status');
+      if (!indicator) return;
+      
+      const dot = indicator.querySelector('.status-dot');
+      const text = indicator.querySelector('.status-text');
+      
+      if (connected) {
+        dot.className = 'status-dot connected';
+        text.textContent = data.project ? `Revit: ${data.project}` : 'Revit Connected';
+        indicator.title = `Connected to Revit - ${data.project || 'Unknown Project'}`;
+      } else {
+        dot.className = 'status-dot disconnected';
+        text.textContent = 'Revit';
+        indicator.title = 'Revit not connected. Start Live Sync in pyRevit.';
+      }
+    }
+
+    // Toggle Revit connection when clicking the indicator
+    document.getElementById('revit-status')?.addEventListener('click', async () => {
+      if (!revitConnector) {
+        await initRevitConnection();
+        return;
+      }
+      
+      const indicator = document.getElementById('revit-status');
+      const dot = indicator.querySelector('.status-dot');
+      
+      if (revitConnector.connected) {
+        revitConnector.disconnect();
+      } else {
+        dot.className = 'status-dot connecting';
+        await revitConnector.connect();
+      }
+    });
+
+    // Initialize Revit connection on page load
+    setTimeout(initRevitConnection, 1000);
 
     // -----------------------------
     // INITIALIZE

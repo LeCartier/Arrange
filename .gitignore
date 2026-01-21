@@ -1,0 +1,10 @@
+# PyRevit Extension - Work in Progress
+pyrevit-extension/
+
+# IFC Checker - Work in Progress
+ifc-checker/
+ifc-checker.html
+
+# Revit Integration docs (related to pyrevit)
+REVIT-INTEGRATION.md
+revit-connector.js
