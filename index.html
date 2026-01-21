@@ -22,6 +22,15 @@
       shouldShowSettingGrouping 
     } from './care-setting-mapping.js';
     
+    // Import canonical FA mapping for proper FA numbering
+    import {
+      CANONICAL_FAS,
+      getCanonicalFA,
+      hasCanonicalFAs,
+      getCanonicalFAList,
+      initializeCanonicalFAsFromEquipment
+    } from './canonical-fa-mapping.js';
+    
     // Make available globally for onclick handlers
     window.RoomLogic = {
       getChapter,
@@ -39,6 +48,15 @@
       CARE_SETTING_ICONS,
       getCareSettingForFA,
       shouldShowSettingGrouping
+    };
+    
+    // Make canonical FA functions globally available
+    window.CanonicalFAs = {
+      CANONICAL_FAS,
+      getCanonicalFA,
+      hasCanonicalFAs,
+      getCanonicalFAList,
+      initializeCanonicalFAsFromEquipment
     };
     
     console.log('Room Logic System loaded');
@@ -1687,7 +1705,7 @@
   <script>
     // Merge finish-only rooms into ROOM_SIZES for complete coverage
     if (typeof FINISH_ONLY_ROOMS !== 'undefined') {
-      ROOM_SIZES = ROOM_SIZES.concat(FINISH_ONLY_ROOMS);
+      ROOM_SIZES.push(...FINISH_ONLY_ROOMS);
       console.log(`Merged finish-only rooms. Total rooms now: ${ROOM_SIZES.length}`);
     }
   </script>
@@ -1815,6 +1833,9 @@
           // Build a map of chapter number to full department name
           const chapterToDeptName = new Map();
           
+          // Build canonical FA order from Equipment Guide - preserves order FAs appear in the file
+          const canonicalFAOrder = {};
+          
           // Add chapter names for chapters that don't have equipment data
           chapterToDeptName.set('202', '202 (Primary Care)');
           chapterToDeptName.set('224', '224 (Nutrition and Food Service)');
@@ -1857,6 +1878,23 @@
             // Store the full department name for this chapter
             if (chapterNum && !chapterToDeptName.has(chapterNum)) {
               chapterToDeptName.set(chapterNum, dept);
+            }
+            
+            // Build canonical FA order - first occurrence of FA in each chapter sets its number
+            if (chapterNum && fa) {
+              if (!canonicalFAOrder[chapterNum]) {
+                canonicalFAOrder[chapterNum] = {
+                  departmentName: dept,
+                  faOrder: [],
+                  faNameToNumber: {}
+                };
+              }
+              // Add FA if not already seen for this chapter
+              if (!canonicalFAOrder[chapterNum].faNameToNumber[fa]) {
+                const faNumber = String(canonicalFAOrder[chapterNum].faOrder.length + 1);
+                canonicalFAOrder[chapterNum].faOrder.push(fa);
+                canonicalFAOrder[chapterNum].faNameToNumber[fa] = faNumber;
+              }
             }
             
             // Extract room code from "Order - CODE - Name" format
@@ -1997,6 +2035,23 @@
           // Store globally for compare mode
           window.ROOM_METADATA = deptFaMap;
           window.ALL_ROOM_INSTANCES = allRoomInstances;
+          
+          // Store canonical FA order globally - built from Equipment Guide parsing order
+          window.CANONICAL_FA_ORDER = canonicalFAOrder;
+          console.log(`Built canonical FA order for ${Object.keys(canonicalFAOrder).length} chapters`);
+          
+          // Log some examples
+          if (canonicalFAOrder['100']) {
+            console.log('Chapter 100 FAs:', canonicalFAOrder['100'].faOrder.slice(0, 5).map((fa, i) => `${i+1}:${fa}`));
+          }
+          if (canonicalFAOrder['270']) {
+            console.log('Chapter 270 FAs:', canonicalFAOrder['270'].faOrder.slice(0, 5).map((fa, i) => `${i+1}:${fa}`));
+          }
+          
+          // Initialize canonical FAs module from the pre-built CANONICAL_FA_ORDER
+          if (window.CanonicalFAs && window.CanonicalFAs.initializeCanonicalFAsFromEquipment) {
+            window.CanonicalFAs.initializeCanonicalFAsFromEquipment();
+          }
           
           // Build indexed lookup for performance - O(1) instead of O(n) filter
           const roomInstancesByCode = new Map();
@@ -3802,13 +3857,168 @@
           });
         }
 
-        // Get care setting functions if available
-        const careSettings = window.CareSettings || null;
+        // Get canonical FA functions if available
+        const canonicalFAs = window.CanonicalFAs || null;
+        
+        // Try to initialize canonical FAs if not done yet (in case of timing issues)
+        if (canonicalFAs && window.CANONICAL_FA_ORDER && !canonicalFAs.hasCanonicalFAs('100')) {
+          canonicalFAs.initializeCanonicalFAsFromEquipment();
+        }
+        
+        // Debug: Log canonical FA order availability
+        console.log('CANONICAL_FA_ORDER available:', !!window.CANONICAL_FA_ORDER);
+        if (window.CANONICAL_FA_ORDER) {
+          const chapters = Object.keys(window.CANONICAL_FA_ORDER);
+          console.log('Chapters with canonical FAs:', chapters.length, 'e.g.', chapters.slice(0, 5));
+        }
+        
+        // Build extended FA numbering: canonical FAs get their number, 
+        // non-canonical FAs get next available number with letter suffix if needed
+        const extendedFANumbers = {}; // chapterNum -> { faName -> displayNumber }
+        
+        function buildExtendedFANumbers(chapterNum, allFANames) {
+          if (!chapterNum) return;
+          if (extendedFANumbers[chapterNum]) return; // Already built
+          
+          extendedFANumbers[chapterNum] = {};
+          const chapterOrder = window.CANONICAL_FA_ORDER?.[chapterNum];
+          const canonicalFAs = chapterOrder?.faOrder || [];
+          const canonicalSet = new Set(canonicalFAs);
+          
+          // First, assign canonical FAs their numbers
+          canonicalFAs.forEach((faName, index) => {
+            extendedFANumbers[chapterNum][faName] = String(index + 1);
+          });
+          
+          // Find non-canonical FAs
+          const nonCanonicalFAs = allFANames.filter(fa => !canonicalSet.has(fa));
+          
+          if (nonCanonicalFAs.length === 0) return;
+          
+          // Next available number after canonical FAs
+          let nextNumber = canonicalFAs.length + 1;
+          
+          // Track which numbers have letter suffixes
+          const letterCounts = {}; // number -> count of letters used
+          
+          // Sort non-canonical FAs alphabetically for consistent ordering
+          nonCanonicalFAs.sort();
+          
+          nonCanonicalFAs.forEach(faName => {
+            // Try to find a related canonical FA by checking if names are similar
+            // (e.g., "Physical Therapy - Outpatient" relates to "Physical Therapy")
+            let relatedCanonicalIndex = -1;
+            const faNameLower = faName.toLowerCase();
+            
+            // Check for exact prefix match or word overlap
+            for (let i = 0; i < canonicalFAs.length; i++) {
+              const canonicalName = canonicalFAs[i];
+              const canonicalLower = canonicalName.toLowerCase();
+              
+              // Check if non-canonical starts with canonical name
+              if (faNameLower.startsWith(canonicalLower)) {
+                relatedCanonicalIndex = i;
+                break;
+              }
+              
+              // Check if canonical starts with non-canonical
+              if (canonicalLower.startsWith(faNameLower)) {
+                relatedCanonicalIndex = i;
+                break;
+              }
+              
+              // Check for significant word overlap (at least 2 words match)
+              const canonicalWords = canonicalLower.split(/[\s\-\/]+/).filter(w => w.length > 2);
+              const faWords = faNameLower.split(/[\s\-\/]+/).filter(w => w.length > 2);
+              const matchingWords = canonicalWords.filter(w => faWords.includes(w));
+              
+              if (matchingWords.length >= 2) {
+                relatedCanonicalIndex = i;
+                break;
+              }
+            }
+            
+            if (relatedCanonicalIndex >= 0) {
+              // Assign letter suffix to the related canonical number
+              const baseNumber = relatedCanonicalIndex + 1;
+              if (!letterCounts[baseNumber]) {
+                letterCounts[baseNumber] = 0;
+              }
+              const letterSuffix = String.fromCharCode(97 + letterCounts[baseNumber]); // a, b, c...
+              letterCounts[baseNumber]++;
+              extendedFANumbers[chapterNum][faName] = `${baseNumber}${letterSuffix}`;
+            } else {
+              // No related canonical - assign next available number
+              extendedFANumbers[chapterNum][faName] = String(nextNumber);
+              nextNumber++;
+            }
+          });
+          
+          // Debug log for first chapter
+          if (chapterNum === '100' || chapterNum === '270') {
+            console.log(`Extended FA numbers for Chapter ${chapterNum}:`, extendedFANumbers[chapterNum]);
+          }
+        }
+        
+        // Helper function to get FA number (canonical or extended)
+        function getExtendedFANumber(chapterNum, faName, allFANames) {
+          if (!chapterNum) return null;
+          
+          // Build extended numbers for this chapter if not done yet
+          if (!extendedFANumbers[chapterNum]) {
+            buildExtendedFANumbers(chapterNum, allFANames);
+          }
+          
+          return extendedFANumbers[chapterNum]?.[faName] || null;
+        }
+        
+        // Helper function to get canonical FA number for a chapter/FA name
+        function getCanonicalFANumber(chapterNum, faName) {
+          if (!chapterNum) return null;
+          
+          // First try the direct lookup from CANONICAL_FA_ORDER (faster)
+          const chapterOrder = window.CANONICAL_FA_ORDER?.[chapterNum];
+          if (chapterOrder && chapterOrder.faNameToNumber[faName]) {
+            return chapterOrder.faNameToNumber[faName];
+          }
+          
+          // Fall back to canonicalFAs module
+          if (canonicalFAs) {
+            const mapping = canonicalFAs.getCanonicalFA(chapterNum, faName);
+            if (mapping && mapping.displayNumber) {
+              return mapping.displayNumber;
+            }
+          }
+          return null;
+        }
+        
+        // Helper function to get display label for FA with extended numbering
+        function getFADisplayLabel(chapterNum, faName, allFANames) {
+          const extendedNumber = getExtendedFANumber(chapterNum, faName, allFANames);
+          if (extendedNumber) {
+            return `FA${extendedNumber}: ${faName}`;
+          }
+          // Fallback - shouldn't happen, but just in case
+          return faName;
+        }
+        
+        // Debug: Log first few departments and their chapter numbers
+        let debugCount = 0;
 
         Array.from(deptMap.keys()).sort().forEach(deptName => {
           const dept = deptMap.get(deptName);
           const chapterNum = dept.chapterNum || '';
-          const showCareSettings = careSettings && careSettings.shouldShowSettingGrouping(chapterNum);
+          
+          // Debug first 3 departments
+          if (debugCount < 3) {
+            console.log(`Dept "${deptName}" chapterNum="${chapterNum}"`);
+            const faNames = Array.from(dept.functionalAreas.keys()).slice(0, 2);
+            faNames.forEach(fa => {
+              const canonicalNum = getCanonicalFANumber(chapterNum, fa);
+              console.log(`  FA "${fa}" -> canonical: ${canonicalNum}`);
+            });
+            debugCount++;
+          }
           
           const deptNode = {
             id: `dept-ref-${deptName}`,
@@ -3818,171 +4028,96 @@
             children: []
           };
 
-          // Sort functional areas by FA number (numerically), falling back to alphabetical by name
-          const sortedFaNames = Array.from(dept.functionalAreas.keys()).sort((a, b) => {
-            const faA = dept.functionalAreas.get(a);
-            const faB = dept.functionalAreas.get(b);
+          // Get all FA names for this department (needed for extended numbering)
+          const allFANames = Array.from(dept.functionalAreas.keys());
+          
+          // Build extended FA numbers for this chapter
+          buildExtendedFANumbers(chapterNum, allFANames);
+          
+          // Sort functional areas by extended FA number (handles 1, 1a, 1b, 2, etc.)
+          const sortedFaNames = allFANames.sort((a, b) => {
+            // Use extended FA numbers for sorting
+            const numA = extendedFANumbers[chapterNum]?.[a] || '';
+            const numB = extendedFANumbers[chapterNum]?.[b] || '';
             
-            // Parse FA numbers as integers for proper numerical sorting
-            const numA = parseInt(faA.number) || 0;
-            const numB = parseInt(faB.number) || 0;
+            // Parse number and letter parts for proper sorting
+            const matchA = numA.match(/^(\d+)([a-z]?)$/);
+            const matchB = numB.match(/^(\d+)([a-z]?)$/);
             
-            // If both have numbers, sort numerically
-            if (numA && numB) {
-              return numA - numB;
+            if (matchA && matchB) {
+              const intA = parseInt(matchA[1]);
+              const intB = parseInt(matchB[1]);
+              
+              // Sort by number first
+              if (intA !== intB) return intA - intB;
+              
+              // Then by letter suffix (empty string comes before 'a')
+              return matchA[2].localeCompare(matchB[2]);
             }
             
             // If only one has a number, it comes first
-            if (numA) return -1;
-            if (numB) return 1;
+            if (matchA) return -1;
+            if (matchB) return 1;
             
             // Otherwise sort alphabetically by name
             return a.localeCompare(b);
           });
 
-          // Group FAs by care setting if this chapter uses care setting grouping
-          if (showCareSettings) {
-            const careSettingGroups = new Map();
-            
-            sortedFaNames.forEach(faName => {
-              const fa = dept.functionalAreas.get(faName);
-              const careSetting = careSettings.getCareSettingForFA(chapterNum, fa.number, faName);
-              
-              if (!careSettingGroups.has(careSetting)) {
-                careSettingGroups.set(careSetting, []);
-              }
-              careSettingGroups.get(careSetting).push({ name: faName, data: fa });
-            });
-            
-            // Define care setting order: CBOC first, then In-Hospital, then Shared
-            const settingOrder = [
-              careSettings.CARE_SETTINGS.CBOC,
-              careSettings.CARE_SETTINGS.HOSPITAL,
-              careSettings.CARE_SETTINGS.SHARED
-            ];
-            
-            settingOrder.forEach(settingName => {
-              if (!careSettingGroups.has(settingName)) return;
-              
-              const settingIcon = careSettings.CARE_SETTING_ICONS[settingName] || '📋';
-              const settingNode = {
-                id: `setting-ref-${deptName}-${settingName}`,
-                type: 'care-setting-reference',
-                label: settingName,
-                icon: settingIcon,
-                department: deptName,
-                careSetting: settingName,
-                children: []
-              };
-              
-              careSettingGroups.get(settingName).forEach(({ name: faName, data: fa }) => {
-                const displayLabel = fa.number ? `FA${fa.number}: ${faName}` : faName;
-                const faNode = {
-                  id: `fa-ref-${deptName}-${faName}`,
-                  type: 'functional-area-reference',
-                  label: displayLabel,
-                  icon: '📂',
-                  department: deptName,
-                  functionalArea: faName,
-                  careSetting: settingName,
-                  children: []
-                };
+          // Flat FA list - no care setting grouping
+          sortedFaNames.forEach(faName => {
+            const fa = dept.functionalAreas.get(faName);
+            const displayLabel = getFADisplayLabel(chapterNum, faName, allFANames);
+            const faNode = {
+              id: `fa-ref-${deptName}-${faName}`,
+              type: 'functional-area-reference',
+              label: displayLabel,
+              icon: '📂',
+              department: deptName,
+              functionalArea: faName,
+              children: []
+            };
 
-                Array.from(fa.rooms.keys()).sort().forEach(roomCode => {
-                  const room = fa.rooms.get(roomCode);
-                  
-                  const roomData = ROOM_SIZES.find(r => r.id === roomCode);
-                  const isLegacy = roomData && roomData.source === 'finish_data';
-                  const legacyCode = window.VARF_TO_LEGACY?.get(roomCode);
-                  const varfCode = window.LEGACY_TO_VARF?.get(roomCode);
-                  
-                  let label = room.code;
-                  if (isLegacy) {
-                    label += ' (Legacy)';
-                  }
-                  label += ` - ${room.name}`;
-                  
-                  faNode.children.push({
-                    id: `room-ref-${deptName}-${faName}-${roomCode}`,
-                    type: 'room-reference',
-                    label: label,
-                    icon: '🚪',
-                    department: deptName,
-                    functionalArea: faName,
-                    careSetting: settingName,
-                    roomCode: room.code,
-                    roomName: room.name,
-                    isLegacy: isLegacy,
-                    legacyCode: legacyCode,
-                    varfCode: varfCode
-                  });
-                });
-
-                settingNode.children.push(faNode);
-              });
+            Array.from(fa.rooms.keys()).sort().forEach(roomCode => {
+              const room = fa.rooms.get(roomCode);
               
-              // Only add setting node if it has children
-              if (settingNode.children.length > 0) {
-                deptNode.children.push(settingNode);
+              // Check if this is a legacy room code (from finish data only, not in room_criteria.tsv)
+              const roomData = ROOM_SIZES.find(r => r.id === roomCode);
+              const isLegacy = roomData && roomData.source === 'finish_data';
+              
+              // Check if this VARF code has a legacy code mapping
+              const legacyCode = window.VARF_TO_LEGACY?.get(roomCode);
+              const varfCode = window.LEGACY_TO_VARF?.get(roomCode);
+              
+              // Build the label - only show (Legacy) for legacy-only codes in tree
+              let label = room.code;
+              if (isLegacy) {
+                label += ' (Legacy)';
               }
-            });
-          } else {
-            // No care setting grouping - flat FA list
-            sortedFaNames.forEach(faName => {
-              const fa = dept.functionalAreas.get(faName);
-              const displayLabel = fa.number ? `FA${fa.number}: ${faName}` : faName;
-              const faNode = {
-                id: `fa-ref-${deptName}-${faName}`,
-                type: 'functional-area-reference',
-                label: displayLabel,
-                icon: '📂',
+              label += ` - ${room.name}`;
+              
+              faNode.children.push({
+                id: `room-ref-${deptName}-${faName}-${roomCode}`,
+                type: 'room-reference',
+                label: label,
+                icon: '🚪',
                 department: deptName,
                 functionalArea: faName,
-                children: []
-              };
-
-              Array.from(fa.rooms.keys()).sort().forEach(roomCode => {
-                const room = fa.rooms.get(roomCode);
-                
-                // Check if this is a legacy room code (from finish data only, not in room_criteria.tsv)
-                const roomData = ROOM_SIZES.find(r => r.id === roomCode);
-                const isLegacy = roomData && roomData.source === 'finish_data';
-                
-                // Check if this VARF code has a legacy code mapping
-                const legacyCode = window.VARF_TO_LEGACY?.get(roomCode);
-                const varfCode = window.LEGACY_TO_VARF?.get(roomCode);
-                
-                // Build the label - only show (Legacy) for legacy-only codes in tree
-                let label = room.code;
-                if (isLegacy) {
-                  label += ' (Legacy)';
-                }
-                label += ` - ${room.name}`;
-                
-                faNode.children.push({
-                  id: `room-ref-${deptName}-${faName}-${roomCode}`,
-                  type: 'room-reference',
-                  label: label,
-                  icon: '🚪',
-                  department: deptName,
-                  functionalArea: faName,
-                  roomCode: room.code,
-                  roomName: room.name,
-                  isLegacy: isLegacy,
-                  legacyCode: legacyCode,
-                  varfCode: varfCode
-                });
+                roomCode: room.code,
+                roomName: room.name,
+                isLegacy: isLegacy,
+                legacyCode: legacyCode,
+                varfCode: varfCode
               });
-
-              deptNode.children.push(faNode);
             });
-          }
+
+            deptNode.children.push(faNode);
+          });
 
           tree.children.push(deptNode);
         });
 
         // Cache the tree for next time with version number
-        tree._version = 3; // Increment to invalidate cache for care setting changes
+        tree._version = 4; // Increment to invalidate cache - removed care setting grouping
         cachedReferenceTree = tree;
         lastMappingsLength = mappings.length;
         console.log('Reference tree cached with', tree.children.length, 'departments');
