@@ -625,6 +625,279 @@
       color: var(--primary-hover);
     }
 
+    /* Equipment Detail Panel Styles */
+    .equipment-detail-section {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .equipment-detail-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+    
+    .equipment-detail-section h3 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 0 0 12px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .equipment-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    
+    .equipment-detail-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    
+    .equipment-detail-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      min-width: 100px;
+      flex-shrink: 0;
+    }
+    
+    .equipment-detail-value {
+      font-size: 0.85rem;
+      color: var(--text);
+      word-break: break-word;
+    }
+    
+    .equipment-detail-value.highlight {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    
+    .equipment-vendor-card {
+      background: var(--bg-hover);
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+    
+    .equipment-vendor-card:last-child {
+      margin-bottom: 0;
+    }
+    
+    .jsn-clickable {
+      cursor: pointer;
+      color: var(--primary);
+      text-decoration: underline;
+      transition: color 0.2s;
+    }
+    
+    .jsn-clickable:hover {
+      color: var(--accent);
+    }
+
+    /* JSN Lookup Mode Styles */
+    .jsn-lookup-container {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+    
+    .jsn-lookup-search {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+    
+    .jsn-lookup-search input {
+      flex: 1;
+      padding: 12px 16px;
+      font-size: 1rem;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      background: var(--input-bg);
+      color: var(--text);
+      transition: border-color 0.2s;
+    }
+    
+    .jsn-lookup-search input:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+    
+    .jsn-lookup-results {
+      display: grid;
+      gap: 12px;
+    }
+    
+    .jsn-result-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .jsn-result-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 2px 8px rgba(0, 184, 148, 0.15);
+    }
+    
+    .jsn-result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    
+    .jsn-result-jsn {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--accent);
+    }
+    
+    .jsn-result-category {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--bg-hover);
+      color: var(--muted);
+    }
+    
+    .jsn-result-name {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .jsn-result-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .jsn-result-specs {
+      display: flex;
+      gap: 16px;
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* JSN Flat List Styles */
+    .jsn-lookup-list {
+      flex: 1;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+    }
+    
+    .jsn-list-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    
+    .jsn-list-item:last-child {
+      border-bottom: none;
+    }
+    
+    .jsn-list-item:hover {
+      background: var(--bg-hover);
+    }
+    
+    .jsn-list-item.selected {
+      background: var(--accent);
+      color: var(--bg);
+    }
+    
+    .jsn-list-item.selected .jsn-list-jsn {
+      color: var(--bg);
+    }
+    
+    .jsn-list-item.selected .jsn-list-name {
+      color: var(--bg);
+    }
+    
+    .jsn-list-jsn {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--primary);
+      min-width: 60px;
+      flex-shrink: 0;
+    }
+    
+    .jsn-list-name {
+      font-size: 0.85rem;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    /* Pagination Styles */
+    .jsn-lookup-pagination {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      margin-top: 8px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    
+    .jsn-pagination-info {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    
+    .jsn-pagination-buttons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .jsn-pagination-buttons button {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .jsn-pagination-buttons button:hover:not(:disabled) {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+    
+    .jsn-pagination-buttons button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    
+    .jsn-pagination-current {
+      font-size: 0.8rem;
+      color: var(--muted);
+      padding: 0 8px;
+    }
+
     /* Logic Portal Styles */
     .logic-card {
       background: var(--bg-card);
@@ -1477,6 +1750,7 @@
           <div class="mode-toggle" id="mode-toggle">
             <button class="mode-btn active" data-mode="program" onclick="switchMode('program')">Program Mode</button>
             <button class="mode-btn" data-mode="reference" onclick="switchMode('reference')">Reference Mode</button>
+            <button class="mode-btn" data-mode="jsn-lookup" onclick="switchMode('jsn-lookup')">JSN Lookup</button>
             <button class="mode-btn" data-mode="compare" onclick="switchMode('compare')">Compare Mode</button>
           </div>
           <input type="text" id="tree-search-box" class="tree-search-box" placeholder="🔍 Search rooms, departments..." oninput="filterTreeDebounced()" style="display: none;" />
@@ -1608,6 +1882,22 @@
     </div>
   </div>
 
+  <!-- Equipment Detail Popup Modal -->
+  <div id="equipment-detail-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+      <div class="modal-header">
+        <h2 id="equipment-detail-title">Equipment Details</h2>
+        <button class="modal-close" onclick="closeEquipmentDetailModal()">&times;</button>
+      </div>
+      <div id="equipment-detail-content" style="padding: 20px;">
+        <!-- Equipment details will be populated here -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeEquipmentDetailModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Report Generation Modal -->
   <div id="report-modal" class="modal-overlay">
     <div class="modal-content" style="max-width: 500px;">
@@ -1730,6 +2020,7 @@
   </div>
 
   <script src="equipment-data-part1.js"></script>
+  <script src="src/equipment-attributes.js"></script>
   <script src="equipment-data-part2.js"></script>
   <script src="room-sizes.js"></script>
   <script src="src/finish-room-data.js"></script>
@@ -3596,10 +3887,10 @@
         addBtn.style.display = mode === 'program' ? 'block' : 'none';
       }
       
-      // Show/hide search box based on mode
+      // Show/hide search box based on mode (not in jsn-lookup - it has its own)
       const searchBox = document.getElementById('tree-search-box');
       if (searchBox) {
-        // Show search in reference and compare modes
+        // Show search in reference and compare modes, hide in jsn-lookup
         searchBox.style.display = (mode === 'reference' || mode === 'compare') ? 'block' : 'none';
         searchBox.value = ''; // Clear search when switching modes
       }
@@ -3614,7 +3905,13 @@
       // Update navigator title
       const navTitle = document.getElementById('nav-title');
       if (navTitle) {
-        navTitle.textContent = 'Navigator';
+        navTitle.textContent = mode === 'jsn-lookup' ? 'Equipment Search' : 'Navigator';
+      }
+      
+      // Handle JSN Lookup mode specially
+      if (mode === 'jsn-lookup') {
+        renderJsnLookupMode();
+        return;
       }
       
       renderAll();
@@ -5992,7 +6289,7 @@
             html += `
               <div class="equipment-item">
                 <div class="equipment-item-header">
-                  <span>${eq.jsn} - ${eq.name} - <span class="equipment-item-desc${eq.description && eq.description.length > 100 ? ' truncated' : ''}">${eq.description || ''}</span>${eq.description && eq.description.length > 100 ? ' <span class="equipment-desc-toggle" onclick="toggleEquipmentDesc(this)">more</span>' : ''}</span>
+                  <span><span class="jsn-clickable" onclick="event.stopPropagation(); showEquipmentDetail('${eq.jsn}')" title="Click for equipment details">${eq.jsn}</span> - ${eq.name} - <span class="equipment-item-desc${eq.description && eq.description.length > 100 ? ' truncated' : ''}">${eq.description || ''}</span>${eq.description && eq.description.length > 100 ? ' <span class="equipment-desc-toggle" onclick="toggleEquipmentDesc(this)">more</span>' : ''}</span>
                   <span style="display: flex; align-items: center; gap: 8px;">
                     <span>Qty:</span>
                     <input type="number" value="${eq.quantity}" min="1"
@@ -6167,7 +6464,7 @@
             html += `
               <div class="equipment-item">
                 <div class="equipment-item-header">
-                  <span>${eq.jsn} - ${eq.name} - <span class="equipment-item-desc${eq.description && eq.description.length > 100 ? ' truncated' : ''}">${eq.description || ''}</span>${eq.description && eq.description.length > 100 ? '<span class="equipment-desc-toggle" onclick="toggleEquipmentDesc(this)">more</span>' : ''}</span>
+                  <span><span class="jsn-clickable" onclick="event.stopPropagation(); showEquipmentDetail('${eq.jsn}')" title="Click for equipment details">${eq.jsn}</span> - ${eq.name} - <span class="equipment-item-desc${eq.description && eq.description.length > 100 ? ' truncated' : ''}">${eq.description || ''}</span>${eq.description && eq.description.length > 100 ? '<span class="equipment-desc-toggle" onclick="toggleEquipmentDesc(this)">more</span>' : ''}</span>
                   <span>Qty: ${er.requiredQtyPerRoom} | ${eq.acqIns}</span>
                 </div>
               </div>
@@ -6343,7 +6640,7 @@
             html += `
               <div class="equipment-item">
                 <div class="equipment-item-header">
-                  <span>${eq.jsn} - ${eq.name} - <span class="equipment-item-desc${eq.description && eq.description.length > 100 ? ' truncated' : ''}">${eq.description || ''}</span>${eq.description && eq.description.length > 100 ? '<span class="equipment-desc-toggle" onclick="toggleEquipmentDesc(this)">more</span>' : ''}</span>
+                  <span><span class="jsn-clickable" onclick="event.stopPropagation(); showEquipmentDetail('${eq.jsn}')" title="Click for equipment details">${eq.jsn}</span> - ${eq.name} - <span class="equipment-item-desc${eq.description && eq.description.length > 100 ? ' truncated' : ''}">${eq.description || ''}</span>${eq.description && eq.description.length > 100 ? '<span class="equipment-desc-toggle" onclick="toggleEquipmentDesc(this)">more</span>' : ''}</span>
                   <span>Qty: ${re.quantity} | ${eq.acqIns}</span>
                 </div>
               </div>
@@ -6521,7 +6818,7 @@
           const hasLongDesc = eq.description && eq.description.length > 100;
           html += `
             <div style="padding: 8px; margin-bottom: 8px; background: var(--bg-secondary); border-radius: 4px;">
-              <div style="font-weight: 600; margin-bottom: 4px;">${eq.jsn} - ${eq.name} - <span class="equipment-item-desc${hasLongDesc ? ' truncated' : ''}" style="font-size: 0.8rem; color: var(--muted);">${eq.description || ''}</span>${hasLongDesc ? '<span class="equipment-desc-toggle" onclick="toggleEquipmentDesc(this)">more</span>' : ''}</div>
+              <div style="font-weight: 600; margin-bottom: 4px;"><span class="jsn-clickable" onclick="event.stopPropagation(); showEquipmentDetail('${eq.jsn}')" title="Click for equipment details">${eq.jsn}</span> - ${eq.name} - <span class="equipment-item-desc${hasLongDesc ? ' truncated' : ''}" style="font-size: 0.8rem; color: var(--muted);">${eq.description || ''}</span>${hasLongDesc ? '<span class="equipment-desc-toggle" onclick="toggleEquipmentDesc(this)">more</span>' : ''}</div>
               <div style="font-size: 0.85rem; color: var(--muted);">Qty: ${eq.quantity} | ${eq.acqIns}</div>
             </div>
           `;
@@ -8973,6 +9270,714 @@
       currentRoomIdForEquipment = null;
     }
 
+    // -----------------------------
+    // EQUIPMENT DETAIL POPUP
+    // -----------------------------
+
+    function showEquipmentDetail(jsn) {
+      const equipItem = EQUIPMENT_LIST.find(e => e.jsn === jsn);
+      if (!equipItem) {
+        console.warn('Equipment not found:', jsn);
+        return;
+      }
+      
+      // Get extended attributes if available
+      const attrs = (typeof EQUIPMENT_ATTRIBUTES !== 'undefined') ? EQUIPMENT_ATTRIBUTES[jsn] : null;
+      
+      // Update modal title
+      document.getElementById('equipment-detail-title').textContent = `${jsn} - ${equipItem.name}`;
+      
+      // Build content
+      let html = '';
+      
+      // Basic Info Section
+      html += `<div class="equipment-detail-section">
+        <h3>📋 Basic Information</h3>
+        <div class="equipment-detail-grid">
+          <div class="equipment-detail-row">
+            <span class="equipment-detail-label">JSN:</span>
+            <span class="equipment-detail-value highlight">${jsn}</span>
+          </div>
+          <div class="equipment-detail-row">
+            <span class="equipment-detail-label">Category:</span>
+            <span class="equipment-detail-value">${equipItem.acqIns || 'N/A'}</span>
+          </div>
+          <div class="equipment-detail-row" style="grid-column: 1 / -1;">
+            <span class="equipment-detail-label">Name:</span>
+            <span class="equipment-detail-value">${equipItem.name}</span>
+          </div>
+        </div>
+        ${equipItem.description ? `<div style="margin-top: 12px;">
+          <div class="equipment-detail-label" style="margin-bottom: 4px;">Description:</div>
+          <div class="equipment-detail-value">${equipItem.description}</div>
+        </div>` : ''}
+      </div>`;
+      
+      if (attrs) {
+        // Pricing Section
+        if (attrs.meanPrice || attrs.unitIssue) {
+          html += `<div class="equipment-detail-section">
+            <h3>💰 Pricing</h3>
+            <div class="equipment-detail-grid">
+              ${attrs.meanPrice ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Mean Price:</span>
+                <span class="equipment-detail-value highlight">$${attrs.meanPrice.toLocaleString()}</span>
+              </div>` : ''}
+              ${attrs.priceDate ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Price Date:</span>
+                <span class="equipment-detail-value">${attrs.priceDate}</span>
+              </div>` : ''}
+              ${attrs.unitIssue ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Unit Issue:</span>
+                <span class="equipment-detail-value">${attrs.unitIssue}</span>
+              </div>` : ''}
+            </div>
+          </div>`;
+        }
+        
+        // Dimensions Section
+        if (attrs.dimensions && (attrs.dimensions.width || attrs.dimensions.height || attrs.dimensions.depth || attrs.dimensions.weight)) {
+          const d = attrs.dimensions;
+          html += `<div class="equipment-detail-section">
+            <h3>📐 Dimensions</h3>
+            <div class="equipment-detail-grid">
+              ${d.width ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Width:</span>
+                <span class="equipment-detail-value">${d.width}" (${d.widthMetric || 0} cm)</span>
+              </div>` : ''}
+              ${d.height ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Height:</span>
+                <span class="equipment-detail-value">${d.height}" (${d.heightMetric || 0} cm)</span>
+              </div>` : ''}
+              ${d.depth ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Depth:</span>
+                <span class="equipment-detail-value">${d.depth}" (${d.depthMetric || 0} cm)</span>
+              </div>` : ''}
+              ${d.weight ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Weight:</span>
+                <span class="equipment-detail-value">${d.weight} lbs (${d.weightMetric || 0} kg)</span>
+              </div>` : ''}
+            </div>
+          </div>`;
+        }
+        
+        // Power Requirements Section
+        if (attrs.power && (attrs.power.amps || attrs.power.volts || attrs.power.watts)) {
+          const p = attrs.power;
+          html += `<div class="equipment-detail-section">
+            <h3>⚡ Power Requirements</h3>
+            <div class="equipment-detail-grid">
+              ${p.volts ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Voltage:</span>
+                <span class="equipment-detail-value">${p.volts}V</span>
+              </div>` : ''}
+              ${p.amps ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Amperage:</span>
+                <span class="equipment-detail-value">${p.amps}A</span>
+              </div>` : ''}
+              ${p.watts ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Wattage:</span>
+                <span class="equipment-detail-value">${p.watts}W</span>
+              </div>` : ''}
+              ${p.phase ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Phase:</span>
+                <span class="equipment-detail-value">${p.phase}-phase</span>
+              </div>` : ''}
+            </div>
+          </div>`;
+        }
+        
+        // Frequency/BTU Section
+        if (attrs.hertz && (attrs.hertz.frequency !== '0' || attrs.hertz.btuPerHour)) {
+          const h = attrs.hertz;
+          html += `<div class="equipment-detail-section">
+            <h3>🌡️ Thermal/Frequency</h3>
+            <div class="equipment-detail-grid">
+              ${h.frequency && h.frequency !== '0' ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Frequency:</span>
+                <span class="equipment-detail-value">${h.frequency} Hz</span>
+              </div>` : ''}
+              ${h.btuPerHour ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">BTU/Hour:</span>
+                <span class="equipment-detail-value">${h.btuPerHour.toLocaleString()}</span>
+              </div>` : ''}
+              <div class="equipment-detail-row">
+                <span class="equipment-detail-label">Dependent:</span>
+                <span class="equipment-detail-value">${h.dependent ? 'Yes' : 'No'}</span>
+              </div>
+              <div class="equipment-detail-row">
+                <span class="equipment-detail-label">Switchable:</span>
+                <span class="equipment-detail-value">${h.switchable ? 'Yes' : 'No'}</span>
+              </div>
+            </div>
+          </div>`;
+        }
+        
+        // Category Codes Section
+        if (attrs.category || attrs.fundingSource) {
+          html += `<div class="equipment-detail-section">
+            <h3>🏷️ Category & Funding</h3>
+            <div class="equipment-detail-grid">`;
+          if (attrs.category) {
+            if (attrs.category.va) html += `<div class="equipment-detail-row">
+              <span class="equipment-detail-label">VA Category:</span>
+              <span class="equipment-detail-value">${attrs.category.va}</span>
+            </div>`;
+            if (attrs.category.mhs) html += `<div class="equipment-detail-row">
+              <span class="equipment-detail-label">MHS Category:</span>
+              <span class="equipment-detail-value">${attrs.category.mhs}</span>
+            </div>`;
+          }
+          if (attrs.fundingSource) {
+            if (attrs.fundingSource.va) html += `<div class="equipment-detail-row">
+              <span class="equipment-detail-label">VA Funding:</span>
+              <span class="equipment-detail-value">${attrs.fundingSource.va}</span>
+            </div>`;
+            if (attrs.fundingSource.mhs) html += `<div class="equipment-detail-row">
+              <span class="equipment-detail-label">MHS Funding:</span>
+              <span class="equipment-detail-value">${attrs.fundingSource.mhs}</span>
+            </div>`;
+          }
+          html += `</div></div>`;
+        }
+        
+        // Utilities Section
+        if (attrs.utilities && attrs.utilities.length > 0) {
+          html += `<div class="equipment-detail-section">
+            <h3>🔧 Utilities Required</h3>
+            <div class="equipment-detail-value">${attrs.utilities.join(', ')}</div>
+          </div>`;
+        }
+        
+        // Vendors Section
+        if (attrs.vendors && attrs.vendors.length > 0) {
+          html += `<div class="equipment-detail-section">
+            <h3>🏭 Vendor References</h3>`;
+          attrs.vendors.forEach((vendor, idx) => {
+            html += `<div class="equipment-vendor-card">
+              <div style="font-weight: 600; margin-bottom: 6px;">Vendor ${idx + 1}</div>
+              <div class="equipment-detail-grid">
+                ${vendor.cageId ? `<div class="equipment-detail-row">
+                  <span class="equipment-detail-label">CAGE ID:</span>
+                  <span class="equipment-detail-value">${vendor.cageId}</span>
+                </div>` : ''}
+                ${vendor.model ? `<div class="equipment-detail-row">
+                  <span class="equipment-detail-label">Model:</span>
+                  <span class="equipment-detail-value">${vendor.model}</span>
+                </div>` : ''}
+                ${vendor.cutsheet ? `<div class="equipment-detail-row">
+                  <span class="equipment-detail-label">Cutsheet:</span>
+                  <span class="equipment-detail-value">${vendor.cutsheet}</span>
+                </div>` : ''}
+                ${vendor.price ? `<div class="equipment-detail-row">
+                  <span class="equipment-detail-label">Price:</span>
+                  <span class="equipment-detail-value">$${vendor.price.toLocaleString()}</span>
+                </div>` : ''}
+              </div>
+            </div>`;
+          });
+          html += `</div>`;
+        }
+        
+        // Criteria Sheet Section
+        if (attrs.criteriaSheet) {
+          html += `<div class="equipment-detail-section">
+            <h3>📄 Criteria Sheet</h3>
+            <div class="equipment-detail-grid">
+              ${attrs.criteriaSheet.id ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Sheet ID:</span>
+                <span class="equipment-detail-value">${attrs.criteriaSheet.id}</span>
+              </div>` : ''}
+              ${attrs.criteriaSheet.filename ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Filename:</span>
+                <span class="equipment-detail-value">${attrs.criteriaSheet.filename}</span>
+              </div>` : ''}
+            </div>
+          </div>`;
+        }
+        
+        // Review Info Section
+        if (attrs.dateApproved || attrs.lastModifiedDate || attrs.yearReview) {
+          html += `<div class="equipment-detail-section">
+            <h3>📅 Review Information</h3>
+            <div class="equipment-detail-grid">
+              ${attrs.dateApproved ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Date Approved:</span>
+                <span class="equipment-detail-value">${attrs.dateApproved}</span>
+              </div>` : ''}
+              ${attrs.lastModifiedDate ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Last Modified:</span>
+                <span class="equipment-detail-value">${attrs.lastModifiedDate}</span>
+              </div>` : ''}
+              ${attrs.yearReview ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Year Review:</span>
+                <span class="equipment-detail-value">${attrs.yearReview}</span>
+              </div>` : ''}
+              ${attrs.frequencyReview ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Review Frequency:</span>
+                <span class="equipment-detail-value">Every ${attrs.frequencyReview} years</span>
+              </div>` : ''}
+            </div>
+          </div>`;
+        }
+        
+        // NSN Section
+        if (attrs.nsn) {
+          html += `<div class="equipment-detail-section">
+            <h3>🔢 National Stock Number</h3>
+            <div class="equipment-detail-value highlight">${attrs.nsn}</div>
+          </div>`;
+        }
+      } else {
+        html += `<div class="equipment-detail-section">
+          <div style="color: var(--muted); font-style: italic;">
+            Extended attributes not available for this equipment item.
+          </div>
+        </div>`;
+      }
+      
+      document.getElementById('equipment-detail-content').innerHTML = html;
+      document.getElementById('equipment-detail-modal').classList.add('active');
+    }
+    
+    function closeEquipmentDetailModal() {
+      document.getElementById('equipment-detail-modal').classList.remove('active');
+    }
+
+    // -----------------------------
+    // JSN LOOKUP MODE
+    // -----------------------------
+    
+    let jsnLookupCurrentPage = 0;
+    const JSN_ITEMS_PER_PAGE = 100;
+    let jsnLookupFilteredList = [];
+    let jsnLookupSelectedJsn = null;
+
+    function renderJsnLookupMode() {
+      const treeView = document.getElementById('tree-view');
+      const detailView = document.getElementById('detail-view');
+      
+      // Sort equipment alphabetically by JSN
+      jsnLookupFilteredList = [...EQUIPMENT_LIST].sort((a, b) => a.jsn.localeCompare(b.jsn));
+      jsnLookupCurrentPage = 0;
+      jsnLookupSelectedJsn = null;
+      
+      // Tree panel with search and flat list
+      treeView.innerHTML = `
+        <div class="jsn-lookup-container">
+          <div style="margin-bottom: 12px;">
+            <h3 style="margin: 0 0 4px 0;">🔍 JSN Equipment Lookup</h3>
+            <p style="color: var(--muted); font-size: 0.8rem; margin: 0;">
+              ${EQUIPMENT_LIST.length.toLocaleString()} equipment items
+            </p>
+          </div>
+          <div class="jsn-lookup-search">
+            <input type="text" id="jsn-lookup-search" placeholder="Filter by JSN or name..." 
+                   oninput="filterJsnList()" />
+          </div>
+          <div id="jsn-lookup-list" class="jsn-lookup-list">
+            <!-- Items will be rendered here -->
+          </div>
+          <div id="jsn-lookup-pagination" class="jsn-lookup-pagination">
+            <!-- Pagination will be rendered here -->
+          </div>
+        </div>
+      `;
+      
+      // Render initial list
+      renderJsnList();
+      
+      // Detail panel shows welcome
+      renderJsnWelcomePanel();
+      
+      // Focus the search input
+      setTimeout(() => {
+        const input = document.getElementById('jsn-lookup-search');
+        if (input) input.focus();
+      }, 100);
+    }
+    
+    function renderJsnWelcomePanel() {
+      const detailView = document.getElementById('detail-view');
+      detailView.innerHTML = `
+        <div class="detail-panel">
+          <div class="detail-header">
+            <h2>JSN Equipment Lookup</h2>
+          </div>
+          <div style="padding: 20px; color: var(--muted);">
+            <p>Select an equipment item from the list to view detailed specifications.</p>
+            <p style="margin-top: 12px;"><strong>Available Data:</strong></p>
+            <ul style="margin-top: 8px; padding-left: 20px;">
+              <li>Basic information (JSN, name, description, category)</li>
+              <li>Pricing and unit of issue</li>
+              <li>Physical dimensions (width, height, depth, weight)</li>
+              <li>Power requirements (voltage, amperage, wattage, phase)</li>
+              <li>Thermal data (BTU/hour, frequency)</li>
+              <li>Category and funding codes (VA, MHS)</li>
+              <li>Vendor references (CAGE IDs, models, cutsheets)</li>
+              <li>Criteria sheet references</li>
+              <li>Review dates and NSN</li>
+            </ul>
+          </div>
+        </div>
+      `;
+    }
+    
+    function renderJsnList() {
+      const container = document.getElementById('jsn-lookup-list');
+      const paginationContainer = document.getElementById('jsn-lookup-pagination');
+      
+      const totalItems = jsnLookupFilteredList.length;
+      const totalPages = Math.ceil(totalItems / JSN_ITEMS_PER_PAGE);
+      const startIdx = jsnLookupCurrentPage * JSN_ITEMS_PER_PAGE;
+      const endIdx = Math.min(startIdx + JSN_ITEMS_PER_PAGE, totalItems);
+      const pageItems = jsnLookupFilteredList.slice(startIdx, endIdx);
+      
+      if (totalItems === 0) {
+        container.innerHTML = `<div style="padding: 40px; text-align: center; color: var(--muted);">No equipment found</div>`;
+        paginationContainer.innerHTML = '';
+        return;
+      }
+      
+      // Render items
+      let html = '';
+      pageItems.forEach(eq => {
+        const isSelected = eq.jsn === jsnLookupSelectedJsn;
+        html += `
+          <div class="jsn-list-item${isSelected ? ' selected' : ''}" data-jsn="${eq.jsn}" onclick="selectJsnItem('${eq.jsn}')">
+            <span class="jsn-list-jsn">${eq.jsn}</span>
+            <span class="jsn-list-name">${eq.name}</span>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+      
+      // Render pagination
+      if (totalPages > 1) {
+        let pagHtml = `<div class="jsn-pagination-info">Showing ${startIdx + 1}-${endIdx} of ${totalItems}</div>`;
+        pagHtml += `<div class="jsn-pagination-buttons">`;
+        pagHtml += `<button onclick="jsnPagePrev()" ${jsnLookupCurrentPage === 0 ? 'disabled' : ''}>← Prev</button>`;
+        pagHtml += `<span class="jsn-pagination-current">Page ${jsnLookupCurrentPage + 1} of ${totalPages}</span>`;
+        pagHtml += `<button onclick="jsnPageNext()" ${jsnLookupCurrentPage >= totalPages - 1 ? 'disabled' : ''}>Next →</button>`;
+        pagHtml += `</div>`;
+        paginationContainer.innerHTML = pagHtml;
+      } else {
+        paginationContainer.innerHTML = `<div class="jsn-pagination-info">${totalItems} items</div>`;
+      }
+    }
+    
+    function filterJsnList() {
+      const searchInput = document.getElementById('jsn-lookup-search');
+      const searchTerm = searchInput.value.toLowerCase().trim();
+      
+      // Sort equipment alphabetically by JSN
+      const sortedEquipment = [...EQUIPMENT_LIST].sort((a, b) => a.jsn.localeCompare(b.jsn));
+      
+      if (!searchTerm) {
+        jsnLookupFilteredList = sortedEquipment;
+      } else {
+        jsnLookupFilteredList = sortedEquipment.filter(eq => 
+          eq.jsn.toLowerCase().includes(searchTerm) ||
+          eq.name.toLowerCase().includes(searchTerm)
+        );
+      }
+      
+      jsnLookupCurrentPage = 0;
+      renderJsnList();
+    }
+    
+    function jsnPagePrev() {
+      if (jsnLookupCurrentPage > 0) {
+        jsnLookupCurrentPage--;
+        renderJsnList();
+      }
+    }
+    
+    function jsnPageNext() {
+      const totalPages = Math.ceil(jsnLookupFilteredList.length / JSN_ITEMS_PER_PAGE);
+      if (jsnLookupCurrentPage < totalPages - 1) {
+        jsnLookupCurrentPage++;
+        renderJsnList();
+      }
+    }
+    
+    function selectJsnItem(jsn) {
+      jsnLookupSelectedJsn = jsn;
+      
+      // Update selection highlight in list
+      document.querySelectorAll('.jsn-list-item').forEach(item => {
+        item.classList.toggle('selected', item.dataset.jsn === jsn);
+      });
+      
+      // Show equipment detail in right panel
+      showJsnDetailPanel(jsn);
+    }
+    
+    function showJsnDetailPanel(jsn) {
+      const equipItem = EQUIPMENT_LIST.find(e => e.jsn === jsn);
+      if (!equipItem) return;
+      
+      const detailView = document.getElementById('detail-view');
+      const attrs = (typeof EQUIPMENT_ATTRIBUTES !== 'undefined') ? EQUIPMENT_ATTRIBUTES[jsn] : null;
+      
+      let html = `
+        <div class="detail-panel">
+          <div class="detail-header">
+            <h2>${jsn} - ${equipItem.name}</h2>
+          </div>
+          <div style="padding: 20px; overflow-y: auto;">
+      `;
+      
+      // Basic Info Section
+      html += `<div class="equipment-detail-section">
+        <h3>📋 Basic Information</h3>
+        <div class="equipment-detail-grid">
+          <div class="equipment-detail-row">
+            <span class="equipment-detail-label">JSN:</span>
+            <span class="equipment-detail-value highlight">${jsn}</span>
+          </div>
+          <div class="equipment-detail-row">
+            <span class="equipment-detail-label">Category:</span>
+            <span class="equipment-detail-value">${equipItem.acqIns || 'N/A'}</span>
+          </div>
+          <div class="equipment-detail-row" style="grid-column: 1 / -1;">
+            <span class="equipment-detail-label">Name:</span>
+            <span class="equipment-detail-value">${equipItem.name}</span>
+          </div>
+        </div>
+        ${equipItem.description ? `<div style="margin-top: 12px;">
+          <div class="equipment-detail-label" style="margin-bottom: 4px;">Description:</div>
+          <div class="equipment-detail-value">${equipItem.description}</div>
+        </div>` : ''}
+      </div>`;
+      
+      if (attrs) {
+        // Pricing Section
+        if (attrs.meanPrice || attrs.unitIssue) {
+          html += `<div class="equipment-detail-section">
+            <h3>💰 Pricing</h3>
+            <div class="equipment-detail-grid">
+              ${attrs.meanPrice ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Mean Price:</span>
+                <span class="equipment-detail-value highlight">$${attrs.meanPrice.toLocaleString()}</span>
+              </div>` : ''}
+              ${attrs.priceDate ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Price Date:</span>
+                <span class="equipment-detail-value">${attrs.priceDate}</span>
+              </div>` : ''}
+              ${attrs.unitIssue ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Unit Issue:</span>
+                <span class="equipment-detail-value">${attrs.unitIssue}</span>
+              </div>` : ''}
+            </div>
+          </div>`;
+        }
+        
+        // Dimensions Section
+        if (attrs.dimensions && (attrs.dimensions.width || attrs.dimensions.height || attrs.dimensions.depth || attrs.dimensions.weight)) {
+          const d = attrs.dimensions;
+          html += `<div class="equipment-detail-section">
+            <h3>📐 Dimensions</h3>
+            <div class="equipment-detail-grid">
+              ${d.width ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Width:</span>
+                <span class="equipment-detail-value">${d.width}" (${d.widthMetric || 0} cm)</span>
+              </div>` : ''}
+              ${d.height ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Height:</span>
+                <span class="equipment-detail-value">${d.height}" (${d.heightMetric || 0} cm)</span>
+              </div>` : ''}
+              ${d.depth ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Depth:</span>
+                <span class="equipment-detail-value">${d.depth}" (${d.depthMetric || 0} cm)</span>
+              </div>` : ''}
+              ${d.weight ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Weight:</span>
+                <span class="equipment-detail-value">${d.weight} lbs (${d.weightMetric || 0} kg)</span>
+              </div>` : ''}
+            </div>
+          </div>`;
+        }
+        
+        // Power Requirements Section
+        if (attrs.power && (attrs.power.amps || attrs.power.volts || attrs.power.watts)) {
+          const p = attrs.power;
+          html += `<div class="equipment-detail-section">
+            <h3>⚡ Power Requirements</h3>
+            <div class="equipment-detail-grid">
+              ${p.volts ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Voltage:</span>
+                <span class="equipment-detail-value">${p.volts}V</span>
+              </div>` : ''}
+              ${p.amps ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Amperage:</span>
+                <span class="equipment-detail-value">${p.amps}A</span>
+              </div>` : ''}
+              ${p.watts ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Wattage:</span>
+                <span class="equipment-detail-value">${p.watts}W</span>
+              </div>` : ''}
+              ${p.phase ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Phase:</span>
+                <span class="equipment-detail-value">${p.phase}-phase</span>
+              </div>` : ''}
+            </div>
+          </div>`;
+        }
+        
+        // Frequency/BTU Section
+        if (attrs.hertz && (attrs.hertz.frequency !== '0' || attrs.hertz.btuPerHour)) {
+          const h = attrs.hertz;
+          html += `<div class="equipment-detail-section">
+            <h3>🌡️ Thermal/Frequency</h3>
+            <div class="equipment-detail-grid">
+              ${h.frequency && h.frequency !== '0' ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Frequency:</span>
+                <span class="equipment-detail-value">${h.frequency} Hz</span>
+              </div>` : ''}
+              ${h.btuPerHour ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">BTU/Hour:</span>
+                <span class="equipment-detail-value">${h.btuPerHour.toLocaleString()}</span>
+              </div>` : ''}
+              <div class="equipment-detail-row">
+                <span class="equipment-detail-label">Dependent:</span>
+                <span class="equipment-detail-value">${h.dependent ? 'Yes' : 'No'}</span>
+              </div>
+              <div class="equipment-detail-row">
+                <span class="equipment-detail-label">Switchable:</span>
+                <span class="equipment-detail-value">${h.switchable ? 'Yes' : 'No'}</span>
+              </div>
+            </div>
+          </div>`;
+        }
+        
+        // Category Codes Section
+        if (attrs.category || attrs.fundingSource) {
+          html += `<div class="equipment-detail-section">
+            <h3>🏷️ Category & Funding</h3>
+            <div class="equipment-detail-grid">`;
+          if (attrs.category) {
+            if (attrs.category.va) html += `<div class="equipment-detail-row">
+              <span class="equipment-detail-label">VA Category:</span>
+              <span class="equipment-detail-value">${attrs.category.va}</span>
+            </div>`;
+            if (attrs.category.mhs) html += `<div class="equipment-detail-row">
+              <span class="equipment-detail-label">MHS Category:</span>
+              <span class="equipment-detail-value">${attrs.category.mhs}</span>
+            </div>`;
+          }
+          if (attrs.fundingSource) {
+            if (attrs.fundingSource.va) html += `<div class="equipment-detail-row">
+              <span class="equipment-detail-label">VA Funding:</span>
+              <span class="equipment-detail-value">${attrs.fundingSource.va}</span>
+            </div>`;
+            if (attrs.fundingSource.mhs) html += `<div class="equipment-detail-row">
+              <span class="equipment-detail-label">MHS Funding:</span>
+              <span class="equipment-detail-value">${attrs.fundingSource.mhs}</span>
+            </div>`;
+          }
+          html += `</div></div>`;
+        }
+        
+        // Utilities Section
+        if (attrs.utilities && attrs.utilities.length > 0) {
+          html += `<div class="equipment-detail-section">
+            <h3>🔧 Utilities Required</h3>
+            <div class="equipment-detail-value">${attrs.utilities.join(', ')}</div>
+          </div>`;
+        }
+        
+        // Vendors Section
+        if (attrs.vendors && attrs.vendors.length > 0) {
+          html += `<div class="equipment-detail-section">
+            <h3>🏭 Vendor References</h3>`;
+          attrs.vendors.forEach((vendor, idx) => {
+            html += `<div class="equipment-vendor-card">
+              <div style="font-weight: 600; margin-bottom: 6px;">Vendor ${idx + 1}</div>
+              <div class="equipment-detail-grid">
+                ${vendor.cageId ? `<div class="equipment-detail-row">
+                  <span class="equipment-detail-label">CAGE ID:</span>
+                  <span class="equipment-detail-value">${vendor.cageId}</span>
+                </div>` : ''}
+                ${vendor.model ? `<div class="equipment-detail-row">
+                  <span class="equipment-detail-label">Model:</span>
+                  <span class="equipment-detail-value">${vendor.model}</span>
+                </div>` : ''}
+                ${vendor.cutsheet ? `<div class="equipment-detail-row">
+                  <span class="equipment-detail-label">Cutsheet:</span>
+                  <span class="equipment-detail-value">${vendor.cutsheet}</span>
+                </div>` : ''}
+                ${vendor.price ? `<div class="equipment-detail-row">
+                  <span class="equipment-detail-label">Price:</span>
+                  <span class="equipment-detail-value">$${vendor.price.toLocaleString()}</span>
+                </div>` : ''}
+              </div>
+            </div>`;
+          });
+          html += `</div>`;
+        }
+        
+        // Criteria Sheet Section
+        if (attrs.criteriaSheet) {
+          html += `<div class="equipment-detail-section">
+            <h3>📄 Criteria Sheet</h3>
+            <div class="equipment-detail-grid">
+              ${attrs.criteriaSheet.id ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Sheet ID:</span>
+                <span class="equipment-detail-value">${attrs.criteriaSheet.id}</span>
+              </div>` : ''}
+              ${attrs.criteriaSheet.filename ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Filename:</span>
+                <span class="equipment-detail-value">${attrs.criteriaSheet.filename}</span>
+              </div>` : ''}
+            </div>
+          </div>`;
+        }
+        
+        // Review Info Section
+        if (attrs.dateApproved || attrs.lastModifiedDate || attrs.yearReview) {
+          html += `<div class="equipment-detail-section">
+            <h3>📅 Review Information</h3>
+            <div class="equipment-detail-grid">
+              ${attrs.dateApproved ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Date Approved:</span>
+                <span class="equipment-detail-value">${attrs.dateApproved}</span>
+              </div>` : ''}
+              ${attrs.lastModifiedDate ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Last Modified:</span>
+                <span class="equipment-detail-value">${attrs.lastModifiedDate}</span>
+              </div>` : ''}
+              ${attrs.yearReview ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Year Review:</span>
+                <span class="equipment-detail-value">${attrs.yearReview}</span>
+              </div>` : ''}
+              ${attrs.frequencyReview ? `<div class="equipment-detail-row">
+                <span class="equipment-detail-label">Review Frequency:</span>
+                <span class="equipment-detail-value">Every ${attrs.frequencyReview} years</span>
+              </div>` : ''}
+            </div>
+          </div>`;
+        }
+        
+        // NSN Section
+        if (attrs.nsn) {
+          html += `<div class="equipment-detail-section">
+            <h3>🔢 National Stock Number</h3>
+            <div class="equipment-detail-value highlight">${attrs.nsn}</div>
+          </div>`;
+        }
+      } else {
+        html += `<div class="equipment-detail-section">
+          <div style="color: var(--muted); font-style: italic;">
+            Extended attributes not available for this equipment item.
+          </div>
+        </div>`;
+      }
+      
+      html += `</div></div>`;
+      detailView.innerHTML = html;
+    }
+
     function renderEquipmentList(searchTerm = '') {
       const container = document.getElementById('equipment-list');
       const lowerSearch = searchTerm.toLowerCase();
@@ -8998,7 +10003,7 @@
                onmouseover="this.style.background='var(--bg-hover)'" 
                onmouseout="this.style.background='transparent'"
                onclick="selectEquipment('${eq.jsn}')">
-            <div style="font-weight: 600; margin-bottom: 4px;">${eq.jsn} - ${eq.name}</div>
+            <div style="font-weight: 600; margin-bottom: 4px;"><span class="jsn-clickable" onclick="event.stopPropagation(); showEquipmentDetail('${eq.jsn}')" title="Click for equipment details">${eq.jsn}</span> - ${eq.name}</div>
             ${eq.acqIns ? `<div style="font-size: 0.85rem; color: var(--muted); margin-bottom: 2px;">Category: ${eq.acqIns}</div>` : ''}
             ${eq.description ? `<div style="font-size: 0.85rem; color: var(--muted);">${eq.description}</div>` : ''}
           </div>
