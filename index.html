@@ -1616,9 +1616,25 @@
         <button class="modal-close" onclick="closeReportModal()">&times;</button>
       </div>
       <div style="padding: 20px;">
-        <p style="margin-bottom: 20px; color: var(--muted);">Select the report focus for your PDF export:</p>
+        <p style="margin-bottom: 16px; color: var(--muted);">Select report format and type:</p>
         
-        <div style="margin-bottom: 24px;">
+        <!-- Format Selection -->
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600;">Export Format:</label>
+          <div style="display: flex; gap: 8px;">
+            <label style="flex: 1; display: flex; align-items: center; padding: 10px; border: 2px solid var(--accent); border-radius: 6px; cursor: pointer; background: var(--bg);" id="format-pdf-label">
+              <input type="radio" name="report-format" value="pdf" checked onchange="updateReportFormatUI()" style="margin-right: 8px;">
+              <span>📄 PDF</span>
+            </label>
+            <label style="flex: 1; display: flex; align-items: center; padding: 10px; border: 2px solid var(--border); border-radius: 6px; cursor: pointer; background: var(--bg);" id="format-tsv-label">
+              <input type="radio" name="report-format" value="tsv" onchange="updateReportFormatUI()" style="margin-right: 8px;">
+              <span>📊 TSV</span>
+            </label>
+          </div>
+        </div>
+        
+        <!-- PDF Report Types -->
+        <div id="pdf-report-options" style="margin-bottom: 24px;">
           <label style="display: block; margin-bottom: 12px; cursor: pointer; padding: 12px; border: 2px solid var(--accent); border-radius: 6px; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='var(--border)'">
             <input type="radio" name="report-type" value="equipment" checked onchange="document.querySelectorAll('[name=report-type]').forEach(r => r.parentElement.style.borderColor = 'var(--border)'); this.parentElement.style.borderColor = 'var(--accent)';" style="margin-right: 8px;">
             <strong>Equipment Focus</strong>
@@ -1631,8 +1647,23 @@
             <div style="font-size: 0.85rem; color: var(--muted); margin-top: 4px; margin-left: 24px;">Shows detailed room specifications including HVAC, materials, utilities, and environmental requirements</div>
           </label>
         </div>
+        
+        <!-- TSV Report Types -->
+        <div id="tsv-report-options" style="margin-bottom: 24px; display: none;">
+          <label style="display: block; margin-bottom: 12px; cursor: pointer; padding: 12px; border: 2px solid var(--accent); border-radius: 6px; transition: all 0.2s;" id="tsv-simple-label">
+            <input type="radio" name="tsv-type" value="simple" checked onchange="updateTsvTypeUI()" style="margin-right: 8px;">
+            <strong>Simple Equipment List</strong>
+            <div style="font-size: 0.85rem; color: var(--muted); margin-top: 4px; margin-left: 24px;">JSN, Name, Quantity, Acquisition Code, Description - organized by Dept/FA/Room</div>
+          </label>
+          
+          <label style="display: block; cursor: pointer; padding: 12px; border: 2px solid var(--border); border-radius: 6px; transition: all 0.2s;" id="tsv-expanded-label">
+            <input type="radio" name="tsv-type" value="expanded" onchange="updateTsvTypeUI()" style="margin-right: 8px;">
+            <strong>Expanded Equipment List</strong>
+            <div style="font-size: 0.85rem; color: var(--muted); margin-top: 4px; margin-left: 24px;">All equipment attributes including cost, dimensions, power requirements, and more</div>
+          </label>
+        </div>
 
-        <div style="margin-bottom: 16px;">
+        <div style="margin-bottom: 16px;" id="pdf-summary-option">
           <label style="display: flex; align-items: center; cursor: pointer;">
             <input type="checkbox" id="include-summary" checked style="margin-right: 8px;">
             <span>Include project summary page</span>
@@ -1641,7 +1672,7 @@
       </div>
       <div class="modal-footer">
         <button class="btn-secondary" onclick="closeReportModal()">Cancel</button>
-        <button class="btn-primary" onclick="generatePDFReport()">📥 Generate PDF</button>
+        <button class="btn-primary" id="generate-report-btn" onclick="generateReport()">📥 Generate PDF</button>
       </div>
     </div>
   </div>
@@ -3760,6 +3791,108 @@
       renderAll();
     }
 
+    // Export a single project to a JSON file
+    function exportProject(projectId, event) {
+      if (event) event.stopPropagation();
+      
+      const project = USER_PROJECTS.find(p => p.id === projectId);
+      if (!project) {
+        alert('Project not found');
+        return;
+      }
+      
+      // Create export data with metadata
+      const exportData = {
+        version: '1.0',
+        exportedAt: new Date().toISOString(),
+        type: 'va-arrange-project',
+        project: project
+      };
+      
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      
+      // Create safe filename from project name
+      const safeName = project.name.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+      const date = new Date().toISOString().split('T')[0];
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${safeName}-${date}.arrange.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      console.log(`Exported project "${project.name}" (${(JSON.stringify(exportData).length / 1024).toFixed(1)} KB)`);
+    }
+    
+    // Import a project from a JSON file
+    function importProjectFromFile() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json,.arrange.json';
+      
+      input.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        try {
+          const text = await file.text();
+          const data = JSON.parse(text);
+          
+          // Validate file format
+          if (data.type !== 'va-arrange-project' || !data.project) {
+            alert('Invalid file format. Please select a valid Arrange project file (.arrange.json)');
+            return;
+          }
+          
+          const importedProject = data.project;
+          
+          // Check for duplicate project
+          const existingProject = USER_PROJECTS.find(p => p.id === importedProject.id);
+          
+          if (existingProject) {
+            const choice = confirm(
+              `A project with this ID already exists:\n\n` +
+              `Existing: "${existingProject.name}" (modified ${new Date(existingProject.modifiedAt).toLocaleString()})\n` +
+              `Importing: "${importedProject.name}" (exported ${new Date(data.exportedAt).toLocaleString()})\n\n` +
+              `Click OK to replace the existing project, or Cancel to import as a new project.`
+            );
+            
+            if (choice) {
+              // Replace existing
+              const index = USER_PROJECTS.findIndex(p => p.id === importedProject.id);
+              USER_PROJECTS[index] = importedProject;
+              console.log(`Replaced existing project "${importedProject.name}"`);
+            } else {
+              // Import as new with new ID
+              importedProject.id = generateId();
+              importedProject.name = importedProject.name + ' (Imported)';
+              importedProject.modifiedAt = new Date().toISOString();
+              USER_PROJECTS.push(importedProject);
+              console.log(`Imported as new project "${importedProject.name}"`);
+            }
+          } else {
+            // No duplicate, just add
+            USER_PROJECTS.push(importedProject);
+            console.log(`Imported project "${importedProject.name}"`);
+          }
+          
+          saveProjects();
+          renderAll();
+          
+          alert(`Successfully imported project "${importedProject.name}"`);
+          
+        } catch (err) {
+          console.error('Import error:', err);
+          alert('Error importing project: ' + err.message);
+        }
+      };
+      
+      input.click();
+    }
+
     function buildTreeData() {
       // Reference/Compare mode - always show reference tree regardless of view state
       if (currentMode === 'reference' || currentMode === 'compare') {
@@ -4438,8 +4571,9 @@
         // Render project list in program mode, tree in reference/compare mode
         if (currentMode === 'program') {
           let html = `
-            <div style="margin-bottom: 16px;">
-              <button class="btn-primary" onclick="createNewProject()" style="width: 100%;">+ New Project</button>
+            <div style="margin-bottom: 16px; display: flex; gap: 8px;">
+              <button class="btn-primary" onclick="createNewProject()" style="flex: 1;">+ New Project</button>
+              <button class="btn-secondary" onclick="importProjectFromFile()" title="Import project from file">📥 Import</button>
             </div>
           `;
         
@@ -4466,6 +4600,7 @@
               </div>
               <div style="display: flex; gap: 6px; flex-shrink: 0;">
                 <button class="btn-secondary" onclick="openProject('${project.id}'); event.stopPropagation();" style="padding: 6px 10px; font-size: 0.75rem;" title="Open project">📂 Open</button>
+                <button class="btn-secondary" onclick="exportProject('${project.id}', event)" style="padding: 6px 10px; font-size: 0.75rem;" title="Export project to file">📤</button>
                 <button class="btn-secondary" onclick="deleteProject('${project.id}', event)" style="padding: 6px 10px; font-size: 0.75rem;" title="Delete project">🗑️</button>
               </div>
             </div>
@@ -5446,9 +5581,12 @@
           </div>
         </div>
         <div class="detail-panel">
-          <div style="margin-top: 0px;">
-            <button onclick="openReportModal()" class="btn-primary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+            <button onclick="openReportModal()" class="btn-primary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;">
               📄 Generate Report
+            </button>
+            <button onclick="exportProject('${project.id}')" class="btn-secondary" style="display: flex; align-items: center; justify-content: center; gap: 6px;" title="Export project to file">
+              📤 Export
             </button>
           </div>
         </div>
@@ -7778,10 +7916,188 @@
 
     function openReportModal() {
       document.getElementById('report-modal').classList.add('active');
+      updateReportFormatUI(); // Ensure UI is in sync
     }
 
     function closeReportModal() {
       document.getElementById('report-modal').classList.remove('active');
+    }
+    
+    function updateReportFormatUI() {
+      const format = document.querySelector('input[name="report-format"]:checked').value;
+      const pdfOptions = document.getElementById('pdf-report-options');
+      const tsvOptions = document.getElementById('tsv-report-options');
+      const summaryOption = document.getElementById('pdf-summary-option');
+      const generateBtn = document.getElementById('generate-report-btn');
+      const pdfLabel = document.getElementById('format-pdf-label');
+      const tsvLabel = document.getElementById('format-tsv-label');
+      
+      if (format === 'pdf') {
+        pdfOptions.style.display = 'block';
+        tsvOptions.style.display = 'none';
+        summaryOption.style.display = 'block';
+        generateBtn.textContent = '📥 Generate PDF';
+        generateBtn.onclick = generatePDFReport;
+        pdfLabel.style.borderColor = 'var(--accent)';
+        tsvLabel.style.borderColor = 'var(--border)';
+      } else {
+        pdfOptions.style.display = 'none';
+        tsvOptions.style.display = 'block';
+        summaryOption.style.display = 'none';
+        generateBtn.textContent = '📥 Generate TSV';
+        generateBtn.onclick = generateTSVReport;
+        pdfLabel.style.borderColor = 'var(--border)';
+        tsvLabel.style.borderColor = 'var(--accent)';
+      }
+    }
+    
+    function updateTsvTypeUI() {
+      const type = document.querySelector('input[name="tsv-type"]:checked').value;
+      const simpleLabel = document.getElementById('tsv-simple-label');
+      const expandedLabel = document.getElementById('tsv-expanded-label');
+      
+      simpleLabel.style.borderColor = type === 'simple' ? 'var(--accent)' : 'var(--border)';
+      expandedLabel.style.borderColor = type === 'expanded' ? 'var(--accent)' : 'var(--border)';
+    }
+    
+    function generateReport() {
+      const format = document.querySelector('input[name="report-format"]:checked').value;
+      if (format === 'pdf') {
+        generatePDFReport();
+      } else {
+        generateTSVReport();
+      }
+    }
+    
+    function generateTSVReport() {
+      const tsvType = document.querySelector('input[name="tsv-type"]:checked').value;
+      const project = getCurrentProject();
+      
+      if (!project) {
+        alert('No project selected');
+        return;
+      }
+      
+      const rows = [];
+      let faCounter = 0; // Track FA numbers within each department
+      
+      // Row 1: Project name
+      rows.push([project.name]);
+      rows.push([]); // Spacer row
+      
+      if (project.departments) {
+        project.departments.forEach((dept, deptIdx) => {
+          // Department row
+          rows.push([dept.name]);
+          rows.push([]); // Spacer row
+          
+          faCounter = 0; // Reset FA counter for each department
+          
+          if (dept.functionalAreas) {
+            dept.functionalAreas.forEach((fa, faIdx) => {
+              faCounter++;
+              
+              // Functional Area row (number - name)
+              rows.push([`${faCounter} - ${fa.name}`]);
+              rows.push([]); // Spacer row
+              
+              if (fa.rooms) {
+                fa.rooms.forEach((room, roomIdx) => {
+                  // Room header row (code - name)
+                  if (tsvType === 'simple') {
+                    // Simple: Room row then equipment rows with 5 columns
+                    rows.push([`${room.code} - ${room.name}`]);
+                    // Column headers under each room
+                    rows.push(['JSN', 'Name', 'Qty', 'Acquisition', 'Description']);
+                  } else {
+                    // Expanded: Room row includes room details
+                    const roomData = ROOM_SIZES.find(r => r.roomCode === room.code || r.id === room.code);
+                    rows.push([
+                      `${room.code} - ${room.name}`,
+                      `NSF: ${room.nsf || roomData?.nsf || 0}`
+                    ]);
+                    // Column headers under each room
+                    rows.push([
+                      'JSN', 'Name', 'Qty', 'Acquisition', 'Description',
+                      'Cost', 'Width', 'Depth', 'Height', 'Weight',
+                      'Voltage', 'Amperage', 'BTU Output', 'Plumbing', 'Data', 'Special Requirements'
+                    ]);
+                  }
+                  
+                  // Equipment rows
+                  if (room.equipment && room.equipment.length > 0) {
+                    room.equipment.forEach(equip => {
+                      if (tsvType === 'simple') {
+                        // Simple: JSN, Name, Qty, Acquisition, Description
+                        rows.push([
+                          equip.jsn || '',
+                          equip.name || '',
+                          equip.quantity || 1,
+                          equip.acquisitionCode || equip.acqIns || '',
+                          equip.description || ''
+                        ]);
+                      } else {
+                        // Expanded: All possible attributes
+                        rows.push([
+                          equip.jsn || '',
+                          equip.name || '',
+                          equip.quantity || 1,
+                          equip.acquisitionCode || equip.acqIns || '',
+                          equip.description || '',
+                          equip.cost || 0,
+                          equip.width || '',
+                          equip.depth || '',
+                          equip.height || '',
+                          equip.weight || '',
+                          equip.voltage || '',
+                          equip.amperage || '',
+                          equip.btuOutput || '',
+                          equip.plumbingRequired || '',
+                          equip.dataRequired || '',
+                          equip.specialRequirements || ''
+                        ]);
+                      }
+                    });
+                  }
+                  
+                  rows.push([]); // Spacer row after each room
+                });
+              }
+            });
+          }
+        });
+      }
+      
+      // Convert to TSV string
+      const tsvContent = rows.map(row => 
+        row.map(cell => {
+          // Escape tabs and newlines in cell content
+          const str = String(cell ?? '');
+          if (str.includes('\t') || str.includes('\n') || str.includes('"')) {
+            return '"' + str.replace(/"/g, '""') + '"';
+          }
+          return str;
+        }).join('\t')
+      ).join('\n');
+      
+      // Download the file
+      const blob = new Blob([tsvContent], { type: 'text/tab-separated-values' });
+      const url = URL.createObjectURL(blob);
+      
+      const safeName = project.name.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+      const date = new Date().toISOString().split('T')[0];
+      const typeSuffix = tsvType === 'simple' ? 'equipment' : 'equipment-expanded';
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${safeName}-${typeSuffix}-${date}.tsv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      console.log(`Generated TSV report: ${rows.length} rows`);
+      closeReportModal();
     }
 
     function generateReportForProject(projectId) {
