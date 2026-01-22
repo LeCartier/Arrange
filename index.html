@@ -6311,9 +6311,69 @@
         // Get room attributes from ROOM_SIZES
         const roomAttrs = getRoomAttributes(room.code);
 
+        // Find current dept and FA for this room
+        let currentDeptId = null;
+        let currentFAId = null;
+        let currentDeptName = '';
+        let currentFAName = '';
+        
+        if (project.departments) {
+          for (const dept of project.departments) {
+            if (dept.functionalAreas) {
+              for (const fa of dept.functionalAreas) {
+                if (fa.rooms && fa.rooms.some(r => r.id === room.id)) {
+                  currentDeptId = dept.id;
+                  currentFAId = fa.id;
+                  currentDeptName = dept.name;
+                  currentFAName = fa.name;
+                  break;
+                }
+              }
+            }
+            if (currentDeptId) break;
+          }
+        }
+
+        // Build dept options
+        let deptOptions = '';
+        if (project.departments) {
+          project.departments.forEach(dept => {
+            const selected = dept.id === currentDeptId ? 'selected' : '';
+            deptOptions += `<option value="${dept.id}" ${selected}>${dept.name}</option>`;
+          });
+        }
+
+        // Build FA options for current dept
+        let faOptions = '';
+        const currentDept = project.departments?.find(d => d.id === currentDeptId);
+        if (currentDept && currentDept.functionalAreas) {
+          currentDept.functionalAreas.forEach(fa => {
+            const selected = fa.id === currentFAId ? 'selected' : '';
+            faOptions += `<option value="${fa.id}" ${selected}>${fa.name}</option>`;
+          });
+        }
+
         let html = `
           <div class="detail-panel">
             <h3>🚪 ${room.code} - ${room.name}</h3>
+            <div class="detail-row">
+              <div class="detail-label">Department:</div>
+              <div class="detail-value">
+                <select onchange="updateRoomDepartment('${room.id}', this.value)" 
+                  style="width: 100%; padding: 4px 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+                  ${deptOptions}
+                </select>
+              </div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Functional Area:</div>
+              <div class="detail-value">
+                <select id="room-fa-select-${room.id}" onchange="updateRoomFunctionalArea('${room.id}', '${currentDeptId}', this.value)" 
+                  style="width: 100%; padding: 4px 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+                  ${faOptions}
+                </select>
+              </div>
+            </div>
             <div class="detail-row">
               <div class="detail-label">Room Code:</div>
               <div class="detail-value">${room.code}</div>
@@ -9106,6 +9166,128 @@
       }
     }
 
+    function updateRoomDepartment(roomId, newDeptId) {
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      // Find the room and its current location
+      let roomToMove = null;
+      let sourceFa = null;
+      let sourceDept = null;
+
+      for (const dept of project.departments) {
+        if (!dept.functionalAreas) continue;
+        for (const fa of dept.functionalAreas) {
+          if (!fa.rooms) continue;
+          const roomIndex = fa.rooms.findIndex(r => r.id === roomId);
+          if (roomIndex !== -1) {
+            roomToMove = fa.rooms[roomIndex];
+            sourceFa = fa;
+            sourceDept = dept;
+            break;
+          }
+        }
+        if (roomToMove) break;
+      }
+
+      if (!roomToMove) return;
+
+      // Find target department
+      const targetDept = project.departments.find(d => d.id === newDeptId);
+      if (!targetDept) return;
+
+      // If same department, no change needed
+      if (sourceDept.id === targetDept.id) return;
+
+      // Find or create a functional area with same name in target department
+      if (!targetDept.functionalAreas) targetDept.functionalAreas = [];
+      let targetFa = targetDept.functionalAreas.find(f => f.name === sourceFa.name);
+      
+      if (!targetFa) {
+        // Create new FA with same name in target department
+        targetFa = {
+          id: generateId(),
+          name: sourceFa.name,
+          rooms: []
+        };
+        targetDept.functionalAreas.push(targetFa);
+      }
+
+      // Remove room from source FA
+      const roomIndex = sourceFa.rooms.findIndex(r => r.id === roomId);
+      if (roomIndex !== -1) {
+        sourceFa.rooms.splice(roomIndex, 1);
+      }
+
+      // Add room to target FA
+      if (!targetFa.rooms) targetFa.rooms = [];
+      targetFa.rooms.push(roomToMove);
+
+      // Clean up empty source FA
+      if (sourceFa.rooms.length === 0) {
+        const faIndex = sourceDept.functionalAreas.findIndex(f => f.id === sourceFa.id);
+        if (faIndex !== -1) {
+          sourceDept.functionalAreas.splice(faIndex, 1);
+        }
+      }
+
+      saveProjects();
+      renderAll();
+    }
+
+    function updateRoomFunctionalArea(roomId, currentDeptId, newFaId) {
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      // Find current department
+      const dept = project.departments.find(d => d.id === currentDeptId);
+      if (!dept || !dept.functionalAreas) return;
+
+      // Find the room and its current FA
+      let roomToMove = null;
+      let sourceFa = null;
+
+      for (const fa of dept.functionalAreas) {
+        if (!fa.rooms) continue;
+        const roomIndex = fa.rooms.findIndex(r => r.id === roomId);
+        if (roomIndex !== -1) {
+          roomToMove = fa.rooms[roomIndex];
+          sourceFa = fa;
+          break;
+        }
+      }
+
+      if (!roomToMove) return;
+
+      // Find target FA
+      const targetFa = dept.functionalAreas.find(f => f.id === newFaId);
+      if (!targetFa) return;
+
+      // If same FA, no change needed
+      if (sourceFa.id === targetFa.id) return;
+
+      // Remove room from source FA
+      const roomIndex = sourceFa.rooms.findIndex(r => r.id === roomId);
+      if (roomIndex !== -1) {
+        sourceFa.rooms.splice(roomIndex, 1);
+      }
+
+      // Add room to target FA
+      if (!targetFa.rooms) targetFa.rooms = [];
+      targetFa.rooms.push(roomToMove);
+
+      // Clean up empty source FA
+      if (sourceFa.rooms.length === 0) {
+        const faIndex = dept.functionalAreas.findIndex(f => f.id === sourceFa.id);
+        if (faIndex !== -1) {
+          dept.functionalAreas.splice(faIndex, 1);
+        }
+      }
+
+      saveProjects();
+      renderAll();
+    }
+
     function updateRoomAttribute(roomId, attributeName, newValue) {
       const project = getCurrentProject();
       if (!project.departments) return;
@@ -9733,19 +9915,22 @@
       const previewRows = importFileData.slice(0, 10);
       
       previewRows.forEach((row, idx) => {
-        const dept = deptCol !== '' ? (row[parseInt(deptCol)] || '') : '';
-        const fa = faCol !== '' ? (row[parseInt(faCol)] || '') : '';
+        const deptRaw = deptCol !== '' ? (row[parseInt(deptCol)] || '') : '';
+        const faRaw = faCol !== '' ? (row[parseInt(faCol)] || '') : '';
         const roomName = roomNameCol !== '' ? (row[parseInt(roomNameCol)] || '') : '';
         const nsf = nsfCol !== '' ? (row[parseInt(nsfCol)] || '') : '';
         const roomCode = roomCodeCol !== '' ? (row[parseInt(roomCodeCol)] || '') : '';
         const qty = qtyCol !== '' ? (row[parseInt(qtyCol)] || '1') : '1';
         
-        const isValid = dept && fa && roomName;
+        // Treat blank dept/FA as valid (will use "Blank" as name)
+        const dept = String(deptRaw).trim() || '<span style="color: #f39c12;">(Blank)</span>';
+        const fa = String(faRaw).trim() || '<span style="color: #f39c12;">(Blank)</span>';
+        const isValid = roomName; // Only room name is truly required
         const rowStyle = isValid ? '' : 'background: rgba(231, 76, 60, 0.1);';
         
         html += `<tr style="${rowStyle}">`;
-        html += `<td style="padding: 6px 8px; border: 1px solid var(--border);">${dept || '<span style="color: #e74c3c;">Missing</span>'}</td>`;
-        html += `<td style="padding: 6px 8px; border: 1px solid var(--border);">${fa || '<span style="color: #e74c3c;">Missing</span>'}</td>`;
+        html += `<td style="padding: 6px 8px; border: 1px solid var(--border);">${dept}</td>`;
+        html += `<td style="padding: 6px 8px; border: 1px solid var(--border);">${fa}</td>`;
         html += `<td style="padding: 6px 8px; border: 1px solid var(--border);">${roomName || '<span style="color: #e74c3c;">Missing</span>'}</td>`;
         html += `<td style="padding: 6px 8px; border: 1px solid var(--border);">${nsf}</td>`;
         html += `<td style="padding: 6px 8px; border: 1px solid var(--border);">${roomCode}</td>`;
@@ -9780,14 +9965,17 @@
       const functionalAreas = new Set();
       
       importFileData.forEach(row => {
-        const dept = row[parseInt(deptCol)];
-        const fa = row[parseInt(faCol)];
+        const deptRaw = row[parseInt(deptCol)];
+        const faRaw = row[parseInt(faCol)];
         const roomName = row[parseInt(roomNameCol)];
         
-        if (dept && fa && roomName) {
+        // Only room name is required - blank dept/FA will become "Blank"
+        if (roomName && String(roomName).trim()) {
           validRows++;
-          departments.add(String(dept).trim());
-          functionalAreas.add(`${String(dept).trim()}::${String(fa).trim()}`);
+          const deptName = String(deptRaw || '').trim() || 'Blank';
+          const faName = String(faRaw || '').trim() || 'Blank';
+          departments.add(deptName);
+          functionalAreas.add(`${deptName}::${faName}`);
         } else {
           invalidRows++;
         }
@@ -9803,7 +9991,7 @@
           <div><strong>Departments:</strong> ${departments.size}</div>
           <div><strong>Functional Areas:</strong> ${functionalAreas.size}</div>
         </div>
-        ${invalidRows > 0 ? '<div style="margin-top: 8px; color: #e67e22; font-size: 0.85rem;">⚠️ Invalid rows will be skipped during import.</div>' : ''}
+        ${invalidRows > 0 ? '<div style="margin-top: 8px; color: #e67e22; font-size: 0.85rem;">⚠️ Rows without room names will be skipped.</div>' : ''}
       `;
 
       // Enable import button if we have valid data
@@ -9838,12 +10026,12 @@
 
       // Process each row
       importFileData.forEach(row => {
-        const deptName = String(row[deptCol] || '').trim();
-        const faName = String(row[faCol] || '').trim();
+        const deptName = String(row[deptCol] || '').trim() || 'Blank';
+        const faName = String(row[faCol] || '').trim() || 'Blank';
         const roomName = String(row[roomNameCol] || '').trim();
         
-        // Skip invalid rows
-        if (!deptName || !faName || !roomName) {
+        // Skip rows without room name (only required field)
+        if (!roomName) {
           skippedRows++;
           return;
         }
