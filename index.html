@@ -2110,6 +2110,19 @@
         <!-- Column Mapping -->
         <div id="column-mapping-section" style="display: none;">
           <h4 style="margin: 0 0 12px 0;">📋 Column Mapping</h4>
+          
+          <!-- Header Row Selector -->
+          <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <label style="font-weight: 600; white-space: nowrap;">Header Row:</label>
+              <select id="header-row-select" style="flex: 1; max-width: 200px; padding: 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;" onchange="updateHeaderRow()">
+                <!-- Options populated dynamically -->
+              </select>
+              <span style="font-size: 0.85rem; color: var(--muted);">Select the row containing column headers</span>
+            </div>
+            <div id="header-row-preview" style="margin-top: 8px; font-size: 0.8rem; color: var(--muted); font-family: monospace; white-space: nowrap; overflow-x: auto; padding: 4px 0;"></div>
+          </div>
+          
           <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 12px;">Map your file columns to the required fields:</p>
           
           <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
@@ -5476,10 +5489,14 @@
 
       let html = `
         <div class="detail-panel">
-          <h3>🏢 ${dept.name}</h3>
+          <h3>🏢 Department</h3>
           <div class="detail-row">
-            <div class="detail-label">Department:</div>
-            <div class="detail-value">${dept.name}</div>
+            <div class="detail-label">Name:</div>
+            <div class="detail-value" style="flex: 1;">
+              <input type="text" value="${dept.name}" 
+                onchange="updateDepartmentName('${dept.id}', this.value)"
+                style="width: 100%; padding: 4px 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px; font-size: 0.95rem;">
+            </div>
           </div>
           <div class="detail-row">
             <div class="detail-label">Functional Areas:</div>
@@ -5592,14 +5609,18 @@
 
       let html = `
         <div class="detail-panel">
-          <h3>📂 ${fa.name}</h3>
+          <h3>📂 Functional Area</h3>
+          <div class="detail-row">
+            <div class="detail-label">Name:</div>
+            <div class="detail-value" style="flex: 1;">
+              <input type="text" value="${fa.name}" 
+                onchange="updateFunctionalAreaName('${fa.id}', '${dept.id}', this.value)"
+                style="width: 100%; padding: 4px 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px; font-size: 0.95rem;">
+            </div>
+          </div>
           <div class="detail-row">
             <div class="detail-label">Department:</div>
             <div class="detail-value">${dept.name}</div>
-          </div>
-          <div class="detail-row">
-            <div class="detail-label">Functional Area:</div>
-            <div class="detail-value">${fa.name}</div>
           </div>
           <div class="detail-row">
             <div class="detail-label">Rooms:</div>
@@ -9288,6 +9309,47 @@
       renderAll();
     }
 
+    function updateDepartmentName(deptId, newName) {
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      newName = newName.trim();
+      if (!newName) {
+        alert('Department name cannot be empty');
+        renderAll();
+        return;
+      }
+
+      const dept = project.departments.find(d => d.id === deptId);
+      if (dept) {
+        dept.name = newName;
+        saveProjects();
+        renderAll();
+      }
+    }
+
+    function updateFunctionalAreaName(faId, deptId, newName) {
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      newName = newName.trim();
+      if (!newName) {
+        alert('Functional Area name cannot be empty');
+        renderAll();
+        return;
+      }
+
+      const dept = project.departments.find(d => d.id === deptId);
+      if (!dept || !dept.functionalAreas) return;
+
+      const fa = dept.functionalAreas.find(f => f.id === faId);
+      if (fa) {
+        fa.name = newName;
+        saveProjects();
+        renderAll();
+      }
+    }
+
     function updateRoomAttribute(roomId, attributeName, newValue) {
       const project = getCurrentProject();
       if (!project.departments) return;
@@ -9670,11 +9732,15 @@
     // ---------------------------------
     let importFileData = null;
     let importFileColumns = [];
+    let importFileAllRows = null; // Store all raw rows
+    let importHeaderRowIndex = 0; // Which row contains headers
 
     function openFileImportModal() {
       // Reset state
       importFileData = null;
       importFileColumns = [];
+      importFileAllRows = null;
+      importHeaderRowIndex = 0;
       document.getElementById('import-file-input').value = '';
       document.getElementById('column-mapping-section').style.display = 'none';
       document.getElementById('import-summary').style.display = 'none';
@@ -9690,6 +9756,8 @@
       document.getElementById('file-import-modal').classList.remove('active');
       importFileData = null;
       importFileColumns = [];
+      importFileAllRows = null;
+      importHeaderRowIndex = 0;
     }
 
     function handleFileDrop(event) {
@@ -9797,25 +9865,122 @@
         return;
       }
 
-      // First row is headers
-      importFileColumns = rows[0].map((col, idx) => ({
+      // Store all rows for later use
+      importFileAllRows = rows;
+      
+      // Try to auto-detect header row (look for row with most text-like values)
+      importHeaderRowIndex = autoDetectHeaderRow(rows);
+      
+      // Populate header row selector
+      populateHeaderRowSelector(rows);
+      
+      // Apply the detected header row
+      applyHeaderRowSelection();
+      
+      // Show column mapping section
+      document.getElementById('column-mapping-section').style.display = 'block';
+    }
+    
+    function autoDetectHeaderRow(rows) {
+      // Look at first 10 rows and find the one most likely to be headers
+      // Headers typically have text values and match common column names
+      const headerKeywords = ['department', 'dept', 'functional', 'room', 'name', 'code', 'nsf', 'sf', 'area', 'qty', 'quantity'];
+      let bestRowIndex = 0;
+      let bestScore = 0;
+      
+      const checkRows = Math.min(rows.length, 10);
+      for (let i = 0; i < checkRows; i++) {
+        const row = rows[i];
+        if (!row || row.length === 0) continue;
+        
+        let score = 0;
+        let hasText = 0;
+        
+        for (const cell of row) {
+          const cellStr = String(cell || '').toLowerCase().trim();
+          if (cellStr && isNaN(parseFloat(cellStr))) {
+            hasText++;
+            // Check if it matches common header keywords
+            for (const keyword of headerKeywords) {
+              if (cellStr.includes(keyword)) {
+                score += 10;
+                break;
+              }
+            }
+          }
+        }
+        
+        // Prefer rows with more text values and keyword matches
+        score += hasText;
+        
+        if (score > bestScore) {
+          bestScore = score;
+          bestRowIndex = i;
+        }
+      }
+      
+      return bestRowIndex;
+    }
+    
+    function populateHeaderRowSelector(rows) {
+      const select = document.getElementById('header-row-select');
+      select.innerHTML = '';
+      
+      // Show first 10 rows as options
+      const maxRows = Math.min(rows.length, 10);
+      for (let i = 0; i < maxRows; i++) {
+        const row = rows[i];
+        const preview = row.slice(0, 4).map(c => String(c || '').substring(0, 15)).join(' | ');
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = `Row ${i + 1}: ${preview}${row.length > 4 ? '...' : ''}`;
+        if (i === importHeaderRowIndex) option.selected = true;
+        select.appendChild(option);
+      }
+      
+      // Show preview of selected header row
+      updateHeaderRowPreview();
+    }
+    
+    function updateHeaderRowPreview() {
+      const preview = document.getElementById('header-row-preview');
+      if (importFileAllRows && importFileAllRows[importHeaderRowIndex]) {
+        const row = importFileAllRows[importHeaderRowIndex];
+        preview.textContent = 'Columns: ' + row.map((c, i) => `[${i+1}] ${String(c || '').substring(0, 20)}`).join('  ');
+      } else {
+        preview.textContent = '';
+      }
+    }
+    
+    function updateHeaderRow() {
+      const select = document.getElementById('header-row-select');
+      importHeaderRowIndex = parseInt(select.value) || 0;
+      updateHeaderRowPreview();
+      applyHeaderRowSelection();
+    }
+    
+    function applyHeaderRowSelection() {
+      if (!importFileAllRows) return;
+      
+      // Use selected row as headers
+      const headerRow = importFileAllRows[importHeaderRowIndex];
+      importFileColumns = headerRow.map((col, idx) => ({
         index: idx,
         name: String(col || `Column ${idx + 1}`).trim()
       }));
 
-      // Rest is data
-      importFileData = rows.slice(1).filter(row => row.some(cell => cell !== null && cell !== undefined && String(cell).trim() !== ''));
+      // Data is everything after the header row
+      importFileData = importFileAllRows.slice(importHeaderRowIndex + 1).filter(row => 
+        row.some(cell => cell !== null && cell !== undefined && String(cell).trim() !== '')
+      );
 
       if (importFileData.length === 0) {
-        alert('No data rows found in file.');
+        alert('No data rows found after the header row.');
         return;
       }
 
       // Update column mapping dropdowns
       populateColumnMappingDropdowns();
-      
-      // Show column mapping section
-      document.getElementById('column-mapping-section').style.display = 'block';
       
       // Auto-detect column mappings
       autoDetectColumnMappings();
