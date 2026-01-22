@@ -6397,7 +6397,21 @@
             </div>
             <div class="detail-row">
               <div class="detail-label">Room Code:</div>
-              <div class="detail-value">${room.code}</div>
+              <div class="detail-value">
+                <input type="text" value="${room.code || ''}" 
+                  onchange="updateRoomCode('${room.id}', this.value)"
+                  placeholder="(optional)"
+                  style="width: 100%; padding: 4px 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+              </div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Room Number:</div>
+              <div class="detail-value">
+                <input type="text" value="${room.roomNumber || ''}" 
+                  onchange="updateRoomNumber('${room.id}', this.value)"
+                  placeholder="(optional)"
+                  style="width: 100%; padding: 4px 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+              </div>
             </div>
             <div class="detail-row">
               <div class="detail-label">Room Name:</div>
@@ -9172,6 +9186,13 @@
       const project = getCurrentProject();
       if (!project.departments) return;
 
+      newName = newName.trim();
+      if (!newName) {
+        alert('Room name cannot be empty');
+        renderAll();
+        return;
+      }
+
       for (const dept of project.departments) {
         if (!dept.functionalAreas) continue;
         for (const fa of dept.functionalAreas) {
@@ -9179,6 +9200,44 @@
           const room = fa.rooms.find(r => r.id === roomId);
           if (room) {
             room.name = newName;
+            saveProjects();
+            renderAll();
+            return;
+          }
+        }
+      }
+    }
+
+    function updateRoomCode(roomId, newCode) {
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      for (const dept of project.departments) {
+        if (!dept.functionalAreas) continue;
+        for (const fa of dept.functionalAreas) {
+          if (!fa.rooms) continue;
+          const room = fa.rooms.find(r => r.id === roomId);
+          if (room) {
+            room.code = newCode.trim();
+            saveProjects();
+            renderAll();
+            return;
+          }
+        }
+      }
+    }
+
+    function updateRoomNumber(roomId, newNumber) {
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      for (const dept of project.departments) {
+        if (!dept.functionalAreas) continue;
+        for (const fa of dept.functionalAreas) {
+          if (!fa.rooms) continue;
+          const room = fa.rooms.find(r => r.id === roomId);
+          if (room) {
+            room.roomNumber = newNumber.trim();
             saveProjects();
             renderAll();
             return;
