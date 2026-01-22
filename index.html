@@ -780,6 +780,7 @@
       color: var(--muted);
       display: -webkit-box;
       -webkit-line-clamp: 2;
+      line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
@@ -2015,6 +2016,69 @@
       <div class="modal-footer">
         <button class="btn-secondary" onclick="closeDataSyncModal()">Cancel</button>
         <button class="btn-primary" onclick="syncDataFromGitHub()" style="background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);">🔄 Sync Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Replace Room Modal -->
+  <div id="replace-room-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 800px; max-height: 90vh;">
+      <div class="modal-header">
+        <h2>🔄 Replace Room</h2>
+        <button class="modal-close" onclick="closeReplaceRoomModal()">&times;</button>
+      </div>
+      <div style="padding: 20px; overflow-y: auto; max-height: calc(90vh - 160px);">
+        <p style="margin-bottom: 16px; color: var(--muted);">Select a room from the reference library to replace the current room. Choose which properties to import.</p>
+        
+        <!-- Import Options -->
+        <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+          <h4 style="margin: 0 0 12px 0;">Import Options</h4>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <label style="display: flex; align-items: center; cursor: pointer;">
+              <input type="checkbox" id="replace-name-sf" checked style="margin-right: 10px; width: 18px; height: 18px;">
+              <div>
+                <strong>Name & Square Footage</strong>
+                <div style="font-size: 0.85rem; color: var(--muted);">Import room name and NSF from selected room</div>
+              </div>
+            </label>
+            <label style="display: flex; align-items: center; cursor: pointer;">
+              <input type="checkbox" id="replace-attributes" checked style="margin-right: 10px; width: 18px; height: 18px;">
+              <div>
+                <strong>Room Attributes</strong>
+                <div style="font-size: 0.85rem; color: var(--muted);">Import all finishes, HVAC, medical gases, plumbing, etc.</div>
+              </div>
+            </label>
+            <label style="display: flex; align-items: center; cursor: pointer;">
+              <input type="checkbox" id="replace-equipment" checked style="margin-right: 10px; width: 18px; height: 18px;">
+              <div>
+                <strong>Equipment</strong>
+                <div style="font-size: 0.85rem; color: var(--muted);">Replace equipment list with selected room's equipment</div>
+              </div>
+            </label>
+          </div>
+        </div>
+        
+        <!-- Room Search -->
+        <div style="margin-bottom: 16px;">
+          <input type="text" id="replace-room-search" placeholder="Search rooms by code or name..." 
+            style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; background: var(--input-bg); color: var(--text);" 
+            oninput="filterReplaceRoomList()" />
+        </div>
+        
+        <!-- Room List -->
+        <div id="replace-room-list" style="max-height: 350px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+          <!-- Room items will be populated here -->
+        </div>
+        
+        <!-- Selected Room Preview -->
+        <div id="replace-room-preview" style="display: none; margin-top: 16px; padding: 16px; background: rgba(0, 184, 148, 0.1); border: 1px solid var(--accent); border-radius: 8px;">
+          <h4 style="margin: 0 0 8px 0; color: var(--accent);">Selected Room:</h4>
+          <div id="replace-room-preview-content"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeReplaceRoomModal()">Cancel</button>
+        <button class="btn-primary" id="confirm-replace-room-btn" onclick="confirmReplaceRoom()" disabled>Replace Room</button>
       </div>
     </div>
   </div>
@@ -6172,9 +6236,10 @@
               <div class="detail-value" style="font-weight: 600; color: var(--accent);">$${roomCost.toLocaleString()}</div>
             </div>
           </div>
-          <div class="detail-panel" style="padding: 8px 12px; display: flex; gap: 8px;">
+          <div class="detail-panel" style="padding: 8px 12px; display: flex; gap: 8px; flex-wrap: wrap;">
             <button class="btn-secondary" onclick="duplicateRoom('${room.id}')" style="flex: 1; font-size: 0.85rem; padding: 6px 12px;">📋 Duplicate Room</button>
-            <button class="btn-secondary" onclick="resetRoomToDefault('${room.id}')" style="flex: 1; font-size: 0.85rem; padding: 6px 12px; background: #f39c12; color: white; border-color: #e67e22;" onmouseover="this.style.background='#e67e22'" onmouseout="this.style.background='#f39c12'">🔄 Reset to Default</button>
+            <button class="btn-secondary" onclick="openReplaceRoomModal('${room.id}')" style="flex: 1; font-size: 0.85rem; padding: 6px 12px; background: #3498db; color: white; border-color: #2980b9;" onmouseover="this.style.background='#2980b9'" onmouseout="this.style.background='#3498db'">🔄 Replace Room</button>
+            <button class="btn-secondary" onclick="resetRoomToDefault('${room.id}')" style="flex: 1; font-size: 0.85rem; padding: 6px 12px; background: #f39c12; color: white; border-color: #e67e22;" onmouseover="this.style.background='#e67e22'" onmouseout="this.style.background='#f39c12'">↩️ Reset to Default</button>
           </div>
         `;
 
@@ -9071,6 +9136,239 @@
           }
         }
       }
+    }
+
+    // ---------------------------------
+    // REPLACE ROOM FUNCTIONALITY
+    // ---------------------------------
+    let replaceRoomTargetId = null;
+    let selectedReplaceRoomCode = null;
+
+    function openReplaceRoomModal(roomId) {
+      replaceRoomTargetId = roomId;
+      selectedReplaceRoomCode = null;
+      
+      // Reset UI state
+      document.getElementById('replace-room-search').value = '';
+      document.getElementById('replace-name-sf').checked = true;
+      document.getElementById('replace-attributes').checked = true;
+      document.getElementById('replace-equipment').checked = true;
+      document.getElementById('replace-room-preview').style.display = 'none';
+      document.getElementById('confirm-replace-room-btn').disabled = true;
+      
+      // Populate room list
+      populateReplaceRoomList();
+      
+      // Show modal
+      document.getElementById('replace-room-modal').classList.add('active');
+    }
+
+    function closeReplaceRoomModal() {
+      document.getElementById('replace-room-modal').classList.remove('active');
+      replaceRoomTargetId = null;
+      selectedReplaceRoomCode = null;
+    }
+
+    function populateReplaceRoomList(searchTerm = '') {
+      const container = document.getElementById('replace-room-list');
+      const searchLower = searchTerm.toLowerCase().trim();
+      
+      // Get unique rooms from ROOM_SIZES
+      const rooms = ROOM_SIZES.filter(r => {
+        if (!searchLower) return true;
+        const code = (r.id || r['Room Code'] || '').toLowerCase();
+        const name = (r.name || r['Room Name'] || '').toLowerCase();
+        return code.includes(searchLower) || name.includes(searchLower);
+      });
+
+      // Sort by room code
+      rooms.sort((a, b) => {
+        const codeA = a.id || a['Room Code'] || '';
+        const codeB = b.id || b['Room Code'] || '';
+        return codeA.localeCompare(codeB);
+      });
+
+      // Limit to first 100 for performance
+      const displayRooms = rooms.slice(0, 100);
+      
+      let html = '';
+      
+      if (displayRooms.length === 0) {
+        html = `<div style="padding: 20px; text-align: center; color: var(--muted);">No rooms found matching "${searchTerm}"</div>`;
+      } else {
+        displayRooms.forEach(room => {
+          const code = room.id || room['Room Code'] || '';
+          const name = room.name || room['Room Name'] || '';
+          const nsf = room.nsf || room['NSF'] || 0;
+          const equipCount = (ROOM_EQUIPMENT && ROOM_EQUIPMENT[code]) ? ROOM_EQUIPMENT[code].length : 0;
+          const isSelected = selectedReplaceRoomCode === code;
+          
+          html += `
+            <div class="replace-room-item ${isSelected ? 'selected' : ''}" 
+                 onclick="selectReplaceRoom('${code}')"
+                 style="padding: 12px 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s; ${isSelected ? 'background: rgba(0, 184, 148, 0.15);' : ''}"
+                 onmouseover="if(!this.classList.contains('selected')) this.style.background='rgba(255,255,255,0.05)'"
+                 onmouseout="if(!this.classList.contains('selected')) this.style.background=''">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 4px;">${code}</div>
+                  <div style="font-size: 0.9rem; color: var(--muted);">${name}</div>
+                </div>
+                <div style="text-align: right; font-size: 0.85rem;">
+                  <div style="color: var(--accent);">${nsf} SF</div>
+                  <div style="color: var(--muted);">${equipCount} equipment</div>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        
+        if (rooms.length > 100) {
+          html += `<div style="padding: 12px; text-align: center; color: var(--muted); font-size: 0.85rem;">Showing 100 of ${rooms.length} results. Refine your search to see more.</div>`;
+        }
+      }
+      
+      container.innerHTML = html;
+    }
+
+    function filterReplaceRoomList() {
+      const searchTerm = document.getElementById('replace-room-search').value;
+      populateReplaceRoomList(searchTerm);
+    }
+
+    function selectReplaceRoom(roomCode) {
+      selectedReplaceRoomCode = roomCode;
+      
+      // Update list UI to show selection
+      const searchTerm = document.getElementById('replace-room-search').value;
+      populateReplaceRoomList(searchTerm);
+      
+      // Show preview
+      const roomData = ROOM_SIZES.find(r => (r.id || r['Room Code']) === roomCode);
+      const equipCount = (ROOM_EQUIPMENT && ROOM_EQUIPMENT[roomCode]) ? ROOM_EQUIPMENT[roomCode].length : 0;
+      
+      if (roomData) {
+        const code = roomData.id || roomData['Room Code'] || '';
+        const name = roomData.name || roomData['Room Name'] || '';
+        const nsf = roomData.nsf || roomData['NSF'] || 0;
+        
+        document.getElementById('replace-room-preview-content').innerHTML = `
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+            <div><strong>Room Code:</strong> ${code}</div>
+            <div><strong>Room Name:</strong> ${name}</div>
+            <div><strong>NSF:</strong> ${nsf} SF</div>
+            <div><strong>Equipment:</strong> ${equipCount} items</div>
+          </div>
+        `;
+        document.getElementById('replace-room-preview').style.display = 'block';
+        document.getElementById('confirm-replace-room-btn').disabled = false;
+      }
+    }
+
+    function confirmReplaceRoom() {
+      if (!replaceRoomTargetId || !selectedReplaceRoomCode) {
+        alert('Please select a room to use as the replacement source.');
+        return;
+      }
+
+      const importNameSf = document.getElementById('replace-name-sf').checked;
+      const importAttributes = document.getElementById('replace-attributes').checked;
+      const importEquipment = document.getElementById('replace-equipment').checked;
+
+      if (!importNameSf && !importAttributes && !importEquipment) {
+        alert('Please select at least one import option.');
+        return;
+      }
+
+      // Find the target room in the project
+      const project = getCurrentProject();
+      if (!project.departments) return;
+
+      let targetRoom = null;
+      let foundFA = null;
+
+      for (const dept of project.departments) {
+        if (!dept.functionalAreas) continue;
+        for (const fa of dept.functionalAreas) {
+          if (!fa.rooms) continue;
+          const room = fa.rooms.find(r => r.id === replaceRoomTargetId);
+          if (room) {
+            targetRoom = room;
+            foundFA = fa;
+            break;
+          }
+        }
+        if (targetRoom) break;
+      }
+
+      if (!targetRoom) {
+        alert('Target room not found in project.');
+        return;
+      }
+
+      // Get source room data
+      const sourceRoomData = ROOM_SIZES.find(r => (r.id || r['Room Code']) === selectedReplaceRoomCode);
+      if (!sourceRoomData) {
+        alert('Source room data not found.');
+        return;
+      }
+
+      // Build confirmation message
+      let changesList = [];
+      if (importNameSf) {
+        changesList.push('- Name: ' + (sourceRoomData.name || sourceRoomData['Room Name'] || selectedReplaceRoomCode));
+        changesList.push('- NSF: ' + (sourceRoomData.nsf || sourceRoomData['NSF'] || 0) + ' SF');
+      }
+      if (importAttributes) {
+        changesList.push('- All room attributes (finishes, HVAC, medical gases, etc.)');
+      }
+      if (importEquipment) {
+        const equipCount = (ROOM_EQUIPMENT && ROOM_EQUIPMENT[selectedReplaceRoomCode]) ? ROOM_EQUIPMENT[selectedReplaceRoomCode].length : 0;
+        changesList.push('- Equipment: ' + equipCount + ' items');
+      }
+
+      const confirmMsg = `Replace room "${targetRoom.code} - ${targetRoom.name}" with data from "${selectedReplaceRoomCode}"?\n\nThe following will be imported:\n${changesList.join('\n')}\n\nThis action cannot be undone.`;
+      
+      if (!confirm(confirmMsg)) return;
+
+      // Apply the replacement
+      if (importNameSf) {
+        targetRoom.code = selectedReplaceRoomCode;
+        targetRoom.name = sourceRoomData.name || sourceRoomData['Room Name'] || selectedReplaceRoomCode;
+        targetRoom.nsf = sourceRoomData.nsf || sourceRoomData['NSF'] || 0;
+      }
+
+      if (importAttributes) {
+        // Copy all room attributes from source, excluding id, name, nsf
+        targetRoom.attributes = {};
+        const excludeKeys = ['id', 'name', 'nsf', 'Room Code', 'Room Name', 'NSF'];
+        for (const [key, value] of Object.entries(sourceRoomData)) {
+          if (!excludeKeys.includes(key) && value !== null && value !== undefined && value !== '') {
+            targetRoom.attributes[key] = value;
+          }
+        }
+      }
+
+      if (importEquipment) {
+        // Replace equipment with source room's equipment
+        const sourceEquipment = ROOM_EQUIPMENT && ROOM_EQUIPMENT[selectedReplaceRoomCode] || [];
+        targetRoom.equipment = sourceEquipment.map(eq => ({
+          id: generateId(),
+          jsn: eq.JSN,
+          name: eq['Equipment Name'],
+          quantity: eq['Qty per Room'] || 1,
+          acqIns: eq['Acq/Ins'] || '',
+          description: eq.Description || ''
+        }));
+      }
+
+      // Save and refresh
+      saveProjects();
+      closeReplaceRoomModal();
+      renderAll();
+
+      // Show success message
+      alert(`✅ Room replaced successfully!\n\nNew room: ${targetRoom.code} - ${targetRoom.name}`);
     }
 
     function deleteDepartment(deptId) {
