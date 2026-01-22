@@ -5,6 +5,7 @@
   <title>Hospital Programming Workbench</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   
   <!-- Room Logic System -->
   <script type="module" src="room-logic/index.js"></script>
@@ -2079,6 +2080,112 @@
       <div class="modal-footer">
         <button class="btn-secondary" onclick="closeReplaceRoomModal()">Cancel</button>
         <button class="btn-primary" id="confirm-replace-room-btn" onclick="confirmReplaceRoom()" disabled>Replace Room</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- File Import Modal -->
+  <div id="file-import-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 900px; max-height: 90vh;">
+      <div class="modal-header">
+        <h2>📥 Import Rooms from File</h2>
+        <button class="modal-close" onclick="closeFileImportModal()">&times;</button>
+      </div>
+      <div style="padding: 20px; overflow-y: auto; max-height: calc(90vh - 160px);">
+        <p style="margin-bottom: 16px; color: var(--muted);">Import rooms from an Excel (.xlsx, .xls), CSV, or TSV file. Each row should represent one room.</p>
+        
+        <!-- File Upload -->
+        <div style="background: var(--bg); border: 2px dashed var(--border); border-radius: 8px; padding: 24px; text-align: center; margin-bottom: 20px; cursor: pointer; transition: all 0.2s;" 
+             id="file-drop-zone"
+             onclick="document.getElementById('import-file-input').click()"
+             ondragover="event.preventDefault(); this.style.borderColor='var(--accent)'; this.style.background='rgba(0,184,148,0.1)';"
+             ondragleave="this.style.borderColor='var(--border)'; this.style.background='var(--bg)';"
+             ondrop="handleFileDrop(event)">
+          <div style="font-size: 2rem; margin-bottom: 8px;">📁</div>
+          <div style="font-weight: 600; margin-bottom: 4px;">Drop file here or click to browse</div>
+          <div style="font-size: 0.85rem; color: var(--muted);">Supports Excel (.xlsx, .xls), CSV, and TSV files</div>
+          <input type="file" id="import-file-input" accept=".xlsx,.xls,.csv,.tsv,.txt" style="display: none;" onchange="handleFileSelect(event)">
+        </div>
+        
+        <!-- Column Mapping -->
+        <div id="column-mapping-section" style="display: none;">
+          <h4 style="margin: 0 0 12px 0;">📋 Column Mapping</h4>
+          <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 12px;">Map your file columns to the required fields:</p>
+          
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
+            <div>
+              <label style="display: block; margin-bottom: 4px; font-weight: 600;">Department <span style="color: #e74c3c;">*</span></label>
+              <select id="col-department" style="width: 100%; padding: 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+                <option value="">-- Select Column --</option>
+              </select>
+            </div>
+            <div>
+              <label style="display: block; margin-bottom: 4px; font-weight: 600;">Functional Area <span style="color: #e74c3c;">*</span></label>
+              <select id="col-functional-area" style="width: 100%; padding: 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+                <option value="">-- Select Column --</option>
+              </select>
+            </div>
+            <div>
+              <label style="display: block; margin-bottom: 4px; font-weight: 600;">Room Name <span style="color: #e74c3c;">*</span></label>
+              <select id="col-room-name" style="width: 100%; padding: 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+                <option value="">-- Select Column --</option>
+              </select>
+            </div>
+            <div>
+              <label style="display: block; margin-bottom: 4px; font-weight: 600;">Square Footage (NSF)</label>
+              <select id="col-nsf" style="width: 100%; padding: 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+                <option value="">-- Select Column (optional) --</option>
+              </select>
+            </div>
+            <div>
+              <label style="display: block; margin-bottom: 4px; font-weight: 600;">Room Code</label>
+              <select id="col-room-code" style="width: 100%; padding: 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+                <option value="">-- Select Column (optional) --</option>
+              </select>
+            </div>
+            <div>
+              <label style="display: block; margin-bottom: 4px; font-weight: 600;">Quantity</label>
+              <select id="col-quantity" style="width: 100%; padding: 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+                <option value="">-- Select Column (optional) --</option>
+              </select>
+            </div>
+          </div>
+          
+          <!-- Import Options -->
+          <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+            <h4 style="margin: 0 0 12px 0;">⚙️ Import Options</h4>
+            <label style="display: flex; align-items: center; cursor: pointer; margin-bottom: 8px;">
+              <input type="checkbox" id="import-merge-existing" checked style="margin-right: 10px; width: 18px; height: 18px;">
+              <div>
+                <strong>Merge with existing project</strong>
+                <div style="font-size: 0.85rem; color: var(--muted);">Add rooms to existing departments/functional areas if they match</div>
+              </div>
+            </label>
+            <label style="display: flex; align-items: center; cursor: pointer;">
+              <input type="checkbox" id="import-lookup-equipment" checked style="margin-right: 10px; width: 18px; height: 18px;">
+              <div>
+                <strong>Auto-lookup equipment</strong>
+                <div style="font-size: 0.85rem; color: var(--muted);">Try to match room codes and add standard equipment from reference library</div>
+              </div>
+            </label>
+          </div>
+          
+          <!-- Data Preview -->
+          <h4 style="margin: 0 0 12px 0;">👁️ Data Preview (first 10 rows)</h4>
+          <div id="import-data-preview" style="max-height: 250px; overflow: auto; border: 1px solid var(--border); border-radius: 8px; font-size: 0.85rem;">
+            <!-- Preview table will be rendered here -->
+          </div>
+          
+          <!-- Import Summary -->
+          <div id="import-summary" style="margin-top: 16px; padding: 12px; background: rgba(0, 184, 148, 0.1); border: 1px solid var(--accent); border-radius: 8px; display: none;">
+            <h4 style="margin: 0 0 8px 0; color: var(--accent);">📊 Import Summary</h4>
+            <div id="import-summary-content"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeFileImportModal()">Cancel</button>
+        <button class="btn-primary" id="confirm-file-import-btn" onclick="confirmFileImport()" disabled>Import Rooms</button>
       </div>
     </div>
   </div>
@@ -5950,6 +6057,11 @@
               📤 Export
             </button>
           </div>
+          <div style="display: flex; gap: 8px;">
+            <button onclick="openFileImportModal()" class="btn-secondary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background: #9b59b6; border-color: #8e44ad; color: white;" onmouseover="this.style.background='#8e44ad'" onmouseout="this.style.background='#9b59b6'" title="Import rooms from Excel, CSV, or TSV file">
+              📥 Import from File
+            </button>
+          </div>
         </div>
         <div class="detail-panel">
           <p style="margin-bottom: 12px; color: var(--muted); font-size: 0.9rem;">
@@ -9369,6 +9481,468 @@
 
       // Show success message
       alert(`✅ Room replaced successfully!\n\nNew room: ${targetRoom.code} - ${targetRoom.name}`);
+    }
+
+    // ---------------------------------
+    // FILE IMPORT FUNCTIONALITY
+    // ---------------------------------
+    let importFileData = null;
+    let importFileColumns = [];
+
+    function openFileImportModal() {
+      // Reset state
+      importFileData = null;
+      importFileColumns = [];
+      document.getElementById('import-file-input').value = '';
+      document.getElementById('column-mapping-section').style.display = 'none';
+      document.getElementById('import-summary').style.display = 'none';
+      document.getElementById('confirm-file-import-btn').disabled = true;
+      document.getElementById('file-drop-zone').style.borderColor = 'var(--border)';
+      document.getElementById('file-drop-zone').style.background = 'var(--bg)';
+      
+      // Show modal
+      document.getElementById('file-import-modal').classList.add('active');
+    }
+
+    function closeFileImportModal() {
+      document.getElementById('file-import-modal').classList.remove('active');
+      importFileData = null;
+      importFileColumns = [];
+    }
+
+    function handleFileDrop(event) {
+      event.preventDefault();
+      document.getElementById('file-drop-zone').style.borderColor = 'var(--border)';
+      document.getElementById('file-drop-zone').style.background = 'var(--bg)';
+      
+      const files = event.dataTransfer.files;
+      if (files.length > 0) {
+        processImportFile(files[0]);
+      }
+    }
+
+    function handleFileSelect(event) {
+      const files = event.target.files;
+      if (files.length > 0) {
+        processImportFile(files[0]);
+      }
+    }
+
+    function processImportFile(file) {
+      const fileName = file.name.toLowerCase();
+      const reader = new FileReader();
+      
+      if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+        // Excel file
+        reader.onload = function(e) {
+          try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+            parseImportData(jsonData);
+          } catch (error) {
+            alert('Error reading Excel file: ' + error.message);
+            console.error('Excel parse error:', error);
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      } else if (fileName.endsWith('.csv')) {
+        // CSV file
+        reader.onload = function(e) {
+          try {
+            const text = e.target.result;
+            const rows = parseCSV(text, ',');
+            parseImportData(rows);
+          } catch (error) {
+            alert('Error reading CSV file: ' + error.message);
+            console.error('CSV parse error:', error);
+          }
+        };
+        reader.readAsText(file);
+      } else if (fileName.endsWith('.tsv') || fileName.endsWith('.txt')) {
+        // TSV file
+        reader.onload = function(e) {
+          try {
+            const text = e.target.result;
+            const rows = parseCSV(text, '\t');
+            parseImportData(rows);
+          } catch (error) {
+            alert('Error reading TSV file: ' + error.message);
+            console.error('TSV parse error:', error);
+          }
+        };
+        reader.readAsText(file);
+      } else {
+        alert('Unsupported file type. Please use Excel (.xlsx, .xls), CSV, or TSV files.');
+      }
+    }
+
+    function parseCSV(text, delimiter) {
+      const rows = [];
+      const lines = text.split(/\r?\n/);
+      
+      for (const line of lines) {
+        if (line.trim() === '') continue;
+        
+        // Simple CSV parsing (handles basic cases, not complex quoted values)
+        const values = [];
+        let current = '';
+        let inQuotes = false;
+        
+        for (let i = 0; i < line.length; i++) {
+          const char = line[i];
+          
+          if (char === '"' && (i === 0 || line[i-1] !== '\\')) {
+            inQuotes = !inQuotes;
+          } else if (char === delimiter && !inQuotes) {
+            values.push(current.trim().replace(/^"|"$/g, ''));
+            current = '';
+          } else {
+            current += char;
+          }
+        }
+        values.push(current.trim().replace(/^"|"$/g, ''));
+        rows.push(values);
+      }
+      
+      return rows;
+    }
+
+    function parseImportData(rows) {
+      if (!rows || rows.length < 2) {
+        alert('File must contain at least a header row and one data row.');
+        return;
+      }
+
+      // First row is headers
+      importFileColumns = rows[0].map((col, idx) => ({
+        index: idx,
+        name: String(col || `Column ${idx + 1}`).trim()
+      }));
+
+      // Rest is data
+      importFileData = rows.slice(1).filter(row => row.some(cell => cell !== null && cell !== undefined && String(cell).trim() !== ''));
+
+      if (importFileData.length === 0) {
+        alert('No data rows found in file.');
+        return;
+      }
+
+      // Update column mapping dropdowns
+      populateColumnMappingDropdowns();
+      
+      // Show column mapping section
+      document.getElementById('column-mapping-section').style.display = 'block';
+      
+      // Auto-detect column mappings
+      autoDetectColumnMappings();
+      
+      // Render preview
+      renderImportPreview();
+      
+      // Update summary
+      updateImportSummary();
+    }
+
+    function populateColumnMappingDropdowns() {
+      const dropdowns = ['col-department', 'col-functional-area', 'col-room-name', 'col-nsf', 'col-room-code', 'col-quantity'];
+      
+      dropdowns.forEach(id => {
+        const select = document.getElementById(id);
+        const isOptional = id === 'col-nsf' || id === 'col-room-code' || id === 'col-quantity';
+        
+        select.innerHTML = isOptional 
+          ? '<option value="">-- Select Column (optional) --</option>'
+          : '<option value="">-- Select Column --</option>';
+        
+        importFileColumns.forEach(col => {
+          const option = document.createElement('option');
+          option.value = col.index;
+          option.textContent = col.name;
+          select.appendChild(option);
+        });
+        
+        // Add change listener
+        select.onchange = function() {
+          renderImportPreview();
+          updateImportSummary();
+        };
+      });
+    }
+
+    function autoDetectColumnMappings() {
+      const mappings = {
+        'col-department': ['department', 'dept', 'department name'],
+        'col-functional-area': ['functional area', 'functional_area', 'fa', 'area', 'function'],
+        'col-room-name': ['room name', 'room_name', 'name', 'room', 'space name', 'space'],
+        'col-nsf': ['nsf', 'sf', 'square footage', 'sqft', 'square feet', 'area', 'size'],
+        'col-room-code': ['room code', 'room_code', 'code', 'room id', 'id'],
+        'col-quantity': ['quantity', 'qty', 'count', 'num', 'number']
+      };
+
+      for (const [selectId, keywords] of Object.entries(mappings)) {
+        const select = document.getElementById(selectId);
+        
+        for (const col of importFileColumns) {
+          const colNameLower = col.name.toLowerCase();
+          
+          for (const keyword of keywords) {
+            if (colNameLower === keyword || colNameLower.includes(keyword)) {
+              select.value = col.index;
+              break;
+            }
+          }
+          
+          if (select.value !== '') break;
+        }
+      }
+    }
+
+    function renderImportPreview() {
+      const container = document.getElementById('import-data-preview');
+      
+      if (!importFileData || importFileData.length === 0) {
+        container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--muted);">No data to preview</div>';
+        return;
+      }
+
+      // Get column mappings
+      const deptCol = document.getElementById('col-department').value;
+      const faCol = document.getElementById('col-functional-area').value;
+      const roomNameCol = document.getElementById('col-room-name').value;
+      const nsfCol = document.getElementById('col-nsf').value;
+      const roomCodeCol = document.getElementById('col-room-code').value;
+      const qtyCol = document.getElementById('col-quantity').value;
+
+      // Build preview table
+      let html = '<table style="width: 100%; border-collapse: collapse;">';
+      
+      // Header row
+      html += '<thead><tr style="background: var(--bg-secondary); position: sticky; top: 0;">';
+      html += '<th style="padding: 8px; border: 1px solid var(--border); text-align: left;">Department</th>';
+      html += '<th style="padding: 8px; border: 1px solid var(--border); text-align: left;">Functional Area</th>';
+      html += '<th style="padding: 8px; border: 1px solid var(--border); text-align: left;">Room Name</th>';
+      html += '<th style="padding: 8px; border: 1px solid var(--border); text-align: left;">NSF</th>';
+      html += '<th style="padding: 8px; border: 1px solid var(--border); text-align: left;">Code</th>';
+      html += '<th style="padding: 8px; border: 1px solid var(--border); text-align: left;">Qty</th>';
+      html += '</tr></thead>';
+      
+      // Data rows (first 10)
+      html += '<tbody>';
+      const previewRows = importFileData.slice(0, 10);
+      
+      previewRows.forEach((row, idx) => {
+        const dept = deptCol !== '' ? (row[parseInt(deptCol)] || '') : '';
+        const fa = faCol !== '' ? (row[parseInt(faCol)] || '') : '';
+        const roomName = roomNameCol !== '' ? (row[parseInt(roomNameCol)] || '') : '';
+        const nsf = nsfCol !== '' ? (row[parseInt(nsfCol)] || '') : '';
+        const roomCode = roomCodeCol !== '' ? (row[parseInt(roomCodeCol)] || '') : '';
+        const qty = qtyCol !== '' ? (row[parseInt(qtyCol)] || '1') : '1';
+        
+        const isValid = dept && fa && roomName;
+        const rowStyle = isValid ? '' : 'background: rgba(231, 76, 60, 0.1);';
+        
+        html += `<tr style="${rowStyle}">`;
+        html += `<td style="padding: 6px 8px; border: 1px solid var(--border);">${dept || '<span style="color: #e74c3c;">Missing</span>'}</td>`;
+        html += `<td style="padding: 6px 8px; border: 1px solid var(--border);">${fa || '<span style="color: #e74c3c;">Missing</span>'}</td>`;
+        html += `<td style="padding: 6px 8px; border: 1px solid var(--border);">${roomName || '<span style="color: #e74c3c;">Missing</span>'}</td>`;
+        html += `<td style="padding: 6px 8px; border: 1px solid var(--border);">${nsf}</td>`;
+        html += `<td style="padding: 6px 8px; border: 1px solid var(--border);">${roomCode}</td>`;
+        html += `<td style="padding: 6px 8px; border: 1px solid var(--border);">${qty}</td>`;
+        html += '</tr>';
+      });
+      
+      if (importFileData.length > 10) {
+        html += `<tr><td colspan="6" style="padding: 8px; text-align: center; color: var(--muted); border: 1px solid var(--border);">... and ${importFileData.length - 10} more rows</td></tr>`;
+      }
+      
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function updateImportSummary() {
+      const deptCol = document.getElementById('col-department').value;
+      const faCol = document.getElementById('col-functional-area').value;
+      const roomNameCol = document.getElementById('col-room-name').value;
+      
+      // Check required fields
+      if (deptCol === '' || faCol === '' || roomNameCol === '') {
+        document.getElementById('import-summary').style.display = 'none';
+        document.getElementById('confirm-file-import-btn').disabled = true;
+        return;
+      }
+
+      // Count valid rows
+      let validRows = 0;
+      let invalidRows = 0;
+      const departments = new Set();
+      const functionalAreas = new Set();
+      
+      importFileData.forEach(row => {
+        const dept = row[parseInt(deptCol)];
+        const fa = row[parseInt(faCol)];
+        const roomName = row[parseInt(roomNameCol)];
+        
+        if (dept && fa && roomName) {
+          validRows++;
+          departments.add(String(dept).trim());
+          functionalAreas.add(`${String(dept).trim()}::${String(fa).trim()}`);
+        } else {
+          invalidRows++;
+        }
+      });
+
+      // Show summary
+      document.getElementById('import-summary').style.display = 'block';
+      document.getElementById('import-summary-content').innerHTML = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px;">
+          <div><strong>Total Rows:</strong> ${importFileData.length}</div>
+          <div><strong>Valid Rooms:</strong> ${validRows}</div>
+          <div><strong>Invalid Rows:</strong> ${invalidRows}</div>
+          <div><strong>Departments:</strong> ${departments.size}</div>
+          <div><strong>Functional Areas:</strong> ${functionalAreas.size}</div>
+        </div>
+        ${invalidRows > 0 ? '<div style="margin-top: 8px; color: #e67e22; font-size: 0.85rem;">⚠️ Invalid rows will be skipped during import.</div>' : ''}
+      `;
+
+      // Enable import button if we have valid data
+      document.getElementById('confirm-file-import-btn').disabled = validRows === 0;
+    }
+
+    function confirmFileImport() {
+      const deptCol = parseInt(document.getElementById('col-department').value);
+      const faCol = parseInt(document.getElementById('col-functional-area').value);
+      const roomNameCol = parseInt(document.getElementById('col-room-name').value);
+      const nsfCol = document.getElementById('col-nsf').value;
+      const roomCodeCol = document.getElementById('col-room-code').value;
+      const qtyCol = document.getElementById('col-quantity').value;
+      
+      const mergeExisting = document.getElementById('import-merge-existing').checked;
+      const lookupEquipment = document.getElementById('import-lookup-equipment').checked;
+
+      const project = getCurrentProject();
+      if (!project) {
+        alert('No project selected.');
+        return;
+      }
+
+      // Initialize departments array if needed
+      if (!project.departments) {
+        project.departments = [];
+      }
+
+      let importedRooms = 0;
+      let skippedRows = 0;
+      let equipmentMatches = 0;
+
+      // Process each row
+      importFileData.forEach(row => {
+        const deptName = String(row[deptCol] || '').trim();
+        const faName = String(row[faCol] || '').trim();
+        const roomName = String(row[roomNameCol] || '').trim();
+        
+        // Skip invalid rows
+        if (!deptName || !faName || !roomName) {
+          skippedRows++;
+          return;
+        }
+
+        const nsf = nsfCol !== '' ? parseFloat(row[parseInt(nsfCol)]) || 0 : 0;
+        let roomCode = roomCodeCol !== '' ? String(row[parseInt(roomCodeCol)] || '').trim() : '';
+        const quantity = qtyCol !== '' ? parseInt(row[parseInt(qtyCol)]) || 1 : 1;
+
+        // Try to find or create department
+        let dept = project.departments.find(d => d.name.toLowerCase() === deptName.toLowerCase());
+        if (!dept) {
+          dept = {
+            id: generateId(),
+            name: deptName,
+            functionalAreas: []
+          };
+          project.departments.push(dept);
+        }
+
+        // Try to find or create functional area
+        if (!dept.functionalAreas) dept.functionalAreas = [];
+        let fa = dept.functionalAreas.find(f => f.name.toLowerCase() === faName.toLowerCase());
+        if (!fa) {
+          fa = {
+            id: generateId(),
+            name: faName,
+            rooms: []
+          };
+          dept.functionalAreas.push(fa);
+        }
+
+        // Try to lookup room code if not provided
+        if (!roomCode && lookupEquipment) {
+          // Try to find a matching room in ROOM_SIZES by name
+          const matchingRoom = ROOM_SIZES.find(r => {
+            const rName = (r.name || r['Room Name'] || '').toLowerCase();
+            return rName === roomName.toLowerCase() || rName.includes(roomName.toLowerCase());
+          });
+          if (matchingRoom) {
+            roomCode = matchingRoom.id || matchingRoom['Room Code'] || '';
+          }
+        }
+
+        // Create room(s) based on quantity
+        if (!fa.rooms) fa.rooms = [];
+        
+        for (let i = 0; i < quantity; i++) {
+          const newRoom = {
+            id: generateId(),
+            code: roomCode || `CUSTOM-${generateId().substring(0, 6)}`,
+            name: roomName,
+            nsf: nsf,
+            equipment: []
+          };
+
+          // Try to lookup equipment if room code is available
+          if (lookupEquipment && roomCode && ROOM_EQUIPMENT && ROOM_EQUIPMENT[roomCode]) {
+            newRoom.equipment = ROOM_EQUIPMENT[roomCode].map(eq => ({
+              id: generateId(),
+              jsn: eq.JSN,
+              name: eq['Equipment Name'],
+              quantity: eq['Qty per Room'] || 1,
+              acqIns: eq['Acq/Ins'] || '',
+              description: eq.Description || ''
+            }));
+            if (newRoom.equipment.length > 0) {
+              equipmentMatches++;
+            }
+          }
+
+          // Check for duplicates if merge mode
+          if (mergeExisting) {
+            const existingRoom = fa.rooms.find(r => 
+              r.name.toLowerCase() === roomName.toLowerCase() && 
+              r.nsf === nsf
+            );
+            if (existingRoom) {
+              // Skip duplicate
+              continue;
+            }
+          }
+
+          fa.rooms.push(newRoom);
+          importedRooms++;
+        }
+      });
+
+      // Save and refresh
+      saveProjects();
+      closeFileImportModal();
+      renderAll();
+
+      // Show success message
+      alert(`✅ Import Complete!\n\n` +
+            `Rooms Imported: ${importedRooms}\n` +
+            `Rows Skipped: ${skippedRows}\n` +
+            `Equipment Matches: ${equipmentMatches}\n\n` +
+            `Departments: ${project.departments.length}\n` +
+            `Functional Areas: ${project.departments.reduce((sum, d) => sum + (d.functionalAreas?.length || 0), 0)}`);
     }
 
     function deleteDepartment(deptId) {
