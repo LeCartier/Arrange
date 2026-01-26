@@ -9812,14 +9812,22 @@
       if (importEquipment) {
         // Replace equipment with source room's equipment
         const sourceEquipment = ROOM_EQUIPMENT && ROOM_EQUIPMENT[selectedReplaceRoomCode] || [];
-        targetRoom.equipment = sourceEquipment.map(eq => ({
-          id: generateId(),
-          jsn: eq.JSN,
-          name: eq['Equipment Name'],
-          quantity: eq['Qty per Room'] || 1,
-          acqIns: eq['Acq/Ins'] || '',
-          description: eq.Description || ''
-        }));
+        targetRoom.equipment = sourceEquipment.map(eq => {
+          const jsn = eq.JSN;
+          // Get cost from EQUIPMENT_ATTRIBUTES database if available
+          const attrs = typeof EQUIPMENT_ATTRIBUTES !== 'undefined' && EQUIPMENT_ATTRIBUTES[jsn];
+          const cost = attrs?.meanPrice || 0;
+          
+          return {
+            id: generateId(),
+            jsn: jsn,
+            name: eq['Equipment Name'],
+            quantity: eq['Qty per Room'] || 1,
+            acqIns: eq['Acq/Ins'] || '',
+            description: eq.Description || '',
+            cost: cost
+          };
+        });
       }
 
       // Save and refresh
@@ -10353,19 +10361,42 @@
             code: roomCode || `CUSTOM-${generateId().substring(0, 6)}`,
             name: roomName,
             nsf: nsf,
-            equipment: []
+            equipment: [],
+            attributes: {}
           };
+
+          // Try to lookup room attributes from ROOM_SIZES if room code is available
+          if (lookupEquipment && roomCode && typeof ROOM_SIZES !== 'undefined') {
+            const roomData = ROOM_SIZES.find(r => (r.id || r['Room Code']) === roomCode);
+            if (roomData) {
+              // Copy all room attributes (finishes, HVAC, medical gases, etc.)
+              const excludeKeys = ['id', 'name', 'nsf', 'Room Code', 'Room Name', 'NSF'];
+              for (const [key, value] of Object.entries(roomData)) {
+                if (!excludeKeys.includes(key) && value !== null && value !== undefined && value !== '') {
+                  newRoom.attributes[key] = value;
+                }
+              }
+            }
+          }
 
           // Try to lookup equipment if room code is available
           if (lookupEquipment && roomCode && ROOM_EQUIPMENT && ROOM_EQUIPMENT[roomCode]) {
-            newRoom.equipment = ROOM_EQUIPMENT[roomCode].map(eq => ({
-              id: generateId(),
-              jsn: eq.JSN,
-              name: eq['Equipment Name'],
-              quantity: eq['Qty per Room'] || 1,
-              acqIns: eq['Acq/Ins'] || '',
-              description: eq.Description || ''
-            }));
+            newRoom.equipment = ROOM_EQUIPMENT[roomCode].map(eq => {
+              const jsn = eq.JSN;
+              // Get cost from EQUIPMENT_ATTRIBUTES database if available
+              const attrs = typeof EQUIPMENT_ATTRIBUTES !== 'undefined' && EQUIPMENT_ATTRIBUTES[jsn];
+              const cost = attrs?.meanPrice || 0;
+              
+              return {
+                id: generateId(),
+                jsn: jsn,
+                name: eq['Equipment Name'],
+                quantity: eq['Qty per Room'] || 1,
+                acqIns: eq['Acq/Ins'] || '',
+                description: eq.Description || '',
+                cost: cost
+              };
+            });
             if (newRoom.equipment.length > 0) {
               equipmentMatches++;
             }
