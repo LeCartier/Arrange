@@ -2162,6 +2162,12 @@
                 <option value="">-- Select Column (optional) --</option>
               </select>
             </div>
+            <div>
+              <label style="display: block; margin-bottom: 4px; font-weight: 600;">Room Number</label>
+              <select id="col-room-number" style="width: 100%; padding: 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+                <option value="">-- Select Column (optional) --</option>
+              </select>
+            </div>
           </div>
           
           <!-- Import Options -->
@@ -10105,11 +10111,11 @@
     }
 
     function populateColumnMappingDropdowns() {
-      const dropdowns = ['col-department', 'col-functional-area', 'col-room-name', 'col-nsf', 'col-room-code', 'col-quantity'];
+      const dropdowns = ['col-department', 'col-functional-area', 'col-room-name', 'col-nsf', 'col-room-code', 'col-quantity', 'col-room-number'];
       
       dropdowns.forEach(id => {
         const select = document.getElementById(id);
-        const isOptional = id === 'col-nsf' || id === 'col-room-code' || id === 'col-quantity';
+        const isOptional = id === 'col-nsf' || id === 'col-room-code' || id === 'col-quantity' || id === 'col-room-number';
         
         select.innerHTML = isOptional 
           ? '<option value="">-- Select Column (optional) --</option>'
@@ -10137,7 +10143,8 @@
         'col-room-name': ['room name', 'room_name', 'name', 'room', 'space name', 'space'],
         'col-nsf': ['nsf', 'sf', 'square footage', 'sqft', 'square feet', 'area', 'size'],
         'col-room-code': ['room code', 'room_code', 'code', 'room id', 'id'],
-        'col-quantity': ['quantity', 'qty', 'count', 'num', 'number']
+        'col-quantity': ['quantity', 'qty', 'count', 'num'],
+        'col-room-number': ['room number', 'room_number', 'room no', 'room #', 'number', 'no', 'rm number', 'rm no', 'rm#']
       };
 
       for (const [selectId, keywords] of Object.entries(mappings)) {
@@ -10173,6 +10180,7 @@
       const nsfCol = document.getElementById('col-nsf').value;
       const roomCodeCol = document.getElementById('col-room-code').value;
       const qtyCol = document.getElementById('col-quantity').value;
+      const roomNumberCol = document.getElementById('col-room-number').value;
 
       // Build preview table
       let html = '<table style="width: 100%; border-collapse: collapse;">';
@@ -10182,6 +10190,7 @@
       html += '<th style="padding: 8px; border: 1px solid var(--border); text-align: left;">Department</th>';
       html += '<th style="padding: 8px; border: 1px solid var(--border); text-align: left;">Functional Area</th>';
       html += '<th style="padding: 8px; border: 1px solid var(--border); text-align: left;">Room Name</th>';
+      html += '<th style="padding: 8px; border: 1px solid var(--border); text-align: left;">Room #</th>';
       html += '<th style="padding: 8px; border: 1px solid var(--border); text-align: left;">NSF</th>';
       html += '<th style="padding: 8px; border: 1px solid var(--border); text-align: left;">Code</th>';
       html += '<th style="padding: 8px; border: 1px solid var(--border); text-align: left;">Qty</th>';
@@ -10198,6 +10207,7 @@
         const nsf = nsfCol !== '' ? (row[parseInt(nsfCol)] || '') : '';
         const roomCode = roomCodeCol !== '' ? (row[parseInt(roomCodeCol)] || '') : '';
         const qty = qtyCol !== '' ? (row[parseInt(qtyCol)] || '1') : '1';
+        const roomNumber = roomNumberCol !== '' ? (row[parseInt(roomNumberCol)] || '') : '';
         
         // Treat blank dept/FA as valid (will use "Blank" as name)
         const dept = String(deptRaw).trim() || '<span style="color: #f39c12;">(Blank)</span>';
@@ -10209,6 +10219,7 @@
         html += `<td style="padding: 6px 8px; border: 1px solid var(--border);">${dept}</td>`;
         html += `<td style="padding: 6px 8px; border: 1px solid var(--border);">${fa}</td>`;
         html += `<td style="padding: 6px 8px; border: 1px solid var(--border);">${roomName || '<span style="color: #e74c3c;">Missing</span>'}</td>`;
+        html += `<td style="padding: 6px 8px; border: 1px solid var(--border);">${roomNumber}</td>`;
         html += `<td style="padding: 6px 8px; border: 1px solid var(--border);">${nsf}</td>`;
         html += `<td style="padding: 6px 8px; border: 1px solid var(--border);">${roomCode}</td>`;
         html += `<td style="padding: 6px 8px; border: 1px solid var(--border);">${qty}</td>`;
@@ -10216,7 +10227,7 @@
       });
       
       if (importFileData.length > 10) {
-        html += `<tr><td colspan="6" style="padding: 8px; text-align: center; color: var(--muted); border: 1px solid var(--border);">... and ${importFileData.length - 10} more rows</td></tr>`;
+        html += `<tr><td colspan="7" style="padding: 8px; text-align: center; color: var(--muted); border: 1px solid var(--border);">... and ${importFileData.length - 10} more rows</td></tr>`;
       }
       
       html += '</tbody></table>';
@@ -10282,6 +10293,7 @@
       const nsfCol = document.getElementById('col-nsf').value;
       const roomCodeCol = document.getElementById('col-room-code').value;
       const qtyCol = document.getElementById('col-quantity').value;
+      const roomNumberCol = document.getElementById('col-room-number').value;
       
       const mergeExisting = document.getElementById('import-merge-existing').checked;
       const lookupEquipment = document.getElementById('import-lookup-equipment').checked;
@@ -10316,6 +10328,7 @@
         const nsf = nsfCol !== '' ? parseFloat(row[parseInt(nsfCol)]) || 0 : 0;
         let roomCode = roomCodeCol !== '' ? String(row[parseInt(roomCodeCol)] || '').trim() : '';
         const quantity = qtyCol !== '' ? parseInt(row[parseInt(qtyCol)]) || 1 : 1;
+        const roomNumber = roomNumberCol !== '' ? String(row[parseInt(roomNumberCol)] || '').trim() : '';
 
         // Try to find or create department
         let dept = project.departments.find(d => d.name.toLowerCase() === deptName.toLowerCase());
@@ -10360,6 +10373,7 @@
             id: generateId(),
             code: roomCode || `CUSTOM-${generateId().substring(0, 6)}`,
             name: roomName,
+            roomNumber: roomNumber || '',
             nsf: nsf,
             equipment: [],
             attributes: {}
