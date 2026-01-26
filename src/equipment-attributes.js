@@ -143866,10 +143866,30 @@ function getEquipmentPower(jsn) {
   return result;
 }
 
+/**
+ * Get the mean price for an equipment item
+ * @param {string} jsn - The JSN code
+ * @param {number} overrideCost - Optional override cost (if user has set a custom cost)
+ * @returns {number} The unit cost (override if set, otherwise meanPrice from database, or 0)
+ */
+function getEquipmentPrice(jsn, overrideCost) {
+  // Return override if set
+  if (overrideCost && overrideCost > 0) return overrideCost;
+  
+  // Look up from EQUIPMENT_ATTRIBUTES
+  const attrs = EQUIPMENT_ATTRIBUTES[jsn];
+  if (attrs && attrs.meanPrice) {
+    return attrs.meanPrice;
+  }
+  
+  return 0;
+}
+
 // Make available globally
 if (typeof window !== "undefined") {
   window.EQUIPMENT_ATTRIBUTES = EQUIPMENT_ATTRIBUTES;
   window.getEquipmentAttributes = getEquipmentAttributes;
   window.getEquipmentDimensions = getEquipmentDimensions;
   window.getEquipmentPower = getEquipmentPower;
+  window.getEquipmentPrice = getEquipmentPrice;
 }

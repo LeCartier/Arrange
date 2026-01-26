@@ -6065,8 +6065,13 @@
               <div class="detail-value" style="font-weight: 600; color: var(--accent);">$${calculateProjectCost(project).toLocaleString()}</div>
             </div>
           </div>
+          <div style="margin-top: 12px;">
+            <button onclick="updateAllEquipmentCostsFromDatabase()" class="btn-secondary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; background: #27ae60; border-color: #229954; color: white;" onmouseover="this.style.background='#229954'" onmouseout="this.style.background='#27ae60'" title="Update all equipment costs from the equipment database">
+              💲 Update All Costs from Database
+            </button>
+          </div>
           <div style="margin-top: 8px; padding: 8px; background: var(--bg); border-radius: 4px; font-size: 0.85rem; color: var(--muted);">
-            Set construction cost per NSF or GSF to calculate total project costs including construction.
+            Set construction cost per NSF or GSF to calculate total project costs including construction. Use "Update All Costs" to apply database prices to all equipment.
           </div>
         </div>
         <div class="detail-panel">
@@ -6292,17 +6297,35 @@
       return null;
     }
 
-    // Helper to render editable attribute field
-    function renderEditableAttribute(label, value, onChange) {
+    // Helper to check if a value has been modified from the original
+    function isValueModified(currentValue, originalValue) {
+      // If both are null/undefined/empty, not modified
+      if ((currentValue === null || currentValue === undefined || currentValue === '') &&
+          (originalValue === null || originalValue === undefined || originalValue === '')) {
+        return false;
+      }
+      // If current value exists but original doesn't, it's modified (user added a value)
+      if ((currentValue !== null && currentValue !== undefined && currentValue !== '') &&
+          (originalValue === null || originalValue === undefined || originalValue === '')) {
+        return true;
+      }
+      // Compare values (convert to string for comparison)
+      return String(currentValue) !== String(originalValue);
+    }
+
+    // Helper to render editable attribute field with modification indicator
+    function renderEditableAttribute(label, value, onChange, originalValue = undefined) {
       const displayValue = value !== null && value !== undefined && value !== '' ? value : '';
+      const isModified = originalValue !== undefined && isValueModified(value, originalValue);
+      const modifiedIndicator = isModified ? '<span style="color: #e67e22; font-weight: bold; margin-left: 4px;" title="Modified from original">●</span>' : '';
       return `
         <div class="detail-row">
-          <div class="detail-label">${label}:</div>
+          <div class="detail-label">${label}:${modifiedIndicator}</div>
           <div class="detail-value">
             <input type="text" value="${displayValue}" 
               onchange="${onChange}"
               placeholder="Not specified"
-              style="width: 100%; padding: 4px 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+              style="width: 100%; padding: 4px 8px; background: var(--input-bg); border: 1px solid ${isModified ? '#e67e22' : 'var(--input-border)'}; color: var(--text); border-radius: 4px;">
           </div>
         </div>
       `;
@@ -6414,19 +6437,21 @@
               </div>
             </div>
             <div class="detail-row">
-              <div class="detail-label">Room Name:</div>
+              <div class="detail-label">Room Name:${roomAttrs && isValueModified(room.name, roomAttrs.name) ? '<span style="color: #e67e22; font-weight: bold; margin-left: 4px;" title="Modified from original">●</span>' : ''}</div>
               <div class="detail-value">
                 <input type="text" value="${room.name}" 
                   onchange="updateRoomName('${room.id}', this.value)"
-                  style="width: 100%; padding: 4px 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+                  style="width: 100%; padding: 4px 8px; background: var(--input-bg); border: 1px solid ${roomAttrs && isValueModified(room.name, roomAttrs.name) ? '#e67e22' : 'var(--input-border)'}; color: var(--text); border-radius: 4px;"
+                  title="${roomAttrs ? 'Original: ' + roomAttrs.name : ''}">
               </div>
             </div>
             <div class="detail-row">
-              <div class="detail-label">NSF:</div>
+              <div class="detail-label">NSF:${roomAttrs && isValueModified(nsf, roomAttrs.nsf) ? '<span style="color: #e67e22; font-weight: bold; margin-left: 4px;" title="Modified from original">●</span>' : ''}</div>
               <div class="detail-value">
                 <input type="number" value="${nsf}" 
                   onchange="updateRoomNSF('${room.id}', this.value)"
-                  style="width: 80px; padding: 4px 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
+                  style="width: 80px; padding: 4px 8px; background: var(--input-bg); border: 1px solid ${roomAttrs && isValueModified(nsf, roomAttrs.nsf) ? '#e67e22' : 'var(--input-border)'}; color: var(--text); border-radius: 4px;"
+                  title="${roomAttrs ? 'Original: ' + roomAttrs.nsf + ' SF' : ''}">
                 SF
               </div>
             </div>
@@ -6454,92 +6479,99 @@
         if (roomAttrs) {
           // Helper to get attribute value (room.attributes overrides ROOM_SIZES)
           const getAttr = (attrName) => room.attributes?.[attrName] ?? roomAttrs[attrName];
+          // Helper to get original value from ROOM_SIZES database
+          const getOriginal = (attrName) => roomAttrs[attrName];
           
           // Consolidated Attributes Panel with ALL available attributes in multi-column layout
           html += `
             <div class="detail-panel">
-              <h3>📋 Room Attributes</h3>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <h3 style="margin: 0;">📋 Room Attributes</h3>
+                <span style="font-size: 0.8rem; color: var(--muted);">
+                  <span style="color: #e67e22; font-weight: bold;">●</span> Modified from database
+                </span>
+              </div>
               <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
                 
                 <!-- Column 1: Materials & Finishes -->
                 <div>
                   <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--muted);">🏗️ Materials & Finishes</h4>
-                  ${renderEditableAttribute('Ceiling Material', getAttr('ceilingMaterial'), `updateRoomAttribute('${room.id}', 'ceilingMaterial', this.value)`)}
-                  ${renderEditableAttribute('Ceiling Alt', getAttr('ceilingMaterialAlternate'), `updateRoomAttribute('${room.id}', 'ceilingMaterialAlternate', this.value)`)}
-                  ${renderEditableAttribute('Ceiling Finish', getAttr('ceilingFinish'), `updateRoomAttribute('${room.id}', 'ceilingFinish', this.value)`)}
-                  ${renderEditableAttribute('Ceiling Spec', getAttr('finishCeiling'), `updateRoomAttribute('${room.id}', 'finishCeiling', this.value)`)}
+                  ${renderEditableAttribute('Ceiling Material', getAttr('ceilingMaterial'), `updateRoomAttribute('${room.id}', 'ceilingMaterial', this.value)`, getOriginal('ceilingMaterial'))}
+                  ${renderEditableAttribute('Ceiling Alt', getAttr('ceilingMaterialAlternate'), `updateRoomAttribute('${room.id}', 'ceilingMaterialAlternate', this.value)`, getOriginal('ceilingMaterialAlternate'))}
+                  ${renderEditableAttribute('Ceiling Finish', getAttr('ceilingFinish'), `updateRoomAttribute('${room.id}', 'ceilingFinish', this.value)`, getOriginal('ceilingFinish'))}
+                  ${renderEditableAttribute('Ceiling Spec', getAttr('finishCeiling'), `updateRoomAttribute('${room.id}', 'finishCeiling', this.value)`, getOriginal('finishCeiling'))}
                   
                   <div style="height: 8px;"></div>
-                  ${renderEditableAttribute('Wall Material', getAttr('wallMaterial'), `updateRoomAttribute('${room.id}', 'wallMaterial', this.value)`)}
-                  ${renderEditableAttribute('Wall Alt', getAttr('wallMaterialAlternate'), `updateRoomAttribute('${room.id}', 'wallMaterialAlternate', this.value)`)}
-                  ${renderEditableAttribute('Wall Finish', getAttr('wallFinish'), `updateRoomAttribute('${room.id}', 'wallFinish', this.value)`)}
-                  ${renderEditableAttribute('Wall Spec', getAttr('finishWall'), `updateRoomAttribute('${room.id}', 'finishWall', this.value)`)}
-                  ${renderEditableAttribute('Wainscot Spec', getAttr('finishWain'), `updateRoomAttribute('${room.id}', 'finishWain', this.value)`)}
+                  ${renderEditableAttribute('Wall Material', getAttr('wallMaterial'), `updateRoomAttribute('${room.id}', 'wallMaterial', this.value)`, getOriginal('wallMaterial'))}
+                  ${renderEditableAttribute('Wall Alt', getAttr('wallMaterialAlternate'), `updateRoomAttribute('${room.id}', 'wallMaterialAlternate', this.value)`, getOriginal('wallMaterialAlternate'))}
+                  ${renderEditableAttribute('Wall Finish', getAttr('wallFinish'), `updateRoomAttribute('${room.id}', 'wallFinish', this.value)`, getOriginal('wallFinish'))}
+                  ${renderEditableAttribute('Wall Spec', getAttr('finishWall'), `updateRoomAttribute('${room.id}', 'finishWall', this.value)`, getOriginal('finishWall'))}
+                  ${renderEditableAttribute('Wainscot Spec', getAttr('finishWain'), `updateRoomAttribute('${room.id}', 'finishWain', this.value)`, getOriginal('finishWain'))}
                   
                   <div style="height: 8px;"></div>
-                  ${renderEditableAttribute('Floor Material', getAttr('floorMaterial'), `updateRoomAttribute('${room.id}', 'floorMaterial', this.value)`)}
-                  ${renderEditableAttribute('Floor Alt', getAttr('floorMaterialAlternate'), `updateRoomAttribute('${room.id}', 'floorMaterialAlternate', this.value)`)}
-                  ${renderEditableAttribute('Floor Spec', getAttr('finishFloor'), `updateRoomAttribute('${room.id}', 'finishFloor', this.value)`)}
-                  ${renderEditableAttribute('Floor Base', getAttr('floorBaseMaterial'), `updateRoomAttribute('${room.id}', 'floorBaseMaterial', this.value)`)}
-                  ${renderEditableAttribute('Base Spec', getAttr('finishBase'), `updateRoomAttribute('${room.id}', 'finishBase', this.value)`)}
+                  ${renderEditableAttribute('Floor Material', getAttr('floorMaterial'), `updateRoomAttribute('${room.id}', 'floorMaterial', this.value)`, getOriginal('floorMaterial'))}
+                  ${renderEditableAttribute('Floor Alt', getAttr('floorMaterialAlternate'), `updateRoomAttribute('${room.id}', 'floorMaterialAlternate', this.value)`, getOriginal('floorMaterialAlternate'))}
+                  ${renderEditableAttribute('Floor Spec', getAttr('finishFloor'), `updateRoomAttribute('${room.id}', 'finishFloor', this.value)`, getOriginal('finishFloor'))}
+                  ${renderEditableAttribute('Floor Base', getAttr('floorBaseMaterial'), `updateRoomAttribute('${room.id}', 'floorBaseMaterial', this.value)`, getOriginal('floorBaseMaterial'))}
+                  ${renderEditableAttribute('Base Spec', getAttr('finishBase'), `updateRoomAttribute('${room.id}', 'finishBase', this.value)`, getOriginal('finishBase'))}
                 </div>
                 
                 <!-- Column 2: Door & Environmental -->
                 <div>
                   <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--muted);">🚪 Door</h4>
-                  ${renderEditableAttribute('Door Material', getAttr('doorMaterial'), `updateRoomAttribute('${room.id}', 'doorMaterial', this.value)`)}
-                  ${renderEditableAttribute('Door Spec', getAttr('finishDoor'), `updateRoomAttribute('${room.id}', 'finishDoor', this.value)`)}
-                  ${renderEditableAttribute('Door Height', getAttr('doorHeight'), `updateRoomAttribute('${room.id}', 'doorHeight', this.value)`)}
-                  ${renderEditableAttribute('Door Width', getAttr('doorWidth'), `updateRoomAttribute('${room.id}', 'doorWidth', this.value)`)}
-                  ${renderEditableAttribute('Door Type', getAttr('doorType'), `updateRoomAttribute('${room.id}', 'doorType', this.value)`)}
-                  ${renderEditableAttribute('Door Rating', getAttr('doorRating'), `updateRoomAttribute('${room.id}', 'doorRating', this.value)`)}
-                  ${renderEditableAttribute('Hardware Spec', getAttr('finishHardware'), `updateRoomAttribute('${room.id}', 'finishHardware', this.value)`)}
+                  ${renderEditableAttribute('Door Material', getAttr('doorMaterial'), `updateRoomAttribute('${room.id}', 'doorMaterial', this.value)`, getOriginal('doorMaterial'))}
+                  ${renderEditableAttribute('Door Spec', getAttr('finishDoor'), `updateRoomAttribute('${room.id}', 'finishDoor', this.value)`, getOriginal('finishDoor'))}
+                  ${renderEditableAttribute('Door Height', getAttr('doorHeight'), `updateRoomAttribute('${room.id}', 'doorHeight', this.value)`, getOriginal('doorHeight'))}
+                  ${renderEditableAttribute('Door Width', getAttr('doorWidth'), `updateRoomAttribute('${room.id}', 'doorWidth', this.value)`, getOriginal('doorWidth'))}
+                  ${renderEditableAttribute('Door Type', getAttr('doorType'), `updateRoomAttribute('${room.id}', 'doorType', this.value)`, getOriginal('doorType'))}
+                  ${renderEditableAttribute('Door Rating', getAttr('doorRating'), `updateRoomAttribute('${room.id}', 'doorRating', this.value)`, getOriginal('doorRating'))}
+                  ${renderEditableAttribute('Hardware Spec', getAttr('finishHardware'), `updateRoomAttribute('${room.id}', 'finishHardware', this.value)`, getOriginal('finishHardware'))}
                   
                   <h4 style="margin: 12px 0 8px 0; font-size: 0.9rem; color: var(--muted);">💡 Lighting & Acoustics</h4>
-                  ${renderEditableAttribute('Lighting Level', getAttr('lightingLevel'), `updateRoomAttribute('${room.id}', 'lightingLevel', this.value)`)}
-                  ${renderEditableAttribute('Acoustical Criteria', getAttr('acousticalCriteria'), `updateRoomAttribute('${room.id}', 'acousticalCriteria', this.value)`)}
-                  ${renderEditableAttribute('Max Noise (NC)', getAttr('maxNoiseLevelNc'), `updateRoomAttribute('${room.id}', 'maxNoiseLevelNc', this.value)`)}
-                  ${renderEditableAttribute('Floor Live Load', getAttr('floorLiveLoad'), `updateRoomAttribute('${room.id}', 'floorLiveLoad', this.value)`)}
+                  ${renderEditableAttribute('Lighting Level', getAttr('lightingLevel'), `updateRoomAttribute('${room.id}', 'lightingLevel', this.value)`, getOriginal('lightingLevel'))}
+                  ${renderEditableAttribute('Acoustical Criteria', getAttr('acousticalCriteria'), `updateRoomAttribute('${room.id}', 'acousticalCriteria', this.value)`, getOriginal('acousticalCriteria'))}
+                  ${renderEditableAttribute('Max Noise (NC)', getAttr('maxNoiseLevelNc'), `updateRoomAttribute('${room.id}', 'maxNoiseLevelNc', this.value)`, getOriginal('maxNoiseLevelNc'))}
+                  ${renderEditableAttribute('Floor Live Load', getAttr('floorLiveLoad'), `updateRoomAttribute('${room.id}', 'floorLiveLoad', this.value)`, getOriginal('floorLiveLoad'))}
                 </div>
                 
                 <!-- Column 3: HVAC -->
                 <div>
                   <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--muted);">❄️ HVAC</h4>
-                  ${renderEditableAttribute('Min Total ACH', getAttr('minTotalAch'), `updateRoomAttribute('${room.id}', 'minTotalAch', this.value)`)}
-                  ${renderEditableAttribute('Min OA ACH', getAttr('minOaAch'), `updateRoomAttribute('${room.id}', 'minOaAch', this.value)`)}
-                  ${renderEditableAttribute('Unoccupied ACH', getAttr('unoccupiedAch'), `updateRoomAttribute('${room.id}', 'unoccupiedAch', this.value)`)}
-                  ${renderEditableAttribute('Air Balance', getAttr('roomAirBalance'), `updateRoomAttribute('${room.id}', 'roomAirBalance', this.value)`)}
-                  ${renderEditableAttribute('HEPA Filtration', getAttr('airHasHepaFiltration'), `updateRoomAttribute('${room.id}', 'airHasHepaFiltration', this.value)`)}
-                  ${renderEditableAttribute('100% Exhaust', getAttr('exhaustIs100Outside'), `updateRoomAttribute('${room.id}', 'exhaustIs100Outside', this.value)`)}
-                  ${renderEditableAttribute('Temp Cooling (°C)', getAttr('indoorTempCoolingC'), `updateRoomAttribute('${room.id}', 'indoorTempCoolingC', this.value)`)}
-                  ${renderEditableAttribute('Temp Heating (°C)', getAttr('indoorTempHeatingC'), `updateRoomAttribute('${room.id}', 'indoorTempHeatingC', this.value)`)}
-                  ${renderEditableAttribute('RH Max (%)', getAttr('indoorRelativeHumidityRhMax'), `updateRoomAttribute('${room.id}', 'indoorRelativeHumidityRhMax', this.value)`)}
-                  ${renderEditableAttribute('RH Min (%)', getAttr('indoorRelativeHumidityRhMin'), `updateRoomAttribute('${room.id}', 'indoorRelativeHumidityRhMin', this.value)`)}
+                  ${renderEditableAttribute('Min Total ACH', getAttr('minTotalAch'), `updateRoomAttribute('${room.id}', 'minTotalAch', this.value)`, getOriginal('minTotalAch'))}
+                  ${renderEditableAttribute('Min OA ACH', getAttr('minOaAch'), `updateRoomAttribute('${room.id}', 'minOaAch', this.value)`, getOriginal('minOaAch'))}
+                  ${renderEditableAttribute('Unoccupied ACH', getAttr('unoccupiedAch'), `updateRoomAttribute('${room.id}', 'unoccupiedAch', this.value)`, getOriginal('unoccupiedAch'))}
+                  ${renderEditableAttribute('Air Balance', getAttr('roomAirBalance'), `updateRoomAttribute('${room.id}', 'roomAirBalance', this.value)`, getOriginal('roomAirBalance'))}
+                  ${renderEditableAttribute('HEPA Filtration', getAttr('airHasHepaFiltration'), `updateRoomAttribute('${room.id}', 'airHasHepaFiltration', this.value)`, getOriginal('airHasHepaFiltration'))}
+                  ${renderEditableAttribute('100% Exhaust', getAttr('exhaustIs100Outside'), `updateRoomAttribute('${room.id}', 'exhaustIs100Outside', this.value)`, getOriginal('exhaustIs100Outside'))}
+                  ${renderEditableAttribute('Temp Cooling (°C)', getAttr('indoorTempCoolingC'), `updateRoomAttribute('${room.id}', 'indoorTempCoolingC', this.value)`, getOriginal('indoorTempCoolingC'))}
+                  ${renderEditableAttribute('Temp Heating (°C)', getAttr('indoorTempHeatingC'), `updateRoomAttribute('${room.id}', 'indoorTempHeatingC', this.value)`, getOriginal('indoorTempHeatingC'))}
+                  ${renderEditableAttribute('RH Max (%)', getAttr('indoorRelativeHumidityRhMax'), `updateRoomAttribute('${room.id}', 'indoorRelativeHumidityRhMax', this.value)`, getOriginal('indoorRelativeHumidityRhMax'))}
+                  ${renderEditableAttribute('RH Min (%)', getAttr('indoorRelativeHumidityRhMin'), `updateRoomAttribute('${room.id}', 'indoorRelativeHumidityRhMin', this.value)`, getOriginal('indoorRelativeHumidityRhMin'))}
                 </div>
                 
                 <!-- Column 4: Medical Gases & Plumbing -->
                 <div>
                   <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--muted);">🔧 Medical Gases</h4>
-                  ${renderEditableAttribute('Medical Air', getAttr('medAir'), `updateRoomAttribute('${room.id}', 'medAir', this.value)`)}
-                  ${renderEditableAttribute('Medical Vacuum', getAttr('medVac'), `updateRoomAttribute('${room.id}', 'medVac', this.value)`)}
-                  ${renderEditableAttribute('Oxygen', getAttr('oxygen'), `updateRoomAttribute('${room.id}', 'oxygen', this.value)`)}
-                  ${renderEditableAttribute('Nitrogen', getAttr('nitrogen'), `updateRoomAttribute('${room.id}', 'nitrogen', this.value)`)}
-                  ${renderEditableAttribute('Nitrous Oxide', getAttr('nitrousOxide'), `updateRoomAttribute('${room.id}', 'nitrousOxide', this.value)`)}
-                  ${renderEditableAttribute('WAGD', getAttr('wagd'), `updateRoomAttribute('${room.id}', 'wagd', this.value)`)}
-                  ${renderEditableAttribute('CO2', getAttr('co2'), `updateRoomAttribute('${room.id}', 'co2', this.value)`)}
-                  ${renderEditableAttribute('Inst Air', getAttr('instAir'), `updateRoomAttribute('${room.id}', 'instAir', this.value)`)}
-                  ${renderEditableAttribute('Lab Air', getAttr('labAir'), `updateRoomAttribute('${room.id}', 'labAir', this.value)`)}
-                  ${renderEditableAttribute('Lab Vacuum', getAttr('labVac'), `updateRoomAttribute('${room.id}', 'labVac', this.value)`)}
-                  ${renderEditableAttribute('Dental Air', getAttr('dentalAir'), `updateRoomAttribute('${room.id}', 'dentalAir', this.value)`)}
-                  ${renderEditableAttribute('Dental Vacuum', getAttr('dentalVac'), `updateRoomAttribute('${room.id}', 'dentalVac', this.value)`)}
-                  ${renderEditableAttribute('Oral Evac', getAttr('oralEvac'), `updateRoomAttribute('${room.id}', 'oralEvac', this.value)`)}
+                  ${renderEditableAttribute('Medical Air', getAttr('medAir'), `updateRoomAttribute('${room.id}', 'medAir', this.value)`, getOriginal('medAir'))}
+                  ${renderEditableAttribute('Medical Vacuum', getAttr('medVac'), `updateRoomAttribute('${room.id}', 'medVac', this.value)`, getOriginal('medVac'))}
+                  ${renderEditableAttribute('Oxygen', getAttr('oxygen'), `updateRoomAttribute('${room.id}', 'oxygen', this.value)`, getOriginal('oxygen'))}
+                  ${renderEditableAttribute('Nitrogen', getAttr('nitrogen'), `updateRoomAttribute('${room.id}', 'nitrogen', this.value)`, getOriginal('nitrogen'))}
+                  ${renderEditableAttribute('Nitrous Oxide', getAttr('nitrousOxide'), `updateRoomAttribute('${room.id}', 'nitrousOxide', this.value)`, getOriginal('nitrousOxide'))}
+                  ${renderEditableAttribute('WAGD', getAttr('wagd'), `updateRoomAttribute('${room.id}', 'wagd', this.value)`, getOriginal('wagd'))}
+                  ${renderEditableAttribute('CO2', getAttr('co2'), `updateRoomAttribute('${room.id}', 'co2', this.value)`, getOriginal('co2'))}
+                  ${renderEditableAttribute('Inst Air', getAttr('instAir'), `updateRoomAttribute('${room.id}', 'instAir', this.value)`, getOriginal('instAir'))}
+                  ${renderEditableAttribute('Lab Air', getAttr('labAir'), `updateRoomAttribute('${room.id}', 'labAir', this.value)`, getOriginal('labAir'))}
+                  ${renderEditableAttribute('Lab Vacuum', getAttr('labVac'), `updateRoomAttribute('${room.id}', 'labVac', this.value)`, getOriginal('labVac'))}
+                  ${renderEditableAttribute('Dental Air', getAttr('dentalAir'), `updateRoomAttribute('${room.id}', 'dentalAir', this.value)`, getOriginal('dentalAir'))}
+                  ${renderEditableAttribute('Dental Vacuum', getAttr('dentalVac'), `updateRoomAttribute('${room.id}', 'dentalVac', this.value)`, getOriginal('dentalVac'))}
+                  ${renderEditableAttribute('Oral Evac', getAttr('oralEvac'), `updateRoomAttribute('${room.id}', 'oralEvac', this.value)`, getOriginal('oralEvac'))}
                   
                   <h4 style="margin: 12px 0 8px 0; font-size: 0.9rem; color: var(--muted);">💧 Plumbing</h4>
-                  ${renderEditableAttribute('Cold Water', getAttr('domesticColdWater'), `updateRoomAttribute('${room.id}', 'domesticColdWater', this.value)`)}
-                  ${renderEditableAttribute('Hot Water', getAttr('domesticHotWater'), `updateRoomAttribute('${room.id}', 'domesticHotWater', this.value)`)}
-                  ${renderEditableAttribute('Floor Drain', getAttr('floorDrain'), `updateRoomAttribute('${room.id}', 'floorDrain', this.value)`)}
-                  ${renderEditableAttribute('Natural Gas', getAttr('naturalGas'), `updateRoomAttribute('${room.id}', 'naturalGas', this.value)`)}
-                  ${renderEditableAttribute('Lab Natural Gas', getAttr('labNaturalGas'), `updateRoomAttribute('${room.id}', 'labNaturalGas', this.value)`)}
+                  ${renderEditableAttribute('Cold Water', getAttr('domesticColdWater'), `updateRoomAttribute('${room.id}', 'domesticColdWater', this.value)`, getOriginal('domesticColdWater'))}
+                  ${renderEditableAttribute('Hot Water', getAttr('domesticHotWater'), `updateRoomAttribute('${room.id}', 'domesticHotWater', this.value)`, getOriginal('domesticHotWater'))}
+                  ${renderEditableAttribute('Floor Drain', getAttr('floorDrain'), `updateRoomAttribute('${room.id}', 'floorDrain', this.value)`, getOriginal('floorDrain'))}
+                  ${renderEditableAttribute('Natural Gas', getAttr('naturalGas'), `updateRoomAttribute('${room.id}', 'naturalGas', this.value)`, getOriginal('naturalGas'))}
+                  ${renderEditableAttribute('Lab Natural Gas', getAttr('labNaturalGas'), `updateRoomAttribute('${room.id}', 'labNaturalGas', this.value)`, getOriginal('labNaturalGas'))}
                 </div>
               </div>
             </div>
@@ -6550,14 +6582,26 @@
           html += `
             <div class="detail-panel">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <h3 style="margin: 0;">🔧 Equipment (${room.equipment.length} items)</h3>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <h3 style="margin: 0;">🔧 Equipment (${room.equipment.length} items)</h3>
+                  <span style="font-size: 0.75rem; color: var(--muted);">
+                    <span style="color: #e67e22; font-weight: bold;">●</span> = cost override
+                  </span>
+                </div>
                 <button class="btn-secondary" onclick="addEquipmentToRoom('${room.id}')" style="padding: 6px 12px; font-size: 0.85rem;">➕ Add Equipment</button>
               </div>
               <div class="equipment-list">
           `;
 
           room.equipment.forEach(eq => {
-            const eqCost = (eq.cost || 0) * (eq.quantity || 1);
+            const unitCost = getEquipmentUnitCost(eq.jsn, eq.cost);
+            const eqCost = unitCost * (eq.quantity || 1);
+            const hasDefaultPrice = !eq.cost && unitCost > 0;
+            // Check if cost is overridden from database price
+            const dbPrice = typeof getEquipmentPrice === 'function' ? getEquipmentPrice(eq.jsn) : 
+                           (typeof EQUIPMENT_ATTRIBUTES !== 'undefined' && EQUIPMENT_ATTRIBUTES[eq.jsn] ? EQUIPMENT_ATTRIBUTES[eq.jsn].meanPrice : null);
+            const costIsModified = eq.cost && dbPrice && eq.cost !== dbPrice;
+            const costModifiedIndicator = costIsModified ? '<span style="color: #e67e22; font-weight: bold; margin-left: 2px;" title="Cost modified from database">●</span>' : '';
             html += `
               <div class="equipment-item">
                 <div class="equipment-item-header">
@@ -6567,11 +6611,12 @@
                     <input type="number" value="${eq.quantity}" min="1"
                       onchange="updateEquipmentQuantity('${room.id}', '${eq.id}', this.value)"
                       style="width: 60px; padding: 2px 6px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;">
-                    <span>| $</span>
-                    <input type="number" value="${eq.cost || 0}" min="0" step="100"
+                    <span>| $${costModifiedIndicator}</span>
+                    <input type="number" value="${eq.cost || ''}" min="0" step="100"
                       onchange="updateEquipmentCost('${room.id}', '${eq.id}', this.value)"
-                      style="width: 80px; padding: 2px 6px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 4px;"
-                      title="Unit cost">
+                      placeholder="${hasDefaultPrice ? unitCost : '0'}"
+                      style="width: 80px; padding: 2px 6px; background: var(--input-bg); border: 1px solid ${costIsModified ? '#e67e22' : 'var(--input-border)'}; color: ${hasDefaultPrice ? 'var(--muted)' : 'var(--text)'}; border-radius: 4px;"
+                      title="${hasDefaultPrice ? 'Using database price ($' + unitCost + '). Enter value to override.' : (costIsModified ? 'Modified from database price ($' + dbPrice + ')' : 'Unit cost')}">
                     <span>= $${eqCost.toLocaleString()}</span>
                     <span>| ${eq.acqIns}</span>
                     <button onclick="removeEquipment('${room.id}', '${eq.id}')" 
@@ -11363,7 +11408,43 @@
     // COST CALCULATION FUNCTIONS
     function calculateEquipmentCost(equipment) {
       if (!equipment) return 0;
-      return equipment.reduce((sum, eq) => sum + ((eq.cost || 0) * (eq.quantity || 1)), 0);
+      return equipment.reduce((sum, eq) => {
+        // Use global getEquipmentPrice if available, otherwise check local attributes
+        let unitCost = 0;
+        if (typeof getEquipmentPrice === 'function') {
+          unitCost = getEquipmentPrice(eq.jsn, eq.cost);
+        } else {
+          // Fallback: check for per-item cost override, then database price
+          unitCost = eq.cost || 0;
+          if (!unitCost && eq.jsn && typeof EQUIPMENT_ATTRIBUTES !== 'undefined') {
+            const attrs = EQUIPMENT_ATTRIBUTES[eq.jsn];
+            if (attrs && attrs.meanPrice) {
+              unitCost = attrs.meanPrice;
+            }
+          }
+        }
+        
+        return sum + (unitCost * (eq.quantity || 1));
+      }, 0);
+    }
+
+    function getEquipmentUnitCost(jsn, overrideCost) {
+      // Use global getEquipmentPrice if available
+      if (typeof getEquipmentPrice === 'function') {
+        return getEquipmentPrice(jsn, overrideCost);
+      }
+      
+      // Fallback implementation
+      if (overrideCost && overrideCost > 0) return overrideCost;
+      
+      if (jsn && typeof EQUIPMENT_ATTRIBUTES !== 'undefined') {
+        const attrs = EQUIPMENT_ATTRIBUTES[jsn];
+        if (attrs && attrs.meanPrice) {
+          return attrs.meanPrice;
+        }
+      }
+      
+      return 0;
     }
 
     function calculateRoomCost(room, project) {
@@ -11399,6 +11480,65 @@
     function calculateProjectCost(project) {
       if (!project.departments) return 0;
       return project.departments.reduce((sum, dept) => sum + calculateDeptCost(dept, project), 0);
+    }
+
+    function updateAllEquipmentCostsFromDatabase() {
+      const project = getCurrentProject();
+      if (!project.departments) {
+        alert('No departments in project');
+        return;
+      }
+
+      if (typeof EQUIPMENT_ATTRIBUTES === 'undefined') {
+        alert('Equipment database not loaded. Cannot update costs.');
+        return;
+      }
+
+      let updatedCount = 0;
+      let notFoundCount = 0;
+      let alreadySetCount = 0;
+      const notFoundJSNs = new Set();
+
+      // Iterate through all equipment in the project
+      project.departments.forEach(dept => {
+        if (!dept.functionalAreas) return;
+        dept.functionalAreas.forEach(fa => {
+          if (!fa.rooms) return;
+          fa.rooms.forEach(room => {
+            if (!room.equipment) return;
+            room.equipment.forEach(eq => {
+              if (!eq.jsn) return;
+
+              const attrs = EQUIPMENT_ATTRIBUTES[eq.jsn];
+              if (attrs && attrs.meanPrice) {
+                // Update the cost from database
+                eq.cost = attrs.meanPrice;
+                updatedCount++;
+              } else {
+                notFoundCount++;
+                notFoundJSNs.add(eq.jsn);
+              }
+            });
+          });
+        });
+      });
+
+      saveProjects();
+      renderAll();
+
+      // Show summary
+      let message = `Equipment costs updated!\n\n`;
+      message += `✅ Updated: ${updatedCount} items\n`;
+      if (notFoundCount > 0) {
+        message += `⚠️ No price found: ${notFoundCount} items\n`;
+        if (notFoundJSNs.size <= 10) {
+          message += `   JSNs: ${Array.from(notFoundJSNs).join(', ')}\n`;
+        } else {
+          message += `   (${notFoundJSNs.size} unique JSNs without pricing)\n`;
+        }
+      }
+
+      alert(message);
     }
 
     // -----------------------------
