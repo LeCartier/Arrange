@@ -7431,71 +7431,20 @@
       
       // Map department names to chapter IDs
       // Department names come from Equipment_Guide_parsed_v2.txt format: "100 (NAME)"
-      const deptToChapter = {
-        '100 (MEDICAL / SURGICAL PATIENT CARE UNIT (M/S PCU))': '100',
-        '102 (INTENSIVE CARE PATIENT CARE UNIT (IC PCU))': '102',
-        '104 (SPINAL CORD INJURY / DISORDERS CENTER (SCI/D))': '104',
-        '106 (SMALL HOUSE (SH) MODEL)': '106',
-        '208 (CHAPLAIN SERVICE)': '208',
-        '210 (CARDIOLOGY SERVICE)': '210',
-        '212 (PULMONARY MEDICINE SERVICE)': '212',
-        '214 (CLINICAL SERVICES ADMINISTRATION)': '214',
-        '218 (VETERANS ASSISTANCE UNIT)': '218',
-        '220 (CREDIT UNION)': '220',
-        '222 (DENTAL SERVICE)': '222',
-        '226 (ELECTROENCEPHALOGRAPHY (EEG) LABORATORY)': '226',
-        '234 (FISCAL SERVICE)': '234',
-        '238 (MEDICAL CENTER DIRECTOR\'S SUITE)': '238',
-        '244 (LOBBY)': '244',
-        '246 (HEALTH ADMINISTRATION SERVICE)': '246',
-        '248 (MEDICAL MEDIA SERVICE)': '248',
-        '254 (NURSING SERVICE ADMINISTRATION)': '254',
-        '274 (QUARTERS, ON-CALL)': '274',
-        '279 (POLICE SERVICE)': '279',
-        '280 (SERVICE ORGANIZATIONS)': '280',
-        '282 (SOCIAL WORK SERVICE)': '282',
-        '290 (VOLUNTARY SERVICE)': '290'
-      };
+      // Extract chapter ID from department name (first 3 digits)
+      const match = departmentName.match(/^(\d{3})/);
+      if (!match) return false;
       
-      const chapterId = deptToChapter[departmentName];
-      if (!chapterId) return false;
-      
+      const chapterId = match[1];
       const chapter = window.RoomLogic.getChapter(chapterId);
       return chapter !== null;
     }
 
     function getDepartmentChapterId(departmentName) {
-      const deptToChapter = {
-        '100 (MEDICAL / SURGICAL PATIENT CARE UNIT (M/S PCU))': '100',
-        '102 (INTENSIVE CARE PATIENT CARE UNIT (IC PCU))': '102',
-        '104 (SPINAL CORD INJURY / DISORDERS CENTER (SCI/D))': '104',
-        '106 (SMALL HOUSE (SH) MODEL)': '106',
-        '110 (MENTAL HEALTH PATIENT CARE UNIT (MH PCU))': '110',
-        '111 (POLYTRAUMA / TRAUMATIC BRAIN INJURY (TBI))': '111',
-        '208 (CHAPLAIN SERVICE)': '208',
-        '210 (CARDIOLOGY SERVICE)': '210',
-        '212 (PULMONARY MEDICINE SERVICE)': '212',
-        '214 (CLINICAL SERVICES ADMINISTRATION)': '214',
-        '218 (VETERANS ASSISTANCE UNIT)': '218',
-        '220 (CREDIT UNION)': '220',
-        '222 (DENTAL SERVICE)': '222',
-        '226 (ELECTROENCEPHALOGRAPHY (EEG) LABORATORY)': '226',
-        '234 (FISCAL SERVICE)': '234',
-        '238 (MEDICAL CENTER DIRECTOR\'S SUITE)': '238',
-        '244 (LOBBY)': '244',
-        '246 (HEALTH ADMINISTRATION SERVICE)': '246',
-        '248 (MEDICAL MEDIA SERVICE)': '248',
-        '254 (NURSING SERVICE ADMINISTRATION)': '254',
-        '256 (EMERGENCY DEPARTMENT)': '256',
-        '257 (URGENT CARE)': '257',
-        '274 (QUARTERS, ON-CALL)': '274',
-        '279 (POLICE SERVICE)': '279',
-        '280 (SERVICE ORGANIZATIONS)': '280',
-        '282 (SOCIAL WORK SERVICE)': '282',
-        '286 (SURGICAL / ENDOVASCULAR SERVICES)': '286',
-        '290 (VOLUNTARY SERVICE)': '290'
-      };
-      return deptToChapter[departmentName];
+      // Extract chapter ID from department name (first 3 digits)
+      // Department names are in format: "XXX (DEPARTMENT NAME)"
+      const match = departmentName.match(/^(\d{3})/);
+      return match ? match[1] : null;
     }
 
     function showAvailableLogicDepartments() {

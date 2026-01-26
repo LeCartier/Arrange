@@ -36,14 +36,28 @@ import { CHAPTER_257 } from './chapter-257-urgent-care.js';
 import { CHAPTER_258 } from './chapter-258-women-veterans.js';
 import { CHAPTER_263 } from './chapter-263-cboc-pact.js';
 import { CHAPTER_266 } from './chapter-266-human-resources.js';
-import { CHAPTER_286 } from './chapter-286-surgical.js';
 import { CHAPTER_268 } from './chapter-268-pharmacy-outpatient.js';
+import { CHAPTER_269 } from './chapter-269-recreation-therapy.js';
 import { CHAPTER_270 } from './chapter-270-pmr.js';
 import { CHAPTER_274_CONFIG } from './chapter-274-quarters-oncall.js';
+import { CHAPTER_277 } from './chapter-277-radiation-oncology.js';
 import { CHAPTER_279_CONFIG } from './chapter-279-police.js';
 import { CHAPTER_280_CONFIG } from './chapter-280-service-orgs.js';
 import { CHAPTER_282_CONFIG } from './chapter-282-social-work.js';
+import { CHAPTER_284 } from './chapter-284-logistics-service.js';
+import { CHAPTER_285 } from './chapter-285-sterile-processing.js';
+import { CHAPTER_286 } from './chapter-286-surgical.js';
+import { CHAPTER_287 } from './chapter-287-gastroenterology.js';
 import { CHAPTER_290_CONFIG } from './chapter-290-voluntary.js';
+import { CHAPTER_308_CONFIG, calculateRooms_308 } from './chapter-308-prosthetics.js';
+import { CHAPTER_312 } from './chapter-312-mental-health-rcu.js';
+import { CHAPTER_316 } from './chapter-316-dialysis-center.js';
+import { CHAPTER_400 } from './chapter-400-library-service.js';
+import { CHAPTER_402_CONFIG, calculateRooms_402 } from './chapter-402-educational.js';
+import { CHAPTER_406_CONFIG, calculateRooms_406 } from './chapter-406-ems-admin.js';
+import { CHAPTER_408_CONFIG, calculateRooms_408 } from './chapter-408-ems-laundry.js';
+import { CHAPTER_410_CONFIG, calculateRooms_410 } from './chapter-410-ems-lockers.js';
+import { CHAPTER_420 } from './chapter-420-childcare-center.js';
 
 // Registry of all available chapters
 export const CHAPTERS = {
@@ -81,14 +95,28 @@ export const CHAPTERS = {
   '258': CHAPTER_258,
   '263': CHAPTER_263,
   '266': CHAPTER_266,
-  '286': CHAPTER_286,
   '268': CHAPTER_268,
+  '269': CHAPTER_269,
   '270': CHAPTER_270,
   '274': CHAPTER_274_CONFIG,
+  '277': CHAPTER_277,
   '279': CHAPTER_279_CONFIG,
   '280': CHAPTER_280_CONFIG,
   '282': CHAPTER_282_CONFIG,
-  '290': CHAPTER_290_CONFIG
+  '284': CHAPTER_284,
+  '285': CHAPTER_285,
+  '286': CHAPTER_286,
+  '287': CHAPTER_287,
+  '290': CHAPTER_290_CONFIG,
+  '308': CHAPTER_308_CONFIG,
+  '312': CHAPTER_312,
+  '316': CHAPTER_316,
+  '400': CHAPTER_400,
+  '402': CHAPTER_402_CONFIG,
+  '406': CHAPTER_406_CONFIG,
+  '408': CHAPTER_408_CONFIG,
+  '410': CHAPTER_410_CONFIG,
+  '420': CHAPTER_420
 };
 
 /**
