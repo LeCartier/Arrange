@@ -8741,253 +8741,409 @@
         return;
       }
 
-      // Initialize jsPDF
+      // Initialize jsPDF - portrait for room sheets
       const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
+      const doc = new jsPDF('portrait', 'mm', 'letter');
       
-      let yPos = 20;
-      const lineHeight = 7;
-      const pageHeight = 280;
+      const pageHeight = 270;
+      const pageWidth = 215;
       const marginLeft = 15;
-      const marginRight = 195;
+      const marginRight = pageWidth - 15;
+      const contentWidth = marginRight - marginLeft;
 
-      // Helper function to check if we need a new page
-      function checkPageBreak(spaceNeeded = 20) {
-        if (yPos + spaceNeeded > pageHeight) {
-          doc.addPage();
-          yPos = 20;
-          return true;
-        }
-        return false;
-      }
+      // Colors
+      const primaryColor = [41, 128, 185];
+      const secondaryColor = [52, 73, 94];
+      const accentColor = [46, 204, 113];
+      const lightGray = [245, 245, 245];
+      const borderColor = [200, 200, 200];
 
-      // Helper function to add wrapped text
-      function addText(text, x, y, maxWidth, options = {}) {
-        const lines = doc.splitTextToSize(text, maxWidth);
-        lines.forEach((line, i) => {
-          if (i > 0) {
-            checkPageBreak();
-          }
-          doc.text(line, x, y + (i * lineHeight));
-        });
-        return lines.length * lineHeight;
-      }
+      let pageNum = 0;
 
-      // Title Page
-      doc.setFontSize(24);
-      doc.setFont(undefined, 'bold');
-      doc.text('Hospital Programming Report', marginLeft, yPos);
-      yPos += 15;
-      
-      doc.setFontSize(16);
-      doc.text(project.name, marginLeft, yPos);
-      yPos += 10;
-      
-      doc.setFontSize(10);
-      doc.setFont(undefined, 'normal');
-      doc.text(`Generated: ${new Date().toLocaleString()}`, marginLeft, yPos);
-      yPos += 10;
-      doc.text(`Report Type: ${reportType === 'equipment' ? 'Equipment Focus' : 'Room Attributes Focus'}`, marginLeft, yPos);
-      yPos += 15;
-
-      // Summary Page (if selected)
-      if (includeSummary) {
-        const totalDepts = project.departments ? project.departments.length : 0;
-        let totalFAs = 0;
-        let totalRooms = 0;
-        let totalEquip = 0;
-        const totalNSF = calculateProjectNSF(project);
-
-        if (project.departments) {
-          project.departments.forEach(dept => {
-            if (dept.functionalAreas) {
-              totalFAs += dept.functionalAreas.length;
-              dept.functionalAreas.forEach(fa => {
-                if (fa.rooms) {
-                  totalRooms += fa.rooms.length;
-                  fa.rooms.forEach(room => {
-                    if (room.equipment) {
-                      totalEquip += room.equipment.length;
-                    }
-                  });
-                }
-              });
-            }
-          });
-        }
-
-        doc.setFontSize(14);
+      // Helper: Add page header
+      function addPageHeader(room, dept, fa) {
+        let yPos = 12;
+        
+        // Header bar
+        doc.setFillColor(...primaryColor);
+        doc.rect(0, 0, pageWidth, 25, 'F');
+        
+        // Room code and name
+        doc.setFontSize(16);
         doc.setFont(undefined, 'bold');
-        doc.text('Project Summary', marginLeft, yPos);
-        yPos += 10;
-
-        doc.setFontSize(10);
+        doc.setTextColor(255, 255, 255);
+        doc.text(`${room.code || 'CUSTOM'}`, marginLeft, yPos);
+        
+        doc.setFontSize(12);
         doc.setFont(undefined, 'normal');
-        doc.text(`Departments: ${totalDepts}`, marginLeft, yPos);
-        yPos += lineHeight;
-        doc.text(`Functional Areas: ${totalFAs}`, marginLeft, yPos);
-        yPos += lineHeight;
-        doc.text(`Rooms: ${totalRooms}`, marginLeft, yPos);
-        yPos += lineHeight;
-        doc.text(`Equipment Items: ${totalEquip}`, marginLeft, yPos);
-        yPos += lineHeight;
-        doc.text(`Total NSF: ${totalNSF.toLocaleString()} SF`, marginLeft, yPos);
-        yPos += 15;
+        doc.text(room.name, marginLeft, yPos + 6);
+        
+        // Room number if present
+        if (room.roomNumber) {
+          doc.setFontSize(10);
+          doc.text(`Room #: ${room.roomNumber}`, marginRight, yPos, { align: 'right' });
+        }
+        
+        // NSF badge
+        doc.setFillColor(255, 255, 255);
+        doc.roundedRect(marginRight - 35, yPos + 1, 35, 10, 2, 2, 'F');
+        doc.setFontSize(10);
+        doc.setFont(undefined, 'bold');
+        doc.setTextColor(...primaryColor);
+        doc.text(`${room.nsf || 0} NSF`, marginRight - 17.5, yPos + 7, { align: 'center' });
+        
+        yPos = 30;
+        
+        // Breadcrumb: Department > Functional Area
+        doc.setFontSize(8);
+        doc.setFont(undefined, 'normal');
+        doc.setTextColor(100, 100, 100);
+        doc.text(`${dept.name} > ${fa.name}`, marginLeft, yPos);
+        
+        // Project name on right
+        doc.text(project.name, marginRight, yPos, { align: 'right' });
+        
+        return yPos + 8;
       }
 
-      // Iterate through departments, functional areas, and rooms
+      // Helper: Add page footer
+      function addPageFooter(currentPage, totalPages) {
+        doc.setFontSize(7);
+        doc.setTextColor(150, 150, 150);
+        doc.text(`Page ${currentPage} of ${totalPages}`, pageWidth / 2, 275, { align: 'center' });
+        doc.text(new Date().toLocaleDateString(), marginRight, 275, { align: 'right' });
+      }
+
+      // Helper: Draw a section box
+      function drawSectionBox(title, yPos, height) {
+        doc.setFillColor(...lightGray);
+        doc.setDrawColor(...borderColor);
+        doc.roundedRect(marginLeft, yPos, contentWidth, height, 2, 2, 'FD');
+        
+        // Section title
+        doc.setFillColor(...secondaryColor);
+        doc.roundedRect(marginLeft, yPos, 50, 6, 2, 2, 'F');
+        doc.setFontSize(7);
+        doc.setFont(undefined, 'bold');
+        doc.setTextColor(255, 255, 255);
+        doc.text(title, marginLeft + 3, yPos + 4);
+        doc.setTextColor(0, 0, 0);
+        
+        return yPos + 10;
+      }
+
+      // Helper: Draw key-value pair
+      function drawKeyValue(key, value, x, y, keyWidth = 35) {
+        doc.setFontSize(8);
+        doc.setFont(undefined, 'bold');
+        doc.setTextColor(80, 80, 80);
+        doc.text(key + ':', x, y);
+        doc.setFont(undefined, 'normal');
+        doc.setTextColor(0, 0, 0);
+        doc.text(String(value || '-'), x + keyWidth, y);
+      }
+
+      // Collect all rooms
+      const allRooms = [];
       if (project.departments) {
-        project.departments.forEach((dept, deptIdx) => {
-          checkPageBreak(30);
-          
-          // Department Header
-          doc.setFontSize(14);
-          doc.setFont(undefined, 'bold');
-          doc.text(`Department: ${dept.name}`, marginLeft, yPos);
-          yPos += 10;
-
+        project.departments.forEach(dept => {
           if (dept.functionalAreas) {
-            dept.functionalAreas.forEach((fa, faIdx) => {
-              checkPageBreak(25);
-              
-              // Functional Area Header
-              doc.setFontSize(12);
-              doc.setFont(undefined, 'bold');
-              doc.text(`  Functional Area: ${fa.name}`, marginLeft, yPos);
-              yPos += 8;
-
+            dept.functionalAreas.forEach(fa => {
               if (fa.rooms) {
-                fa.rooms.forEach((room, roomIdx) => {
-                  checkPageBreak(40);
-                  
-                  // Room Header
-                  doc.setFontSize(10);
-                  doc.setFont(undefined, 'bold');
-                  doc.text(`    ${room.code} - ${room.name}`, marginLeft, yPos);
-                  yPos += lineHeight;
-                  
-                  doc.setFont(undefined, 'normal');
-                  doc.text(`    NSF: ${room.nsf || 0} SF`, marginLeft, yPos);
-                  yPos += lineHeight;
-
-                  if (reportType === 'equipment') {
-                    // Equipment Focus
-                    if (room.equipment && room.equipment.length > 0) {
-                      doc.setFont(undefined, 'italic');
-                      doc.text(`    Equipment (${room.equipment.length} items):`, marginLeft, yPos);
-                      yPos += lineHeight;
-                      
-                      doc.setFont(undefined, 'normal');
-                      room.equipment.forEach(equip => {
-                        checkPageBreak();
-                        doc.setFontSize(9);
-                        const equipText = `      • ${equip.jsn} - ${equip.name} (Qty: ${equip.quantity})`;
-                        yPos += addText(equipText, marginLeft, yPos, marginRight - marginLeft);
-                        
-                        if (equip.description) {
-                          doc.setTextColor(100);
-                          const descText = `        ${equip.description}`;
-                          yPos += addText(descText, marginLeft, yPos, marginRight - marginLeft);
-                          doc.setTextColor(0);
-                        }
-                      });
-                      doc.setFontSize(10);
-                    } else {
-                      doc.setFontSize(9);
-                      doc.setTextColor(150);
-                      doc.text('      No equipment specified', marginLeft, yPos);
-                      doc.setTextColor(0);
-                      doc.setFontSize(10);
-                      yPos += lineHeight;
-                    }
-                  } else {
-                    // Room Attributes Focus
-                    const roomData = ROOM_SIZES.find(r => r.roomCode === room.code);
-                    if (roomData) {
-                      doc.setFontSize(9);
-                      
-                      // HVAC & Environmental
-                      if (roomData.airChangesPerHour || roomData.indoorTemperatureF) {
-                        checkPageBreak(15);
-                        doc.setFont(undefined, 'italic');
-                        doc.text('    HVAC & Environmental:', marginLeft, yPos);
-                        yPos += lineHeight;
-                        doc.setFont(undefined, 'normal');
-                        
-                        if (roomData.airChangesPerHour) {
-                          doc.text(`      Air Changes/Hour: ${roomData.airChangesPerHour}`, marginLeft, yPos);
-                          yPos += lineHeight;
-                        }
-                        if (roomData.indoorTemperatureF) {
-                          doc.text(`      Temperature: ${roomData.indoorTemperatureF}°F`, marginLeft, yPos);
-                          yPos += lineHeight;
-                        }
-                        if (roomData.indoorRelativeHumidityRhMax || roomData.indoorRelativeHumidityRhMin) {
-                          const humidityText = `      Humidity: ${roomData.indoorRelativeHumidityRhMin || ''}${roomData.indoorRelativeHumidityRhMin && roomData.indoorRelativeHumidityRhMax ? '-' : ''}${roomData.indoorRelativeHumidityRhMax || ''}%`;
-                          doc.text(humidityText, marginLeft, yPos);
-                          yPos += lineHeight;
-                        }
-                      }
-
-                      // Materials & Finishes
-                      if (roomData.ceilingFinish || roomData.wallFinish || roomData.floorFinish) {
-                        checkPageBreak(15);
-                        doc.setFont(undefined, 'italic');
-                        doc.text('    Materials & Finishes:', marginLeft, yPos);
-                        yPos += lineHeight;
-                        doc.setFont(undefined, 'normal');
-                        
-                        if (roomData.ceilingFinish) {
-                          doc.text(`      Ceiling: ${roomData.ceilingFinish}`, marginLeft, yPos);
-                          yPos += lineHeight;
-                        }
-                        if (roomData.wallFinish) {
-                          doc.text(`      Wall: ${roomData.wallFinish}`, marginLeft, yPos);
-                          yPos += lineHeight;
-                        }
-                        if (roomData.floorFinish) {
-                          doc.text(`      Floor: ${roomData.floorFinish}`, marginLeft, yPos);
-                          yPos += lineHeight;
-                        }
-                      }
-
-                      // Medical Gases
-                      const gases = [];
-                      if (roomData.oxygenOutlets) gases.push(`O2: ${roomData.oxygenOutlets}`);
-                      if (roomData.medicalAirOutlets) gases.push(`Med Air: ${roomData.medicalAirOutlets}`);
-                      if (roomData.medicalVacuumOutlets) gases.push(`Vac: ${roomData.medicalVacuumOutlets}`);
-                      
-                      if (gases.length > 0) {
-                        checkPageBreak(10);
-                        doc.setFont(undefined, 'italic');
-                        doc.text('    Medical Gases:', marginLeft, yPos);
-                        yPos += lineHeight;
-                        doc.setFont(undefined, 'normal');
-                        doc.text(`      ${gases.join(', ')}`, marginLeft, yPos);
-                        yPos += lineHeight;
-                      }
-
-                      // Equipment count
-                      const equipCount = room.equipment ? room.equipment.length : 0;
-                      if (equipCount > 0) {
-                        doc.text(`    Equipment Items: ${equipCount}`, marginLeft, yPos);
-                        yPos += lineHeight;
-                      }
-
-                      doc.setFontSize(10);
-                    }
-                  }
-
-                  yPos += 3; // Space between rooms
+                fa.rooms.forEach(room => {
+                  allRooms.push({ room, dept, fa });
                 });
               }
-              
-              yPos += 5; // Space between functional areas
             });
           }
-          
-          yPos += 5; // Space between departments
         });
+      }
+
+      if (allRooms.length === 0) {
+        alert('No rooms to export');
+        return;
+      }
+
+      // Calculate totals for summary
+      let totalEquip = 0, totalCost = 0;
+      const totalNSF = calculateProjectNSF(project);
+      allRooms.forEach(({ room }) => {
+        if (room.equipment) {
+          totalEquip += room.equipment.length;
+          room.equipment.forEach(eq => {
+            totalCost += (eq.cost || 0) * (eq.quantity || 1);
+          });
+        }
+      });
+
+      // Summary/Cover Page (if selected)
+      if (includeSummary) {
+        let yPos = 50;
+        pageNum++;
+        
+        // Title
+        doc.setFontSize(24);
+        doc.setFont(undefined, 'bold');
+        doc.setTextColor(...primaryColor);
+        doc.text(project.name, pageWidth / 2, yPos, { align: 'center' });
+        yPos += 10;
+        
+        doc.setFontSize(12);
+        doc.setFont(undefined, 'normal');
+        doc.setTextColor(100, 100, 100);
+        doc.text(reportType === 'equipment' ? 'Equipment Report' : 'Room Attributes Report', pageWidth / 2, yPos, { align: 'center' });
+        yPos += 20;
+        
+        // Summary grid
+        const boxWidth = 55;
+        const boxHeight = 25;
+        const summaryData = [
+          { label: 'Departments', value: project.departments?.length || 0, color: primaryColor },
+          { label: 'Functional Areas', value: project.departments?.reduce((s, d) => s + (d.functionalAreas?.length || 0), 0) || 0, color: secondaryColor },
+          { label: 'Total Rooms', value: allRooms.length, color: accentColor },
+          { label: 'Total NSF', value: totalNSF.toLocaleString(), color: primaryColor },
+          { label: 'Equipment Items', value: totalEquip, color: secondaryColor },
+          { label: 'Est. Cost', value: '$' + totalCost.toLocaleString(), color: accentColor }
+        ];
+        
+        summaryData.forEach((item, i) => {
+          const col = i % 3;
+          const row = Math.floor(i / 3);
+          const x = marginLeft + (col * (boxWidth + 10));
+          const y = yPos + (row * (boxHeight + 8));
+          
+          doc.setFillColor(...lightGray);
+          doc.setDrawColor(...item.color);
+          doc.setLineWidth(0.5);
+          doc.roundedRect(x, y, boxWidth, boxHeight, 3, 3, 'FD');
+          
+          doc.setFontSize(16);
+          doc.setFont(undefined, 'bold');
+          doc.setTextColor(...item.color);
+          doc.text(String(item.value), x + boxWidth/2, y + 12, { align: 'center' });
+          
+          doc.setFontSize(8);
+          doc.setFont(undefined, 'normal');
+          doc.setTextColor(100, 100, 100);
+          doc.text(item.label, x + boxWidth/2, y + 19, { align: 'center' });
+        });
+        
+        yPos += 75;
+        
+        // Table of contents
+        doc.setFontSize(12);
+        doc.setFont(undefined, 'bold');
+        doc.setTextColor(...secondaryColor);
+        doc.text('Room Index', marginLeft, yPos);
+        yPos += 8;
+        
+        doc.setFontSize(8);
+        doc.setFont(undefined, 'normal');
+        let tocPage = 2;
+        let currentDept = '';
+        
+        allRooms.forEach(({ room, dept, fa }, idx) => {
+          if (yPos > 250) {
+            doc.addPage();
+            pageNum++;
+            yPos = 20;
+          }
+          
+          if (dept.name !== currentDept) {
+            currentDept = dept.name;
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(...primaryColor);
+            doc.text(dept.name, marginLeft, yPos);
+            yPos += 5;
+            doc.setFont(undefined, 'normal');
+          }
+          
+          doc.setTextColor(0, 0, 0);
+          const roomText = `${room.code || 'CUSTOM'} - ${room.name}`;
+          doc.text(roomText.substring(0, 60), marginLeft + 5, yPos);
+          doc.text(String(tocPage + idx), marginRight, yPos, { align: 'right' });
+          yPos += 4;
+        });
+        
+        doc.addPage();
+      }
+
+      // Generate room sheets
+      allRooms.forEach(({ room, dept, fa }, roomIdx) => {
+        if (roomIdx > 0 || includeSummary) {
+          if (roomIdx > 0) doc.addPage();
+        }
+        pageNum++;
+        
+        let yPos = addPageHeader(room, dept, fa);
+        
+        // Look up room data from ROOM_SIZES
+        const roomData = ROOM_SIZES.find(r => (r.id || r.roomCode) === room.code) || {};
+        const attrs = room.attributes || {};
+        
+        if (reportType === 'attributes' || reportType === 'both') {
+          // === ROOM ATTRIBUTES SECTION ===
+          
+          // Finishes Section
+          const finishHeight = 28;
+          yPos = drawSectionBox('FINISHES', yPos, finishHeight);
+          
+          const floor = roomData.floorMaterial || roomData.finishFloor || attrs.floorMaterial || '-';
+          const wall = roomData.wallMaterial || roomData.finishWall || attrs.wallMaterial || '-';
+          const ceiling = roomData.ceilingMaterial || roomData.finishCeiling || attrs.ceilingMaterial || '-';
+          const base = roomData.baseMaterial || roomData.finishBase || attrs.baseMaterial || '-';
+          
+          drawKeyValue('Floor', floor, marginLeft + 5, yPos);
+          drawKeyValue('Wall', wall, marginLeft + 95, yPos);
+          yPos += 6;
+          drawKeyValue('Ceiling', ceiling, marginLeft + 5, yPos);
+          drawKeyValue('Base', base, marginLeft + 95, yPos);
+          
+          yPos += 12;
+          
+          // HVAC & Environmental Section
+          const hvacHeight = 35;
+          yPos = drawSectionBox('HVAC & ENVIRONMENTAL', yPos, hvacHeight);
+          
+          const ach = roomData.airChangesPerHour || roomData.ach || attrs.airChangesPerHour || '-';
+          const temp = roomData.indoorTemperatureF || roomData.temperature || attrs.temperature || '-';
+          const rhMin = roomData.indoorRelativeHumidityRhMin || roomData.humidityMin || attrs.humidityMin || '';
+          const rhMax = roomData.indoorRelativeHumidityRhMax || roomData.humidityMax || attrs.humidityMax || '';
+          const humidity = rhMin || rhMax ? `${rhMin}${rhMin && rhMax ? '-' : ''}${rhMax}%` : '-';
+          const pressure = roomData.pressureRelationship || roomData.pressure || attrs.pressure || '-';
+          
+          drawKeyValue('Air Changes/Hour', ach, marginLeft + 5, yPos);
+          drawKeyValue('Temperature', temp + (temp !== '-' ? '°F' : ''), marginLeft + 95, yPos);
+          yPos += 6;
+          drawKeyValue('Humidity', humidity, marginLeft + 5, yPos);
+          drawKeyValue('Pressure', pressure, marginLeft + 95, yPos);
+          yPos += 6;
+          
+          const exhaustType = roomData.exhaustType || roomData.exhaust || attrs.exhaust || '-';
+          const noiseLevel = roomData.noiseLevel || roomData.noise || attrs.noise || '-';
+          drawKeyValue('Exhaust', exhaustType, marginLeft + 5, yPos);
+          drawKeyValue('Noise Level', noiseLevel, marginLeft + 95, yPos);
+          
+          yPos += 12;
+          
+          // Medical Gases Section
+          const gasHeight = 22;
+          yPos = drawSectionBox('MEDICAL GASES', yPos, gasHeight);
+          
+          const o2 = roomData.oxygenOutlets || roomData.oxygen || attrs.oxygen || '-';
+          const medAir = roomData.medicalAirOutlets || roomData.medicalAir || attrs.medicalAir || '-';
+          const vac = roomData.medicalVacuumOutlets || roomData.vacuum || attrs.vacuum || '-';
+          const n2o = roomData.nitrousOxideOutlets || roomData.nitrousOxide || attrs.nitrousOxide || '-';
+          
+          drawKeyValue('Oxygen (O₂)', o2, marginLeft + 5, yPos);
+          drawKeyValue('Med Air', medAir, marginLeft + 50, yPos);
+          drawKeyValue('Vacuum', vac, marginLeft + 95, yPos);
+          drawKeyValue('N₂O', n2o, marginLeft + 140, yPos);
+          
+          yPos += 15;
+          
+          // Electrical Section
+          const elecHeight = 22;
+          yPos = drawSectionBox('ELECTRICAL & LIGHTING', yPos, elecHeight);
+          
+          const lighting = roomData.lightingLevel || roomData.lighting || attrs.lighting || '-';
+          const emergency = roomData.emergencyPower || attrs.emergencyPower || '-';
+          const outlets = roomData.electricalOutlets || attrs.outlets || '-';
+          
+          drawKeyValue('Lighting (fc)', lighting, marginLeft + 5, yPos);
+          drawKeyValue('Emergency Pwr', emergency, marginLeft + 60, yPos);
+          drawKeyValue('Outlets', outlets, marginLeft + 130, yPos);
+          
+          yPos += 15;
+        }
+        
+        if (reportType === 'equipment' || reportType === 'both') {
+          // === EQUIPMENT SECTION ===
+          const equipList = room.equipment || [];
+          const equipHeight = Math.min(120, 15 + (equipList.length * 6));
+          
+          yPos = drawSectionBox('EQUIPMENT', yPos, equipHeight);
+          
+          if (equipList.length === 0) {
+            doc.setFontSize(8);
+            doc.setTextColor(150, 150, 150);
+            doc.text('No equipment specified for this room', marginLeft + 5, yPos);
+            yPos += 10;
+          } else {
+            // Equipment table header
+            doc.setFillColor(...secondaryColor);
+            doc.rect(marginLeft + 3, yPos - 3, contentWidth - 6, 5, 'F');
+            doc.setFontSize(6);
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(255, 255, 255);
+            doc.text('JSN', marginLeft + 5, yPos);
+            doc.text('Equipment Name', marginLeft + 28, yPos);
+            doc.text('Qty', marginLeft + 115, yPos);
+            doc.text('Acq/Ins', marginLeft + 128, yPos);
+            doc.text('Unit Cost', marginLeft + 155, yPos);
+            yPos += 4;
+            
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(0, 0, 0);
+            
+            let equipTotal = 0;
+            equipList.forEach((eq, eqIdx) => {
+              if (yPos > pageHeight - 20) {
+                // Continue on next page
+                doc.addPage();
+                pageNum++;
+                yPos = addPageHeader(room, dept, fa);
+                yPos = drawSectionBox('EQUIPMENT (continued)', yPos, 120);
+              }
+              
+              const bgColor = eqIdx % 2 === 0 ? [255, 255, 255] : lightGray;
+              doc.setFillColor(...bgColor);
+              doc.rect(marginLeft + 3, yPos - 3, contentWidth - 6, 5, 'F');
+              
+              doc.setFontSize(7);
+              doc.text(eq.jsn || '-', marginLeft + 5, yPos);
+              doc.text((eq.name || '').substring(0, 45), marginLeft + 28, yPos);
+              doc.text(String(eq.quantity || 1), marginLeft + 118, yPos);
+              doc.text(eq.acqIns || '-', marginLeft + 128, yPos);
+              const cost = eq.cost || 0;
+              doc.text(cost > 0 ? '$' + cost.toLocaleString() : '-', marginLeft + 155, yPos);
+              
+              equipTotal += cost * (eq.quantity || 1);
+              yPos += 5;
+            });
+            
+            // Equipment total
+            if (equipTotal > 0) {
+              yPos += 2;
+              doc.setFillColor(...accentColor);
+              doc.rect(marginLeft + 120, yPos - 3, contentWidth - 123, 6, 'F');
+              doc.setFontSize(8);
+              doc.setFont(undefined, 'bold');
+              doc.setTextColor(255, 255, 255);
+              doc.text(`Room Total: $${equipTotal.toLocaleString()}`, marginLeft + 155, yPos + 1);
+            }
+          }
+        }
+        
+        // Notes section if room has custom attributes
+        if (room.notes || room.specialRequirements) {
+          yPos += 15;
+          yPos = drawSectionBox('NOTES', yPos, 25);
+          doc.setFontSize(8);
+          doc.setTextColor(0, 0, 0);
+          const notes = room.notes || room.specialRequirements || '';
+          const lines = doc.splitTextToSize(notes, contentWidth - 10);
+          lines.slice(0, 3).forEach((line, i) => {
+            doc.text(line, marginLeft + 5, yPos + (i * 5));
+          });
+        }
+      });
+
+      // Add page footers to all pages
+      const totalPages = doc.internal.getNumberOfPages();
+      for (let i = 1; i <= totalPages; i++) {
+        doc.setPage(i);
+        addPageFooter(i, totalPages);
       }
 
       // Save the PDF
