@@ -8745,102 +8745,259 @@
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF('portrait', 'mm', 'letter');
       
-      const pageHeight = 270;
+      const pageHeight = 265;
       const pageWidth = 215;
-      const marginLeft = 15;
-      const marginRight = pageWidth - 15;
+      const marginLeft = 12;
+      const marginRight = pageWidth - 12;
       const contentWidth = marginRight - marginLeft;
+      const roomSpacing = 8;
 
       // Colors
       const primaryColor = [41, 128, 185];
       const secondaryColor = [52, 73, 94];
       const accentColor = [46, 204, 113];
-      const lightGray = [245, 245, 245];
-      const borderColor = [200, 200, 200];
+      const lightGray = [248, 248, 248];
+      const borderColor = [220, 220, 220];
 
-      let pageNum = 0;
+      let yPos = 15;
+      let currentDeptFA = '';
 
-      // Helper: Add page header
-      function addPageHeader(room, dept, fa) {
-        let yPos = 12;
+      // Helper: Calculate room height based on content
+      function calculateRoomHeight(room, reportType) {
+        let height = 32; // Header + basic info
         
-        // Header bar
+        if (reportType === 'attributes' || reportType === 'both') {
+          height += 45; // Finishes, HVAC, Med Gas rows
+        }
+        
+        if (reportType === 'equipment' || reportType === 'both') {
+          const equipCount = room.equipment?.length || 0;
+          height += 8 + Math.min(equipCount * 4.5, 50); // Equipment section, capped
+        }
+        
+        return height;
+      }
+
+      // Helper: Check if we need a new page
+      function checkPageBreak(spaceNeeded) {
+        if (yPos + spaceNeeded > pageHeight) {
+          doc.addPage();
+          yPos = 15;
+          return true;
+        }
+        return false;
+      }
+
+      // Helper: Draw department/FA header
+      function drawDeptFAHeader(dept, fa) {
+        const key = `${dept.name}|${fa.name}`;
+        if (key !== currentDeptFA) {
+          checkPageBreak(12);
+          currentDeptFA = key;
+          
+          doc.setFillColor(...primaryColor);
+          doc.rect(marginLeft, yPos, contentWidth, 8, 'F');
+          
+          doc.setFontSize(9);
+          doc.setFont(undefined, 'bold');
+          doc.setTextColor(255, 255, 255);
+          doc.text(`${dept.name}  ›  ${fa.name}`, marginLeft + 3, yPos + 5.5);
+          
+          yPos += 11;
+        }
+      }
+
+      // Helper: Draw compact room card
+      function drawRoomCard(room, dept, fa, reportType) {
+        const roomData = ROOM_SIZES.find(r => (r.id || r.roomCode) === room.code) || {};
+        const attrs = room.attributes || {};
+        
+        const cardStartY = yPos;
+        
+        // Room header bar
+        doc.setFillColor(245, 248, 250);
+        doc.setDrawColor(...borderColor);
+        doc.roundedRect(marginLeft, yPos, contentWidth, 10, 1, 1, 'FD');
+        
+        // Room code badge
         doc.setFillColor(...primaryColor);
-        doc.rect(0, 0, pageWidth, 25, 'F');
-        
-        // Room code and name
-        doc.setFontSize(16);
+        doc.roundedRect(marginLeft + 2, yPos + 2, 28, 6, 1, 1, 'F');
+        doc.setFontSize(7);
         doc.setFont(undefined, 'bold');
         doc.setTextColor(255, 255, 255);
-        doc.text(`${room.code || 'CUSTOM'}`, marginLeft, yPos);
+        doc.text(room.code || 'CUSTOM', marginLeft + 16, yPos + 6, { align: 'center' });
         
-        doc.setFontSize(12);
-        doc.setFont(undefined, 'normal');
-        doc.text(room.name, marginLeft, yPos + 6);
+        // Room name
+        doc.setFontSize(9);
+        doc.setTextColor(0, 0, 0);
+        doc.text(room.name, marginLeft + 33, yPos + 6);
         
         // Room number if present
         if (room.roomNumber) {
-          doc.setFontSize(10);
-          doc.text(`Room #: ${room.roomNumber}`, marginRight, yPos, { align: 'right' });
+          doc.setFontSize(7);
+          doc.setTextColor(100, 100, 100);
+          doc.text(`#${room.roomNumber}`, marginLeft + 120, yPos + 6);
         }
         
-        // NSF badge
-        doc.setFillColor(255, 255, 255);
-        doc.roundedRect(marginRight - 35, yPos + 1, 35, 10, 2, 2, 'F');
-        doc.setFontSize(10);
+        // NSF
+        doc.setFontSize(8);
         doc.setFont(undefined, 'bold');
         doc.setTextColor(...primaryColor);
-        doc.text(`${room.nsf || 0} NSF`, marginRight - 17.5, yPos + 7, { align: 'center' });
+        doc.text(`${room.nsf || 0} NSF`, marginRight - 3, yPos + 6, { align: 'right' });
         
-        yPos = 30;
+        yPos += 12;
         
-        // Breadcrumb: Department > Functional Area
-        doc.setFontSize(8);
-        doc.setFont(undefined, 'normal');
-        doc.setTextColor(100, 100, 100);
-        doc.text(`${dept.name} > ${fa.name}`, marginLeft, yPos);
+        // Content area
+        const contentStartY = yPos;
+        let leftColX = marginLeft + 3;
+        let rightColX = marginLeft + contentWidth/2 + 5;
         
-        // Project name on right
-        doc.text(project.name, marginRight, yPos, { align: 'right' });
+        if (reportType === 'attributes' || reportType === 'both') {
+          // === COMPACT ATTRIBUTES LAYOUT ===
+          doc.setFontSize(6.5);
+          
+          // Row 1: Finishes
+          doc.setFont(undefined, 'bold');
+          doc.setTextColor(...secondaryColor);
+          doc.text('FINISHES', leftColX, yPos);
+          doc.setFont(undefined, 'normal');
+          doc.setTextColor(0, 0, 0);
+          
+          const floor = roomData.floorMaterial || roomData.finishFloor || attrs.floorMaterial || '-';
+          const wall = roomData.wallMaterial || roomData.finishWall || attrs.wallMaterial || '-';
+          const ceiling = roomData.ceilingMaterial || roomData.finishCeiling || attrs.ceilingMaterial || '-';
+          
+          yPos += 4;
+          doc.text(`Floor: ${floor.substring(0, 20)}`, leftColX, yPos);
+          doc.text(`Wall: ${wall.substring(0, 20)}`, leftColX + 45, yPos);
+          doc.text(`Ceiling: ${ceiling.substring(0, 20)}`, leftColX + 90, yPos);
+          
+          yPos += 6;
+          
+          // Row 2: HVAC
+          doc.setFont(undefined, 'bold');
+          doc.setTextColor(...secondaryColor);
+          doc.text('HVAC', leftColX, yPos);
+          doc.setFont(undefined, 'normal');
+          doc.setTextColor(0, 0, 0);
+          
+          const ach = roomData.airChangesPerHour || roomData.ach || attrs.airChangesPerHour || '-';
+          const temp = roomData.indoorTemperatureF || roomData.temperature || attrs.temperature || '-';
+          const rhMin = roomData.indoorRelativeHumidityRhMin || '';
+          const rhMax = roomData.indoorRelativeHumidityRhMax || '';
+          const humidity = rhMin || rhMax ? `${rhMin}${rhMin && rhMax ? '-' : ''}${rhMax}%` : '-';
+          const pressure = roomData.pressureRelationship || roomData.pressure || attrs.pressure || '-';
+          
+          yPos += 4;
+          doc.text(`ACH: ${ach}`, leftColX, yPos);
+          doc.text(`Temp: ${temp}${temp !== '-' ? '°F' : ''}`, leftColX + 25, yPos);
+          doc.text(`RH: ${humidity}`, leftColX + 55, yPos);
+          doc.text(`Pressure: ${pressure}`, leftColX + 85, yPos);
+          
+          yPos += 6;
+          
+          // Row 3: Medical Gases
+          doc.setFont(undefined, 'bold');
+          doc.setTextColor(...secondaryColor);
+          doc.text('MED GAS', leftColX, yPos);
+          doc.setFont(undefined, 'normal');
+          doc.setTextColor(0, 0, 0);
+          
+          const o2 = roomData.oxygenOutlets || roomData.oxygen || attrs.oxygen || '-';
+          const medAir = roomData.medicalAirOutlets || roomData.medicalAir || attrs.medicalAir || '-';
+          const vac = roomData.medicalVacuumOutlets || roomData.vacuum || attrs.vacuum || '-';
+          const n2o = roomData.nitrousOxideOutlets || roomData.nitrousOxide || attrs.nitrousOxide || '-';
+          
+          yPos += 4;
+          doc.text(`O₂: ${o2}`, leftColX, yPos);
+          doc.text(`Air: ${medAir}`, leftColX + 20, yPos);
+          doc.text(`Vac: ${vac}`, leftColX + 40, yPos);
+          doc.text(`N₂O: ${n2o}`, leftColX + 60, yPos);
+          
+          // Electrical on right side
+          const lighting = roomData.lightingLevel || roomData.lighting || attrs.lighting || '-';
+          const emergency = roomData.emergencyPower || attrs.emergencyPower || '-';
+          doc.text(`Lighting: ${lighting} fc`, leftColX + 90, yPos);
+          doc.text(`Emerg: ${emergency}`, leftColX + 130, yPos);
+          
+          yPos += 5;
+        }
         
-        return yPos + 8;
-      }
-
-      // Helper: Add page footer
-      function addPageFooter(currentPage, totalPages) {
-        doc.setFontSize(7);
-        doc.setTextColor(150, 150, 150);
-        doc.text(`Page ${currentPage} of ${totalPages}`, pageWidth / 2, 275, { align: 'center' });
-        doc.text(new Date().toLocaleDateString(), marginRight, 275, { align: 'right' });
-      }
-
-      // Helper: Draw a section box
-      function drawSectionBox(title, yPos, height) {
-        doc.setFillColor(...lightGray);
+        if (reportType === 'equipment' || reportType === 'both') {
+          // === COMPACT EQUIPMENT LIST ===
+          const equipList = room.equipment || [];
+          
+          if (equipList.length > 0) {
+            doc.setFontSize(6.5);
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(...secondaryColor);
+            doc.text(`EQUIPMENT (${equipList.length})`, leftColX, yPos);
+            yPos += 3;
+            
+            // Equipment table header
+            doc.setFillColor(...secondaryColor);
+            doc.rect(marginLeft + 2, yPos, contentWidth - 4, 4, 'F');
+            doc.setFontSize(5.5);
+            doc.setTextColor(255, 255, 255);
+            doc.text('JSN', leftColX, yPos + 2.8);
+            doc.text('Equipment Name', leftColX + 22, yPos + 2.8);
+            doc.text('Qty', leftColX + 100, yPos + 2.8);
+            doc.text('Acq/Ins', leftColX + 115, yPos + 2.8);
+            doc.text('Cost', leftColX + 145, yPos + 2.8);
+            yPos += 4.5;
+            
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(0, 0, 0);
+            
+            // Show up to 8 equipment items per room card
+            const maxEquip = 8;
+            equipList.slice(0, maxEquip).forEach((eq, idx) => {
+              if (idx % 2 === 0) {
+                doc.setFillColor(...lightGray);
+                doc.rect(marginLeft + 2, yPos - 1, contentWidth - 4, 4, 'F');
+              }
+              
+              doc.setFontSize(6);
+              doc.text(eq.jsn || '-', leftColX, yPos + 2);
+              doc.text((eq.name || '').substring(0, 40), leftColX + 22, yPos + 2);
+              doc.text(String(eq.quantity || 1), leftColX + 103, yPos + 2);
+              doc.text((eq.acqIns || '-').substring(0, 8), leftColX + 115, yPos + 2);
+              const cost = eq.cost || 0;
+              doc.text(cost > 0 ? '$' + cost.toLocaleString() : '-', leftColX + 145, yPos + 2);
+              yPos += 4;
+            });
+            
+            if (equipList.length > maxEquip) {
+              doc.setFontSize(5.5);
+              doc.setTextColor(100, 100, 100);
+              doc.text(`... +${equipList.length - maxEquip} more items`, leftColX + 22, yPos + 1);
+              yPos += 3;
+            }
+            
+            // Room equipment total
+            const roomTotal = equipList.reduce((sum, eq) => sum + (eq.cost || 0) * (eq.quantity || 1), 0);
+            if (roomTotal > 0) {
+              doc.setFontSize(6);
+              doc.setFont(undefined, 'bold');
+              doc.setTextColor(...accentColor);
+              doc.text(`Room Total: $${roomTotal.toLocaleString()}`, marginRight - 5, yPos + 1, { align: 'right' });
+              yPos += 3;
+            }
+          } else {
+            doc.setFontSize(6);
+            doc.setTextColor(150, 150, 150);
+            doc.text('No equipment specified', leftColX, yPos + 2);
+            yPos += 5;
+          }
+        }
+        
+        // Draw border around entire room card
+        const cardHeight = yPos - cardStartY + 2;
         doc.setDrawColor(...borderColor);
-        doc.roundedRect(marginLeft, yPos, contentWidth, height, 2, 2, 'FD');
+        doc.setLineWidth(0.3);
+        doc.roundedRect(marginLeft, cardStartY, contentWidth, cardHeight, 1, 1, 'S');
         
-        // Section title
-        doc.setFillColor(...secondaryColor);
-        doc.roundedRect(marginLeft, yPos, 50, 6, 2, 2, 'F');
-        doc.setFontSize(7);
-        doc.setFont(undefined, 'bold');
-        doc.setTextColor(255, 255, 255);
-        doc.text(title, marginLeft + 3, yPos + 4);
-        doc.setTextColor(0, 0, 0);
-        
-        return yPos + 10;
-      }
-
-      // Helper: Draw key-value pair
-      function drawKeyValue(key, value, x, y, keyWidth = 35) {
-        doc.setFontSize(8);
-        doc.setFont(undefined, 'bold');
-        doc.setTextColor(80, 80, 80);
-        doc.text(key + ':', x, y);
-        doc.setFont(undefined, 'normal');
-        doc.setTextColor(0, 0, 0);
-        doc.text(String(value || '-'), x + keyWidth, y);
+        yPos += roomSpacing;
       }
 
       // Collect all rooms
@@ -8864,7 +9021,7 @@
         return;
       }
 
-      // Calculate totals for summary
+      // Calculate totals
       let totalEquip = 0, totalCost = 0;
       const totalNSF = calculateProjectNSF(project);
       allRooms.forEach(({ room }) => {
@@ -8878,25 +9035,27 @@
 
       // Summary/Cover Page (if selected)
       if (includeSummary) {
-        let yPos = 50;
-        pageNum++;
+        // Header
+        doc.setFillColor(...primaryColor);
+        doc.rect(0, 0, pageWidth, 40, 'F');
         
-        // Title
-        doc.setFontSize(24);
+        doc.setFontSize(20);
         doc.setFont(undefined, 'bold');
-        doc.setTextColor(...primaryColor);
-        doc.text(project.name, pageWidth / 2, yPos, { align: 'center' });
-        yPos += 10;
+        doc.setTextColor(255, 255, 255);
+        doc.text(project.name, pageWidth / 2, 18, { align: 'center' });
         
-        doc.setFontSize(12);
+        doc.setFontSize(11);
         doc.setFont(undefined, 'normal');
-        doc.setTextColor(100, 100, 100);
-        doc.text(reportType === 'equipment' ? 'Equipment Report' : 'Room Attributes Report', pageWidth / 2, yPos, { align: 'center' });
-        yPos += 20;
+        doc.text(reportType === 'equipment' ? 'Equipment Report' : reportType === 'attributes' ? 'Room Attributes Report' : 'Complete Room Report', pageWidth / 2, 28, { align: 'center' });
+        
+        doc.setFontSize(8);
+        doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, 36, { align: 'center' });
+        
+        yPos = 55;
         
         // Summary grid
-        const boxWidth = 55;
-        const boxHeight = 25;
+        const boxWidth = 58;
+        const boxHeight = 20;
         const summaryData = [
           { label: 'Departments', value: project.departments?.length || 0, color: primaryColor },
           { label: 'Functional Areas', value: project.departments?.reduce((s, d) => s + (d.functionalAreas?.length || 0), 0) || 0, color: secondaryColor },
@@ -8909,241 +9068,94 @@
         summaryData.forEach((item, i) => {
           const col = i % 3;
           const row = Math.floor(i / 3);
-          const x = marginLeft + (col * (boxWidth + 10));
-          const y = yPos + (row * (boxHeight + 8));
+          const x = marginLeft + (col * (boxWidth + 5));
+          const y = yPos + (row * (boxHeight + 5));
           
-          doc.setFillColor(...lightGray);
+          doc.setFillColor(250, 250, 250);
           doc.setDrawColor(...item.color);
-          doc.setLineWidth(0.5);
-          doc.roundedRect(x, y, boxWidth, boxHeight, 3, 3, 'FD');
+          doc.setLineWidth(0.8);
+          doc.roundedRect(x, y, boxWidth, boxHeight, 2, 2, 'FD');
           
-          doc.setFontSize(16);
+          doc.setFontSize(14);
           doc.setFont(undefined, 'bold');
           doc.setTextColor(...item.color);
-          doc.text(String(item.value), x + boxWidth/2, y + 12, { align: 'center' });
+          doc.text(String(item.value), x + boxWidth/2, y + 10, { align: 'center' });
           
-          doc.setFontSize(8);
+          doc.setFontSize(7);
           doc.setFont(undefined, 'normal');
           doc.setTextColor(100, 100, 100);
-          doc.text(item.label, x + boxWidth/2, y + 19, { align: 'center' });
+          doc.text(item.label, x + boxWidth/2, y + 16, { align: 'center' });
         });
         
-        yPos += 75;
+        yPos += 60;
         
-        // Table of contents
-        doc.setFontSize(12);
+        // Quick room listing by department
+        doc.setFontSize(10);
         doc.setFont(undefined, 'bold');
         doc.setTextColor(...secondaryColor);
         doc.text('Room Index', marginLeft, yPos);
-        yPos += 8;
+        yPos += 6;
         
-        doc.setFontSize(8);
+        doc.setFontSize(7);
         doc.setFont(undefined, 'normal');
-        let tocPage = 2;
-        let currentDept = '';
         
+        let currentDept = '';
         allRooms.forEach(({ room, dept, fa }, idx) => {
-          if (yPos > 250) {
+          if (yPos > pageHeight - 10) {
             doc.addPage();
-            pageNum++;
-            yPos = 20;
+            yPos = 15;
           }
           
           if (dept.name !== currentDept) {
             currentDept = dept.name;
+            yPos += 2;
             doc.setFont(undefined, 'bold');
             doc.setTextColor(...primaryColor);
             doc.text(dept.name, marginLeft, yPos);
-            yPos += 5;
+            yPos += 4;
             doc.setFont(undefined, 'normal');
           }
           
-          doc.setTextColor(0, 0, 0);
-          const roomText = `${room.code || 'CUSTOM'} - ${room.name}`;
-          doc.text(roomText.substring(0, 60), marginLeft + 5, yPos);
-          doc.text(String(tocPage + idx), marginRight, yPos, { align: 'right' });
-          yPos += 4;
+          doc.setTextColor(60, 60, 60);
+          doc.text(`${room.code || 'CUSTOM'} - ${room.name.substring(0, 50)}`, marginLeft + 5, yPos);
+          doc.setTextColor(150, 150, 150);
+          doc.text(`${room.nsf || 0} NSF`, marginRight, yPos, { align: 'right' });
+          yPos += 3.5;
         });
         
         doc.addPage();
+        yPos = 15;
+        currentDeptFA = '';
       }
 
-      // Generate room sheets
+      // Generate room cards - multiple per page
       allRooms.forEach(({ room, dept, fa }, roomIdx) => {
-        if (roomIdx > 0 || includeSummary) {
-          if (roomIdx > 0) doc.addPage();
-        }
-        pageNum++;
+        const roomHeight = calculateRoomHeight(room, reportType);
         
-        let yPos = addPageHeader(room, dept, fa);
+        // Check if we need dept/FA header
+        const needsHeader = `${dept.name}|${fa.name}` !== currentDeptFA;
+        const totalNeeded = roomHeight + (needsHeader ? 12 : 0);
         
-        // Look up room data from ROOM_SIZES
-        const roomData = ROOM_SIZES.find(r => (r.id || r.roomCode) === room.code) || {};
-        const attrs = room.attributes || {};
-        
-        if (reportType === 'attributes' || reportType === 'both') {
-          // === ROOM ATTRIBUTES SECTION ===
-          
-          // Finishes Section
-          const finishHeight = 28;
-          yPos = drawSectionBox('FINISHES', yPos, finishHeight);
-          
-          const floor = roomData.floorMaterial || roomData.finishFloor || attrs.floorMaterial || '-';
-          const wall = roomData.wallMaterial || roomData.finishWall || attrs.wallMaterial || '-';
-          const ceiling = roomData.ceilingMaterial || roomData.finishCeiling || attrs.ceilingMaterial || '-';
-          const base = roomData.baseMaterial || roomData.finishBase || attrs.baseMaterial || '-';
-          
-          drawKeyValue('Floor', floor, marginLeft + 5, yPos);
-          drawKeyValue('Wall', wall, marginLeft + 95, yPos);
-          yPos += 6;
-          drawKeyValue('Ceiling', ceiling, marginLeft + 5, yPos);
-          drawKeyValue('Base', base, marginLeft + 95, yPos);
-          
-          yPos += 12;
-          
-          // HVAC & Environmental Section
-          const hvacHeight = 35;
-          yPos = drawSectionBox('HVAC & ENVIRONMENTAL', yPos, hvacHeight);
-          
-          const ach = roomData.airChangesPerHour || roomData.ach || attrs.airChangesPerHour || '-';
-          const temp = roomData.indoorTemperatureF || roomData.temperature || attrs.temperature || '-';
-          const rhMin = roomData.indoorRelativeHumidityRhMin || roomData.humidityMin || attrs.humidityMin || '';
-          const rhMax = roomData.indoorRelativeHumidityRhMax || roomData.humidityMax || attrs.humidityMax || '';
-          const humidity = rhMin || rhMax ? `${rhMin}${rhMin && rhMax ? '-' : ''}${rhMax}%` : '-';
-          const pressure = roomData.pressureRelationship || roomData.pressure || attrs.pressure || '-';
-          
-          drawKeyValue('Air Changes/Hour', ach, marginLeft + 5, yPos);
-          drawKeyValue('Temperature', temp + (temp !== '-' ? '°F' : ''), marginLeft + 95, yPos);
-          yPos += 6;
-          drawKeyValue('Humidity', humidity, marginLeft + 5, yPos);
-          drawKeyValue('Pressure', pressure, marginLeft + 95, yPos);
-          yPos += 6;
-          
-          const exhaustType = roomData.exhaustType || roomData.exhaust || attrs.exhaust || '-';
-          const noiseLevel = roomData.noiseLevel || roomData.noise || attrs.noise || '-';
-          drawKeyValue('Exhaust', exhaustType, marginLeft + 5, yPos);
-          drawKeyValue('Noise Level', noiseLevel, marginLeft + 95, yPos);
-          
-          yPos += 12;
-          
-          // Medical Gases Section
-          const gasHeight = 22;
-          yPos = drawSectionBox('MEDICAL GASES', yPos, gasHeight);
-          
-          const o2 = roomData.oxygenOutlets || roomData.oxygen || attrs.oxygen || '-';
-          const medAir = roomData.medicalAirOutlets || roomData.medicalAir || attrs.medicalAir || '-';
-          const vac = roomData.medicalVacuumOutlets || roomData.vacuum || attrs.vacuum || '-';
-          const n2o = roomData.nitrousOxideOutlets || roomData.nitrousOxide || attrs.nitrousOxide || '-';
-          
-          drawKeyValue('Oxygen (O₂)', o2, marginLeft + 5, yPos);
-          drawKeyValue('Med Air', medAir, marginLeft + 50, yPos);
-          drawKeyValue('Vacuum', vac, marginLeft + 95, yPos);
-          drawKeyValue('N₂O', n2o, marginLeft + 140, yPos);
-          
-          yPos += 15;
-          
-          // Electrical Section
-          const elecHeight = 22;
-          yPos = drawSectionBox('ELECTRICAL & LIGHTING', yPos, elecHeight);
-          
-          const lighting = roomData.lightingLevel || roomData.lighting || attrs.lighting || '-';
-          const emergency = roomData.emergencyPower || attrs.emergencyPower || '-';
-          const outlets = roomData.electricalOutlets || attrs.outlets || '-';
-          
-          drawKeyValue('Lighting (fc)', lighting, marginLeft + 5, yPos);
-          drawKeyValue('Emergency Pwr', emergency, marginLeft + 60, yPos);
-          drawKeyValue('Outlets', outlets, marginLeft + 130, yPos);
-          
-          yPos += 15;
+        // Check if room fits on current page
+        if (yPos + totalNeeded > pageHeight) {
+          doc.addPage();
+          yPos = 15;
+          currentDeptFA = ''; // Reset so header shows on new page
         }
         
-        if (reportType === 'equipment' || reportType === 'both') {
-          // === EQUIPMENT SECTION ===
-          const equipList = room.equipment || [];
-          const equipHeight = Math.min(120, 15 + (equipList.length * 6));
-          
-          yPos = drawSectionBox('EQUIPMENT', yPos, equipHeight);
-          
-          if (equipList.length === 0) {
-            doc.setFontSize(8);
-            doc.setTextColor(150, 150, 150);
-            doc.text('No equipment specified for this room', marginLeft + 5, yPos);
-            yPos += 10;
-          } else {
-            // Equipment table header
-            doc.setFillColor(...secondaryColor);
-            doc.rect(marginLeft + 3, yPos - 3, contentWidth - 6, 5, 'F');
-            doc.setFontSize(6);
-            doc.setFont(undefined, 'bold');
-            doc.setTextColor(255, 255, 255);
-            doc.text('JSN', marginLeft + 5, yPos);
-            doc.text('Equipment Name', marginLeft + 28, yPos);
-            doc.text('Qty', marginLeft + 115, yPos);
-            doc.text('Acq/Ins', marginLeft + 128, yPos);
-            doc.text('Unit Cost', marginLeft + 155, yPos);
-            yPos += 4;
-            
-            doc.setFont(undefined, 'normal');
-            doc.setTextColor(0, 0, 0);
-            
-            let equipTotal = 0;
-            equipList.forEach((eq, eqIdx) => {
-              if (yPos > pageHeight - 20) {
-                // Continue on next page
-                doc.addPage();
-                pageNum++;
-                yPos = addPageHeader(room, dept, fa);
-                yPos = drawSectionBox('EQUIPMENT (continued)', yPos, 120);
-              }
-              
-              const bgColor = eqIdx % 2 === 0 ? [255, 255, 255] : lightGray;
-              doc.setFillColor(...bgColor);
-              doc.rect(marginLeft + 3, yPos - 3, contentWidth - 6, 5, 'F');
-              
-              doc.setFontSize(7);
-              doc.text(eq.jsn || '-', marginLeft + 5, yPos);
-              doc.text((eq.name || '').substring(0, 45), marginLeft + 28, yPos);
-              doc.text(String(eq.quantity || 1), marginLeft + 118, yPos);
-              doc.text(eq.acqIns || '-', marginLeft + 128, yPos);
-              const cost = eq.cost || 0;
-              doc.text(cost > 0 ? '$' + cost.toLocaleString() : '-', marginLeft + 155, yPos);
-              
-              equipTotal += cost * (eq.quantity || 1);
-              yPos += 5;
-            });
-            
-            // Equipment total
-            if (equipTotal > 0) {
-              yPos += 2;
-              doc.setFillColor(...accentColor);
-              doc.rect(marginLeft + 120, yPos - 3, contentWidth - 123, 6, 'F');
-              doc.setFontSize(8);
-              doc.setFont(undefined, 'bold');
-              doc.setTextColor(255, 255, 255);
-              doc.text(`Room Total: $${equipTotal.toLocaleString()}`, marginLeft + 155, yPos + 1);
-            }
-          }
-        }
-        
-        // Notes section if room has custom attributes
-        if (room.notes || room.specialRequirements) {
-          yPos += 15;
-          yPos = drawSectionBox('NOTES', yPos, 25);
-          doc.setFontSize(8);
-          doc.setTextColor(0, 0, 0);
-          const notes = room.notes || room.specialRequirements || '';
-          const lines = doc.splitTextToSize(notes, contentWidth - 10);
-          lines.slice(0, 3).forEach((line, i) => {
-            doc.text(line, marginLeft + 5, yPos + (i * 5));
-          });
-        }
+        drawDeptFAHeader(dept, fa);
+        drawRoomCard(room, dept, fa, reportType);
       });
 
-      // Add page footers to all pages
+      // Add page footers
       const totalPages = doc.internal.getNumberOfPages();
       for (let i = 1; i <= totalPages; i++) {
         doc.setPage(i);
-        addPageFooter(i, totalPages);
+        doc.setFontSize(7);
+        doc.setTextColor(150, 150, 150);
+        doc.text(`${project.name}`, marginLeft, 273);
+        doc.text(`Page ${i} of ${totalPages}`, pageWidth / 2, 273, { align: 'center' });
+        doc.text(new Date().toLocaleDateString(), marginRight, 273, { align: 'right' });
       }
 
       // Save the PDF
