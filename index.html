@@ -12237,6 +12237,229 @@
     // Initialize Revit connection on page load
     setTimeout(initRevitConnection, 1000);
 
+    // Compare project with Revit model
+    async function compareWithRevit() {
+      if (!revitConnector || !revitConnector.connected) {
+        alert('Not connected to Revit. Please start Live Sync in the pyRevit extension first.');
+        return;
+      }
+      
+      if (!currentProject || !currentProject.departments) {
+        alert('Please open a project first.');
+        return;
+      }
+      
+      try {
+        // Show loading
+        const statusDiv = document.createElement('div');
+        statusDiv.className = 'toast loading';
+        statusDiv.innerHTML = '🔄 Comparing with Revit model...';
+        document.body.appendChild(statusDiv);
+        
+        const comparison = await revitConnector.compareWithArrangeProject(currentProject);
+        
+        // Remove loading toast
+        statusDiv.remove();
+        
+        // Show results modal
+        showRevitComparisonModal(comparison);
+      } catch (error) {
+        alert('Error comparing with Revit: ' + error.message);
+      }
+    }
+
+    function showRevitComparisonModal(comparison) {
+      // Create or update modal
+      let modal = document.getElementById('revit-comparison-modal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'revit-comparison-modal';
+        modal.className = 'modal';
+        document.body.appendChild(modal);
+      }
+      
+      const matchedCount = comparison.matched.length;
+      const mismatchCount = comparison.mismatches.length;
+      const revitOnlyCount = comparison.inRevitOnly.length;
+      const arrangeOnlyCount = comparison.inArrangeOnly.length;
+      
+      modal.innerHTML = `
+        <div class="modal-content" style="max-width: 900px; max-height: 80vh; overflow: auto;">
+          <div class="modal-header">
+            <h2>🔍 Revit Model Comparison</h2>
+            <button class="close-btn" onclick="document.getElementById('revit-comparison-modal').classList.remove('active')">×</button>
+          </div>
+          <div class="modal-body">
+            <div class="comparison-summary" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+              <div style="background: #51cf66; color: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; font-weight: bold;">${matchedCount}</div>
+                <div>Matched</div>
+              </div>
+              <div style="background: ${mismatchCount > 0 ? '#ffd93d' : '#ccc'}; color: ${mismatchCount > 0 ? '#333' : '#666'}; padding: 1rem; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; font-weight: bold;">${mismatchCount}</div>
+                <div>Mismatches</div>
+              </div>
+              <div style="background: ${revitOnlyCount > 0 ? '#74b9ff' : '#ccc'}; color: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; font-weight: bold;">${revitOnlyCount}</div>
+                <div>Revit Only</div>
+              </div>
+              <div style="background: ${arrangeOnlyCount > 0 ? '#ff6b6b' : '#ccc'}; color: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; font-weight: bold;">${arrangeOnlyCount}</div>
+                <div>Arrange Only</div>
+              </div>
+            </div>
+            
+            ${mismatchCount > 0 ? `
+            <div class="comparison-section" style="margin-bottom: 1rem;">
+              <h3 style="color: #ffd93d; border-bottom: 2px solid #ffd93d; padding-bottom: 0.5rem;">⚠️ Mismatches (${mismatchCount})</h3>
+              <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                <thead>
+                  <tr style="background: rgba(255,217,61,0.2);">
+                    <th style="padding: 8px; text-align: left; border-bottom: 1px solid #444;">Room</th>
+                    <th style="padding: 8px; text-align: left; border-bottom: 1px solid #444;">Code</th>
+                    <th style="padding: 8px; text-align: left; border-bottom: 1px solid #444;">Issues</th>
+                    <th style="padding: 8px; text-align: center; border-bottom: 1px solid #444;">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${comparison.mismatches.map(m => `
+                    <tr>
+                      <td style="padding: 8px; border-bottom: 1px solid #333;">${m.revit.number}</td>
+                      <td style="padding: 8px; border-bottom: 1px solid #333;">${m.arrange.code || '-'}</td>
+                      <td style="padding: 8px; border-bottom: 1px solid #333;">${m.issues.join('<br>')}</td>
+                      <td style="padding: 8px; border-bottom: 1px solid #333; text-align: center;">
+                        <button onclick="revitConnector.selectElements([${m.revit.id}])" style="padding: 4px 8px; cursor: pointer;">Select</button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+            ` : ''}
+            
+            ${arrangeOnlyCount > 0 ? `
+            <div class="comparison-section" style="margin-bottom: 1rem;">
+              <h3 style="color: #ff6b6b; border-bottom: 2px solid #ff6b6b; padding-bottom: 0.5rem;">🔴 In Arrange Only (${arrangeOnlyCount})</h3>
+              <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem;">These rooms exist in your Arrange project but were not found in Revit:</p>
+              <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                ${comparison.inArrangeOnly.slice(0, 20).map(r => `
+                  <span style="background: rgba(255,107,107,0.2); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;">
+                    ${r.code || r.roomNumber || 'Unknown'} - ${(r.name || '').substring(0, 25)}
+                  </span>
+                `).join('')}
+                ${arrangeOnlyCount > 20 ? `<span style="color: var(--muted);">...and ${arrangeOnlyCount - 20} more</span>` : ''}
+              </div>
+            </div>
+            ` : ''}
+            
+            ${revitOnlyCount > 0 ? `
+            <div class="comparison-section" style="margin-bottom: 1rem;">
+              <h3 style="color: #74b9ff; border-bottom: 2px solid #74b9ff; padding-bottom: 0.5rem;">🔵 In Revit Only (${revitOnlyCount})</h3>
+              <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem;">These rooms exist in Revit but not in your Arrange project:</p>
+              <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                ${comparison.inRevitOnly.slice(0, 20).map(r => `
+                  <span onclick="revitConnector.selectElements([${r.id}])" style="background: rgba(116,185,255,0.2); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; cursor: pointer;">
+                    ${r.number} - ${(r.name || '').substring(0, 25)}
+                  </span>
+                `).join('')}
+                ${revitOnlyCount > 20 ? `<span style="color: var(--muted);">...and ${revitOnlyCount - 20} more</span>` : ''}
+              </div>
+            </div>
+            ` : ''}
+            
+            ${matchedCount > 0 && mismatchCount === 0 && arrangeOnlyCount === 0 ? `
+            <div style="text-align: center; padding: 2rem; background: rgba(81,207,102,0.1); border-radius: 8px;">
+              <span style="font-size: 3rem;">✅</span>
+              <h3 style="color: #51cf66; margin-top: 1rem;">All rooms matched!</h3>
+              <p style="color: var(--muted);">Your Arrange project is in sync with the Revit model.</p>
+            </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+      
+      modal.classList.add('active');
+    }
+
+    // Add click handler to Revit status for context menu
+    document.getElementById('revit-status')?.addEventListener('contextmenu', async (e) => {
+      e.preventDefault();
+      if (revitConnector && revitConnector.connected) {
+        // Show options menu
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.cssText = 'position: fixed; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+        menu.style.left = e.clientX + 'px';
+        menu.style.top = e.clientY + 'px';
+        menu.innerHTML = `
+          <button style="display: block; width: 100%; padding: 8px 12px; border: none; background: none; color: var(--text); cursor: pointer; text-align: left;" onclick="compareWithRevit(); this.parentElement.remove();">🔍 Compare with Revit</button>
+          <button style="display: block; width: 100%; padding: 8px 12px; border: none; background: none; color: var(--text); cursor: pointer; text-align: left;" onclick="validateRevitRooms(); this.parentElement.remove();">✅ Validate Revit Rooms</button>
+          <button style="display: block; width: 100%; padding: 8px 12px; border: none; background: none; color: var(--text); cursor: pointer; text-align: left;" onclick="revitConnector.disconnect(); this.parentElement.remove();">❌ Disconnect</button>
+        `;
+        document.body.appendChild(menu);
+        
+        // Remove on click outside
+        setTimeout(() => {
+          document.addEventListener('click', function removeMenu() {
+            menu.remove();
+            document.removeEventListener('click', removeMenu);
+          });
+        }, 100);
+      }
+    });
+
+    // Validate Revit rooms
+    async function validateRevitRooms() {
+      if (!revitConnector || !revitConnector.connected) {
+        alert('Not connected to Revit.');
+        return;
+      }
+      
+      try {
+        const result = await revitConnector.validateRooms();
+        
+        let html = `
+          <div class="modal-content" style="max-width: 800px; max-height: 80vh; overflow: auto;">
+            <div class="modal-header">
+              <h2>✅ Revit Room Validation</h2>
+              <button class="close-btn" onclick="document.getElementById('revit-validation-modal').classList.remove('active')">×</button>
+            </div>
+            <div class="modal-body">
+              <p>Validated <strong>${result.total_rooms}</strong> rooms: <span style="color: #ff6b6b;">${result.total_issues} issues</span>, <span style="color: #ffd93d;">${result.total_warnings} warnings</span></p>
+              
+              ${result.results.filter(r => r.issues.length > 0 || r.warnings.length > 0).map(r => `
+                <div style="border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                  <h4 style="margin-bottom: 0.5rem;">Room ${r.number} - ${r.name} ${r.code ? `(${r.code})` : ''}</h4>
+                  ${r.issues.map(i => `<div style="color: #ff6b6b;">❌ ${i}</div>`).join('')}
+                  ${r.warnings.map(w => `<div style="color: #ffd93d;">⚠️ ${w}</div>`).join('')}
+                  <button onclick="revitConnector.selectElements([${r.id}])" style="margin-top: 0.5rem; padding: 4px 8px; cursor: pointer;">Select in Revit</button>
+                </div>
+              `).join('')}
+              
+              ${result.total_issues === 0 && result.total_warnings === 0 ? `
+                <div style="text-align: center; padding: 2rem;">
+                  <span style="font-size: 3rem;">🎉</span>
+                  <h3 style="color: #51cf66;">All rooms pass validation!</h3>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `;
+        
+        let modal = document.getElementById('revit-validation-modal');
+        if (!modal) {
+          modal = document.createElement('div');
+          modal.id = 'revit-validation-modal';
+          modal.className = 'modal';
+          document.body.appendChild(modal);
+        }
+        modal.innerHTML = html;
+        modal.classList.add('active');
+      } catch (error) {
+        alert('Error validating rooms: ' + error.message);
+      }
+    }
+
     // -----------------------------
     // INITIALIZE
     // -----------------------------
