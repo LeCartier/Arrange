@@ -8588,21 +8588,27 @@
                   // Room header row (code - name)
                   if (tsvType === 'simple') {
                     // Simple: Room row then equipment rows with 5 columns
-                    rows.push([`${room.code} - ${room.name}`]);
+                    const roomTitle = room.roomNumber 
+                      ? `${room.code} - ${room.roomNumber} - ${room.name}`
+                      : `${room.code} - ${room.name}`;
+                    rows.push([roomTitle]);
                     // Column headers under each room
                     rows.push(['JSN', 'Name', 'Qty', 'Acquisition', 'Description']);
                   } else {
                     // Expanded: Room row includes room details
                     const roomData = ROOM_SIZES.find(r => r.roomCode === room.code || r.id === room.code);
+                    const roomTitle = room.roomNumber 
+                      ? `${room.code} - ${room.roomNumber} - ${room.name}`
+                      : `${room.code} - ${room.name}`;
                     rows.push([
-                      `${room.code} - ${room.name}`,
+                      roomTitle,
                       `NSF: ${room.nsf || roomData?.nsf || 0}`
                     ]);
-                    // Column headers under each room
+                    // Column headers under each room - include extended attributes
                     rows.push([
-                      'JSN', 'Name', 'Qty', 'Acquisition', 'Description',
-                      'Cost', 'Width', 'Depth', 'Height', 'Weight',
-                      'Voltage', 'Amperage', 'BTU Output', 'Plumbing', 'Data', 'Special Requirements'
+                      'JSN', 'Name', 'Qty', 'Acquisition', 'Description', 'Unit Cost',
+                      'Width (in)', 'Depth (in)', 'Height (in)', 'Weight (lbs)',
+                      'Volts', 'Amps', 'Watts', 'Phase', 'BTU/Hour'
                     ]);
                   }
                   
@@ -8619,24 +8625,34 @@
                           equip.description || ''
                         ]);
                       } else {
-                        // Expanded: All possible attributes
+                        // Expanded: Look up full equipment attributes from EQUIPMENT_ATTRIBUTES
+                        const attrs = (typeof EQUIPMENT_ATTRIBUTES !== 'undefined' && equip.jsn) 
+                          ? EQUIPMENT_ATTRIBUTES[equip.jsn] 
+                          : null;
+                        
+                        // Get power info (use maxPower if available)
+                        const power = attrs?.maxPower?.[0] || {};
+                        // Get size info
+                        const size = attrs?.maxSize || {};
+                        // Get BTU info
+                        const hertz = attrs?.maxHertz || {};
+                        
                         rows.push([
                           equip.jsn || '',
                           equip.name || '',
                           equip.quantity || 1,
                           equip.acquisitionCode || equip.acqIns || '',
                           equip.description || '',
-                          equip.cost || 0,
-                          equip.width || '',
-                          equip.depth || '',
-                          equip.height || '',
-                          equip.weight || '',
-                          equip.voltage || '',
-                          equip.amperage || '',
-                          equip.btuOutput || '',
-                          equip.plumbingRequired || '',
-                          equip.dataRequired || '',
-                          equip.specialRequirements || ''
+                          attrs?.meanPrice || '',
+                          size.width?.american || '',
+                          size.depth?.american || '',
+                          size.height?.american || '',
+                          size.weight?.american || '',
+                          power.volts || '',
+                          power.amps || '',
+                          power.watts || '',
+                          power.phase || '',
+                          hertz.btuPerHour || ''
                         ]);
                       }
                     });
@@ -8789,17 +8805,13 @@
         doc.setTextColor(255, 255, 255);
         doc.text(room.code || 'CUSTOM', marginLeft + 16, yPos + 6, { align: 'center' });
         
-        // Room name
+        // Room name with room number if present
         doc.setFontSize(9);
         doc.setTextColor(0, 0, 0);
-        doc.text(room.name, marginLeft + 33, yPos + 6);
-        
-        // Room number if present
-        if (room.roomNumber) {
-          doc.setFontSize(7);
-          doc.setTextColor(100, 100, 100);
-          doc.text(`#${room.roomNumber}`, marginLeft + 120, yPos + 6);
-        }
+        const roomDisplayName = room.roomNumber 
+          ? `${room.roomNumber} - ${room.name}`
+          : room.name;
+        doc.text(roomDisplayName, marginLeft + 33, yPos + 6);
         
         // NSF
         doc.setFontSize(8);
@@ -9079,7 +9091,10 @@
           }
           
           doc.setTextColor(60, 60, 60);
-          doc.text(`${room.code || 'CUSTOM'} - ${room.name.substring(0, 50)}`, marginLeft + 5, yPos);
+          const roomIndexName = room.roomNumber 
+            ? `${room.code || 'CUSTOM'} - ${room.roomNumber} - ${room.name.substring(0, 40)}`
+            : `${room.code || 'CUSTOM'} - ${room.name.substring(0, 50)}`;
+          doc.text(roomIndexName, marginLeft + 5, yPos);
           doc.setTextColor(150, 150, 150);
           doc.text(`${room.nsf || 0} NSF`, marginRight, yPos, { align: 'right' });
           yPos += 3.5;
