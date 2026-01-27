@@ -1686,109 +1686,6 @@
 277	10	Building Support Area	XFFA1	XFFA1
 277	10	Building Support Area	XFP01	XFP01
 277	10	Building Support Area	SUPPORT AREA	EQUIP_FA
-278	1	R&D Reception Area	RECP1	RECP1
-278	1	R&D Reception Area	SB003	WRC01
-278	1	R&D Reception Area	TLTU1	TLTU1
-278	2	BLR&D Service Research Area	CL501	LBEM2
-278	2	BLR&D Service Research Area	CL521	LBEM3
-278	2	BLR&D Service Research Area	CL631	LBTS1
-278	2	BLR&D Service Research Area	LBRB1	LBRB1
-278	2	BLR&D Service Research Area	LBUL1	LBUL1
-278	2	BLR&D Service Research Area	SRF01	SRF01
-278	2	BLR&D Service Research Area	SRL01	SRL01
-278	2	BLR&D Service Research Area	SRR01	SRR01
-278	2	BLR&D Service Research Area	SRSE1	SRSE1
-278	2	BLR&D Service Research Area	SV648	SRS01
-278	2	BLR&D Service Research Area	XMRE1	XMRE1
-278	2	BLR&D Service Research Area	XXYYC	XXYYC
-278	3	BLR&D Service Support Area	CL631	LBTS1
-278	3	BLR&D Service Support Area	CSSS2	CSSS2
-278	3	BLR&D Service Support Area	LBRC1	LBRC1
-278	3	BLR&D Service Support Area	SHWR1	SHWR1
-278	3	BLR&D Service Support Area	SS241	LR002
-278	3	BLR&D Service Support Area	TLTU1	TLTU1
-278	3	BLR&D Service Support Area	XXYYC	XXYYC
-278	4	BLR&D Service Staff Area	LBGW1	LBGW1
-278	4	BLR&D Service Staff Area	SB287	SRHM1
-278	4	BLR&D Service Staff Area	SRGC1	SRGC1
-278	4	BLR&D Service Staff Area	SRGC2	SRGC2
-278	4	BLR&D Service Staff Area	SV648	SRS01
-278	5	RR&D Service Staff Area	OPT16	CRA02
-278	5	RR&D Service Staff Area	SHWR1	SHWR1
-278	5	RR&D Service Staff Area	SRE01	SRE01
-278	5	RR&D Service Staff Area	SS205	OFA09
-278	5	RR&D Service Staff Area	SS218	OFA07
-278	5	RR&D Service Staff Area	SS262	SL001
-278	5	RR&D Service Staff Area	SS282	LR001
-278	5	RR&D Service Staff Area	TLTU1	TLTU1
-278	5	RR&D Service Staff Area	BLR&D SERVICE STAFF AREA	EQUIP_FA
-278	5	RR&D Service Staff Area	CSR&D SERVICE STAFF AREA	EQUIP_FA
-278	5	RR&D Service Staff Area	HSR&D SERVICE STAFF AREA	EQUIP_FA
-278	5	RR&D Service Staff Area	R&D NON-PROFIT (N-P) STAFF AREA	EQUIP_FA
-278	5	RR&D Service Staff Area	R&D SUPPORT AREA	EQUIP_FA
-278	5	RR&D Service Staff Area	RR&D SERVICE STAFF AREA	EQUIP_FA
-278	5	RR&D Service Staff Area	VMU STAFF AREA	EQUIP_FA
-278	6	CSR&D Service Staff Area	OPT16	CRA02
-278	6	CSR&D Service Staff Area	SC399	CMP02
-278	6	CSR&D Service Staff Area	SS212	WRCH1
-278	6	CSR&D Service Staff Area	SS218	OFA07
-278	7	HSR&D Service Staff Area	RECP1	RECP1
-278	7	HSR&D Service Staff Area	SB003	WRC01
-278	7	HSR&D Service Staff Area	TLTU1	TLTU1
-278	8	VMU Treatment Area	CL631	LBTS1
-278	8	VMU Treatment Area	CPR22	APMS1
-278	8	VMU Treatment Area	LBRB1	LBRB1
-278	8	VMU Treatment Area	MRS01	MRS01
-278	8	VMU Treatment Area	SC174	PAIA1
-278	8	VMU Treatment Area	SC399	CMP02
-278	8	VMU Treatment Area	SRSE1	SRSE1
-278	8	VMU Treatment Area	SS212	WRCH1
-278	8	VMU Treatment Area	SV648	SRS01
-278	9	VMU Surgery Area	OPT16	CRA02
-278	9	VMU Surgery Area	SHWR1	SHWR1
-278	9	VMU Surgery Area	SRE01	SRE01
-278	9	VMU Surgery Area	SS205	OFA09
-278	9	VMU Surgery Area	SS218	OFA07
-278	9	VMU Surgery Area	SS262	SL001
-278	9	VMU Surgery Area	SS282	LR001
-278	9	VMU Surgery Area	SV549	JANC1
-278	9	VMU Surgery Area	SV648	SRS01
-278	9	VMU Surgery Area	TLTU1	TLTU1
-278	10	VMU Imaging / Behavioral Study Area	SS218	OFA07
-278	11	VMU Animal Area	VEX01	VEX01
-278	11	VMU Animal Area	VHAU1	VHAU1
-278	11	VMU Animal Area	VLB01	VLB01
-278	12	VMU Cagewash Area	ANCW1	ANCW1
-278	12	VMU Cagewash Area	VRRP1	VRRP1
-278	12	VMU Cagewash Area	VSO01	VSO01
-278	13	VMU Support Area	SB287	SRHM1
-278	13	VMU Support Area	VLAH1	VLAH1
-278	13	VMU Support Area	VSO01	VSO01
-278	13	VMU Support Area	VXER1	VXER1
-278	14	VMU Staff Area	CSSS2	CSSS2
-278	14	VMU Staff Area	NBCD2	NBCD2
-278	14	VMU Staff Area	TLTU1	TLTU1
-278	14	VMU Staff Area	VLAH1	VLAH1
-278	14	VMU Staff Area	VLB01	VLB01
-278	14	VMU Staff Area	XXYYC	XXYYC
-278	15	R&D Non-Profit (N-P) Staff Area	SHWR1	SHWR1
-278	15	R&D Non-Profit (N-P) Staff Area	TLTU1	TLTU1
-278	15	R&D Non-Profit (N-P) Staff Area	VLAH1	VLAH1
-278	15	R&D Non-Profit (N-P) Staff Area	VLB01	VLB01
-278	15	R&D Non-Profit (N-P) Staff Area	XXYYC	XXYYC
-278	16	R&D Staff And Administrative Area	VLAH1	VLAH1
-278	16	R&D Staff And Administrative Area	VLB01	VLB01
-278	17	R&D Support Area	SB684	DOCK1
-278	17	R&D Support Area	SRF01	SRF01
-278	17	R&D Support Area	SRR01	SRR01
-278	17	R&D Support Area	SRSE1	SRSE1
-278	17	R&D Support Area	SSC01	SSC01
-278	17	R&D Support Area	SV648	SRS01
-278	17	R&D Support Area	VCWA1	VCWA1
-278	17	R&D Support Area	VEX01	VEX01
-278	17	R&D Support Area	VFP01	VFP01
-278	17	R&D Support Area	XXYYC	XXYYC
-278	17	R&D Support Area	VMU SUPPORT AREA	EQUIP_FA
 279	1	Duty Area	CROP1	CROP1
 279	1	Duty Area	SC648	CRA01
 279	1	Duty Area	SV648	SRS01
@@ -1969,20 +1866,6 @@
 290	3	Volunteer Area	RECEPTION AREA	EQUIP_FA
 290	4	Support Area	SV648	SRS01
 290	4	Support Area	SUPPORT AREA	EQUIP_FA
-295	1	Imaging & Scanning Room Calculation	BONE DENSITOMETRY AREA	EQUIP_FA
-295	2	Imaging Services Reception Area	BREAST IMAGING AREA	EQUIP_FA
-295	3	General Radiology Area	COMPUTED TOMOGRAPHY (CT) AREA	EQUIP_FA
-295	4	Breast Imaging Area	GENERAL RADIOLOGY AREA	EQUIP_FA
-295	5	Ultrasound Area	IMAGING SERVICES ACADEMIC EDUCATION AREA	EQUIP_FA
-295	6	Bone Densitometry Area	IMAGING SERVICES RECEPTION AREA	EQUIP_FA
-295	7	Computed Tomography (CT) Area	IMAGING SERVICES STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
-295	8	Magnetic Resonance Imaging (MRI) Area	IMAGING SERVICES SUPPORT AREA	EQUIP_FA
-295	9	Nuclear Medicine (NM) Area	MAGNETIC RESONANCE IMAGING (MRI) AREA	EQUIP_FA
-295	10	Positron Emission Tomography (PET) Computed Tomography (CT) -	NUCLEAR MEDICINE (NM) AREA	EQUIP_FA
-295	11	Positron Emission Tomography (PET) Magnetic Resonance Imaging	POSITRON EMISSION TOMOGRAPHY (PET) COMPUTED TOMOGRAPHY (CT) - PET/CT AREA	EQUIP_FA
-295	12	Imaging Services Support Area	POSITRON EMISSION TOMOGRAPHY (PET) MAGNETIC RESONANCE IMAGING (MRI) - PET/MRI AREA	EQUIP_FA
-295	13	Imaging Services Staff And Administrative Area	ULTRASOUND AREA	EQUIP_FA
-295	14	Imaging Services Academic Education Area	IMAGING SERVICES ACADEMIC EDUCATION AREA	EQUIP_FA
 308	1	Reception Area	RECP1	RECP1
 308	1	Reception Area	SB003	WRC01
 308	1	Reception Area	SC170	CLSC1
@@ -2985,3 +2868,113 @@
 300	3	Staff and Administrative Area	SS282	LR001
 300	3	Staff and Administrative Area	TLTU1	TLTU1
 300	4	Education Area	OPT16	CRA02
+278	Research and Development (R&D)	FA1 - R&D Reception Area	SS222	R&D Waiting
+278	Research and Development (R&D)	FA1 - R&D Reception Area	SB091	R&D Contact / Information Station
+278	Research and Development (R&D)	FA1 - R&D Reception Area	SB191	R&D Visitor Universal Toilet
+278	Research and Development (R&D)	FA1 - R&D Reception Area	SB851	R&D Security Station
+278	Research and Development (R&D)	FA2 - BLR&D Service Research Area	SC701	BLR&D Lab Access / Protocol Room
+278	Research and Development (R&D)	FA2 - BLR&D Service Research Area	SC702	BLR&D Bench Unit
+278	Research and Development (R&D)	FA2 - BLR&D Service Research Area	SC703	BLR&D Ghost Corridor
+278	Research and Development (R&D)	FA2 - BLR&D Service Research Area	SC704	BLR&D Bench Support
+278	Research and Development (R&D)	FA3 - BLR&D Service Support Area	SC711	BLR&D Core Room
+278	Research and Development (R&D)	FA3 - BLR&D Service Support Area	SC712	BLR&D Microscopy Room
+278	Research and Development (R&D)	FA3 - BLR&D Service Support Area	SC713	BLR&D Glassware Washing / Sterilization Room
+278	Research and Development (R&D)	FA3 - BLR&D Service Support Area	SC714	BLR&D Walk-in Refrigerator / Cold Room
+278	Research and Development (R&D)	FA3 - BLR&D Service Support Area	SC715	BLR&D Research Informatics Room
+278	Research and Development (R&D)	FA3 - BLR&D Service Support Area	SC716	BLR&D General Storage Room
+278	Research and Development (R&D)	FA3 - BLR&D Service Support Area	SC717	BLR&D Equipment Room
+278	Research and Development (R&D)	FA3 - BLR&D Service Support Area	SC718	BLR&D Service Core
+278	Research and Development (R&D)	FA3 - BLR&D Service Support Area	SC719	BLR&D Darkroom
+278	Research and Development (R&D)	FA3 - BLR&D Service Support Area	SC721	BLR&D Tissue Culture Room
+278	Research and Development (R&D)	FA3 - BLR&D Service Support Area	SC722	BLR&D Isotope Room
+278	Research and Development (R&D)	FA3 - BLR&D Service Support Area	SC723	BLR&D Isotope Work and Storage Room
+278	Research and Development (R&D)	FA3 - BLR&D Service Support Area	SC724	BLR&D Flow Cytometry
+278	Research and Development (R&D)	FA3 - BLR&D Service Support Area	SC725	BLR&D Fume Hood Room
+278	Research and Development (R&D)	FA3 - BLR&D Service Support Area	SB244	BLR&D Housekeeping Aides Closet
+278	Research and Development (R&D)	FA4 - BLR&D Service Staff Area	SS204	BLR&D PI Office
+278	Research and Development (R&D)	FA4 - BLR&D Service Staff Area	SS218	BLR&D Research Associate Workstation
+278	Research and Development (R&D)	FA4 - BLR&D Service Staff Area	SS212	BLR&D Collaboration Station
+278	Research and Development (R&D)	FA4 - BLR&D Service Staff Area	SS285	BLR&D Huddle Room
+278	Research and Development (R&D)	FA5 - RR&D Service Staff Area	SS204	RR&D PI Office
+278	Research and Development (R&D)	FA5 - RR&D Service Staff Area	SS218	RR&D Research Associate Workstation
+278	Research and Development (R&D)	FA6 - CSR&D Service Staff Area	SS204	CSR&D PI Office
+278	Research and Development (R&D)	FA6 - CSR&D Service Staff Area	SS218	CSR&D Research Associate Workstation
+278	Research and Development (R&D)	FA7 - HSR&D Service Staff Area	SS204	HSR&D PI Office
+278	Research and Development (R&D)	FA7 - HSR&D Service Staff Area	SS218	HSR&D Research Associate Workstation
+278	Research and Development (R&D)	FA8 - VMU Treatment Area	SC751	VMU Treatment / Procedure Room
+278	Research and Development (R&D)	FA9 - VMU Surgery Area	SC761	VMU Surgery Room
+278	Research and Development (R&D)	FA10 - VMU Imaging / Behavioral Study Area	SC771	VMU Imaging Room
+278	Research and Development (R&D)	FA11 - VMU Animal Area	SC781	VMU Small Animal Holding Room
+278	Research and Development (R&D)	FA11 - VMU Animal Area	SC782	VMU Large Animal Holding Room
+278	Research and Development (R&D)	FA12 - VMU Cagewash Area	SC791	VMU Cage Wash Room
+278	Research and Development (R&D)	FA13 - VMU Support Area	SC801	VMU Food Storage Room
+278	Research and Development (R&D)	FA14 - VMU Staff Area	SS204	VMU Veterinarian Office
+278	Research and Development (R&D)	FA15 - R&D Non-Profit Staff Area	SS204	N-P Director Office
+278	Research and Development (R&D)	FA16 - R&D Staff and Administrative Area	SS201	R&D Associate Chief of Staff Office
+278	Research and Development (R&D)	FA16 - R&D Staff and Administrative Area	SS204	R&D Administrative Officer Office
+278	Research and Development (R&D)	FA16 - R&D Staff and Administrative Area	SS287	R&D Conference Room
+278	Research and Development (R&D)	FA17 - R&D Support Area	SS241	R&D Staff Lounge / Break Room
+278	Research and Development (R&D)	FA17 - R&D Support Area	SB003	R&D Multiuse Toilet Room
+278	Research and Development (R&D)	FA17 - R&D Support Area	SB244	R&D Housekeeping Aides Closet
+295	Imaging Service	FA1 - Imaging & Scanning Room Calculation	CALC	Room Calculation
+295	Imaging Service	FA2 - Imaging Services Reception Area	SS222	Imaging Services Waiting
+295	Imaging Service	FA2 - Imaging Services Reception Area	SS223	Imaging Services Sub-Waiting
+295	Imaging Service	FA2 - Imaging Services Reception Area	SB091	Imaging Services Reception / Check-in
+295	Imaging Service	FA2 - Imaging Services Reception Area	VB241	Patient Changing Room
+295	Imaging Service	FA2 - Imaging Services Reception Area	SB191	Imaging Services Patient Toilet
+295	Imaging Service	FA3 - General Radiology Area	CG011	Class 1 General Radiology Room
+295	Imaging Service	FA3 - General Radiology Area	CG012	Class 2 General Radiology Room
+295	Imaging Service	FA3 - General Radiology Area	CG021	Chest Imaging Room
+295	Imaging Service	FA3 - General Radiology Area	CG031	Class 1 Radiology / Fluoroscopy (R/F) Room
+295	Imaging Service	FA3 - General Radiology Area	CG032	Class 2 Radiology / Fluoroscopy (R/F) Room
+295	Imaging Service	FA3 - General Radiology Area	CG041	Class 2 Multipurpose R/F Room
+295	Imaging Service	FA3 - General Radiology Area	CS201	General Radiology Control Room
+295	Imaging Service	FA4 - Breast Imaging Area	CG051	Class 2 Prone Breast Imaging Room
+295	Imaging Service	FA4 - Breast Imaging Area	CG052	Standing Breast Imaging Room
+295	Imaging Service	FA4 - Breast Imaging Area	CG053	ABUS Scanning Room
+295	Imaging Service	FA4 - Breast Imaging Area	SS222	Breast Imaging Sub-Waiting
+295	Imaging Service	FA5 - Ultrasound Area	CG061	Class 1 Ultrasound Room
+295	Imaging Service	FA5 - Ultrasound Area	CG062	Class 2 Ultrasound Room
+295	Imaging Service	FA6 - Bone Densitometry Area	CG071	Bone Densitometry Room
+295	Imaging Service	FA7 - Computed Tomography (CT) Area	CG081	Class 1 CT Scanning Room
+295	Imaging Service	FA7 - Computed Tomography (CT) Area	CG082	Class 2 CT Scanning Room
+295	Imaging Service	FA7 - Computed Tomography (CT) Area	CS202	CT Control Room
+295	Imaging Service	FA7 - Computed Tomography (CT) Area	CS203	CT Equipment Room
+295	Imaging Service	FA8 - Magnetic Resonance Imaging (MRI) Area	CG091	Class 1 MRI Scanning Room
+295	Imaging Service	FA8 - Magnetic Resonance Imaging (MRI) Area	CG092	Class 2 MRI Scanning Room
+295	Imaging Service	FA8 - Magnetic Resonance Imaging (MRI) Area	CS204	MRI Control Room
+295	Imaging Service	FA8 - Magnetic Resonance Imaging (MRI) Area	CS205	MRI Equipment Room
+295	Imaging Service	FA8 - Magnetic Resonance Imaging (MRI) Area	CS206	MRI Patient Prep / Recovery
+295	Imaging Service	FA9 - Nuclear Medicine (NM) Area	CG101	Nuclear Medicine Scanning Room
+295	Imaging Service	FA9 - Nuclear Medicine (NM) Area	CG102	Class 1 SPECT/CT Scanning Room
+295	Imaging Service	FA9 - Nuclear Medicine (NM) Area	CG103	Class 2 SPECT/CT Scanning Room
+295	Imaging Service	FA9 - Nuclear Medicine (NM) Area	CG104	Thyroid Probe Scanning Room
+295	Imaging Service	FA9 - Nuclear Medicine (NM) Area	CS211	Hot Lab / Radiopharmacy
+295	Imaging Service	FA9 - Nuclear Medicine (NM) Area	SS222	Low-energy Isotope Hot Patient Waiting
+295	Imaging Service	FA10 - PET/CT Area	CG111	Class 1 PET/CT Scanning Room
+295	Imaging Service	FA10 - PET/CT Area	CG112	Class 2 PET/CT Scanning Room
+295	Imaging Service	FA10 - PET/CT Area	CS212	PET/CT Control Room
+295	Imaging Service	FA10 - PET/CT Area	CS213	PET/CT Uptake Room
+295	Imaging Service	FA11 - PET/MRI Area	CG121	Class 1 PET/MRI Scanning Room
+295	Imaging Service	FA11 - PET/MRI Area	CG122	Class 2 PET/MRI Scanning Room
+295	Imaging Service	FA11 - PET/MRI Area	CS214	PET/MRI Control Room
+295	Imaging Service	FA11 - PET/MRI Area	CS215	PET/MRI Uptake Room
+295	Imaging Service	FA12 - Imaging Services Support Area	CS221	Contrast Media Prep Room
+295	Imaging Service	FA12 - Imaging Services Support Area	CS222	PACS Server Room
+295	Imaging Service	FA12 - Imaging Services Support Area	CS231	Clean Utility / Supply
+295	Imaging Service	FA12 - Imaging Services Support Area	CS232	Soiled Utility
+295	Imaging Service	FA12 - Imaging Services Support Area	SS231	Imaging Services Equipment Storage
+295	Imaging Service	FA12 - Imaging Services Support Area	SB244	Imaging Services Housekeeping Aides Closet
+295	Imaging Service	FA13 - Imaging Services Staff and Administrative Area	SS201	Chief of Imaging Service Office
+295	Imaging Service	FA13 - Imaging Services Staff and Administrative Area	SS204	Radiologist Office
+295	Imaging Service	FA13 - Imaging Services Staff and Administrative Area	SS205	Imaging Supervisor Office
+295	Imaging Service	FA13 - Imaging Services Staff and Administrative Area	SS211	Reading Room / Interpretation Station
+295	Imaging Service	FA13 - Imaging Services Staff and Administrative Area	SS218	Technologist Workstation
+295	Imaging Service	FA13 - Imaging Services Staff and Administrative Area	SS287	Imaging Services Conference Room
+295	Imaging Service	FA13 - Imaging Services Staff and Administrative Area	SS241	Imaging Services Staff Lounge
+295	Imaging Service	FA13 - Imaging Services Staff and Administrative Area	SS251	Staff Locker Room
+295	Imaging Service	FA13 - Imaging Services Staff and Administrative Area	SS261	On-Call Bedroom
+295	Imaging Service	FA13 - Imaging Services Staff and Administrative Area	SB003	Staff Toilet Male
+295	Imaging Service	FA13 - Imaging Services Staff and Administrative Area	SB004	Staff Toilet Female
+295	Imaging Service	FA14 - Imaging Services Academic Education Area	SS218	Trainee Workstation
+295	Imaging Service	FA14 - Imaging Services Academic Education Area	SS285	Trainee Huddle Room
