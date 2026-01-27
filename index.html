@@ -5,7 +5,7 @@
   <title>Hospital Programming Workbench</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
   
   <!-- Room Logic System -->
   <script type="module" src="room-logic/index.js"></script>
@@ -1920,7 +1920,7 @@
             </label>
             <label style="flex: 1; display: flex; align-items: center; padding: 10px; border: 2px solid var(--border); border-radius: 6px; cursor: pointer; background: var(--bg);" id="format-tsv-label">
               <input type="radio" name="report-format" value="tsv" onchange="updateReportFormatUI()" style="margin-right: 8px;">
-              <span>📊 TSV</span>
+              <span>📊 Excel</span>
             </label>
           </div>
         </div>
@@ -1940,7 +1940,7 @@
           </label>
         </div>
         
-        <!-- TSV Report Types -->
+        <!-- Excel Report Types -->
         <div id="tsv-report-options" style="margin-bottom: 24px; display: none;">
           <label style="display: block; margin-bottom: 12px; cursor: pointer; padding: 12px; border: 2px solid var(--accent); border-radius: 6px; transition: all 0.2s;" id="tsv-simple-label">
             <input type="radio" name="tsv-type" value="simple" checked onchange="updateTsvTypeUI()" style="margin-right: 8px;">
@@ -8703,7 +8703,7 @@
         pdfOptions.style.display = 'none';
         tsvOptions.style.display = 'block';
         summaryOption.style.display = 'none';
-        generateBtn.textContent = '📥 Generate TSV';
+        generateBtn.textContent = '📥 Generate Excel';
         generateBtn.onclick = generateTSVReport;
         pdfLabel.style.borderColor = 'var(--border)';
         tsvLabel.style.borderColor = 'var(--accent)';
@@ -8737,64 +8737,105 @@
         return;
       }
       
-      const rows = [];
-      let faCounter = 0; // Track FA numbers within each department
+      // Define styles
+      const blackHeaderStyle = {
+        fill: { fgColor: { rgb: "000000" } },
+        font: { color: { rgb: "FFFFFF" }, bold: true },
+        alignment: { horizontal: "left", vertical: "center" }
+      };
       
-      // Row 1: Project name
-      rows.push([project.name]);
-      rows.push([]); // Spacer row
+      const projectTitleStyle = {
+        fill: { fgColor: { rgb: "000000" } },
+        font: { color: { rgb: "FFFFFF" }, bold: true, sz: 14 },
+        alignment: { horizontal: "left", vertical: "center" }
+      };
+      
+      const columnHeaderStyle = {
+        fill: { fgColor: { rgb: "E7E8F4" } },
+        font: { color: { rgb: "000000" }, bold: true },
+        alignment: { horizontal: "left", vertical: "center" }
+      };
+      
+      const dataStyle = {
+        alignment: { horizontal: "left", vertical: "center" }
+      };
+      
+      const descriptionStyle = {
+        alignment: { horizontal: "left", vertical: "center", wrapText: true }
+      };
+      
+      // Build worksheet data with row metadata for styling
+      const wsData = [];
+      const rowTypes = []; // Track row type for styling: 'project', 'dept', 'fa', 'roomHeader', 'colHeader', 'data', 'spacer'
+      let faCounter = 0;
+      
+      const numCols = tsvType === 'simple' ? 5 : 15;
+      
+      // Helper to create a row that spans all columns (for black fill headers)
+      const makeFullWidthRow = (text) => {
+        const row = [text];
+        for (let i = 1; i < numCols; i++) row.push('');
+        return row;
+      };
+      
+      // Row 1: Project name (spans all columns)
+      wsData.push(makeFullWidthRow(project.name));
+      rowTypes.push('project');
+      wsData.push([]); // Spacer
+      rowTypes.push('spacer');
       
       if (project.departments) {
-        project.departments.forEach((dept, deptIdx) => {
-          // Department row
-          rows.push([dept.name]);
-          rows.push([]); // Spacer row
+        project.departments.forEach((dept) => {
+          // Department row (spans all columns)
+          wsData.push(makeFullWidthRow(dept.name));
+          rowTypes.push('dept');
+          wsData.push([]); // Spacer
+          rowTypes.push('spacer');
           
-          faCounter = 0; // Reset FA counter for each department
+          faCounter = 0;
           
           if (dept.functionalAreas) {
-            dept.functionalAreas.forEach((fa, faIdx) => {
+            dept.functionalAreas.forEach((fa) => {
               faCounter++;
               
-              // Functional Area row (number - name)
-              rows.push([`${faCounter} - ${fa.name}`]);
-              rows.push([]); // Spacer row
+              // Functional Area row (spans all columns)
+              wsData.push(makeFullWidthRow(`${faCounter} - ${fa.name}`));
+              rowTypes.push('fa');
+              wsData.push([]); // Spacer
+              rowTypes.push('spacer');
               
               if (fa.rooms) {
-                fa.rooms.forEach((room, roomIdx) => {
-                  // Room header row (roomNumber - name - code)
+                fa.rooms.forEach((room) => {
+                  const roomData = ROOM_SIZES.find(r => r.roomCode === room.code || r.id === room.code);
+                  const roomTitle = room.roomNumber 
+                    ? `${room.roomNumber} - ${room.name} - ${room.code}`
+                    : `${room.name} - ${room.code}`;
+                  
                   if (tsvType === 'simple') {
-                    // Simple: Room row then equipment rows with 5 columns
-                    const roomTitle = room.roomNumber 
-                      ? `${room.roomNumber} - ${room.name} - ${room.code}`
-                      : `${room.name} - ${room.code}`;
-                    rows.push([roomTitle]);
-                    // Column headers under each room
-                    rows.push(['JSN', 'Name', 'Qty', 'Acquisition', 'Description']);
+                    // Room header spans all columns
+                    wsData.push(makeFullWidthRow(roomTitle));
+                    rowTypes.push('roomHeader');
+                    wsData.push(['JSN', 'Name', 'Qty', 'Acquisition', 'Description']);
+                    rowTypes.push('colHeader');
                   } else {
-                    // Expanded: Room row includes room details
-                    const roomData = ROOM_SIZES.find(r => r.roomCode === room.code || r.id === room.code);
-                    const roomTitle = room.roomNumber 
-                      ? `${room.roomNumber} - ${room.name} - ${room.code}`
-                      : `${room.name} - ${room.code}`;
-                    rows.push([
-                      roomTitle,
-                      `NSF: ${room.nsf || roomData?.nsf || 0}`
-                    ]);
-                    // Column headers under each room - include extended attributes
-                    rows.push([
+                    // Room header with NSF, spans all columns
+                    const roomRow = makeFullWidthRow(roomTitle);
+                    roomRow[1] = `NSF: ${room.nsf || roomData?.nsf || 0}`;
+                    wsData.push(roomRow);
+                    rowTypes.push('roomHeader');
+                    wsData.push([
                       'JSN', 'Name', 'Qty', 'Acquisition', 'Description', 'Unit Cost',
                       'Width (in)', 'Depth (in)', 'Height (in)', 'Weight (lbs)',
                       'Volts', 'Amps', 'Watts', 'Phase', 'BTU/Hour'
                     ]);
+                    rowTypes.push('colHeader');
                   }
                   
                   // Equipment rows
                   if (room.equipment && room.equipment.length > 0) {
                     room.equipment.forEach(equip => {
                       if (tsvType === 'simple') {
-                        // Simple: JSN, Name, Qty, Acquisition, Description
-                        rows.push([
+                        wsData.push([
                           equip.jsn || '',
                           equip.name || '',
                           equip.quantity || 1,
@@ -8802,19 +8843,14 @@
                           equip.description || ''
                         ]);
                       } else {
-                        // Expanded: Look up full equipment attributes from EQUIPMENT_ATTRIBUTES
                         const attrs = (typeof EQUIPMENT_ATTRIBUTES !== 'undefined' && equip.jsn) 
                           ? EQUIPMENT_ATTRIBUTES[equip.jsn] 
                           : null;
-                        
-                        // Get power info
                         const power = attrs?.power || {};
-                        // Get dimensions
                         const dims = attrs?.dimensions || {};
-                        // Get hertz/BTU info
                         const hertz = attrs?.hertz || {};
                         
-                        rows.push([
+                        wsData.push([
                           equip.jsn || '',
                           equip.name || '',
                           equip.quantity || 1,
@@ -8832,10 +8868,12 @@
                           hertz.btuPerHour || ''
                         ]);
                       }
+                      rowTypes.push('data');
                     });
                   }
                   
-                  rows.push([]); // Spacer row after each room
+                  wsData.push([]); // Spacer after room
+                  rowTypes.push('spacer');
                 });
               }
             });
@@ -8843,35 +8881,75 @@
         });
       }
       
-      // Convert to TSV string
-      const tsvContent = rows.map(row => 
-        row.map(cell => {
-          // Escape tabs and newlines in cell content
-          const str = String(cell ?? '');
-          if (str.includes('\t') || str.includes('\n') || str.includes('"')) {
-            return '"' + str.replace(/"/g, '""') + '"';
+      // Create worksheet
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+      
+      // Apply styles to each cell - for header rows, ensure all columns have cells with black fill
+      const range = XLSX.utils.decode_range(ws['!ref'] || 'A1');
+      
+      for (let R = range.s.r; R <= range.e.r; R++) {
+        const rowType = rowTypes[R] || 'data';
+        
+        // For black header rows, ensure we style ALL columns (create empty cells if needed)
+        const isBlackHeader = ['project', 'dept', 'fa', 'roomHeader'].includes(rowType);
+        const maxCol = isBlackHeader ? numCols - 1 : range.e.c;
+        
+        for (let C = 0; C <= maxCol; C++) {
+          const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
+          
+          // Create empty cell if it doesn't exist (for black fill spanning)
+          if (!ws[cellRef] && isBlackHeader) {
+            ws[cellRef] = { v: '', t: 's' };
           }
-          return str;
-        }).join('\t')
-      ).join('\n');
+          
+          if (!ws[cellRef]) continue;
+          
+          let cellStyle = {};
+          
+          if (rowType === 'project') {
+            cellStyle = projectTitleStyle;
+          } else if (rowType === 'dept' || rowType === 'fa' || rowType === 'roomHeader') {
+            cellStyle = blackHeaderStyle;
+          } else if (rowType === 'colHeader') {
+            cellStyle = columnHeaderStyle;
+          } else if (rowType === 'data') {
+            // Description column (index 4) gets wrap text
+            if (C === 4) {
+              cellStyle = descriptionStyle;
+            } else {
+              cellStyle = dataStyle;
+            }
+          }
+          
+          ws[cellRef].s = cellStyle;
+        }
+      }
       
-      // Download the file
-      const blob = new Blob([tsvContent], { type: 'text/tab-separated-values' });
-      const url = URL.createObjectURL(blob);
+      // Update the range to include all styled cells
+      ws['!ref'] = XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: range.e.r, c: numCols - 1 } });
       
+      // Set column widths
+      const colWidths = tsvType === 'simple' 
+        ? [{ wch: 12 }, { wch: 35 }, { wch: 6 }, { wch: 12 }, { wch: 50 }]
+        : [{ wch: 12 }, { wch: 35 }, { wch: 6 }, { wch: 12 }, { wch: 50 }, { wch: 12 },
+           { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 },
+           { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 10 }];
+      ws['!cols'] = colWidths;
+      
+      // Create workbook and add worksheet
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Equipment List');
+      
+      // Generate filename
       const safeName = project.name.replace(/[^a-z0-9]/gi, '-').toLowerCase();
       const date = new Date().toISOString().split('T')[0];
       const typeSuffix = tsvType === 'simple' ? 'equipment' : 'equipment-expanded';
+      const fileName = `${safeName}-${typeSuffix}-${date}.xlsx`;
       
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${safeName}-${typeSuffix}-${date}.tsv`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      // Write and download
+      XLSX.writeFile(wb, fileName);
       
-      console.log(`Generated TSV report: ${rows.length} rows`);
+      console.log(`Generated Excel report: ${wsData.length} rows`);
       closeReportModal();
     }
 
