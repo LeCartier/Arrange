@@ -1,0 +1,3021 @@
+Chapter	FA Number	Functional Area	VARF Code	Legacy Code
+100	1	Medical / Surgical Inpatient Unit Calculation	SC148	CALC1
+100	2	Medical / Surgical Inpatient Unit Reception Area	SB003	WRC01
+100	2	Medical / Surgical Inpatient Unit Reception Area	SB086	WRF01
+100	2	Medical / Surgical Inpatient Unit Reception Area	SC170	CLSC1
+100	2	Medical / Surgical Inpatient Unit Reception Area	SV272	NCWD1
+100	2	Medical / Surgical Inpatient Unit Reception Area	SV422	OFDC2
+100	2	Medical / Surgical Inpatient Unit Reception Area	TLTF3	TLTF3
+100	2	Medical / Surgical Inpatient Unit Reception Area	TLTU1	TLTU1
+100	3	Medical / Surgical Inpatient Unit Patient Area	IMS25	BRIT2
+100	3	Medical / Surgical Inpatient Unit Patient Area	IMS26	BRAR2
+100	3	Medical / Surgical Inpatient Unit Patient Area	IMS27	BRBA1
+100	3	Medical / Surgical Inpatient Unit Patient Area	IPT01	BRMS1
+100	3	Medical / Surgical Inpatient Unit Patient Area	IPT03	BRIT1
+100	3	Medical / Surgical Inpatient Unit Patient Area	IPT04	BRAR1
+100	3	Medical / Surgical Inpatient Unit Patient Area	RSH12	TLTS2
+100	3	Medical / Surgical Inpatient Unit Patient Area	RSH62	DAYR1
+100	3	Medical / Surgical Inpatient Unit Patient Area	TLTB1	TLTB1
+100	4	Medical / Surgical Inpatient Unit Support Area	IMS44	NSTA3
+100	4	Medical / Surgical Inpatient Unit Support Area	MEDP1	MEDP1
+100	4	Medical / Surgical Inpatient Unit Support Area	SB261	SRLW2
+100	4	Medical / Surgical Inpatient Unit Support Area	SB737	UCCL1
+100	4	Medical / Surgical Inpatient Unit Support Area	SB743	USCL1
+100	4	Medical / Surgical Inpatient Unit Support Area	SC007	RCA01
+100	4	Medical / Surgical Inpatient Unit Support Area	SC099	XRM01
+100	4	Medical / Surgical Inpatient Unit Support Area	SC251	NSTA1
+100	4	Medical / Surgical Inpatient Unit Support Area	SC445	LCCL2
+100	4	Medical / Surgical Inpatient Unit Support Area	SRGC2	SRGC2
+100	4	Medical / Surgical Inpatient Unit Support Area	SRSE1	SRSE1
+100	4	Medical / Surgical Inpatient Unit Support Area	SS212	WRCH1
+100	4	Medical / Surgical Inpatient Unit Support Area	SV272	NCWD1
+100	4	Medical / Surgical Inpatient Unit Support Area	SV549	JANC1
+100	5	Medical / Surgical Inpatient Unit Staff and Administrative Area	SC648	CRA01
+100	5	Medical / Surgical Inpatient Unit Staff and Administrative Area	SS205	OFA09
+100	5	Medical / Surgical Inpatient Unit Staff and Administrative Area	SS218	OFA07
+100	5	Medical / Surgical Inpatient Unit Staff and Administrative Area	SS262	SL001
+100	5	Medical / Surgical Inpatient Unit Staff and Administrative Area	SS272	RPR01
+100	5	Medical / Surgical Inpatient Unit Staff and Administrative Area	SS282	LR001
+100	5	Medical / Surgical Inpatient Unit Staff and Administrative Area	TLTU1	TLTU1
+100	6	Common Support Area	SB267	UTR01
+100	6	Common Support Area	SB695	MMRP2
+100	6	Common Support Area	SB701	MMRP3
+100	6	Common Support Area	SC001	DL001
+100	6	Common Support Area	SC213	UTLC3
+100	6	Common Support Area	SC257	UTLC2
+100	6	Common Support Area	SRE01	SRE01
+100	6	Common Support Area	SV648	SRS01
+100	7	Common Staff and Administrative Area	SS218	OFA07
+100	8	Education Area	RPT52	CLR01
+100	8	Education Area	SS205	OFA09
+100	8	Education Area	SS218	OFA07
+102	1	Intensive Care Nursint Unit Calculation	SC148	CALC1
+102	2	Intensive Care Nursing Unit Reception Area	SB003	WRC01
+102	2	Intensive Care Nursing Unit Reception Area	SB086	WRF01
+102	2	Intensive Care Nursing Unit Reception Area	SC170	CLSC1
+102	2	Intensive Care Nursing Unit Reception Area	SV272	NCWD1
+102	2	Intensive Care Nursing Unit Reception Area	SV422	OFDC2
+102	2	Intensive Care Nursing Unit Reception Area	TLTF3	TLTF3
+102	2	Intensive Care Nursing Unit Reception Area	TLTU1	TLTU1
+102	3	Intensive Care Nursing Unit Patient Area	IIC21	BRIC1
+102	3	Intensive Care Nursing Unit Patient Area	IIC26	BRII1
+102	3	Intensive Care Nursing Unit Patient Area	IIC31	BRII2
+102	3	Intensive Care Nursing Unit Patient Area	IMS26	BRAR2
+102	3	Intensive Care Nursing Unit Patient Area	IPT04	BRAR1
+102	3	Intensive Care Nursing Unit Patient Area	RSH12	TLTS2
+102	3	Intensive Care Nursing Unit Patient Area	SV422	OFDC2
+102	3	Intensive Care Nursing Unit Patient Area	TLTU1	TLTU1
+102	4	Intensive Care Nursing Unit Support Area	IMS44	NSTA3
+102	4	Intensive Care Nursing Unit Support Area	MEDP1	MEDP1
+102	4	Intensive Care Nursing Unit Support Area	SB262	SRLW1
+102	4	Intensive Care Nursing Unit Support Area	SB737	UCCL1
+102	4	Intensive Care Nursing Unit Support Area	SB743	USCL1
+102	4	Intensive Care Nursing Unit Support Area	SC007	RCA01
+102	4	Intensive Care Nursing Unit Support Area	SC099	XRM01
+102	4	Intensive Care Nursing Unit Support Area	SC251	NSTA1
+102	4	Intensive Care Nursing Unit Support Area	SC445	LCCL2
+102	4	Intensive Care Nursing Unit Support Area	SRGC2	SRGC2
+102	4	Intensive Care Nursing Unit Support Area	SRSE1	SRSE1
+102	4	Intensive Care Nursing Unit Support Area	SS212	WRCH1
+102	4	Intensive Care Nursing Unit Support Area	SV272	NCWD1
+102	4	Intensive Care Nursing Unit Support Area	SV549	JANC1
+102	5	Intensive Care Nursing Unit Staff and Administrative Area	SS205	OFA09
+102	5	Intensive Care Nursing Unit Staff and Administrative Area	SS218	OFA07
+102	5	Intensive Care Nursing Unit Staff and Administrative Area	SS262	SL001
+102	5	Intensive Care Nursing Unit Staff and Administrative Area	SS272	RPR01
+102	5	Intensive Care Nursing Unit Staff and Administrative Area	SS282	LR001
+102	5	Intensive Care Nursing Unit Staff and Administrative Area	SS287	DUTY1
+102	5	Intensive Care Nursing Unit Staff and Administrative Area	TLTS1	TLTS1
+102	5	Intensive Care Nursing Unit Staff and Administrative Area	TLTU1	TLTU1
+102	6	Support Area	SB267	UTR01
+102	6	Support Area	SB695	MMRP2
+102	6	Support Area	SB701	MMRP3
+102	6	Support Area	SC213	UTLC3
+102	6	Support Area	SC257	UTLC2
+102	6	Support Area	SV648	SRS01
+102	7	Staff and Administrative Area	SS218	OFA07
+102	8	Education Area	RPT52	CLR01
+102	8	Education Area	SS205	OFA09
+102	8	Education Area	SS218	OFA07
+104	1	Patient Care Unit Calculation	SC148	CALC1
+104	2	Reception Area	RECP3	RECP3
+104	2	Reception Area	SB003	WRC01
+104	2	Reception Area	SV422	OFDC2
+104	2	Reception Area	TLTU1	TLTU1
+104	3	Acute Care (AC) Unit Patient Area	IPT01	BRMS1
+104	3	Acute Care (AC) Unit Patient Area	IPT03	BRIT1
+104	3	Acute Care (AC) Unit Patient Area	IPT04	BRAR1
+104	3	Acute Care (AC) Unit Patient Area	RSH12	TLTS2
+104	3	Acute Care (AC) Unit Patient Area	RSH41	LAUN1
+104	3	Acute Care (AC) Unit Patient Area	RSH62	DAYR1
+104	3	Acute Care (AC) Unit Patient Area	SV272	NCWD1
+104	3	Acute Care (AC) Unit Patient Area	SV422	OFDC2
+104	3	Acute Care (AC) Unit Patient Area	TLTU1	TLTU1
+104	4	Long Term Care (LTC) Unit Patient Area	BRMS2	BRMS2
+104	4	Long Term Care (LTC) Unit Patient Area	IPT01	BRMS1
+104	4	Long Term Care (LTC) Unit Patient Area	IPT03	BRIT1
+104	4	Long Term Care (LTC) Unit Patient Area	IPT04	BRAR1
+104	4	Long Term Care (LTC) Unit Patient Area	RSH12	TLTS2
+104	4	Long Term Care (LTC) Unit Patient Area	RSH41	LAUN1
+104	4	Long Term Care (LTC) Unit Patient Area	RSH62	DAYR1
+104	4	Long Term Care (LTC) Unit Patient Area	SV272	NCWD1
+104	4	Long Term Care (LTC) Unit Patient Area	SV422	OFDC2
+104	4	Long Term Care (LTC) Unit Patient Area	TLTU1	TLTU1
+104	5	Acute Care (AC) Support Area	MEDP1	MEDP1
+104	5	Acute Care (AC) Support Area	SB262	SRLW1
+104	5	Acute Care (AC) Support Area	SB711	SRPB1
+104	5	Acute Care (AC) Support Area	SB737	UCCL1
+104	5	Acute Care (AC) Support Area	SB743	USCL1
+104	5	Acute Care (AC) Support Area	SC251	NSTA1
+104	5	Acute Care (AC) Support Area	SC455	LCSL1
+104	5	Acute Care (AC) Support Area	SC471	LCCL1
+104	5	Acute Care (AC) Support Area	SRE01	SRE01
+104	5	Acute Care (AC) Support Area	SS203	OFA04
+104	5	Acute Care (AC) Support Area	SS212	WRCH1
+104	5	Acute Care (AC) Support Area	SS218	OFA07
+104	5	Acute Care (AC) Support Area	SV549	JANC1
+104	6	Long Term Care (LTC) Support Area	LSCL1	LSCL1
+104	6	Long Term Care (LTC) Support Area	MEDP1	MEDP1
+104	6	Long Term Care (LTC) Support Area	OFD01	OFD01
+104	6	Long Term Care (LTC) Support Area	SB262	SRLW1
+104	6	Long Term Care (LTC) Support Area	SB711	SRPB1
+104	6	Long Term Care (LTC) Support Area	SB737	UCCL1
+104	6	Long Term Care (LTC) Support Area	SB743	USCL1
+104	6	Long Term Care (LTC) Support Area	SC251	NSTA1
+104	6	Long Term Care (LTC) Support Area	SC471	LCCL1
+104	6	Long Term Care (LTC) Support Area	SRE01	SRE01
+104	6	Long Term Care (LTC) Support Area	SS218	OFA07
+104	6	Long Term Care (LTC) Support Area	SV549	JANC1
+104	7	Patient Area	OFD03	OFD03
+104	7	Patient Area	PTWT1	PTWT1
+104	7	Patient Area	RSH62	DAYR1
+104	7	Patient Area	SV064	RAMR1
+104	7	Patient Area	SV648	SRS01
+104	7	Patient Area	SV678	FSCD1
+104	7	Patient Area	TRGM1	TRGM1
+104	7	Patient Area	XXYYC	XXYYC
+104	8	Staff and Administrative Area	OPT16	CRA02
+104	8	Staff and Administrative Area	SC471	LCCL1
+104	8	Staff and Administrative Area	SS203	OFA04
+104	8	Staff and Administrative Area	SS287	DUTY1
+104	8	Staff and Administrative Area	TLTS1	TLTS1
+104	8	Staff and Administrative Area	WRC02	WRC02
+104	9	SCI/D Patient Clinic Area	CPL31	RRSS1
+104	9	SCI/D Patient Clinic Area	EXUD1	EXUD1
+104	9	SCI/D Patient Clinic Area	OFD01	OFD01
+104	9	SCI/D Patient Clinic Area	PHOD1	PHOD1
+104	9	SCI/D Patient Clinic Area	RECP1	RECP1
+104	9	SCI/D Patient Clinic Area	RSH12	TLTS2
+104	9	SCI/D Patient Clinic Area	SB003	WRC01
+104	9	SCI/D Patient Clinic Area	SB138	DR001
+104	9	SCI/D Patient Clinic Area	SB737	UCCL1
+104	9	SCI/D Patient Clinic Area	SB743	USCL1
+104	9	SCI/D Patient Clinic Area	SC251	NSTA1
+104	9	SCI/D Patient Clinic Area	SS203	OFA04
+104	9	SCI/D Patient Clinic Area	SV422	OFDC2
+104	9	SCI/D Patient Clinic Area	SV549	JANC1
+104	9	SCI/D Patient Clinic Area	SV648	SRS01
+104	9	SCI/D Patient Clinic Area	TLTU1	TLTU1
+104	9	SCI/D Patient Clinic Area	TRGS1	TRGS1
+104	9	SCI/D Patient Clinic Area	XDCY1	XDCY1
+104	10	SCI/D Patient Therapy Area	OPT32	OTDL1
+104	10	SCI/D Patient Therapy Area	OTEV1	OTEV1
+104	10	SCI/D Patient Therapy Area	PTES1	PTES1
+104	10	SCI/D Patient Therapy Area	PTWT1	PTWT1
+104	10	SCI/D Patient Therapy Area	SB138	DR001
+104	10	SCI/D Patient Therapy Area	SRE01	SRE01
+104	10	SCI/D Patient Therapy Area	SS218	OFA07
+104	10	SCI/D Patient Therapy Area	TLTU1	TLTU1
+104	10	SCI/D Patient Therapy Area	XXYYC	XXYYC
+104	11	SCI/D Home Care Area	SRE01	SRE01
+104	11	SCI/D Home Care Area	SS203	OFA04
+104	11	SCI/D Home Care Area	SS218	OFA07
+104	11	SCI/D Home Care Area	SV422	OFDC2
+104	12	SCI/D Staff and Administrative Area	MRS01	MRS01
+104	12	SCI/D Staff and Administrative Area	OPT16	CRA02
+104	12	SCI/D Staff and Administrative Area	SS205	OFA09
+104	12	SCI/D Staff and Administrative Area	SS218	OFA07
+104	12	SCI/D Staff and Administrative Area	SS222	SEC01
+104	12	SCI/D Staff and Administrative Area	SS262	SL001
+104	12	SCI/D Staff and Administrative Area	SS282	LR001
+104	12	SCI/D Staff and Administrative Area	SV422	OFDC2
+104	12	SCI/D Staff and Administrative Area	TLTS1	TLTS1
+104	12	SCI/D Staff and Administrative Area	TLTU1	TLTU1
+104	13	Education Area	OPT16	CRA02
+104	13	Education Area	SL002	SL002
+104	13	Education Area	SS205	OFA09
+110	1	Patient Care Unit Calculation	SC148	CALC1
+110	2	Patient Care Unit Reception Area	SB003	WRC01
+110	2	Patient Care Unit Reception Area	SV422	OFDC2
+110	2	Patient Care Unit Reception Area	TLTU1	TLTU1
+110	3	Patient Care Unit Patient Area [67]	BRNP2	BRNP2
+110	3	Patient Care Unit Patient Area [67]	BRNP5	BRNP5
+110	3	Patient Care Unit Patient Area [67]	BRNP6	BRNP6
+110	3	Patient Care Unit Patient Area [67]	NULR1	NULR1
+110	3	Patient Care Unit Patient Area [67]	OCB31	EXRG3
+110	3	Patient Care Unit Patient Area [67]	OPMH1	OPMH1
+110	3	Patient Care Unit Patient Area [67]	RSH02	LOB02
+110	3	Patient Care Unit Patient Area [67]	RSH11	BRNP1
+110	3	Patient Care Unit Patient Area [67]	RSH62	DAYR1
+110	3	Patient Care Unit Patient Area [67]	SB711	SRPB1
+110	3	Patient Care Unit Patient Area [67]	SHWR2	SHWR2
+110	3	Patient Care Unit Patient Area [67]	SV272	NCWD1
+110	3	Patient Care Unit Patient Area [67]	SV422	OFDC2
+110	3	Patient Care Unit Patient Area [67]	SV678	FSCD1
+110	3	Patient Care Unit Patient Area [67]	TLTP1	TLTP1
+110	3	Patient Care Unit Patient Area [67]	TLTP3	TLTP3
+110	4	Patient Care Unit Support Area [67]	COMC1	COMC1
+110	4	Patient Care Unit Support Area [67]	FSCS1	FSCS1
+110	4	Patient Care Unit Support Area [67]	FSPT1	FSPT1
+110	4	Patient Care Unit Support Area [67]	MEDP1	MEDP1
+110	4	Patient Care Unit Support Area [67]	SB261	SRLW2
+110	4	Patient Care Unit Support Area [67]	SB267	UTR01
+110	4	Patient Care Unit Support Area [67]	SB737	UCCL1
+110	4	Patient Care Unit Support Area [67]	SB743	USCL1
+110	4	Patient Care Unit Support Area [67]	SC007	RCA01
+110	4	Patient Care Unit Support Area [67]	SC440	UTLC1
+110	4	Patient Care Unit Support Area [67]	SC471	LCCL1
+110	4	Patient Care Unit Support Area [67]	SC474	UTC01
+110	4	Patient Care Unit Support Area [67]	SRGC2	SRGC2
+110	4	Patient Care Unit Support Area [67]	SRSE1	SRSE1
+110	4	Patient Care Unit Support Area [67]	SV549	JANC1
+110	4	Patient Care Unit Support Area [67]	SV648	SRS01
+110	5	Patient Care Unit Staff and Administrative Area	SC251	NSTA1
+110	5	Patient Care Unit Staff and Administrative Area	SC648	CRA01
+110	5	Patient Care Unit Staff and Administrative Area	SS212	WRCH1
+110	5	Patient Care Unit Staff and Administrative Area	SS218	OFA07
+110	5	Patient Care Unit Staff and Administrative Area	SS287	DUTY1
+110	5	Patient Care Unit Staff and Administrative Area	TLTS1	TLTS1
+110	6	Staff and Administrative Area	SS205	OFA09
+110	6	Staff and Administrative Area	SS218	OFA07
+110	6	Staff and Administrative Area	SS262	SL001
+110	6	Staff and Administrative Area	SS282	LR001
+110	6	Staff and Administrative Area	SV422	OFDC2
+110	6	Staff and Administrative Area	TLTU1	TLTU1
+110	7	Education Area	OPT16	CRA02
+110	7	Education Area	SL002	SL002
+110	7	Education Area	SS205	OFA09
+111	1	PRC Reception Area	BX001	BX001
+111	1	PRC Reception Area	RECP1	RECP1
+111	1	PRC Reception Area	SB003	WRC01
+111	1	PRC Reception Area	SB086	WRF01
+111	1	PRC Reception Area	SB117	LOB01
+111	1	PRC Reception Area	TLTB1	TLTB1
+111	2	Inpatient Unit Patient Area	IPT01	BRMS1
+111	2	Inpatient Unit Patient Area	IPT03	BRIT1
+111	2	Inpatient Unit Patient Area	IPT04	BRAR1
+111	2	Inpatient Unit Patient Area	SHWR2	SHWR2
+111	2	Inpatient Unit Patient Area	TLTS4	TLTS4
+111	3	Inpatient Unit Patient Support Area	IPT18	RCA02
+111	3	Inpatient Unit Patient Support Area	MEDP1	MEDP1
+111	3	Inpatient Unit Patient Support Area	SB737	UCCL1
+111	3	Inpatient Unit Patient Support Area	SB743	USCL1
+111	3	Inpatient Unit Patient Support Area	SC007	RCA01
+111	3	Inpatient Unit Patient Support Area	SC251	NSTA1
+111	3	Inpatient Unit Patient Support Area	SC471	LCCL1
+111	3	Inpatient Unit Patient Support Area	SRE01	SRE01
+111	3	Inpatient Unit Patient Support Area	SS212	WRCH1
+111	3	Inpatient Unit Patient Support Area	SS218	OFA07
+111	3	Inpatient Unit Patient Support Area	SV272	NCWD1
+111	3	Inpatient Unit Patient Support Area	SV549	JANC1
+111	4	Inpatient Unit Patient and Family Area	IPT31	CLR09
+111	4	Inpatient Unit Patient and Family Area	OPT16	CRA02
+111	4	Inpatient Unit Patient and Family Area	RPT33	PRD01
+111	4	Inpatient Unit Patient and Family Area	RSH41	LAUN1
+111	4	Inpatient Unit Patient and Family Area	RSH62	DAYR1
+111	4	Inpatient Unit Patient and Family Area	SB711	SRPB1
+111	4	Inpatient Unit Patient and Family Area	SC164	IPK01
+111	4	Inpatient Unit Patient and Family Area	SRE01	SRE01
+111	4	Inpatient Unit Patient and Family Area	SS091	PLAY1
+111	4	Inpatient Unit Patient and Family Area	SV422	OFDC2
+111	4	Inpatient Unit Patient and Family Area	TLTU1	TLTU1
+111	5	Inpatient Unit Therapy Patient Area	EXOS1	EXOS1
+111	5	Inpatient Unit Therapy Patient Area	IPT41	PRGY1
+111	5	Inpatient Unit Therapy Patient Area	IPT51	PRRT1
+111	5	Inpatient Unit Therapy Patient Area	IPT61	PRDL1
+111	5	Inpatient Unit Therapy Patient Area	IPT71	PRNT1
+111	5	Inpatient Unit Therapy Patient Area	OPT48	PRTM1
+111	5	Inpatient Unit Therapy Patient Area	PRAT1	PRAT1
+111	5	Inpatient Unit Therapy Patient Area	PRRE1	PRRE1
+111	5	Inpatient Unit Therapy Patient Area	RPT43	PREV1
+111	5	Inpatient Unit Therapy Patient Area	RPT52	CLR01
+111	5	Inpatient Unit Therapy Patient Area	SRE01	SRE01
+111	5	Inpatient Unit Therapy Patient Area	SS218	OFA07
+111	5	Inpatient Unit Therapy Patient Area	SV422	OFDC2
+111	5	Inpatient Unit Therapy Patient Area	SV549	JANC1
+111	5	Inpatient Unit Therapy Patient Area	SV648	SRS01
+111	5	Inpatient Unit Therapy Patient Area	TLTU1	TLTU1
+111	5	Inpatient Unit Therapy Patient Area	WRTM1	WRTM1
+111	6	Inpatient Unit Staff and Administrative Area	OPT16	CRA02
+111	6	Inpatient Unit Staff and Administrative Area	SHWR1	SHWR1
+111	6	Inpatient Unit Staff and Administrative Area	SS203	OFA04
+111	6	Inpatient Unit Staff and Administrative Area	SS205	OFA09
+111	6	Inpatient Unit Staff and Administrative Area	SS218	OFA07
+111	6	Inpatient Unit Staff and Administrative Area	SS262	SL001
+111	6	Inpatient Unit Staff and Administrative Area	SS282	LR001
+111	6	Inpatient Unit Staff and Administrative Area	TLTU1	TLTU1
+111	6	Inpatient Unit Staff and Administrative Area	WRTM1	WRTM1
+111	7	PTRP Reception Area	RECP1	RECP1
+111	7	PTRP Reception Area	SB003	WRC01
+111	7	PTRP Reception Area	SB086	WRF01
+111	7	PTRP Reception Area	SB117	LOB01
+111	7	PTRP Reception Area	TLTB1	TLTB1
+111	8	PTRP Resident Unit Area	RPT01	BRPT3
+111	8	PTRP Resident Unit Area	RPT11	PRAP1
+111	8	PTRP Resident Unit Area	RPT12	BRPT1
+111	8	PTRP Resident Unit Area	RPT14	PRC03
+111	8	PTRP Resident Unit Area	SRE01	SRE01
+111	8	PTRP Resident Unit Area	TLTS3	TLTS3
+111	8	PTRP Resident Unit Area	TLTS4	TLTS4
+111	9	PTRP Resident Unit Support Area	MEDP1	MEDP1
+111	9	PTRP Resident Unit Support Area	NSTA6	NSTA6
+111	9	PTRP Resident Unit Support Area	SB737	UCCL1
+111	9	PTRP Resident Unit Support Area	SB743	USCL1
+111	9	PTRP Resident Unit Support Area	SC007	RCA01
+111	9	PTRP Resident Unit Support Area	SC471	LCCL1
+111	9	PTRP Resident Unit Support Area	SRE01	SRE01
+111	9	PTRP Resident Unit Support Area	SRSE1	SRSE1
+111	9	PTRP Resident Unit Support Area	SS218	OFA07
+111	9	PTRP Resident Unit Support Area	SV549	JANC1
+111	10	PTRP Resident and Family Support Area	RPT33	PRD01
+111	10	PTRP Resident and Family Support Area	RPT35	PRK01
+111	10	PTRP Resident and Family Support Area	RSH41	LAUN1
+111	10	PTRP Resident and Family Support Area	RSH62	DAYR1
+111	11	PTRP Therapy Area	RPT41	PRGY2
+111	11	PTRP Therapy Area	RPT43	PREV1
+111	11	PTRP Therapy Area	RPT52	CLR01
+111	11	PTRP Therapy Area	RPT54	PRAT2
+111	11	PTRP Therapy Area	SV422	OFDC2
+111	11	PTRP Therapy Area	SV648	SRS01
+111	11	PTRP Therapy Area	WRTM1	WRTM1
+111	12	PTRP Staff and Administrative Area	EXOS1	EXOS1
+111	12	PTRP Staff and Administrative Area	OFD05	OFD05
+111	12	PTRP Staff and Administrative Area	OPT16	CRA02
+111	12	PTRP Staff and Administrative Area	SS205	OFA09
+111	12	PTRP Staff and Administrative Area	SS262	SL001
+111	12	PTRP Staff and Administrative Area	SS282	LR001
+111	12	PTRP Staff and Administrative Area	TLTU1	TLTU1
+111	13	Outpatient Unit Reception Area	RECP1	RECP1
+111	13	Outpatient Unit Reception Area	RECP4	RECP4
+111	13	Outpatient Unit Reception Area	RSH62	DAYR1
+111	13	Outpatient Unit Reception Area	SB003	WRC01
+111	13	Outpatient Unit Reception Area	TLTB1	TLTB1
+111	14	Outpatient Unit Patient Area	OPT14	PTBT1
+111	14	Outpatient Unit Patient Area	OPT15	PRP01
+111	14	Outpatient Unit Patient Area	OPT16	CRA02
+111	14	Outpatient Unit Patient Area	OPT17	WRTM2
+111	14	Outpatient Unit Patient Area	PTEM1	PTEM1
+111	14	Outpatient Unit Patient Area	RSH81	EXRG0
+111	14	Outpatient Unit Patient Area	SV422	OFDC2
+111	15	Outpatient Unit Support Area	MEDP1	MEDP1
+111	15	Outpatient Unit Support Area	NSTA4	NSTA4
+111	15	Outpatient Unit Support Area	SB737	UCCL1
+111	15	Outpatient Unit Support Area	SB743	USCL1
+111	15	Outpatient Unit Support Area	SC007	RCA01
+111	15	Outpatient Unit Support Area	SC471	LCCL1
+111	15	Outpatient Unit Support Area	SRE01	SRE01
+111	15	Outpatient Unit Support Area	SV549	JANC1
+111	16	Outpatient Unit Therapy Area	OPT31	PRDT1
+111	16	Outpatient Unit Therapy Area	OPT32	OTDL1
+111	16	Outpatient Unit Therapy Area	OPT33	PTGL1
+111	16	Outpatient Unit Therapy Area	OPT35	PREX1
+111	16	Outpatient Unit Therapy Area	OPT36	PRGY3
+111	16	Outpatient Unit Therapy Area	OPT42	PRST1
+111	16	Outpatient Unit Therapy Area	OPT43	PRN01
+111	16	Outpatient Unit Therapy Area	OPT44	PRV01
+111	16	Outpatient Unit Therapy Area	OPT45	PRRT2
+111	16	Outpatient Unit Therapy Area	OPT48	PRTM1
+111	16	Outpatient Unit Therapy Area	RPT43	PREV1
+111	16	Outpatient Unit Therapy Area	SRE01	SRE01
+111	16	Outpatient Unit Therapy Area	SS218	OFA07
+111	16	Outpatient Unit Therapy Area	SV422	OFDC2
+111	16	Outpatient Unit Therapy Area	WRTM1	WRTM1
+111	17	Outpatient Unit Staff and Administrative Area	EXOS1	EXOS1
+111	17	Outpatient Unit Staff and Administrative Area	OFD04	OFD04
+111	17	Outpatient Unit Staff and Administrative Area	OPT16	CRA02
+111	17	Outpatient Unit Staff and Administrative Area	SS203	OFA04
+111	17	Outpatient Unit Staff and Administrative Area	SS205	OFA09
+111	17	Outpatient Unit Staff and Administrative Area	SS218	OFA07
+111	17	Outpatient Unit Staff and Administrative Area	SS262	SL001
+111	17	Outpatient Unit Staff and Administrative Area	SS282	LR001
+111	17	Outpatient Unit Staff and Administrative Area	TLTU1	TLTU1
+111	18	PRC Staff and Administrative Area	OPT16	CRA02
+111	18	PRC Staff and Administrative Area	SS205	OFA09
+111	18	PRC Staff and Administrative Area	SS218	OFA07
+111	18	PRC Staff and Administrative Area	SS272	RPR01
+111	19	PRC Education Area	RPT52	CLR01
+111	19	PRC Education Area	SS205	OFA09
+111	19	PRC Education Area	SS218	OFA07
+202	1	Reception Area	SC251	NSTA1
+202	1	Reception Area	TLTU1	TLTU1
+202	1	Reception Area	WROC1	WROC1
+202	2	Patient Area	OPMH1	OPMH1
+202	2	Patient Area	SV422	OFDC2
+202	2	Patient Area	SV648	SRS01
+202	2	Patient Area	TLTU1	TLTU1
+202	3	Staff and Administrative Area	SC648	CRA01
+202	3	Staff and Administrative Area	SS205	OFA09
+202	3	Staff and Administrative Area	SS218	OFA07
+202	3	Staff and Administrative Area	SS262	SL001
+202	3	Staff and Administrative Area	SS282	LR001
+202	3	Staff and Administrative Area	TLTU1	TLTU1
+202	4	Education Area	OPT16	CRA02
+202	4	Education Area	SL002	SL002
+204	1	Reception Area	RECP1	RECP1
+204	1	Reception Area	SB003	WRC01
+204	1	Reception Area	TLTU1	TLTU1
+204	2	Audiology Clinic Patient Area	BHER1	BHER1
+204	2	Audiology Clinic Patient Area	CAS16	EXAU1
+204	2	Audiology Clinic Patient Area	CAS94	HAFR1
+204	2	Audiology Clinic Patient Area	EXEN1	EXEN1
+204	2	Audiology Clinic Patient Area	HATL1	HATL1
+204	2	Audiology Clinic Patient Area	OCB31	EXRG3
+204	2	Audiology Clinic Patient Area	OPAE1	OPAE1
+204	2	Audiology Clinic Patient Area	OPMH1	OPMH1
+204	2	Audiology Clinic Patient Area	PEHS2	PEHS2
+204	2	Audiology Clinic Patient Area	TLTU1	TLTU1
+204	2	Audiology Clinic Patient Area	TREN2	TREN2
+204	3	Speech-Language Pathology Clinic Patient Area	EXOS1	EXOS1
+204	3	Speech-Language Pathology Clinic Patient Area	OCM81	OPMH3
+204	3	Speech-Language Pathology Clinic Patient Area	OPMH1	OPMH1
+204	3	Speech-Language Pathology Clinic Patient Area	SS212	WRCH1
+204	3	Speech-Language Pathology Clinic Patient Area	SV422	OFDC2
+204	3	Speech-Language Pathology Clinic Patient Area	TREN1	TREN1
+204	4	Support Area	SRSE1	SRSE1
+204	5	Staff and Administrative Area	SS205	OFA09
+204	5	Staff and Administrative Area	SS218	OFA07
+204	5	Staff and Administrative Area	SS222	SEC01
+204	5	Staff and Administrative Area	SS262	SL001
+204	5	Staff and Administrative Area	SS282	LR001
+204	5	Staff and Administrative Area	TLTU1	TLTU1
+204	6	Education Area	OPT16	CRA02
+204	6	Education Area	SL002	SL002
+206	1	Staff and Administrative Area	SS205	OFA09
+206	1	Staff and Administrative Area	SS218	OFA07
+206	1	Staff and Administrative Area	SS262	SL001
+206	1	Staff and Administrative Area	SS282	LR001
+206	1	Staff and Administrative Area	SV696	CASH1
+206	1	Staff and Administrative Area	TLTU1	TLTU1
+206	2	Retail Store Area	BX001	BX001
+206	2	Retail Store Area	SRE01	SRE01
+206	2	Retail Store Area	SV549	JANC1
+206	2	Retail Store Area	SV635	MMRP1
+206	2	Retail Store Area	SV648	SRS01
+206	3	Retail Concession Area	BX001	BX001
+206	4	Coffee Shop Area	BX000	BX000
+206	4	Coffee Shop Area	SRE01	SRE01
+206	4	Coffee Shop Area	SV678	FSCD1
+206	5	Optical Shop Area	CEY91	EYFD1
+206	5	Optical Shop Area	EYOT2	EYOT2
+206	6	Barber / Beauty Shop Area	XXYYC	XXYYC
+206	7	Food Court Support Area	RER01	RER01
+206	7	Food Court Support Area	SB287	SRHM1
+206	7	Food Court Support Area	SC474	UTC01
+206	7	Food Court Support Area	SV549	JANC1
+206	7	Food Court Support Area	SV635	MMRP1
+206	7	Food Court Support Area	SV648	SRS01
+206	7	Food Court Support Area	SV653	FSTD1
+206	7	Food Court Support Area	SV657	FSDW1
+206	7	Food Court Support Area	SV663	FSPW1
+206	7	Food Court Support Area	UTR02	UTR02
+206	8	Cafeteria Serving Area	SV674	FSSL1
+206	9	Cafeteria Dining Area	SV678	FSCD1
+206	10	Vending Area	BX001	BX001
+208	1	Reception Area	SB003	WRC01
+208	1	Reception Area	TLTU1	TLTU1
+208	2	Worship Area	RABS1	RABS1
+208	2	Worship Area	RAS01	RAS01
+208	2	Worship Area	SV064	RAMR1
+208	3	Staff and Administrative Area	SS203	OFA04
+208	3	Staff and Administrative Area	SS218	OFA07
+208	3	Staff and Administrative Area	SS222	SEC01
+208	3	Staff and Administrative Area	SV422	OFDC2
+208	3	Staff and Administrative Area	SV648	SRS01
+208	4	Support Area	SV549	JANC1
+208	4	Support Area	SV648	SRS01
+208	5	Education Area	RPT52	CLR01
+210	1	Reception Area	RECP1	RECP1
+210	1	Reception Area	RECP4	RECP4
+210	1	Reception Area	SB003	WRC01
+210	1	Reception Area	SC170	CLSC1
+210	1	Reception Area	TLTU1	TLTU1
+210	2	Non-Invasive Cardiology Patient Area	CCD01	OPEC1
+210	2	Non-Invasive Cardiology Patient Area	CCD06	EXRC1
+210	2	Non-Invasive Cardiology Patient Area	CCD11	EXRC2
+210	2	Non-Invasive Cardiology Patient Area	CCD21	OPPE1
+210	2	Non-Invasive Cardiology Patient Area	CCD26	OPPE2
+210	2	Non-Invasive Cardiology Patient Area	CCD31	OPTM1
+210	2	Non-Invasive Cardiology Patient Area	CCD36	OPTM2
+210	2	Non-Invasive Cardiology Patient Area	CCD56	OPHM1
+210	2	Non-Invasive Cardiology Patient Area	CRT82	XVC01
+210	2	Non-Invasive Cardiology Patient Area	SV422	OFDC2
+210	2	Non-Invasive Cardiology Patient Area	TLTU1	TLTU1
+210	3	Non-Invasive Cardiology Support Area	CCD56	OPHM1
+210	3	Non-Invasive Cardiology Support Area	SB262	SRLW1
+210	3	Non-Invasive Cardiology Support Area	SB737	UCCL1
+210	3	Non-Invasive Cardiology Support Area	SB743	USCL1
+210	3	Non-Invasive Cardiology Support Area	SC007	RCA01
+210	3	Non-Invasive Cardiology Support Area	SRE01	SRE01
+210	3	Non-Invasive Cardiology Support Area	SRSE1	SRSE1
+210	3	Non-Invasive Cardiology Support Area	SV549	JANC1
+210	7	Staff and Administrative Areas	OPT16	CRA02
+210	7	Staff and Administrative Areas	SS205	OFA09
+210	7	Staff and Administrative Areas	SS212	WRCH1
+210	7	Staff and Administrative Areas	SS218	OFA07
+210	7	Staff and Administrative Areas	SS222	SEC01
+210	7	Staff and Administrative Areas	SS272	RPR01
+210	7	Staff and Administrative Areas	SV648	SRS01
+210	7	Staff and Administrative Areas	TLTU1	TLTU1
+210	8	Education Area	RPT52	CLR01
+210	8	Education Area	SS205	OFA09
+210	8	Education Area	SS218	OFA07
+212	1	Reception Area	RECP1	RECP1
+212	1	Reception Area	SB003	WRC01
+212	1	Reception Area	SC170	CLSC1
+212	1	Reception Area	SC171	CLSC3
+212	1	Reception Area	TLTF3	TLTF3
+212	1	Reception Area	TLTU1	TLTU1
+212	2	Pulmonary Medicine / Respiratory Care Patient Area	CPL01	OPPF1
+212	2	Pulmonary Medicine / Respiratory Care Patient Area	CPL02	OPPF2
+212	2	Pulmonary Medicine / Respiratory Care Patient Area	CPL03	OPPF5
+212	2	Pulmonary Medicine / Respiratory Care Patient Area	RSH12	TLTS2
+212	2	Pulmonary Medicine / Respiratory Care Patient Area	SV422	OFDC2
+212	2	Pulmonary Medicine / Respiratory Care Patient Area	TLTU1	TLTU1
+212	3	Bronchoscopy Patient Area	CPL11	TRPE2
+212	3	Bronchoscopy Patient Area	SC902	CSSS1
+212	3	Bronchoscopy Patient Area	TLTU1	TLTU1
+212	4	Sleep Study Patient Area	CPL21	OPPF6
+212	4	Sleep Study Patient Area	CPL22	OPPF7
+212	4	Sleep Study Patient Area	CPL23	OPPF8
+212	4	Sleep Study Patient Area	NCWD2	NCWD2
+212	4	Sleep Study Patient Area	RSH12	TLTS2
+212	4	Sleep Study Patient Area	SC471	LCCL1
+212	4	Sleep Study Patient Area	TLTU1	TLTU1
+212	5	Prep and Recovery Patient Area	CPL31	RRSS1
+212	5	Prep and Recovery Patient Area	CPL32	RROP1
+212	5	Prep and Recovery Patient Area	IMS44	NSTA3
+212	5	Prep and Recovery Patient Area	MEDP1	MEDP1
+212	5	Prep and Recovery Patient Area	SB262	SRLW1
+212	5	Prep and Recovery Patient Area	SB737	UCCL1
+212	5	Prep and Recovery Patient Area	SB743	USCL1
+212	5	Prep and Recovery Patient Area	SC007	RCA01
+212	5	Prep and Recovery Patient Area	SC471	LCCL1
+212	5	Prep and Recovery Patient Area	SV381	NCWD4
+212	5	Prep and Recovery Patient Area	SV549	JANC1
+212	5	Prep and Recovery Patient Area	TLTU1	TLTU1
+212	6	Support Area	CPL41	OPRT1
+212	6	Support Area	SB262	SRLW1
+212	6	Support Area	SB737	UCCL1
+212	6	Support Area	SC007	RCA01
+212	6	Support Area	SRE01	SRE01
+212	6	Support Area	SRGC2	SRGC2
+212	6	Support Area	SRVE1	SRVE1
+212	6	Support Area	SV549	JANC1
+212	7	Staff and Administrative Areas	SS205	OFA09
+212	7	Staff and Administrative Areas	SS218	OFA07
+212	7	Staff and Administrative Areas	SS222	SEC01
+212	7	Staff and Administrative Areas	SS262	SL001
+212	7	Staff and Administrative Areas	SS272	RPR01
+212	7	Staff and Administrative Areas	SS282	LR001
+212	7	Staff and Administrative Areas	TLTU1	TLTU1
+212	8	Education Area	RPT52	CLR01
+212	8	Education Area	SS205	OFA09
+212	8	Education Area	SS218	OFA07
+214	1	Medical Service Area	SS205	OFA09
+214	1	Medical Service Area	SS218	OFA07
+214	1	Medical Service Area	SV422	OFDC2
+214	1	Medical Service Area	SV648	SRS01
+214	1	Medical Service Area	TLTU1	TLTU1
+214	2	Hospital Medicine Area	SS205	OFA09
+214	2	Hospital Medicine Area	SS218	OFA07
+214	2	Hospital Medicine Area	SV422	OFDC2
+214	2	Hospital Medicine Area	SV648	SRS01
+214	2	Hospital Medicine Area	TLTU1	TLTU1
+214	3	Endocrinology Area	SS205	OFA09
+214	3	Endocrinology Area	SS218	OFA07
+214	3	Endocrinology Area	SV422	OFDC2
+214	3	Endocrinology Area	SV648	SRS01
+214	3	Endocrinology Area	TLTU1	TLTU1
+214	4	Rheumatology Area	SS205	OFA09
+214	4	Rheumatology Area	SS218	OFA07
+214	4	Rheumatology Area	SV422	OFDC2
+214	4	Rheumatology Area	SV648	SRS01
+214	4	Rheumatology Area	TLTU1	TLTU1
+214	5	Infectious Diseases Area	SS205	OFA09
+214	5	Infectious Diseases Area	SS218	OFA07
+214	5	Infectious Diseases Area	SV422	OFDC2
+214	5	Infectious Diseases Area	SV648	SRS01
+214	5	Infectious Diseases Area	TLTU1	TLTU1
+214	6	Homeless / Compensated Work Therapy (CWT) Area	SS205	OFA09
+214	6	Homeless / Compensated Work Therapy (CWT) Area	SS218	OFA07
+214	6	Homeless / Compensated Work Therapy (CWT) Area	SV422	OFDC2
+214	6	Homeless / Compensated Work Therapy (CWT) Area	SV648	SRS01
+214	6	Homeless / Compensated Work Therapy (CWT) Area	TLTU1	TLTU1
+214	7	Neurology Service Area	SS205	OFA09
+214	7	Neurology Service Area	SS218	OFA07
+214	7	Neurology Service Area	SV422	OFDC2
+214	7	Neurology Service Area	SV648	SRS01
+214	7	Neurology Service Area	TLTU1	TLTU1
+214	8	Dermatology Service Area	SS205	OFA09
+214	8	Dermatology Service Area	SS218	OFA07
+214	8	Dermatology Service Area	SV422	OFDC2
+214	8	Dermatology Service Area	SV648	SRS01
+214	8	Dermatology Service Area	TLTU1	TLTU1
+214	9	Geriatrics Home Based Primary Care (HBPC) Area	SS205	OFA09
+214	9	Geriatrics Home Based Primary Care (HBPC) Area	SS218	OFA07
+214	9	Geriatrics Home Based Primary Care (HBPC) Area	SV422	OFDC2
+214	9	Geriatrics Home Based Primary Care (HBPC) Area	SV648	SRS01
+214	9	Geriatrics Home Based Primary Care (HBPC) Area	TLTU1	TLTU1
+214	10	Oncology Service Area	SS205	OFA09
+214	10	Oncology Service Area	SS218	OFA07
+214	10	Oncology Service Area	SV422	OFDC2
+214	10	Oncology Service Area	SV648	SRS01
+214	10	Oncology Service Area	TLTU1	TLTU1
+214	11	Mental Health Telepsychiatry Area	SS205	OFA09
+214	11	Mental Health Telepsychiatry Area	SS218	OFA07
+214	11	Mental Health Telepsychiatry Area	SV422	OFDC2
+214	11	Mental Health Telepsychiatry Area	SV648	SRS01
+214	11	Mental Health Telepsychiatry Area	TLTU1	TLTU1
+214	12	Mental Health Service Area	SS205	OFA09
+214	12	Mental Health Service Area	SS218	OFA07
+214	12	Mental Health Service Area	SV422	OFDC2
+218	1	Staff and Administrative Area	SS203	OFA04
+218	1	Staff and Administrative Area	SS218	OFA07
+218	1	Staff and Administrative Area	SS222	SEC01
+218	1	Staff and Administrative Area	SV648	SRS01
+220	1	Lobby and Teller Area	SB117	LOB01
+220	1	Lobby and Teller Area	SV131	BF001
+220	1	Lobby and Teller Area	SV696	CASH1
+220	2	Staff and Administrative Area	SS205	OFA09
+220	2	Staff and Administrative Area	SS218	OFA07
+220	2	Staff and Administrative Area	SS268	RPR03
+220	3	Support Area	SRSE1	SRSE1
+220	3	Support Area	SV141	SSV01
+220	3	Support Area	TLTU1	TLTU1
+222	1	Dental Treatment Rooms (DTRs) Calculation	SC148	CALC1
+222	2	Reception Area	RECP1	RECP1
+222	2	Reception Area	RECP4	RECP4
+222	2	Reception Area	SB003	WRC01
+222	2	Reception Area	SB262	SRLW1
+222	2	Reception Area	SC172	CLSC2
+222	2	Reception Area	SS091	PLAY1
+222	2	Reception Area	TLTU1	TLTU1
+222	3	Dental Treatment Patient Area	CDS03	DNXS1
+222	3	Dental Treatment Patient Area	CDS05	DNXC1
+222	3	Dental Treatment Patient Area	CDS06	DNXC2
+222	3	Dental Treatment Patient Area	CDS11	DNTG1
+222	3	Dental Treatment Patient Area	CDS13	DNTG5
+222	3	Dental Treatment Patient Area	CDS15	DNTE1
+222	3	Dental Treatment Patient Area	CRT82	XVC01
+222	3	Dental Treatment Patient Area	DNSC3	DNSC3
+222	3	Dental Treatment Patient Area	MEDP1	MEDP1
+222	3	Dental Treatment Patient Area	OPT17	WRTM2
+222	3	Dental Treatment Patient Area	SB002	WRC03
+222	3	Dental Treatment Patient Area	SB737	UCCL1
+222	3	Dental Treatment Patient Area	SC007	RCA01
+222	3	Dental Treatment Patient Area	SRE01	SRE01
+222	3	Dental Treatment Patient Area	SV422	OFDC2
+222	3	Dental Treatment Patient Area	SV648	SRS01
+222	3	Dental Treatment Patient Area	TLTU1	TLTU1
+222	3	Dental Treatment Patient Area	WRTM1	WRTM1
+222	4	Dental Surgery Suite Patient Area	CDS41	DNTR1
+222	4	Dental Surgery Suite Patient Area	CDS47	DNTS1
+222	4	Dental Surgery Suite Patient Area	LCSL2	LCSL2
+222	4	Dental Surgery Suite Patient Area	SB002	WRC03
+222	4	Dental Surgery Suite Patient Area	SB737	UCCL1
+222	4	Dental Surgery Suite Patient Area	SB743	USCL1
+222	4	Dental Surgery Suite Patient Area	SC007	RCA01
+222	4	Dental Surgery Suite Patient Area	SC010	RCA04
+222	4	Dental Surgery Suite Patient Area	SC199	ORSA1
+222	4	Dental Surgery Suite Patient Area	SC471	LCCL1
+222	4	Dental Surgery Suite Patient Area	SRE01	SRE01
+222	4	Dental Surgery Suite Patient Area	SS212	WRCH1
+222	4	Dental Surgery Suite Patient Area	TLTU1	TLTU1
+222	5	Dental Laboratories Area	CDS51	DNPL1
+222	5	Dental Laboratories Area	CDS61	DNPC1
+222	5	Dental Laboratories Area	CDS63	DNPL5
+222	5	Dental Laboratories Area	CDS65	DNPL6
+222	5	Dental Laboratories Area	CDS67	DNPL7
+222	5	Dental Laboratories Area	CDS69	DNPL8
+222	5	Dental Laboratories Area	CDS71	DNPL9
+222	5	Dental Laboratories Area	CDS73	DNSR2
+222	5	Dental Laboratories Area	CDS92	DNMP1
+222	5	Dental Laboratories Area	DNMS1	DNMS1
+222	5	Dental Laboratories Area	SRSE1	SRSE1
+222	5	Dental Laboratories Area	SSS01	SSS01
+222	5	Dental Laboratories Area	SV648	SRS01
+222	6	Support Area	CDS94	DNSR1
+222	6	Support Area	CDS95	MECH1
+222	6	Support Area	COMC1	COMC1
+222	6	Support Area	SB262	SRLW1
+222	6	Support Area	SB737	UCCL1
+222	6	Support Area	SB743	USCL1
+222	6	Support Area	SC007	RCA01
+222	6	Support Area	SC013	RCA05
+222	6	Support Area	SRGC2	SRGC2
+222	6	Support Area	SS218	OFA07
+222	6	Support Area	SV549	JANC1
+222	7	Staff and Administrative Areas	SC195	FILE1
+222	7	Staff and Administrative Areas	SC648	CRA01
+222	7	Staff and Administrative Areas	SS205	OFA09
+222	7	Staff and Administrative Areas	SS218	OFA07
+222	7	Staff and Administrative Areas	SS241	LR002
+222	7	Staff and Administrative Areas	SS262	SL001
+222	7	Staff and Administrative Areas	SS272	RPR01
+222	7	Staff and Administrative Areas	TLTS1	TLTS1
+222	7	Staff and Administrative Areas	TLTU1	TLTU1
+222	7	Staff and Administrative Areas	WRTM1	WRTM1
+222	8	Education Area	SS205	OFA09
+222	8	Education Area	SS218	OFA07
+222	8	Education Area	WRTM1	WRTM1
+224	1	Main Kitchen Staff and Administrative Area	COMC1	COMC1
+224	1	Main Kitchen Staff and Administrative Area	SC648	CRA01
+224	1	Main Kitchen Staff and Administrative Area	SS205	OFA09
+224	1	Main Kitchen Staff and Administrative Area	SS218	OFA07
+224	1	Main Kitchen Staff and Administrative Area	SS222	SEC01
+224	1	Main Kitchen Staff and Administrative Area	SS262	SL001
+224	1	Main Kitchen Staff and Administrative Area	SS282	LR001
+224	1	Main Kitchen Staff and Administrative Area	SV422	OFDC2
+224	1	Main Kitchen Staff and Administrative Area	TLTU1	TLTU1
+224	2	Main Kitchen Receiving and Storage Area	RER01	RER01
+224	2	Main Kitchen Receiving and Storage Area	SV635	MMRP1
+224	2	Main Kitchen Receiving and Storage Area	SV648	SRS01
+224	3	Main Kitchen Food Preparation Area	FSNP1	FSNP1
+224	3	Main Kitchen Food Preparation Area	FSSC1	FSSC1
+224	3	Main Kitchen Food Preparation Area	SV648	SRS01
+224	3	Main Kitchen Food Preparation Area	SV653	FSTD1
+224	4	Main Kitchen Patient Tray Service Area	FSCS1	FSCS1
+224	4	Main Kitchen Patient Tray Service Area	SRR01	SRR01
+224	4	Main Kitchen Patient Tray Service Area	SV653	FSTD1
+224	5	Main Kitchen Sanitation Area	FSCS1	FSCS1
+224	5	Main Kitchen Sanitation Area	SV657	FSDW1
+224	5	Main Kitchen Sanitation Area	SV663	FSPW1
+224	5	Main Kitchen Sanitation Area	UTR02	UTR02
+224	6	Main Kitchen Support Area	CDS95	MECH1
+224	6	Main Kitchen Support Area	SB287	SRHM1
+224	6	Main Kitchen Support Area	SC474	UTC01
+224	6	Main Kitchen Support Area	SV549	JANC1
+226	1	Reception Area	RECP1	RECP1
+226	1	Reception Area	RECP4	RECP4
+226	1	Reception Area	SB003	WRC01
+226	1	Reception Area	SC170	CLSC1
+226	1	Reception Area	SC171	CLSC3
+226	1	Reception Area	TLTF3	TLTF3
+226	1	Reception Area	TLTU1	TLTU1
+226	2	Patient Area	CEE01	OPEE1
+226	2	Patient Area	CEE06	EXRE2
+226	2	Patient Area	CPL23	OPPF8
+226	2	Patient Area	TLTU1	TLTU1
+226	3	Support Area	CRT82	XVC01
+226	3	Support Area	LCCL3	LCCL3
+226	3	Support Area	OPEE2	OPEE2
+226	3	Support Area	SB262	SRLW1
+226	3	Support Area	SB737	UCCL1
+226	3	Support Area	SB743	USCL1
+226	3	Support Area	SC007	RCA01
+226	3	Support Area	SRE01	SRE01
+226	3	Support Area	SV549	JANC1
+226	4	Staff and Administrative Area	SS205	OFA09
+226	4	Staff and Administrative Area	SS218	OFA07
+226	4	Staff and Administrative Area	SS241	LR002
+226	4	Staff and Administrative Area	SS262	SL001
+226	4	Staff and Administrative Area	TLTU1	TLTU1
+226	5	Conference / Classroom	RPT52	CLR01
+230	1	Reception Area	RECP1	RECP1
+230	1	Reception Area	SB003	WRC01
+230	1	Reception Area	TLTU1	TLTU1
+230	2	Administrative and Operations Area	OPT16	CRA02
+230	2	Administrative and Operations Area	SS205	OFA09
+230	2	Administrative and Operations Area	SS218	OFA07
+230	2	Administrative and Operations Area	SS262	SL001
+230	2	Administrative and Operations Area	SS282	LR001
+230	2	Administrative and Operations Area	TLTU1	TLTU1
+230	2	Administrative and Operations Area	XXYYC	XXYYC
+230	2	Administrative and Operations Area	XXYYZ	XXYYZ
+230	3	Engineering Control Center	XXYYC	XXYYC
+230	4	Biomedical Engineering Repair Shop	SB318	BMRA1
+230	4	Biomedical Engineering Repair Shop	SB321	BMER1
+230	4	Biomedical Engineering Repair Shop	SRE01	SRE01
+230	4	Biomedical Engineering Repair Shop	SS218	OFA07
+230	5	Shop Area	PMCW1	PMCW1
+230	5	Shop Area	SB287	SRHM1
+230	5	Shop Area	SRE01	SRE01
+230	5	Shop Area	SV549	JANC1
+230	5	Shop Area	XXYYC	XXYYC
+232	1	Reception Area	RECP1	RECP1
+232	1	Reception Area	SB003	WRC01
+232	1	Reception Area	TLTU1	TLTU1
+232	2	Computer Area	FMAE1	FMAE1
+232	2	Computer Area	FMPE1	FMPE1
+232	2	Computer Area	ITAC1	ITAC1
+232	2	Computer Area	ITAD1	ITAD1
+232	2	Computer Area	ITAE1	ITAE1
+232	2	Computer Area	ITBU1	ITBU1
+232	2	Computer Area	ITNT1	ITNT1
+232	2	Computer Area	ITPE1	ITPE1
+232	2	Computer Area	TEDP1	TEDP1
+232	2	Computer Area	TEIP1	TEIP1
+232	3	Computer Support Area	ITBD1	ITBD1
+232	3	Computer Support Area	ITRD1	ITRD1
+232	3	Computer Support Area	ITWR1	ITWR1
+232	3	Computer Support Area	SRE01	SRE01
+232	4	Telecommunications Support Area	SC391	TETR1
+232	4	Telecommunications Support Area	SC393	TEDR1
+232	4	Telecommunications Support Area	SC675	TEEQ1
+232	4	Telecommunications Support Area	SS262	SL001
+232	4	Telecommunications Support Area	TEOR1	TEOR1
+232	4	Telecommunications Support Area	TLTU1	TLTU1
+232	5	Staff and Administrative Areas	CLR03	CLR03
+232	5	Staff and Administrative Areas	SC648	CRA01
+232	5	Staff and Administrative Areas	SS205	OFA09
+232	5	Staff and Administrative Areas	SS212	WRCH1
+232	5	Staff and Administrative Areas	SS218	OFA07
+232	5	Staff and Administrative Areas	SS262	SL001
+232	5	Staff and Administrative Areas	SS272	RPR01
+232	5	Staff and Administrative Areas	SS282	LR001
+232	5	Staff and Administrative Areas	SV549	JANC1
+232	5	Staff and Administrative Areas	SV648	SRS01
+232	5	Staff and Administrative Areas	TLTU1	TLTU1
+233	1	Reception Area	RECP1	RECP1
+233	1	Reception Area	SB003	WRC01
+233	1	Reception Area	TLTU1	TLTU1
+233	2	Patient Area	CEY91	EYFD1
+233	2	Patient Area	CRT21	XDUS1
+233	2	Patient Area	EYCL1	EYCL1
+233	2	Patient Area	EYER1	EYER1
+233	2	Patient Area	EYOT2	EYOT2
+233	2	Patient Area	EYVF1	EYVF1
+233	2	Patient Area	EYVS1	EYVS1
+233	2	Patient Area	SB003	WRC01
+233	2	Patient Area	TREY2	TREY2
+233	3	Support Area	MEDP1	MEDP1
+233	3	Support Area	SB262	SRLW1
+233	3	Support Area	SB737	UCCL1
+233	3	Support Area	SB743	USCL1
+233	3	Support Area	SC007	RCA01
+233	3	Support Area	SRE01	SRE01
+233	3	Support Area	SV549	JANC1
+233	3	Support Area	SV648	SRS01
+233	4	Staff and Administrative Area	CRT82	XVC01
+233	4	Staff and Administrative Area	RECP3	RECP3
+233	4	Staff and Administrative Area	SC648	CRA01
+233	4	Staff and Administrative Area	SRE01	SRE01
+233	4	Staff and Administrative Area	SS203	OFA04
+233	4	Staff and Administrative Area	SS205	OFA09
+233	4	Staff and Administrative Area	SS212	WRCH1
+233	4	Staff and Administrative Area	SS218	OFA07
+233	4	Staff and Administrative Area	SS222	SEC01
+233	4	Staff and Administrative Area	SS262	SL001
+233	4	Staff and Administrative Area	SS282	LR001
+233	4	Staff and Administrative Area	TLTU1	TLTU1
+233	5	Education Area	OPT16	CRA02
+233	5	Education Area	SS205	OFA09
+234	1	Reception Area	SB003	WRC01
+234	1	Reception Area	TLTU1	TLTU1
+234	2	Staff and Administrative Area	RECP1	RECP1
+234	2	Staff and Administrative Area	SS205	OFA09
+234	2	Staff and Administrative Area	SS218	OFA07
+234	2	Staff and Administrative Area	SV696	CASH1
+234	2	Staff and Administrative Area	TLTU1	TLTU1
+234	3	Support Area	SC195	FILE1
+234	3	Support Area	SV648	SRS01
+238	1	Reception Area	SB003	WRC01
+238	2	Staff and Administrative Area	SC195	FILE1
+238	2	Staff and Administrative Area	SC648	CRA01
+238	2	Staff and Administrative Area	SS205	OFA09
+238	2	Staff and Administrative Area	SS207	OFA11
+238	2	Staff and Administrative Area	SS208	OFA12
+238	2	Staff and Administrative Area	SS218	OFA07
+238	2	Staff and Administrative Area	SS222	SEC01
+238	2	Staff and Administrative Area	TLTU1	TLTU1
+238	3	Support Area	SC164	IPK01
+238	3	Support Area	SV549	JANC1
+240	1	Patient Specimen Collection Area	CL101	LBBD1
+240	1	Patient Specimen Collection Area	RECP1	RECP1
+240	1	Patient Specimen Collection Area	SB003	WRC01
+240	1	Patient Specimen Collection Area	TLTU1	TLTU1
+240	2	Core Laboratory Work Area	CL823	LBBD2
+240	2	Core Laboratory Work Area	XXYYC	XXYYC
+240	3	Clinical Pathology Work Area	CL201	LMCH3
+240	3	Clinical Pathology Work Area	CL211	LMCH4
+240	3	Clinical Pathology Work Area	CL221	LBRI1
+240	3	Clinical Pathology Work Area	CL226	LMU03
+240	3	Clinical Pathology Work Area	CL241	LMHI3
+240	3	Clinical Pathology Work Area	CL251	LMBB2
+240	3	Clinical Pathology Work Area	CL261	LMBB3
+240	3	Clinical Pathology Work Area	CL266	LMBB1
+240	3	Clinical Pathology Work Area	CL276	LMM03
+240	3	Clinical Pathology Work Area	CL281	LMM02
+240	3	Clinical Pathology Work Area	CL861	LMHC1
+240	3	Clinical Pathology Work Area	XXYYC	XXYYC
+240	4	Molecular Testing Suite	CL301	LMML2
+240	4	Molecular Testing Suite	CL306	LMML3
+240	4	Molecular Testing Suite	CL311	LMML4
+240	4	Molecular Testing Suite	XXYYC	XXYYC
+240	5	Anatomical Pathology Work Area	CL401	LMHS2
+240	5	Anatomical Pathology Work Area	CL421	LMCY3
+240	5	Anatomical Pathology Work Area	CL861	LMHC1
+240	5	Anatomical Pathology Work Area	SRL01	SRL01
+240	5	Anatomical Pathology Work Area	XXYYC	XXYYC
+240	6	Electron Microscopy Suite	CL501	LBEM2
+240	6	Electron Microscopy Suite	CL521	LBEM3
+240	6	Electron Microscopy Suite	XXYYC	XXYYC
+240	7	Autopsy Suite	CL601	LBAR1
+240	7	Autopsy Suite	CL621	LBMR1
+240	7	Autopsy Suite	CL631	LBTS1
+240	7	Autopsy Suite	SS241	LR002
+240	7	Autopsy Suite	SV549	JANC1
+240	7	Autopsy Suite	TLTS1	TLTS1
+240	7	Autopsy Suite	XXYYC	XXYYC
+240	8	Support Area	CSSS2	CSSS2
+240	8	Support Area	SRGC2	SRGC2
+240	8	Support Area	SRR01	SRR01
+240	8	Support Area	SV549	JANC1
+240	8	Support Area	SV648	SRS01
+240	9	Staff and Administrative Area	SC648	CRA01
+240	9	Staff and Administrative Area	SS205	OFA09
+240	9	Staff and Administrative Area	SS218	OFA07
+240	9	Staff and Administrative Area	SS222	SEC01
+240	9	Staff and Administrative Area	SS262	SL001
+240	9	Staff and Administrative Area	SS282	LR001
+240	9	Staff and Administrative Area	TLTU1	TLTU1
+240	9	Staff and Administrative Area	XXYYC	XXYYC
+240	10	Education Area	CL811	LIBB1
+240	10	Education Area	OPT16	CRA02
+240	10	Education Area	SS218	OFA07
+244	1	Lobby Area	RECP1	RECP1
+244	1	Lobby Area	SB117	LOB01
+244	1	Lobby Area	SB121	LOB03
+244	1	Lobby Area	SB122	LOB04
+244	1	Lobby Area	SB159	TLTF2
+244	1	Lobby Area	SB262	SRLW1
+244	1	Lobby Area	SS218	OFA07
+244	1	Lobby Area	TLTM2	TLTM2
+246	1	Office of the Chief	OPT16	CRA02
+246	1	Office of the Chief	SS205	OFA09
+246	1	Office of the Chief	SS218	OFA07
+246	1	Office of the Chief	SS222	SEC01
+246	1	Office of the Chief	SV648	SRS01
+246	1	Office of the Chief	TLTU1	TLTU1
+246	2	Health Benefits Section: Centralized Registration Unit (CRU)	REC01	REC01
+246	2	Health Benefits Section: Centralized Registration Unit (CRU)	SB003	WRC01
+246	2	Health Benefits Section: Centralized Registration Unit (CRU)	SRPB2	SRPB2
+246	2	Health Benefits Section: Centralized Registration Unit (CRU)	SS203	OFA04
+246	2	Health Benefits Section: Centralized Registration Unit (CRU)	SS205	OFA09
+246	2	Health Benefits Section: Centralized Registration Unit (CRU)	SS218	OFA07
+246	2	Health Benefits Section: Centralized Registration Unit (CRU)	SS219	OFA03
+246	2	Health Benefits Section: Centralized Registration Unit (CRU)	SV422	OFDC2
+246	2	Health Benefits Section: Centralized Registration Unit (CRU)	SV648	SRS01
+246	3	Health Benefits Section: Outpatient Registration	SS205	OFA09
+246	4	Health Information Management Section (HIMS)	SC195	FILE1
+246	4	Health Information Management Section (HIMS)	SRE01	SRE01
+246	4	Health Information Management Section (HIMS)	SRSE1	SRSE1
+246	4	Health Information Management Section (HIMS)	SS203	OFA04
+246	4	Health Information Management Section (HIMS)	SS205	OFA09
+246	4	Health Information Management Section (HIMS)	SS218	OFA07
+246	4	Health Information Management Section (HIMS)	SS227	MRWK1
+246	5	Ward Administration Section (WAS)	SS205	OFA09
+246	5	Ward Administration Section (WAS)	SS218	OFA07
+246	5	Ward Administration Section (WAS)	SV648	SRS01
+246	6	Fee Services (FS) Section	RECP3	RECP3
+246	6	Fee Services (FS) Section	SS205	OFA09
+246	6	Fee Services (FS) Section	SS218	OFA07
+246	6	Fee Services (FS) Section	SV648	SRS01
+246	7	Office Operations Section	COMC1	COMC1
+246	7	Office Operations Section	SB653	MRMB1
+248	1	Reception and Administration Area	RECP1	RECP1
+248	1	Reception and Administration Area	SC648	CRA01
+248	1	Reception and Administration Area	SS205	OFA09
+248	1	Reception and Administration Area	SS218	OFA07
+248	2	Photography Service Production Area	SC602	MIPF1
+248	2	Photography Service Production Area	SC652	MIDR1
+248	2	Photography Service Production Area	SC653	MIST1
+248	2	Photography Service Production Area	SC655	MICL1
+248	2	Photography Service Production Area	TLTU1	TLTU1
+248	3	Illustration Service Production Area	SC653	MIST1
+248	4	Audiovisual Service Production Area	SC675	TEEQ1
+248	4	Audiovisual Service Production Area	XXYYC	XXYYC
+248	5	Central Copy Center Service Production Area	SRE01	SRE01
+248	5	Central Copy Center Service Production Area	XXYYC	XXYYC
+248	6	Support Area	SC648	CRA01
+248	6	Support Area	SRE01	SRE01
+248	7	MMVSS Reception and Administration Area	RECP3	RECP3
+248	7	MMVSS Reception and Administration Area	SC648	CRA01
+248	7	MMVSS Reception and Administration Area	SS205	OFA09
+248	7	MMVSS Reception and Administration Area	SS218	OFA07
+248	8	MMVSS Photography Production Area	SC652	MIDR1
+248	8	MMVSS Photography Production Area	SC653	MIST1
+248	8	MMVSS Photography Production Area	SC655	MICL1
+248	8	MMVSS Photography Production Area	TLTU1	TLTU1
+248	8	MMVSS Photography Production Area	XXYYC	XXYYC
+248	9	MMVSS Illustration Service Production Area	SC653	MIST1
+248	10	MMVSS Audiovisual Service Production Area	SC675	TEEQ1
+248	10	MMVSS Audiovisual Service Production Area	XXYYC	XXYYC
+248	11	MMVSS Central Copy Center Service / Production Area	SRE01	SRE01
+248	11	MMVSS Central Copy Center Service / Production Area	XXYYC	XXYYC
+248	12	MMVSS Support Area	SC648	CRA01
+248	12	MMVSS Support Area	SRE01	SRE01
+248	13	VAMC without Medical Media Service	SRE01	SRE01
+248	13	VAMC without Medical Media Service	XXYYC	XXYYC
+252	1	Reception Area	RECP1	RECP1
+252	1	Reception Area	SB003	WRC01
+252	1	Reception Area	SC170	CLSC1
+252	1	Reception Area	TLTU1	TLTU1
+252	2	Patient Area	CCD26	OPPE2
+252	2	Patient Area	CL221	LBRI1
+252	2	Patient Area	CMP01	CMP01
+252	2	Patient Area	CRT02	XTLA1
+252	2	Patient Area	CRT82	XVC01
+252	2	Patient Area	EXRG1	EXRG1
+252	2	Patient Area	NMCR1	NMCR1
+252	2	Patient Area	NMGS1	NMGS1
+252	2	Patient Area	NMIR1	NMIR1
+252	2	Patient Area	NMRP1	NMRP1
+252	2	Patient Area	NMSS1	NMSS1
+252	2	Patient Area	NMUR1	NMUR1
+252	2	Patient Area	ORPP1	ORPP1
+252	2	Patient Area	SB003	WRC01
+252	2	Patient Area	SB138	DR001
+252	2	Patient Area	SC174	PAIA1
+252	2	Patient Area	TLTU1	TLTU1
+252	2	Patient Area	XDBD1	XDBD1
+252	2	Patient Area	XMRC2	XMRC2
+252	3	Support Area	CRT34	XTLB1
+252	3	Support Area	CRT48	XFSA1
+252	3	Support Area	CRT82	XVC01
+252	3	Support Area	LLCL1	LLCL1
+252	3	Support Area	NMDC1	NMDC1
+252	3	Support Area	RCAO1	RCAO1
+252	3	Support Area	SB261	SRLW2
+252	3	Support Area	SB737	UCCL1
+252	3	Support Area	SB743	USCL1
+252	3	Support Area	SC099	XRM01
+252	3	Support Area	SRR02	SRR02
+252	3	Support Area	SS212	WRCH1
+252	3	Support Area	SV549	JANC1
+252	3	Support Area	XFDS1	XFDS1
+252	4	Staff and Administrative Area	OPT17	WRTM2
+252	4	Staff and Administrative Area	RECP3	RECP3
+252	4	Staff and Administrative Area	SS205	OFA09
+252	4	Staff and Administrative Area	SS218	OFA07
+252	4	Staff and Administrative Area	SS262	SL001
+252	4	Staff and Administrative Area	SS282	LR001
+252	4	Staff and Administrative Area	TLTU1	TLTU1
+252	5	Education Area	SS218	OFA07
+254	1	Reception Area	RECP1	RECP1
+254	1	Reception Area	SB003	WRC01
+254	1	Reception Area	TLTU1	TLTU1
+254	2	Staff and Administration Area	SC648	CRA01
+254	2	Staff and Administration Area	SS205	OFA09
+254	2	Staff and Administration Area	SS207	OFA11
+254	2	Staff and Administration Area	SS218	OFA07
+254	2	Staff and Administration Area	SS222	SEC01
+254	2	Staff and Administration Area	SS262	SL001
+254	2	Staff and Administration Area	SS282	LR001
+254	2	Staff and Administration Area	TLTU1	TLTU1
+254	3	Education Area	CLR02	CLR02
+254	3	Education Area	SS205	OFA09
+254	3	Education Area	SS218	OFA07
+254	3	Education Area	SS222	SEC01
+256	1	Emergency Department: Reception Area	BX001	BX001
+256	1	Emergency Department: Reception Area	RECP1	RECP1
+256	1	Emergency Department: Reception Area	RECP2	RECP2
+256	1	Emergency Department: Reception Area	RSH02	LOB02
+256	1	Emergency Department: Reception Area	SB003	WRC01
+256	1	Emergency Department: Reception Area	SB121	LOB03
+256	1	Emergency Department: Reception Area	SB122	LOB04
+256	1	Emergency Department: Reception Area	SB262	SRLW1
+256	1	Emergency Department: Reception Area	SS268	RPR03
+256	1	Emergency Department: Reception Area	SV422	OFDC2
+256	1	Emergency Department: Reception Area	TLTU1	TLTU1
+256	2	Emergency Department: Patient Care Area	BRNP5	BRNP5
+256	2	Emergency Department: Patient Care Area	CPR17	OPCR1
+256	2	Emergency Department: Patient Care Area	EXRG9	EXRG9
+256	2	Emergency Department: Patient Care Area	EXTR1	EXTR1
+256	2	Emergency Department: Patient Care Area	IPT04	BRAR1
+256	2	Emergency Department: Patient Care Area	NSTA4	NSTA4
+256	2	Emergency Department: Patient Care Area	OPMH4	OPMH4
+256	2	Emergency Department: Patient Care Area	RSH12	TLTS2
+256	2	Emergency Department: Patient Care Area	SHWR1	SHWR1
+256	2	Emergency Department: Patient Care Area	SV422	OFDC2
+256	2	Emergency Department: Patient Care Area	SV648	SRS01
+256	2	Emergency Department: Patient Care Area	TLTB1	TLTB1
+256	2	Emergency Department: Patient Care Area	TLTP1	TLTP1
+256	2	Emergency Department: Patient Care Area	TLTU1	TLTU1
+256	2	Emergency Department: Patient Care Area	TRET3	TRET3
+256	2	Emergency Department: Patient Care Area	TRET4	TRET4
+256	2	Emergency Department: Patient Care Area	TRET6	TRET6
+256	2	Emergency Department: Patient Care Area	TRPR1	TRPR1
+256	3	Emergency Department Observation Patient Care Area	NSTA4	NSTA4
+256	3	Emergency Department Observation Patient Care Area	TLTU1	TLTU1
+256	3	Emergency Department Observation Patient Care Area	TRET4	TRET4
+256	4	Emegerncy Department: Imaging Patient Care Area	SB003	WRC01
+256	4	Emegerncy Department: Imaging Patient Care Area	SB138	DR001
+256	4	Emegerncy Department: Imaging Patient Care Area	TLTU1	TLTU1
+256	4	Emegerncy Department: Imaging Patient Care Area	XCTC1	XCTC1
+256	4	Emegerncy Department: Imaging Patient Care Area	XCTS1	XCTS1
+256	4	Emegerncy Department: Imaging Patient Care Area	XDR01	XDR01
+256	4	Emegerncy Department: Imaging Patient Care Area	XDRC1	XDRC1
+256	5	Emergency Department: Support Area	CL851	LBSP1
+256	5	Emergency Department: Support Area	CSED1	CSED1
+256	5	Emergency Department: Support Area	LCCL3	LCCL3
+256	5	Emergency Department: Support Area	MEDP1	MEDP1
+256	5	Emergency Department: Support Area	SB261	SRLW2
+256	5	Emergency Department: Support Area	SB262	SRLW1
+256	5	Emergency Department: Support Area	SB652	NT001
+256	5	Emergency Department: Support Area	SB737	UCCL1
+256	5	Emergency Department: Support Area	SB743	USCL1
+256	5	Emergency Department: Support Area	SC007	RCA01
+256	5	Emergency Department: Support Area	SC099	XRM01
+256	5	Emergency Department: Support Area	SC251	NSTA1
+256	5	Emergency Department: Support Area	SC294	NCWD3
+256	5	Emergency Department: Support Area	SRE01	SRE01
+256	5	Emergency Department: Support Area	SS287	DUTY1
+256	5	Emergency Department: Support Area	SV549	JANC1
+256	5	Emergency Department: Support Area	SV648	SRS01
+256	5	Emergency Department: Support Area	TLTS1	TLTS1
+256	6	Emergency Department: Staff and Administrative Area	SB208	LR004
+256	6	Emergency Department: Staff and Administrative Area	SS205	OFA09
+256	6	Emergency Department: Staff and Administrative Area	SS262	SL001
+256	6	Emergency Department: Staff and Administrative Area	SS282	LR001
+256	6	Emergency Department: Staff and Administrative Area	TLTU1	TLTU1
+256	7	Urgent Care Clinic: Reception Area	BX001	BX001
+256	7	Urgent Care Clinic: Reception Area	RECP1	RECP1
+256	7	Urgent Care Clinic: Reception Area	RECP2	RECP2
+256	7	Urgent Care Clinic: Reception Area	RSH02	LOB02
+256	7	Urgent Care Clinic: Reception Area	SB003	WRC01
+256	7	Urgent Care Clinic: Reception Area	SB121	LOB03
+256	7	Urgent Care Clinic: Reception Area	SB122	LOB04
+256	7	Urgent Care Clinic: Reception Area	SB262	SRLW1
+256	7	Urgent Care Clinic: Reception Area	SS268	RPR03
+256	7	Urgent Care Clinic: Reception Area	SV422	OFDC2
+256	7	Urgent Care Clinic: Reception Area	TLTU1	TLTU1
+256	8	Urgent Care Clinic: Patient Care Area	BRNP5	BRNP5
+256	8	Urgent Care Clinic: Patient Care Area	EXB01	EXB01
+256	8	Urgent Care Clinic: Patient Care Area	EXRG9	EXRG9
+256	8	Urgent Care Clinic: Patient Care Area	EXTR1	EXTR1
+256	8	Urgent Care Clinic: Patient Care Area	IPT04	BRAR1
+256	8	Urgent Care Clinic: Patient Care Area	NSTA4	NSTA4
+256	8	Urgent Care Clinic: Patient Care Area	OPMH4	OPMH4
+256	8	Urgent Care Clinic: Patient Care Area	RSH12	TLTS2
+256	8	Urgent Care Clinic: Patient Care Area	RSH81	EXRG0
+256	8	Urgent Care Clinic: Patient Care Area	SHWR1	SHWR1
+256	8	Urgent Care Clinic: Patient Care Area	SV422	OFDC2
+256	8	Urgent Care Clinic: Patient Care Area	SV648	SRS01
+256	8	Urgent Care Clinic: Patient Care Area	TLTB1	TLTB1
+256	8	Urgent Care Clinic: Patient Care Area	TLTP1	TLTP1
+256	8	Urgent Care Clinic: Patient Care Area	TLTU1	TLTU1
+256	8	Urgent Care Clinic: Patient Care Area	TRPR1	TRPR1
+256	9	Urgent Care Clinic: Imaging Patient Care Area	SB003	WRC01
+256	9	Urgent Care Clinic: Imaging Patient Care Area	SB138	DR001
+256	9	Urgent Care Clinic: Imaging Patient Care Area	TLTU1	TLTU1
+256	9	Urgent Care Clinic: Imaging Patient Care Area	XDR01	XDR01
+256	9	Urgent Care Clinic: Imaging Patient Care Area	XDRC1	XDRC1
+256	10	Urgent Care Clinic: Support Area	CL851	LBSP1
+256	10	Urgent Care Clinic: Support Area	LCCL3	LCCL3
+256	10	Urgent Care Clinic: Support Area	MEDP1	MEDP1
+256	10	Urgent Care Clinic: Support Area	SB262	SRLW1
+256	10	Urgent Care Clinic: Support Area	SB737	UCCL1
+256	10	Urgent Care Clinic: Support Area	SB743	USCL1
+256	10	Urgent Care Clinic: Support Area	SC007	RCA01
+256	10	Urgent Care Clinic: Support Area	SC099	XRM01
+256	10	Urgent Care Clinic: Support Area	SC251	NSTA1
+256	10	Urgent Care Clinic: Support Area	SC294	NCWD3
+256	10	Urgent Care Clinic: Support Area	SRE01	SRE01
+256	10	Urgent Care Clinic: Support Area	SV549	JANC1
+256	10	Urgent Care Clinic: Support Area	SV648	SRS01
+256	11	Urgent Care Clinic: Staff and Administrative Area	SB208	LR004
+256	11	Urgent Care Clinic: Staff and Administrative Area	SS205	OFA09
+256	11	Urgent Care Clinic: Staff and Administrative Area	SS262	SL001
+256	11	Urgent Care Clinic: Staff and Administrative Area	SS282	LR001
+256	11	Urgent Care Clinic: Staff and Administrative Area	TLTU1	TLTU1
+258	1	Reception Area	CWV11	LAC01
+258	1	Reception Area	RECP1	RECP1
+258	1	Reception Area	RECP4	RECP4
+258	1	Reception Area	SB003	WRC01
+258	1	Reception Area	SB086	WRF01
+258	1	Reception Area	SC170	CLSC1
+258	1	Reception Area	SS272	RPR01
+258	1	Reception Area	SV381	NCWD4
+258	1	Reception Area	SV422	OFDC2
+258	1	Reception Area	TLTF3	TLTF3
+258	1	Reception Area	TLTU1	TLTU1
+258	2	Patient Area	CWV26	EXW01
+258	2	Patient Area	CWV31	EXW02
+258	2	Patient Area	CWV36	TROB1
+258	2	Patient Area	CWV41	TROB2
+258	2	Patient Area	CWV46	TRAT1
+258	2	Patient Area	CWV51	CLSC4
+258	2	Patient Area	OPT17	WRTM2
+258	2	Patient Area	SB202	TLTF1
+258	2	Patient Area	TLTU1	TLTU1
+258	3	Imaging Women's Health Center (WHC) (Model 3 only) Patient Area	CRT21	XDUS1
+258	3	Imaging Women's Health Center (WHC) (Model 3 only) Patient Area	CRT82	XVC01
+258	3	Imaging Women's Health Center (WHC) (Model 3 only) Patient Area	SB003	WRC01
+258	3	Imaging Women's Health Center (WHC) (Model 3 only) Patient Area	SB138	DR001
+258	3	Imaging Women's Health Center (WHC) (Model 3 only) Patient Area	SRE01	SRE01
+258	3	Imaging Women's Health Center (WHC) (Model 3 only) Patient Area	TLTU1	TLTU1
+258	3	Imaging Women's Health Center (WHC) (Model 3 only) Patient Area	XDBD1	XDBD1
+258	3	Imaging Women's Health Center (WHC) (Model 3 only) Patient Area	XDM01	XDM01
+258	3	Imaging Women's Health Center (WHC) (Model 3 only) Patient Area	XDM02	XDM02
+258	4	Support Area	CL851	LBSP1
+258	4	Support Area	LCCL3	LCCL3
+258	4	Support Area	MEDP1	MEDP1
+258	4	Support Area	SB262	SRLW1
+258	4	Support Area	SB737	UCCL1
+258	4	Support Area	SB743	USCL1
+258	4	Support Area	SRE01	SRE01
+258	4	Support Area	SV549	JANC1
+258	5	Staff and Administrative Area	SB208	LR004
+258	5	Staff and Administrative Area	SC648	CRA01
+258	5	Staff and Administrative Area	SS203	OFA04
+258	5	Staff and Administrative Area	SS205	OFA09
+258	5	Staff and Administrative Area	SS218	OFA07
+258	5	Staff and Administrative Area	SS262	SL001
+258	5	Staff and Administrative Area	TLTU1	TLTU1
+258	5	Staff and Administrative Area	WRTM1	WRTM1
+258	6	Education Area	RPT52	CLR01
+258	6	Education Area	SS205	OFA09
+258	6	Education Area	SS218	OFA07
+260	1	Reception Area	SB003	WRC01
+260	1	Reception Area	SC251	NSTA1
+260	1	Reception Area	TLTU1	TLTU1
+260	2	Patient Area [67]	OCB31	EXRG3
+260	2	Patient Area [67]	OCM81	OPMH3
+260	2	Patient Area [67]	OPMH1	OPMH1
+260	2	Patient Area [67]	SC399	CMP02
+260	2	Patient Area [67]	TLTU1	TLTU1
+260	2	Patient Area [67]	TRGM1	TRGM1
+260	3	Staff and Administrative Area	OFDC1	OFDC1
+260	3	Staff and Administrative Area	SS205	OFA09
+260	3	Staff and Administrative Area	SS218	OFA07
+260	3	Staff and Administrative Area	SS262	SL001
+260	3	Staff and Administrative Area	SS282	LR001
+260	3	Staff and Administrative Area	TLTU1	TLTU1
+260	4	Education Area	OPT16	CRA02
+260	4	Education Area	SL002	SL002
+261	1	Reception Area	SB003	WRC01
+261	1	Reception Area	SC251	NSTA1
+261	1	Reception Area	TLTU1	TLTU1
+261	2	Patient Area	OCB31	EXRG3
+261	2	Patient Area	OCM81	OPMH3
+261	2	Patient Area	OPMH1	OPMH1
+261	2	Patient Area	OTGC1	OTGC1
+261	2	Patient Area	RSH62	DAYR1
+261	2	Patient Area	SC164	IPK01
+261	2	Patient Area	SC399	CMP02
+261	2	Patient Area	SRE01	SRE01
+261	2	Patient Area	SS262	SL001
+261	2	Patient Area	SV648	SRS01
+261	2	Patient Area	TLTU1	TLTU1
+261	2	Patient Area	TRGM1	TRGM1
+261	3	Staff and Administrative Area	OFDC1	OFDC1
+261	3	Staff and Administrative Area	SS205	OFA09
+261	3	Staff and Administrative Area	SS218	OFA07
+261	3	Staff and Administrative Area	SS262	SL001
+261	3	Staff and Administrative Area	SS282	LR001
+261	3	Staff and Administrative Area	TLTU1	TLTU1
+261	4	Education Area	OPT16	CRA02
+261	4	Education Area	SL002	SL002
+262	1	Reception Area	RECP3	RECP3
+262	1	Reception Area	SB003	WRC01
+262	1	Reception Area	SB202	TLTF1
+262	1	Reception Area	SB203	TLTM1
+262	1	Reception Area	SC170	CLSC1
+262	1	Reception Area	SC648	CRA01
+262	2	(MAS) Reception / Central Control and Processing Unit Area	BX001	BX001
+262	2	(MAS) Reception / Central Control and Processing Unit Area	RECP1	RECP1
+262	2	(MAS) Reception / Central Control and Processing Unit Area	SB262	SRLW1
+262	2	(MAS) Reception / Central Control and Processing Unit Area	SS203	OFA04
+262	2	(MAS) Reception / Central Control and Processing Unit Area	SS205	OFA09
+262	2	(MAS) Reception / Central Control and Processing Unit Area	SS218	OFA07
+262	3	Examination / Treatment Module: General Patient Area	CCD01	OPEC1
+262	3	Examination / Treatment Module: General Patient Area	CL821	LBVP1
+262	3	Examination / Treatment Module: General Patient Area	EXRG4	EXRG4
+262	3	Examination / Treatment Module: General Patient Area	EXRG6	EXRG6
+262	3	Examination / Treatment Module: General Patient Area	EXRG8	EXRG8
+262	3	Examination / Treatment Module: General Patient Area	MEDP1	MEDP1
+262	3	Examination / Treatment Module: General Patient Area	NSTA4	NSTA4
+262	3	Examination / Treatment Module: General Patient Area	OCB31	EXRG3
+262	3	Examination / Treatment Module: General Patient Area	OPIR1	OPIR1
+262	3	Examination / Treatment Module: General Patient Area	PEHS1	PEHS1
+262	3	Examination / Treatment Module: General Patient Area	PEHS4	PEHS4
+262	3	Examination / Treatment Module: General Patient Area	RECP1	RECP1
+262	3	Examination / Treatment Module: General Patient Area	SB003	WRC01
+262	3	Examination / Treatment Module: General Patient Area	SB202	TLTF1
+262	3	Examination / Treatment Module: General Patient Area	SB203	TLTM1
+262	3	Examination / Treatment Module: General Patient Area	SB737	UCCL1
+262	3	Examination / Treatment Module: General Patient Area	SB743	USCL1
+262	3	Examination / Treatment Module: General Patient Area	SC148	CALC1
+262	3	Examination / Treatment Module: General Patient Area	SC648	CRA01
+262	3	Examination / Treatment Module: General Patient Area	SRE01	SRE01
+262	3	Examination / Treatment Module: General Patient Area	SV422	OFDC2
+262	3	Examination / Treatment Module: General Patient Area	TLTU1	TLTU1
+262	3	Examination / Treatment Module: General Patient Area	TRGM1	TRGM1
+262	4	Examination / Treatment Module Support Area	OFA01	OFA01
+262	4	Examination / Treatment Module Support Area	SS203	OFA04
+262	4	Examination / Treatment Module Support Area	SS205	OFA09
+262	4	Examination / Treatment Module Support Area	SS218	OFA07
+262	4	Examination / Treatment Module Support Area	SV549	JANC1
+262	5	Examination / Treatment Module Specialty Patient Area	CGE11	TREE1
+262	5	Examination / Treatment Module Specialty Patient Area	CGE41	USCL2
+262	5	Examination / Treatment Module Specialty Patient Area	CL851	LBSP1
+262	5	Examination / Treatment Module Specialty Patient Area	CPL41	OPRT1
+262	5	Examination / Treatment Module Specialty Patient Area	CPR17	OPCR1
+262	5	Examination / Treatment Module Specialty Patient Area	LBDE1	LBDE1
+262	5	Examination / Treatment Module Specialty Patient Area	MEDP1	MEDP1
+262	5	Examination / Treatment Module Specialty Patient Area	MRPA1	MRPA1
+262	5	Examination / Treatment Module Specialty Patient Area	OCB31	EXRG3
+262	5	Examination / Treatment Module Specialty Patient Area	OPCT1	OPCT1
+262	5	Examination / Treatment Module Specialty Patient Area	OPCT2	OPCT2
+262	5	Examination / Treatment Module Specialty Patient Area	OPDU1	OPDU1
+262	5	Examination / Treatment Module Specialty Patient Area	RECP1	RECP1
+262	5	Examination / Treatment Module Specialty Patient Area	SB003	WRC01
+262	5	Examination / Treatment Module Specialty Patient Area	SB737	UCCL1
+262	5	Examination / Treatment Module Specialty Patient Area	SC648	CRA01
+262	5	Examination / Treatment Module Specialty Patient Area	SHWR1	SHWR1
+262	5	Examination / Treatment Module Specialty Patient Area	SRCS1	SRCS1
+262	5	Examination / Treatment Module Specialty Patient Area	SS203	OFA04
+262	5	Examination / Treatment Module Specialty Patient Area	SS218	OFA07
+262	5	Examination / Treatment Module Specialty Patient Area	SV422	OFDC2
+262	5	Examination / Treatment Module Specialty Patient Area	TLTU1	TLTU1
+262	5	Examination / Treatment Module Specialty Patient Area	TRGS1	TRGS1
+262	5	Examination / Treatment Module Specialty Patient Area	TRPE1	TRPE1
+262	6	Employee Health Unit Area	RSH81	EXRG0
+262	6	Employee Health Unit Area	SC195	FILE1
+262	6	Employee Health Unit Area	SS218	OFA07
+262	7	Disposition Area	LBBV1	LBBV1
+262	7	Disposition Area	SB003	WRC01
+262	7	Disposition Area	SRPB2	SRPB2
+262	7	Disposition Area	SS205	OFA09
+262	7	Disposition Area	SS218	OFA07
+262	7	Disposition Area	SV696	CASH1
+262	7	Disposition Area	TLTU1	TLTU1
+262	8	Hospital Based Home Care (HBHC) Area	SC648	CRA01
+262	8	Hospital Based Home Care (HBHC) Area	SS218	OFA07
+262	8	Hospital Based Home Care (HBHC) Area	SV422	OFDC2
+262	9	Support Area	SB262	SRLW1
+262	9	Support Area	SB737	UCCL1
+262	9	Support Area	SB743	USCL1
+262	9	Support Area	SC007	RCA01
+262	9	Support Area	SRE01	SRE01
+262	9	Support Area	SS272	RPR01
+262	9	Support Area	SV549	JANC1
+262	9	Support Area	SV648	SRS01
+262	10	Staff and Administrative Area	OFDC1	OFDC1
+262	10	Staff and Administrative Area	OPT17	WRTM2
+262	10	Staff and Administrative Area	SC648	CRA01
+262	10	Staff and Administrative Area	SS205	OFA09
+262	10	Staff and Administrative Area	SS218	OFA07
+262	10	Staff and Administrative Area	SS222	SEC01
+262	10	Staff and Administrative Area	SS262	SL001
+262	10	Staff and Administrative Area	SS282	LR001
+262	10	Staff and Administrative Area	SV422	OFDC2
+262	10	Staff and Administrative Area	TLTU1	TLTU1
+262	11	Education Area	CL811	LIBB1
+262	11	Education Area	SC648	CRA01
+262	11	Education Area	SS218	OFA07
+264	1	Patient Aligned Care Team (PACT) Module Calculation	SC148	CALC1
+264	2	Patient Aligned Care Team (PACT) Module Reception Area	RECP1	RECP1
+264	2	Patient Aligned Care Team (PACT) Module Reception Area	RECP4	RECP4
+264	2	Patient Aligned Care Team (PACT) Module Reception Area	SB003	WRC01
+264	2	Patient Aligned Care Team (PACT) Module Reception Area	SB086	WRF01
+264	2	Patient Aligned Care Team (PACT) Module Reception Area	SC170	CLSC1
+264	2	Patient Aligned Care Team (PACT) Module Reception Area	TLTU1	TLTU1
+264	3	Patient Aligned Care Team (PACT) Module Patient Area	CWV26	EXW01
+264	3	Patient Aligned Care Team (PACT) Module Patient Area	CWV51	CLSC4
+264	3	Patient Aligned Care Team (PACT) Module Patient Area	EXPA1	EXPA1
+264	3	Patient Aligned Care Team (PACT) Module Patient Area	PEHW1	PEHW1
+264	3	Patient Aligned Care Team (PACT) Module Patient Area	SRSE1	SRSE1
+264	3	Patient Aligned Care Team (PACT) Module Patient Area	SV422	OFDC2
+264	3	Patient Aligned Care Team (PACT) Module Patient Area	TLTB1	TLTB1
+264	3	Patient Aligned Care Team (PACT) Module Patient Area	TLTU1	TLTU1
+264	3	Patient Aligned Care Team (PACT) Module Patient Area	TRPR1	TRPR1
+264	4	Patient Aligned Care Team (PACT) Module Support Area	IPT18	RCA02
+264	4	Patient Aligned Care Team (PACT) Module Support Area	SB737	UCCL1
+264	4	Patient Aligned Care Team (PACT) Module Support Area	SRE01	SRE01
+264	5	Patient Aligned Care Team (PACT) Module Staff and Administrative Area	OPT17	WRTM2
+264	5	Patient Aligned Care Team (PACT) Module Staff and Administrative Area	SB208	LR004
+264	5	Patient Aligned Care Team (PACT) Module Staff and Administrative Area	SC648	CRA01
+264	5	Patient Aligned Care Team (PACT) Module Staff and Administrative Area	SS218	OFA07
+264	5	Patient Aligned Care Team (PACT) Module Staff and Administrative Area	SS262	SL001
+264	5	Patient Aligned Care Team (PACT) Module Staff and Administrative Area	TLTU1	TLTU1
+264	5	Patient Aligned Care Team (PACT) Module Staff and Administrative Area	WKTM1	WKTM1
+264	6	Patient Aligned Care Team (PACT) Module Education Area	SC571	OFA10
+265	1	Lobby / Reception Area	RECP3	RECP3
+265	1	Lobby / Reception Area	RECP4	RECP4
+265	1	Lobby / Reception Area	RECP5	RECP5
+265	1	Lobby / Reception Area	RSH02	LOB02
+265	1	Lobby / Reception Area	SB086	WRF01
+265	1	Lobby / Reception Area	SB159	TLTF2
+265	1	Lobby / Reception Area	SB262	SRLW1
+265	1	Lobby / Reception Area	SC172	CLSC2
+265	1	Lobby / Reception Area	SV381	NCWD4
+265	1	Lobby / Reception Area	TLTF3	TLTF3
+265	1	Lobby / Reception Area	TLTM2	TLTM2
+265	1	Lobby / Reception Area	TLTU1	TLTU1
+265	1	Lobby / Reception Area	WRC04	WRC04
+265	1	Lobby / Reception Area	WRC05	WRC05
+265	1	Lobby / Reception Area	WRC06	WRC06
+265	2	Patient Aligned Care Team (PACT) Clinic 1	CWV26	EXW01
+265	2	Patient Aligned Care Team (PACT) Clinic 1	CWV51	CLSC4
+265	2	Patient Aligned Care Team (PACT) Clinic 1	EXPA1	EXPA1
+265	2	Patient Aligned Care Team (PACT) Clinic 1	OPT17	WRTM2
+265	2	Patient Aligned Care Team (PACT) Clinic 1	PEHW1	PEHW1
+265	2	Patient Aligned Care Team (PACT) Clinic 1	SB202	TLTF1
+265	2	Patient Aligned Care Team (PACT) Clinic 1	SB737	UCCL1
+265	2	Patient Aligned Care Team (PACT) Clinic 1	SC007	RCA01
+265	2	Patient Aligned Care Team (PACT) Clinic 1	SC066	PEHW2
+265	2	Patient Aligned Care Team (PACT) Clinic 1	SC249	WRTM3
+265	2	Patient Aligned Care Team (PACT) Clinic 1	SC648	CRA01
+265	2	Patient Aligned Care Team (PACT) Clinic 1	SRE01	SRE01
+265	2	Patient Aligned Care Team (PACT) Clinic 1	SS218	OFA07
+265	2	Patient Aligned Care Team (PACT) Clinic 1	SS262	SL001
+265	2	Patient Aligned Care Team (PACT) Clinic 1	SS282	LR001
+265	2	Patient Aligned Care Team (PACT) Clinic 1	SV422	OFDC2
+265	2	Patient Aligned Care Team (PACT) Clinic 1	SV582	RCA06
+265	2	Patient Aligned Care Team (PACT) Clinic 1	TLTB1	TLTB1
+265	2	Patient Aligned Care Team (PACT) Clinic 1	TLTU1	TLTU1
+265	2	Patient Aligned Care Team (PACT) Clinic 1	TRPR1	TRPR1
+265	2	Patient Aligned Care Team (PACT) Clinic 1	WKTM1	WKTM1
+265	2	Patient Aligned Care Team (PACT) Clinic 1	WKTM3	WKTM3
+265	2	Patient Aligned Care Team (PACT) Clinic 1	WRTM1	WRTM1
+265	3	Patient Aligned Care Team (PACT) Clinic 2	CWV26	EXW01
+265	3	Patient Aligned Care Team (PACT) Clinic 2	CWV51	CLSC4
+265	3	Patient Aligned Care Team (PACT) Clinic 2	EXPA1	EXPA1
+265	3	Patient Aligned Care Team (PACT) Clinic 2	OPT17	WRTM2
+265	3	Patient Aligned Care Team (PACT) Clinic 2	PEHW1	PEHW1
+265	3	Patient Aligned Care Team (PACT) Clinic 2	SB202	TLTF1
+265	3	Patient Aligned Care Team (PACT) Clinic 2	SB737	UCCL1
+265	3	Patient Aligned Care Team (PACT) Clinic 2	SC007	RCA01
+265	3	Patient Aligned Care Team (PACT) Clinic 2	SC066	PEHW2
+265	3	Patient Aligned Care Team (PACT) Clinic 2	SC249	WRTM3
+265	3	Patient Aligned Care Team (PACT) Clinic 2	SC648	CRA01
+265	3	Patient Aligned Care Team (PACT) Clinic 2	SRE01	SRE01
+265	3	Patient Aligned Care Team (PACT) Clinic 2	SS218	OFA07
+265	3	Patient Aligned Care Team (PACT) Clinic 2	SS262	SL001
+265	3	Patient Aligned Care Team (PACT) Clinic 2	SS282	LR001
+265	3	Patient Aligned Care Team (PACT) Clinic 2	SV422	OFDC2
+265	3	Patient Aligned Care Team (PACT) Clinic 2	SV582	RCA06
+265	3	Patient Aligned Care Team (PACT) Clinic 2	TLTB1	TLTB1
+265	3	Patient Aligned Care Team (PACT) Clinic 2	TLTU1	TLTU1
+265	3	Patient Aligned Care Team (PACT) Clinic 2	TRPR1	TRPR1
+265	3	Patient Aligned Care Team (PACT) Clinic 2	WKTM1	WKTM1
+265	3	Patient Aligned Care Team (PACT) Clinic 2	WKTM3	WKTM3
+265	3	Patient Aligned Care Team (PACT) Clinic 2	WRTM1	WRTM1
+265	4	Patient Aligned Care Team (PACT) Clinic 3	CWV26	EXW01
+265	4	Patient Aligned Care Team (PACT) Clinic 3	CWV51	CLSC4
+265	4	Patient Aligned Care Team (PACT) Clinic 3	EXPA1	EXPA1
+265	4	Patient Aligned Care Team (PACT) Clinic 3	OPT17	WRTM2
+265	4	Patient Aligned Care Team (PACT) Clinic 3	PEHW1	PEHW1
+265	4	Patient Aligned Care Team (PACT) Clinic 3	SB202	TLTF1
+265	4	Patient Aligned Care Team (PACT) Clinic 3	SB737	UCCL1
+265	4	Patient Aligned Care Team (PACT) Clinic 3	SC007	RCA01
+265	4	Patient Aligned Care Team (PACT) Clinic 3	SC066	PEHW2
+265	4	Patient Aligned Care Team (PACT) Clinic 3	SC249	WRTM3
+265	4	Patient Aligned Care Team (PACT) Clinic 3	SC648	CRA01
+265	4	Patient Aligned Care Team (PACT) Clinic 3	SRE01	SRE01
+265	4	Patient Aligned Care Team (PACT) Clinic 3	SS218	OFA07
+265	4	Patient Aligned Care Team (PACT) Clinic 3	SS262	SL001
+265	4	Patient Aligned Care Team (PACT) Clinic 3	SS282	LR001
+265	4	Patient Aligned Care Team (PACT) Clinic 3	SV422	OFDC2
+265	4	Patient Aligned Care Team (PACT) Clinic 3	SV582	RCA06
+265	4	Patient Aligned Care Team (PACT) Clinic 3	TLTB1	TLTB1
+265	4	Patient Aligned Care Team (PACT) Clinic 3	TLTU1	TLTU1
+265	4	Patient Aligned Care Team (PACT) Clinic 3	TRPR1	TRPR1
+265	4	Patient Aligned Care Team (PACT) Clinic 3	WKTM1	WKTM1
+265	4	Patient Aligned Care Team (PACT) Clinic 3	WKTM3	WKTM3
+265	4	Patient Aligned Care Team (PACT) Clinic 3	WRTM1	WRTM1
+265	5	Audiology and Speech Pathology Clinic	CAS16	EXAU1
+265	5	Audiology and Speech Pathology Clinic	EXOS1	EXOS1
+265	5	Audiology and Speech Pathology Clinic	EXVE1	EXVE1
+265	5	Audiology and Speech Pathology Clinic	HARF1	HARF1
+265	5	Audiology and Speech Pathology Clinic	OPAE2	OPAE2
+265	5	Audiology and Speech Pathology Clinic	OPMH1	OPMH1
+265	5	Audiology and Speech Pathology Clinic	PEHS4	PEHS4
+265	5	Audiology and Speech Pathology Clinic	SRSE1	SRSE1
+265	5	Audiology and Speech Pathology Clinic	TLTU1	TLTU1
+265	6	Dental Clinic	CDS03	DNXS1
+265	6	Dental Clinic	CDS11	DNTG1
+265	6	Dental Clinic	CDS51	DNPL1
+265	6	Dental Clinic	CDS95	MECH1
+265	6	Dental Clinic	LCSL2	LCSL2
+265	6	Dental Clinic	SC471	LCCL1
+265	6	Dental Clinic	SRE01	SRE01
+265	6	Dental Clinic	SV422	OFDC2
+265	6	Dental Clinic	TLTU1	TLTU1
+265	6	Dental Clinic	WRTM1	WRTM1
+265	7	Eye Clinic	CEY91	EYFD1
+265	7	Eye Clinic	EYOT2	EYOT2
+265	7	Eye Clinic	EYOT4	EYOT4
+265	7	Eye Clinic	EYVF1	EYVF1
+265	7	Eye Clinic	EYVS1	EYVS1
+265	7	Eye Clinic	SB002	WRC03
+265	7	Eye Clinic	SS205	OFA09
+265	7	Eye Clinic	WRTM1	WRTM1
+265	8	Mental Health Clinic	OCM81	OPMH3
+265	8	Mental Health Clinic	OFDC1	OFDC1
+265	8	Mental Health Clinic	OPMH1	OPMH1
+265	8	Mental Health Clinic	SV648	SRS01
+265	8	Mental Health Clinic	WRTM1	WRTM1
+265	9	Multi-Specialty Clinic	CCD31	OPTM1
+265	9	Multi-Specialty Clinic	CPR17	OPCR1
+265	9	Multi-Specialty Clinic	EXPA1	EXPA1
+265	9	Multi-Specialty Clinic	OCB41	EXP01
+265	9	Multi-Specialty Clinic	PEHW1	PEHW1
+265	9	Multi-Specialty Clinic	SC066	PEHW2
+265	9	Multi-Specialty Clinic	SV422	OFDC2
+265	9	Multi-Specialty Clinic	TLTB1	TLTB1
+265	9	Multi-Specialty Clinic	TRPR1	TRPR1
+265	10	Physical Medicine and Rehabilitation (PM&R) Clinic	CT232	PTEA1
+265	10	Physical Medicine and Rehabilitation (PM&R) Clinic	PTTC1	PTTC1
+265	10	Physical Medicine and Rehabilitation (PM&R) Clinic	SB138	DR001
+265	10	Physical Medicine and Rehabilitation (PM&R) Clinic	SRE01	SRE01
+265	10	Physical Medicine and Rehabilitation (PM&R) Clinic	SS205	OFA09
+265	10	Physical Medicine and Rehabilitation (PM&R) Clinic	TLTU1	TLTU1
+265	11	Prosthetics and Sensory Aids Clinic	MRPA1	MRPA1
+265	11	Prosthetics and Sensory Aids Clinic	SB002	WRC03
+265	11	Prosthetics and Sensory Aids Clinic	SRCS1	SRCS1
+265	11	Prosthetics and Sensory Aids Clinic	SS219	OFA03
+265	12	Home Based Primary Care	SRE01	SRE01
+265	12	Home Based Primary Care	WRTM1	WRTM1
+265	13	Radiology Service	CRT21	XDUS1
+265	13	Radiology Service	CRT82	XVC01
+265	13	Radiology Service	OFDR1	OFDR1
+265	13	Radiology Service	SB003	WRC01
+265	13	Radiology Service	SB138	DR001
+265	13	Radiology Service	SS218	OFA07
+265	13	Radiology Service	TLTU1	TLTU1
+265	13	Radiology Service	XDBD1	XDBD1
+265	13	Radiology Service	XDM01	XDM01
+265	13	Radiology Service	XDR01	XDR01
+265	13	Radiology Service	XDRF1	XDRF1
+265	14	Pathology and Laboratory Medicine (PLM) Service	CL821	LBVP1
+265	14	Pathology and Laboratory Medicine (PLM) Service	LBGM1	LBGM1
+265	14	Pathology and Laboratory Medicine (PLM) Service	LBSS1	LBSS1
+265	14	Pathology and Laboratory Medicine (PLM) Service	LMCH1	LMCH1
+265	14	Pathology and Laboratory Medicine (PLM) Service	SRR02	SRR02
+265	14	Pathology and Laboratory Medicine (PLM) Service	SV648	SRS01
+265	14	Pathology and Laboratory Medicine (PLM) Service	TLTU1	TLTU1
+265	15	Pharmacy Service [65]	PHOD4	PHOD4
+265	15	Pharmacy Service [65]	PHOD5	PHOD5
+265	15	Pharmacy Service [65]	PHOD6	PHOD6
+265	15	Pharmacy Service [65]	SS218	OFA07
+265	15	Pharmacy Service [65]	SV401	PHOW1
+265	15	Pharmacy Service [65]	SV422	OFDC2
+265	15	Pharmacy Service [65]	TLTU1	TLTU1
+265	15	Pharmacy Service [65]	WKTM4	WKTM4
+265	16	Clinic Management	SS205	OFA09
+265	17	Business Services	WKTM1	WKTM1
+265	18	Engineering Service	SB321	BMER1
+265	19	Logistics Service	SB684	DOCK1
+265	19	Logistics Service	SRLG1	SRLG1
+265	19	Logistics Service	SRLG2	SRLG2
+265	19	Logistics Service	SRLG3	SRLG3
+265	19	Logistics Service	SS218	OFA07
+265	20	Police Service	CROP1	CROP1
+265	20	Police Service	SB816	POH01
+265	20	Police Service	SS205	OFA09
+265	20	Police Service	SS282	LR001
+265	20	Police Service	SSS01	SSS01
+265	21	Canteen Service	FSCD4	FSCD4
+265	21	Canteen Service	FSCD5	FSCD5
+265	21	Canteen Service	SV692	BX002
+265	22	Staff Support Area	CWV11	LAC01
+265	22	Staff Support Area	OPT17	WRTM2
+265	22	Staff Support Area	SC648	CRA01
+265	22	Staff Support Area	SRE01	SRE01
+265	22	Staff Support Area	SS262	SL001
+265	22	Staff Support Area	SS282	LR001
+265	22	Staff Support Area	SV422	OFDC2
+265	22	Staff Support Area	SV582	RCA06
+265	22	Staff Support Area	TLTU1	TLTU1
+265	22	Staff Support Area	WKTM1	WKTM1
+265	22	Staff Support Area	WRTM1	WRTM1
+265	23	COMC1	COMC1	COMC1
+265	23	COMC1	SB652	NT001
+265	23	COMC1	SB737	UCCL1
+265	23	COMC1	SB743	USCL1
+265	23	COMC1	SC474	UTC01
+265	23	COMC1	SV549	JANC1
+266	1	Reception Area	SB003	WRC01
+266	1	Reception Area	TLTU1	TLTU1
+266	2	Staff and Administrative Area	OPT16	CRA02
+266	2	Staff and Administrative Area	SS205	OFA09
+266	2	Staff and Administrative Area	SS218	OFA07
+266	2	Staff and Administrative Area	TLTU1	TLTU1
+266	3	Support Area	SS212	WRCH1
+266	3	Support Area	SS218	OFA07
+266	3	Support Area	SS254	MRS02
+266	3	Support Area	SV648	SRS01
+268	1	Inpatient Pharmacy Work Area	PHIV2	PHIV2
+268	1	Inpatient Pharmacy Work Area	PHOD2	PHOD2
+268	1	Inpatient Pharmacy Work Area	XXYYC	XXYYC
+268	2	. Inpatient Pharmacy Support Area	IPT18	RCA02
+268	2	. Inpatient Pharmacy Support Area	PHBS2	PHBS2
+268	2	. Inpatient Pharmacy Support Area	PHOD2	PHOD2
+268	2	. Inpatient Pharmacy Support Area	SFR01	SFR01
+268	2	. Inpatient Pharmacy Support Area	SRF01	SRF01
+268	3	Inpatient Pharmacy Education Program	SC571	OFA10
+268	3	Inpatient Pharmacy Education Program	SS218	OFA07
+268	3	Inpatient Pharmacy Education Program	XXYYC	XXYYC
+268	4	Inpatient Pharmacy Investigational Drug Program	PHBS2	PHBS2
+268	4	Inpatient Pharmacy Investigational Drug Program	PHOD2	PHOD2
+268	5	Inpatient Pharmacy Staff and Administrative Area	SC399	CMP02
+268	5	Inpatient Pharmacy Staff and Administrative Area	SC648	CRA01
+268	5	Inpatient Pharmacy Staff and Administrative Area	SS205	OFA09
+268	5	Inpatient Pharmacy Staff and Administrative Area	SS218	OFA07
+268	5	Inpatient Pharmacy Staff and Administrative Area	SS222	SEC01
+268	5	Inpatient Pharmacy Staff and Administrative Area	SS262	SL001
+268	5	Inpatient Pharmacy Staff and Administrative Area	SS282	LR001
+268	5	Inpatient Pharmacy Staff and Administrative Area	TLTU1	TLTU1
+268	6	Oncology Drug Area	PHBS2	PHBS2
+268	6	Oncology Drug Area	PHOD2	PHOD2
+268	7	Outpatient Pharmacy Patient Area	SB003	WRC01
+268	7	Outpatient Pharmacy Patient Area	TLTU1	TLTU1
+268	8	Outpatient Pharmacy Work Area	PHOD1	PHOD1
+268	8	Outpatient Pharmacy Work Area	PHOD2	PHOD2
+268	8	Outpatient Pharmacy Work Area	SS218	OFA07
+268	8	Outpatient Pharmacy Work Area	SV422	OFDC2
+268	9	Outpatient Pharmacy Support Area	PHMP2	PHMP2
+268	9	Outpatient Pharmacy Support Area	SB287	SRHM1
+268	9	Outpatient Pharmacy Support Area	SRCS1	SRCS1
+268	9	Outpatient Pharmacy Support Area	SRF01	SRF01
+268	9	Outpatient Pharmacy Support Area	SV549	JANC1
+268	9	Outpatient Pharmacy Support Area	TLTU1	TLTU1
+268	10	Emergency Response Area	XXYYC	XXYYC
+269	1	Reception Area	RECP1	RECP1
+269	1	Reception Area	RECP4	RECP4
+269	1	Reception Area	SB003	WRC01
+269	1	Reception Area	SB086	WRF01
+269	1	Reception Area	SB262	SRLW1
+269	1	Reception Area	SC171	CLSC3
+269	1	Reception Area	SV381	NCWD4
+269	1	Reception Area	SV648	SRS01
+269	1	Reception Area	TLTF3	TLTF3
+269	1	Reception Area	TLTU1	TLTU1
+269	2	Recreation / Creative Arts Therapy Area	CT302	EXRA1
+269	2	Recreation / Creative Arts Therapy Area	CT306	CMR01
+269	2	Recreation / Creative Arts Therapy Area	RTAT1	RTAT1
+269	2	Recreation / Creative Arts Therapy Area	RTAT2	RTAT2
+269	2	Recreation / Creative Arts Therapy Area	RTAT3	RTAT3
+269	2	Recreation / Creative Arts Therapy Area	RTCA1	RTCA1
+269	2	Recreation / Creative Arts Therapy Area	RTCA2	RTCA2
+269	2	Recreation / Creative Arts Therapy Area	RTCA3	RTCA3
+269	2	Recreation / Creative Arts Therapy Area	RTGR1	RTGR1
+269	2	Recreation / Creative Arts Therapy Area	RTGR2	RTGR2
+269	2	Recreation / Creative Arts Therapy Area	RTGR3	RTGR3
+269	2	Recreation / Creative Arts Therapy Area	SB737	UCCL1
+269	2	Recreation / Creative Arts Therapy Area	SB743	USCL1
+269	2	Recreation / Creative Arts Therapy Area	SC164	IPK01
+269	2	Recreation / Creative Arts Therapy Area	SS218	OFA07
+269	2	Recreation / Creative Arts Therapy Area	SV422	OFDC2
+269	2	Recreation / Creative Arts Therapy Area	SV549	JANC1
+269	2	Recreation / Creative Arts Therapy Area	SV648	SRS01
+269	2	Recreation / Creative Arts Therapy Area	TLTB1	TLTB1
+269	2	Recreation / Creative Arts Therapy Area	TLTU1	TLTU1
+269	3	Self-Directed Therapy Area	CT341	RTGY1
+269	3	Self-Directed Therapy Area	CT361	RTWE1
+269	3	Self-Directed Therapy Area	RSH12	TLTS2
+269	3	Self-Directed Therapy Area	RTEW1	RTEW1
+269	3	Self-Directed Therapy Area	RTEW2	RTEW2
+269	3	Self-Directed Therapy Area	RTEW3	RTEW3
+269	3	Self-Directed Therapy Area	RTGM1	RTGM1
+269	3	Self-Directed Therapy Area	RTGY2	RTGY2
+269	3	Self-Directed Therapy Area	RTGY3	RTGY3
+269	3	Self-Directed Therapy Area	RTGY4	RTGY4
+269	3	Self-Directed Therapy Area	SB003	WRC01
+269	3	Self-Directed Therapy Area	SRE01	SRE01
+269	3	Self-Directed Therapy Area	SS241	LR002
+269	4	Aquatic Therapy Area	CHC01	CHC01
+269	4	Aquatic Therapy Area	CT302	EXRA1
+269	4	Aquatic Therapy Area	CT371	RTTP1
+269	4	Aquatic Therapy Area	CT377	RTTP2
+269	4	Aquatic Therapy Area	CT386	RTTP3
+269	4	Aquatic Therapy Area	RSH12	TLTS2
+269	4	Aquatic Therapy Area	RSH41	LAUN1
+269	4	Aquatic Therapy Area	SB003	WRC01
+269	4	Aquatic Therapy Area	SB208	LR004
+269	4	Aquatic Therapy Area	SB287	SRHM1
+269	4	Aquatic Therapy Area	SB737	UCCL1
+269	4	Aquatic Therapy Area	SB743	USCL1
+269	4	Aquatic Therapy Area	SRE01	SRE01
+269	4	Aquatic Therapy Area	SS218	OFA07
+269	4	Aquatic Therapy Area	SS241	LR002
+269	4	Aquatic Therapy Area	SV549	JANC1
+269	4	Aquatic Therapy Area	TLTS1	TLTS1
+269	5	Staff and Administrative Area	SB202	TLTF1
+269	5	Staff and Administrative Area	SB203	TLTM1
+269	5	Staff and Administrative Area	SB208	LR004
+269	5	Staff and Administrative Area	SC648	CRA01
+269	5	Staff and Administrative Area	SS205	OFA09
+269	5	Staff and Administrative Area	SS218	OFA07
+269	5	Staff and Administrative Area	SS262	SL001
+269	6	Education Area	RPT52	CLR01
+269	6	Education Area	SS205	OFA09
+269	6	Education Area	SS218	OFA07
+272	1	Reception Area	NSTA4	NSTA4
+272	1	Reception Area	SB003	WRC01
+272	1	Reception Area	TLTU1	TLTU1
+272	2	Patient Area	OCB31	EXRG3
+272	2	Patient Area	OCM81	OPMH3
+272	2	Patient Area	OPMH1	OPMH1
+272	2	Patient Area	OPMH2	OPMH2
+272	2	Patient Area	OPMH4	OPMH4
+272	2	Patient Area	OTEV1	OTEV1
+272	2	Patient Area	OTWT1	OTWT1
+272	2	Patient Area	SC399	CMP02
+272	2	Patient Area	TLTU1	TLTU1
+272	3	Staff and Administrative Area	OFDC1	OFDC1
+272	3	Staff and Administrative Area	SS205	OFA09
+272	3	Staff and Administrative Area	SS218	OFA07
+272	3	Staff and Administrative Area	SS262	SL001
+272	3	Staff and Administrative Area	SS282	LR001
+272	3	Staff and Administrative Area	SV648	SRS01
+272	3	Staff and Administrative Area	TLTU1	TLTU1
+272	4	Education Area	OPT16	CRA02
+274	1	Staff Area	RSH12	TLTS2
+274	1	Staff Area	SS262	SL001
+274	1	Staff Area	SS287	DUTY1
+274	1	Staff Area	SV549	JANC1
+274	1	Staff Area	SV648	SRS01
+275	1	Reception Area	RECP1	RECP1
+275	1	Reception Area	SB003	WRC01
+275	1	Reception Area	SC170	CLSC1
+275	1	Reception Area	TLTU1	TLTU1
+275	2	Patient Area	SB138	DR001
+275	2	Patient Area	SC007	RCA01
+275	2	Patient Area	SV422	OFDC2
+275	2	Patient Area	TLTU1	TLTU1
+275	2	Patient Area	WRL01	WRL01
+275	2	Patient Area	WROC1	WROC1
+275	2	Patient Area	XMRC1	XMRC1
+275	2	Patient Area	XMRC2	XMRC2
+275	2	Patient Area	XMRS1	XMRS1
+275	2	Patient Area	XMRV1	XMRV1
+275	3	Support Area	CRT82	XVC01
+275	3	Support Area	LCCL3	LCCL3
+275	3	Support Area	SB262	SRLW1
+275	3	Support Area	SB737	UCCL1
+275	3	Support Area	SB743	USCL1
+275	3	Support Area	SRGC2	SRGC2
+275	3	Support Area	SS212	WRCH1
+275	3	Support Area	SV549	JANC1
+275	3	Support Area	XFDS1	XFDS1
+275	3	Support Area	XFP01	XFP01
+275	3	Support Area	XMRE1	XMRE1
+275	4	Staff and Administrative Area	SS218	OFA07
+275	4	Staff and Administrative Area	SS262	SL001
+275	4	Staff and Administrative Area	SS272	RPR01
+275	4	Staff and Administrative Area	SS282	LR001
+275	4	Staff and Administrative Area	TLTU1	TLTU1
+275	5	Education Area	CRR01	CRR01
+275	5	Education Area	SS218	OFA07
+276	1	Reception Area	RECP1	RECP1
+276	1	Reception Area	SB003	WRC01
+276	1	Reception Area	SC170	CLSC1
+276	1	Reception Area	SC174	PAIA1
+276	1	Reception Area	TLTU1	TLTU1
+276	2	Radiology Patient Area	CRT21	XDUS1
+276	2	Radiology Patient Area	OCB31	EXRG3
+276	2	Radiology Patient Area	OFDR1	OFDR1
+276	2	Radiology Patient Area	SB003	WRC01
+276	2	Radiology Patient Area	SB138	DR001
+276	2	Radiology Patient Area	SRE01	SRE01
+276	2	Radiology Patient Area	SV422	OFDC2
+276	2	Radiology Patient Area	TLTU1	TLTU1
+276	2	Radiology Patient Area	WRL01	WRL01
+276	2	Radiology Patient Area	XDCS1	XDCS1
+276	2	Radiology Patient Area	XDM01	XDM01
+276	2	Radiology Patient Area	XDM02	XDM02
+276	2	Radiology Patient Area	XDMP1	XDMP1
+276	2	Radiology Patient Area	XDR01	XDR01
+276	2	Radiology Patient Area	XDRF1	XDRF1
+276	3	Interventional Radiology (IR) Patient Area	CRT82	XVC01
+276	3	Interventional Radiology (IR) Patient Area	MEDP1	MEDP1
+276	3	Interventional Radiology (IR) Patient Area	ORCW1	ORCW1
+276	3	Interventional Radiology (IR) Patient Area	SB003	WRC01
+276	3	Interventional Radiology (IR) Patient Area	SC199	ORSA1
+276	3	Interventional Radiology (IR) Patient Area	SV648	SRS01
+276	3	Interventional Radiology (IR) Patient Area	TLTU1	TLTU1
+276	3	Interventional Radiology (IR) Patient Area	WRL01	WRL01
+276	3	Interventional Radiology (IR) Patient Area	XFP01	XFP01
+276	4	Computed Tomography (CT) Patient Area	MEDP1	MEDP1
+276	4	Computed Tomography (CT) Patient Area	SB003	WRC01
+276	4	Computed Tomography (CT) Patient Area	SV648	SRS01
+276	4	Computed Tomography (CT) Patient Area	TLTU1	TLTU1
+276	4	Computed Tomography (CT) Patient Area	WRL01	WRL01
+276	4	Computed Tomography (CT) Patient Area	XCTC1	XCTC1
+276	4	Computed Tomography (CT) Patient Area	XCTL1	XCTL1
+276	4	Computed Tomography (CT) Patient Area	XCTS1	XCTS1
+276	4	Computed Tomography (CT) Patient Area	XMRE1	XMRE1
+276	5	Support Area	CRT47	XFP03
+276	5	Support Area	CRT48	XFSA1
+276	5	Support Area	CRT82	XVC01
+276	5	Support Area	LCCL3	LCCL3
+276	5	Support Area	SB262	SRLW1
+276	5	Support Area	SB287	SRHM1
+276	5	Support Area	SB737	UCCL1
+276	5	Support Area	SB743	USCL1
+276	5	Support Area	SC007	RCA01
+276	5	Support Area	SC087	XRM02
+276	5	Support Area	SC099	XRM01
+276	5	Support Area	SRE01	SRE01
+276	5	Support Area	SS212	WRCH1
+276	5	Support Area	SV549	JANC1
+276	5	Support Area	XCTC1	XCTC1
+276	5	Support Area	XCTI1	XCTI1
+276	5	Support Area	XFDS1	XFDS1
+276	5	Support Area	XFFA1	XFFA1
+276	5	Support Area	XFP01	XFP01
+276	6	Staff and Administrative Area	CRR01	CRR01
+276	6	Staff and Administrative Area	SS205	OFA09
+276	6	Staff and Administrative Area	SS218	OFA07
+276	6	Staff and Administrative Area	SS222	SEC01
+276	6	Staff and Administrative Area	SS262	SL001
+276	6	Staff and Administrative Area	SS272	RPR01
+276	6	Staff and Administrative Area	SS282	LR001
+276	6	Staff and Administrative Area	TLTU1	TLTU1
+276	7	Education Area	CRR01	CRR01
+276	7	Education Area	SS218	OFA07
+277	1	Reception Area	RECP1	RECP1
+277	1	Reception Area	SC170	CLSC1
+277	1	Reception Area	TLTU1	TLTU1
+277	1	Reception Area	WROC1	WROC1
+277	2	Patient Area	CRT02	XTLA1
+277	2	Patient Area	CRT03	XTEM1
+277	2	Patient Area	OCB31	EXRG3
+277	2	Patient Area	SB003	WRC01
+277	2	Patient Area	SB138	DR001
+277	2	Patient Area	SV422	OFDC2
+277	2	Patient Area	TLTU1	TLTU1
+277	2	Patient Area	TRGM1	TRGM1
+277	2	Patient Area	WRL01	WRL01
+277	2	Patient Area	XTLC1	XTLC1
+277	3	Treatment Planning Unit Area	CRT11	XTSG1
+277	3	Treatment Planning Unit Area	CRT17	XTMF1
+277	3	Treatment Planning Unit Area	CRT21	XDUS1
+277	3	Treatment Planning Unit Area	CRT26	XTTP1
+277	3	Treatment Planning Unit Area	CRT48	XFSA1
+277	3	Treatment Planning Unit Area	SS212	WRCH1
+277	3	Treatment Planning Unit Area	XTSC1	XTSC1
+277	4	Support Area	CRT31	XTRT1
+277	4	Support Area	CRT34	XTLB1
+277	4	Support Area	CRT47	XFP03
+277	4	Support Area	CRT48	XFSA1
+277	4	Support Area	CRT82	XVC01
+277	4	Support Area	LCCL3	LCCL3
+277	4	Support Area	SB262	SRLW1
+277	4	Support Area	SB287	SRHM1
+277	4	Support Area	SB737	UCCL1
+277	4	Support Area	SB743	USCL1
+277	4	Support Area	SRE01	SRE01
+277	4	Support Area	SV549	JANC1
+277	4	Support Area	XCTI1	XCTI1
+277	4	Support Area	XFDS1	XFDS1
+277	4	Support Area	XFFA1	XFFA1
+277	4	Support Area	XFP01	XFP01
+277	5	Staff and Administrative Area	CRR01	CRR01
+277	5	Staff and Administrative Area	CRT82	XVC01
+277	5	Staff and Administrative Area	SS205	OFA09
+277	5	Staff and Administrative Area	SS218	OFA07
+277	5	Staff and Administrative Area	SS222	SEC01
+277	5	Staff and Administrative Area	SS262	SL001
+277	5	Staff and Administrative Area	SS272	RPR01
+277	5	Staff and Administrative Area	SS282	LR001
+277	5	Staff and Administrative Area	SV648	SRS01
+277	5	Staff and Administrative Area	TLTU1	TLTU1
+277	5	Staff and Administrative Area	XFFA2	XFFA2
+277	6	Education Area	CRR01	CRR01
+277	6	Education Area	SS218	OFA07
+278	1	Biomedical Research Unit Reception Area	RECP1	RECP1
+278	1	Biomedical Research Unit Reception Area	SB003	WRC01
+278	1	Biomedical Research Unit Reception Area	TLTU1	TLTU1
+278	2	Biomedical Research Unit Research Area	CL501	LBEM2
+278	2	Biomedical Research Unit Research Area	CL521	LBEM3
+278	2	Biomedical Research Unit Research Area	CL631	LBTS1
+278	2	Biomedical Research Unit Research Area	LBRB1	LBRB1
+278	2	Biomedical Research Unit Research Area	LBUL1	LBUL1
+278	2	Biomedical Research Unit Research Area	SRF01	SRF01
+278	2	Biomedical Research Unit Research Area	SRL01	SRL01
+278	2	Biomedical Research Unit Research Area	SRR01	SRR01
+278	2	Biomedical Research Unit Research Area	SRSE1	SRSE1
+278	2	Biomedical Research Unit Research Area	SV648	SRS01
+278	2	Biomedical Research Unit Research Area	XMRE1	XMRE1
+278	2	Biomedical Research Unit Research Area	XXYYC	XXYYC
+278	3	Biomedical Research Unit Biosafety Laboratory Area	CL631	LBTS1
+278	3	Biomedical Research Unit Biosafety Laboratory Area	CSSS2	CSSS2
+278	3	Biomedical Research Unit Biosafety Laboratory Area	LBRC1	LBRC1
+278	3	Biomedical Research Unit Biosafety Laboratory Area	SHWR1	SHWR1
+278	3	Biomedical Research Unit Biosafety Laboratory Area	SS241	LR002
+278	3	Biomedical Research Unit Biosafety Laboratory Area	TLTU1	TLTU1
+278	3	Biomedical Research Unit Biosafety Laboratory Area	XXYYC	XXYYC
+278	4	Biomedical Research Unit Support Area	LBGW1	LBGW1
+278	4	Biomedical Research Unit Support Area	SB287	SRHM1
+278	4	Biomedical Research Unit Support Area	SRGC1	SRGC1
+278	4	Biomedical Research Unit Support Area	SRGC2	SRGC2
+278	4	Biomedical Research Unit Support Area	SV648	SRS01
+278	5	Biomedical Research Unit Staff and Administration Area	OPT16	CRA02
+278	5	Biomedical Research Unit Staff and Administration Area	SHWR1	SHWR1
+278	5	Biomedical Research Unit Staff and Administration Area	SRE01	SRE01
+278	5	Biomedical Research Unit Staff and Administration Area	SS205	OFA09
+278	5	Biomedical Research Unit Staff and Administration Area	SS218	OFA07
+278	5	Biomedical Research Unit Staff and Administration Area	SS262	SL001
+278	5	Biomedical Research Unit Staff and Administration Area	SS282	LR001
+278	5	Biomedical Research Unit Staff and Administration Area	TLTU1	TLTU1
+278	6	Health Services Research and Development Staff and Administrative Area	OPT16	CRA02
+278	6	Health Services Research and Development Staff and Administrative Area	SC399	CMP02
+278	6	Health Services Research and Development Staff and Administrative Area	SS212	WRCH1
+278	6	Health Services Research and Development Staff and Administrative Area	SS218	OFA07
+278	7	Rehabiliation Research and Development Reception Area	RECP1	RECP1
+278	7	Rehabiliation Research and Development Reception Area	SB003	WRC01
+278	7	Rehabiliation Research and Development Reception Area	TLTU1	TLTU1
+278	8	Rehabilitation Research and Development Research Area	CL631	LBTS1
+278	8	Rehabilitation Research and Development Research Area	CPR22	APMS1
+278	8	Rehabilitation Research and Development Research Area	LBRB1	LBRB1
+278	8	Rehabilitation Research and Development Research Area	MRS01	MRS01
+278	8	Rehabilitation Research and Development Research Area	SC174	PAIA1
+278	8	Rehabilitation Research and Development Research Area	SC399	CMP02
+278	8	Rehabilitation Research and Development Research Area	SRSE1	SRSE1
+278	8	Rehabilitation Research and Development Research Area	SS212	WRCH1
+278	8	Rehabilitation Research and Development Research Area	SV648	SRS01
+278	9	Rehabilitation Research and Development Service Staff and Administrative Area	OPT16	CRA02
+278	9	Rehabilitation Research and Development Service Staff and Administrative Area	SHWR1	SHWR1
+278	9	Rehabilitation Research and Development Service Staff and Administrative Area	SRE01	SRE01
+278	9	Rehabilitation Research and Development Service Staff and Administrative Area	SS205	OFA09
+278	9	Rehabilitation Research and Development Service Staff and Administrative Area	SS218	OFA07
+278	9	Rehabilitation Research and Development Service Staff and Administrative Area	SS262	SL001
+278	9	Rehabilitation Research and Development Service Staff and Administrative Area	SS282	LR001
+278	9	Rehabilitation Research and Development Service Staff and Administrative Area	SV549	JANC1
+278	9	Rehabilitation Research and Development Service Staff and Administrative Area	SV648	SRS01
+278	9	Rehabilitation Research and Development Service Staff and Administrative Area	TLTU1	TLTU1
+278	10	Clinical Research Unit Administrative Area	SS218	OFA07
+278	11	Veterinary Medical Unit Treatment Area	VEX01	VEX01
+278	11	Veterinary Medical Unit Treatment Area	VHAU1	VHAU1
+278	11	Veterinary Medical Unit Treatment Area	VLB01	VLB01
+278	12	Veterinary Medical Unit Surgical Suite	ANCW1	ANCW1
+278	12	Veterinary Medical Unit Surgical Suite	VRRP1	VRRP1
+278	12	Veterinary Medical Unit Surgical Suite	VSO01	VSO01
+278	13	Veterinary Medical Unit Radiographic Suite [27]	SB287	SRHM1
+278	13	Veterinary Medical Unit Radiographic Suite [27]	VLAH1	VLAH1
+278	13	Veterinary Medical Unit Radiographic Suite [27]	VSO01	VSO01
+278	13	Veterinary Medical Unit Radiographic Suite [27]	VXER1	VXER1
+278	14	Veterinary Medical Unit Biosafety Laboratory	CSSS2	CSSS2
+278	14	Veterinary Medical Unit Biosafety Laboratory	NBCD2	NBCD2
+278	14	Veterinary Medical Unit Biosafety Laboratory	TLTU1	TLTU1
+278	14	Veterinary Medical Unit Biosafety Laboratory	VLAH1	VLAH1
+278	14	Veterinary Medical Unit Biosafety Laboratory	VLB01	VLB01
+278	14	Veterinary Medical Unit Biosafety Laboratory	XXYYC	XXYYC
+278	15	Veterinary Medical Unit Barrier Suite	SHWR1	SHWR1
+278	15	Veterinary Medical Unit Barrier Suite	TLTU1	TLTU1
+278	15	Veterinary Medical Unit Barrier Suite	VLAH1	VLAH1
+278	15	Veterinary Medical Unit Barrier Suite	VLB01	VLB01
+278	15	Veterinary Medical Unit Barrier Suite	XXYYC	XXYYC
+278	16	Veterinary Medical Unit Environmental Suite	VLAH1	VLAH1
+278	16	Veterinary Medical Unit Environmental Suite	VLB01	VLB01
+278	17	Veterinary Medical Unit Support Area	SB684	DOCK1
+278	17	Veterinary Medical Unit Support Area	SRF01	SRF01
+278	17	Veterinary Medical Unit Support Area	SRR01	SRR01
+278	17	Veterinary Medical Unit Support Area	SRSE1	SRSE1
+278	17	Veterinary Medical Unit Support Area	SSC01	SSC01
+278	17	Veterinary Medical Unit Support Area	SV648	SRS01
+278	17	Veterinary Medical Unit Support Area	VCWA1	VCWA1
+278	17	Veterinary Medical Unit Support Area	VEX01	VEX01
+278	17	Veterinary Medical Unit Support Area	VFP01	VFP01
+278	17	Veterinary Medical Unit Support Area	XXYYC	XXYYC
+278	18	Veterinary Medical Unit Staff and Administrative Area	SHWR1	SHWR1
+278	18	Veterinary Medical Unit Staff and Administrative Area	SS205	OFA09
+278	18	Veterinary Medical Unit Staff and Administrative Area	SS218	OFA07
+278	18	Veterinary Medical Unit Staff and Administrative Area	SS262	SL001
+278	18	Veterinary Medical Unit Staff and Administrative Area	SS282	LR001
+278	18	Veterinary Medical Unit Staff and Administrative Area	SV549	JANC1
+278	18	Veterinary Medical Unit Staff and Administrative Area	TLTU1	TLTU1
+279	1	Duty Area	CROP1	CROP1
+279	1	Duty Area	SC648	CRA01
+279	1	Duty Area	SV648	SRS01
+279	1	Duty Area	XXYYC	XXYYC
+279	2	Staff and Administrative Area	SS205	OFA09
+279	2	Staff and Administrative Area	SS218	OFA07
+279	2	Staff and Administrative Area	SS262	SL001
+279	2	Staff and Administrative Area	SS282	LR001
+279	2	Staff and Administrative Area	TLTS1	TLTS1
+280	1	Reception Area	SB003	WRC01
+280	1	Reception Area	SS218	OFA07
+280	2	Staff and Administrative Area	SS205	OFA09
+280	3	Support Area	SV648	SRS01
+282	1	Reception Area	SB003	WRC01
+282	1	Reception Area	TLTU1	TLTU1
+282	2	Patient Area	SS203	OFA04
+282	2	Patient Area	SS218	OFA07
+282	3	Staff and Administrative Area	SC648	CRA01
+282	3	Staff and Administrative Area	SRE01	SRE01
+282	3	Staff and Administrative Area	SS205	OFA09
+282	3	Staff and Administrative Area	SS218	OFA07
+282	3	Staff and Administrative Area	SS222	SEC01
+284	1	Truck Bay Calculation	SC148	CALC1
+284	2	Loading Dock Area	MMBK1	MMBK1
+284	2	Loading Dock Area	SB287	SRHM1
+284	2	Loading Dock Area	SB531	MMST1
+284	2	Loading Dock Area	SB684	DOCK1
+284	2	Loading Dock Area	SRGC1	SRGC1
+284	2	Loading Dock Area	TLTU1	TLTU1
+284	3	Warehouse Area	MMGS1	MMGS1
+284	3	Warehouse Area	SB652	NT001
+284	3	Warehouse Area	SB763	SRS04
+284	3	Warehouse Area	SRE01	SRE01
+284	3	Warehouse Area	SRSE1	SRSE1
+284	3	Warehouse Area	SSC01	SSC01
+284	3	Warehouse Area	SV635	MMRP1
+284	4	Postal / Mail Service Area	CPR61	MRRS1
+284	4	Postal / Mail Service Area	SB661	RPR02
+284	4	Postal / Mail Service Area	SB662	MRCS1
+284	4	Postal / Mail Service Area	SRSE1	SRSE1
+284	4	Postal / Mail Service Area	SS205	OFA09
+284	4	Postal / Mail Service Area	SS219	OFA03
+284	5	Staff and Administrative Area	SC648	CRA01
+284	5	Staff and Administrative Area	SS205	OFA09
+284	5	Staff and Administrative Area	SS222	SEC01
+284	5	Staff and Administrative Area	SS241	LR002
+284	5	Staff and Administrative Area	SS262	SL001
+284	5	Staff and Administrative Area	SS272	RPR01
+284	5	Staff and Administrative Area	TLTU1	TLTU1
+285	1	Decontamination Area	CSCR1	CSCR1
+285	1	Decontamination Area	CSWT1	CSWT1
+285	1	Decontamination Area	JANC2	JANC2
+285	1	Decontamination Area	SC861	CSDE1
+285	1	Decontamination Area	SC871	CWSH2
+285	1	Decontamination Area	SC872	CWSH3
+285	1	Decontamination Area	SC882	CSPE1
+285	2	Scope Processing Area	SC881	CSAR1
+285	2	Scope Processing Area	SC882	CSPE1
+285	2	Scope Processing Area	SC883	CSSD1
+285	2	Scope Processing Area	SC885	CSSP1
+285	2	Scope Processing Area	SC891	CSST1
+285	3	Preparation and Assembly Area	CAS76	SRSP1
+285	3	Preparation and Assembly Area	SC892	CSIA1
+285	4	Sterilization Area	CHC01	CHC01
+285	4	Sterilization Area	SC902	CSSS1
+285	4	Sterilization Area	SC911	CSLT1
+285	4	Sterilization Area	SC921	CSEO1
+285	4	Sterilization Area	SC922	CSEO2
+285	4	Sterilization Area	SC936	CSCG1
+285	5	Receiving, Storage and Dispatch Area	CHC01	CHC01
+285	5	Receiving, Storage and Dispatch Area	JANC2	JANC2
+285	5	Receiving, Storage and Dispatch Area	SC961	CSCQ1
+285	5	Receiving, Storage and Dispatch Area	SRS05	SRS05
+285	5	Receiving, Storage and Dispatch Area	SS218	OFA07
+285	5	Receiving, Storage and Dispatch Area	SV648	SRS01
+285	6	Staff and Administrative Area	SC648	CRA01
+285	6	Staff and Administrative Area	SS205	OFA09
+285	6	Staff and Administrative Area	SS218	OFA07
+285	6	Staff and Administrative Area	SS241	LR002
+285	6	Staff and Administrative Area	SS262	SL001
+285	6	Staff and Administrative Area	SS272	RPR01
+285	6	Staff and Administrative Area	TLTS1	TLTS1
+285	6	Staff and Administrative Area	TLTU1	TLTU1
+287	1	Reception Area	RECP1	RECP1
+287	1	Reception Area	RECP4	RECP4
+287	1	Reception Area	SB003	WRC01
+287	1	Reception Area	SC170	CLSC1
+287	1	Reception Area	SC171	CLSC3
+287	1	Reception Area	SV422	OFDC2
+287	1	Reception Area	TLTF3	TLTF3
+287	1	Reception Area	TLTU1	TLTU1
+287	2	Patient Area	CGE11	TREE1
+287	2	Patient Area	CGE14	TREE2
+287	2	Patient Area	IPT18	RCA02
+287	2	Patient Area	RSH81	EXRG0
+287	2	Patient Area	SC007	RCA01
+287	2	Patient Area	TLTU1	TLTU1
+287	3	Prep and Recovery Area	CPL31	RRSS1
+287	3	Prep and Recovery Area	CPL32	RROP1
+287	3	Prep and Recovery Area	IMS44	NSTA3
+287	3	Prep and Recovery Area	SC007	RCA01
+287	3	Prep and Recovery Area	SRE01	SRE01
+287	3	Prep and Recovery Area	SV381	NCWD4
+287	3	Prep and Recovery Area	TLTU1	TLTU1
+287	4	Support Area	CGE41	USCL2
+287	4	Support Area	CGE46	USCL3
+287	4	Support Area	MEDP1	MEDP1
+287	4	Support Area	SB262	SRLW1
+287	4	Support Area	SB737	UCCL1
+287	4	Support Area	SB743	USCL1
+287	4	Support Area	SB763	SRS04
+287	4	Support Area	SC471	LCCL1
+287	4	Support Area	SRE01	SRE01
+287	4	Support Area	SV549	JANC1
+287	4	Support Area	USCL4	USCL4
+287	5	Staff and Administrative Area	SS205	OFA09
+287	5	Staff and Administrative Area	SS218	OFA07
+287	5	Staff and Administrative Area	SS222	SEC01
+287	5	Staff and Administrative Area	SS262	SL001
+287	5	Staff and Administrative Area	SS272	RPR01
+287	5	Staff and Administrative Area	SS282	LR001
+287	5	Staff and Administrative Area	TLTU1	TLTU1
+287	6	Education Area	RPT52	CLR01
+287	6	Education Area	SS205	OFA09
+287	6	Education Area	SS218	OFA07
+290	1	Reception Area	RECP1	RECP1
+290	1	Reception Area	RECP4	RECP4
+290	2	Staff and Administrative Area	SS205	OFA09
+290	2	Staff and Administrative Area	SS218	OFA07
+290	3	Volunteer Area	SC648	CRA01
+290	3	Volunteer Area	SL002	SL002
+290	3	Volunteer Area	SS218	OFA07
+290	4	Support Area	SV648	SRS01
+300	1	Reception Area	SB003	WRC01
+300	1	Reception Area	SC251	NSTA1
+300	1	Reception Area	TLTU1	TLTU1
+300	2	Patient Area	MEDP1	MEDP1
+300	2	Patient Area	OCB31	EXRG3
+300	2	Patient Area	OPMH1	OPMH1
+300	2	Patient Area	RSH62	DAYR1
+300	2	Patient Area	SV272	NCWD1
+300	2	Patient Area	SV422	OFDC2
+300	2	Patient Area	SV648	SRS01
+300	2	Patient Area	SV678	FSCD1
+300	2	Patient Area	TLTU1	TLTU1
+300	2	Patient Area	TRGM1	TRGM1
+300	3	Staff and Administrative Area	OFDC1	OFDC1
+300	3	Staff and Administrative Area	SS205	OFA09
+300	3	Staff and Administrative Area	SS218	OFA07
+300	3	Staff and Administrative Area	SS262	SL001
+300	3	Staff and Administrative Area	SS282	LR001
+300	3	Staff and Administrative Area	TLTU1	TLTU1
+300	4	Education Area	OPT16	CRA02
+308	1	Reception Area	RECP1	RECP1
+308	1	Reception Area	SB003	WRC01
+308	1	Reception Area	SC170	CLSC1
+308	1	Reception Area	TLTU1	TLTU1
+308	2	Patient Area	CPR05	EYPL1
+308	2	Patient Area	CPR06	APFR1
+308	2	Patient Area	CPR12	APFB1
+308	2	Patient Area	CPR17	OPCR1
+308	2	Patient Area	OCB31	EXRG3
+308	2	Patient Area	SB138	DR001
+308	2	Patient Area	TLTU1	TLTU1
+308	2	Patient Area	TROR1	TROR1
+308	3	Support Area	BMC01	BMC01
+308	3	Support Area	CPR12	APFB1
+308	3	Support Area	CPR21	APLA1
+308	3	Support Area	CPR22	APMS1
+308	3	Support Area	CPR31	BMCW1
+308	3	Support Area	CPR46	APSH1
+308	3	Support Area	CPR61	MRRS1
+308	3	Support Area	SB262	SRLW1
+308	3	Support Area	SB743	USCL1
+308	3	Support Area	SC474	UTC01
+308	3	Support Area	SRCS1	SRCS1
+308	3	Support Area	SRE01	SRE01
+308	3	Support Area	SRPS1	SRPS1
+308	3	Support Area	SRSE1	SRSE1
+308	3	Support Area	SV549	JANC1
+308	4	Staff and Administrative Area	SC648	CRA01
+308	4	Staff and Administrative Area	SS205	OFA09
+308	4	Staff and Administrative Area	SS218	OFA07
+308	4	Staff and Administrative Area	SS222	SEC01
+308	4	Staff and Administrative Area	SS262	SL001
+308	4	Staff and Administrative Area	SS282	LR001
+308	4	Staff and Administrative Area	TLTU1	TLTU1
+308	5	Education Area	OPT16	CRA02
+312	1	Domiciliary Patient Care Unit Calculation	SC148	CALC1
+312	2	Reception Area	RECP1	RECP1
+312	2	Reception Area	SV422	OFDC2
+312	2	Reception Area	TLTU1	TLTU1
+312	3	Patient Care Unit Patient Area	BRUN1	BRUN1
+312	3	Patient Care Unit Patient Area	CMP01	CMP01
+312	3	Patient Care Unit Patient Area	NULR1	NULR1
+312	3	Patient Care Unit Patient Area	RSH11	BRNP1
+312	3	Patient Care Unit Patient Area	RSH12	TLTS2
+312	3	Patient Care Unit Patient Area	RSH62	DAYR1
+312	3	Patient Care Unit Patient Area	SB003	WRC01
+312	3	Patient Care Unit Patient Area	SC164	IPK01
+312	3	Patient Care Unit Patient Area	SV064	RAMR1
+312	3	Patient Care Unit Patient Area	SV549	JANC1
+312	3	Patient Care Unit Patient Area	TLTU1	TLTU1
+312	3	Patient Care Unit Patient Area	XXYYC	XXYYC
+312	4	Patient Care Unit Support Area	COMC1	COMC1
+312	4	Patient Care Unit Support Area	SB711	SRPB1
+312	4	Patient Care Unit Support Area	SC455	LCSL1
+312	4	Patient Care Unit Support Area	SC471	LCCL1
+312	4	Patient Care Unit Support Area	SC474	UTC01
+312	4	Patient Care Unit Support Area	SS218	OFA07
+312	4	Patient Care Unit Support Area	SV648	SRS01
+312	5	Core Area Staff and Administration Area	OFD03	OFD03
+312	5	Core Area Staff and Administration Area	SS205	OFA09
+312	5	Core Area Staff and Administration Area	SS218	OFA07
+312	5	Core Area Staff and Administration Area	SS262	SL001
+312	5	Core Area Staff and Administration Area	SS282	LR001
+312	5	Core Area Staff and Administration Area	TLTU1	TLTU1
+312	6	Core Area Patient Services	BX001	BX001
+312	6	Core Area Patient Services	CT232	PTEA1
+312	6	Core Area Patient Services	OPT16	CRA02
+312	6	Core Area Patient Services	OPT32	OTDL1
+312	6	Core Area Patient Services	RSH62	DAYR1
+312	6	Core Area Patient Services	SC648	CRA01
+312	6	Core Area Patient Services	SV678	FSCD1
+312	7	Core Area Patient Nutrition and Food Service	FSCS1	FSCS1
+312	7	Core Area Patient Nutrition and Food Service	OFD03	OFD03
+312	7	Core Area Patient Nutrition and Food Service	SV648	SRS01
+312	7	Core Area Patient Nutrition and Food Service	SV674	FSSL1
+312	8	Core Area Support	SV648	SRS01
+312	9	Medical Clinic Area	MEDP1	MEDP1
+312	9	Medical Clinic Area	SS218	OFA07
+312	9	Medical Clinic Area	TRGM1	TRGM1
+316	1	Reception Area	RECP1	RECP1
+316	1	Reception Area	SB003	WRC01
+316	1	Reception Area	TLTU1	TLTU1
+316	2	Patient Area	CDL07	RDC02
+316	2	Patient Area	OCB31	EXRG3
+316	2	Patient Area	RDC01	RDC01
+316	2	Patient Area	SS282	LR001
+316	2	Patient Area	SV422	OFDC2
+316	2	Patient Area	TLTU1	TLTU1
+316	2	Patient Area	TRGM1	TRGM1
+316	2	Patient Area	XXYYC	XXYYC
+316	3	Support Area	CDL81	RDWT1
+316	3	Support Area	CL821	LBVP1
+316	3	Support Area	LMCH1	LMCH1
+316	3	Support Area	MEDP1	MEDP1
+316	3	Support Area	SB262	SRLW1
+316	3	Support Area	SB321	BMER1
+316	3	Support Area	SB737	UCCL1
+316	3	Support Area	SB743	USCL1
+316	3	Support Area	SC007	RCA01
+316	3	Support Area	SC471	LCCL1
+316	3	Support Area	SC861	CSDE1
+316	3	Support Area	SC892	CSIA1
+316	3	Support Area	SC902	CSSS1
+316	3	Support Area	SRSE1	SRSE1
+316	3	Support Area	SV272	NCWD1
+316	3	Support Area	SV549	JANC1
+316	3	Support Area	SV648	SRS01
+316	4	Staff and Administrative Area	OPT16	CRA02
+316	4	Staff and Administrative Area	RPT52	CLR01
+316	4	Staff and Administrative Area	SC251	NSTA1
+316	4	Staff and Administrative Area	SS205	OFA09
+316	4	Staff and Administrative Area	SS218	OFA07
+316	4	Staff and Administrative Area	SS222	SEC01
+316	4	Staff and Administrative Area	SS262	SL001
+316	4	Staff and Administrative Area	SS282	LR001
+316	4	Staff and Administrative Area	TLTU1	TLTU1
+316	5	Education Area	OPT16	CRA02
+316	5	Education Area	SL002	SL002
+316	5	Education Area	SS205	OFA09
+400	1	Health Sciences Library Circulation Area	CLR03	CLR03
+400	1	Health Sciences Library Circulation Area	CRA03	CRA03
+400	1	Health Sciences Library Circulation Area	LIBD1	LIBD1
+400	1	Health Sciences Library Circulation Area	LIBV1	LIBV1
+400	1	Health Sciences Library Circulation Area	SC565	LIBS1
+400	1	Health Sciences Library Circulation Area	SC571	OFA10
+400	1	Health Sciences Library Circulation Area	SS272	RPR01
+400	2	Health Sciences Library Shelving Area	SC553	LIBP1
+400	3	Patient Education Resource Center (PERC)	LIBD1	LIBD1
+400	3	Patient Education Resource Center (PERC)	SC553	LIBP1
+400	3	Patient Education Resource Center (PERC)	SC565	LIBS1
+400	3	Patient Education Resource Center (PERC)	SC571	OFA10
+400	3	Patient Education Resource Center (PERC)	SV648	SRS01
+400	4	Staff and Administrative Area	SC571	OFA10
+400	4	Staff and Administrative Area	SS205	OFA09
+400	4	Staff and Administrative Area	SS218	OFA07
+400	4	Staff and Administrative Area	SS262	SL001
+400	4	Staff and Administrative Area	SS282	LR001
+400	4	Staff and Administrative Area	TLTU1	TLTU1
+400	5	Support Area	SS212	WRCH1
+400	5	Support Area	SV648	SRS01
+402	1	Staff and Administrative Area	OPT16	CRA02
+402	1	Staff and Administrative Area	SS205	OFA09
+402	1	Staff and Administrative Area	SS218	OFA07
+402	1	Staff and Administrative Area	SS222	SEC01
+402	1	Staff and Administrative Area	SS262	SL001
+402	1	Staff and Administrative Area	SS282	LR001
+402	1	Staff and Administrative Area	SV648	SRS01
+402	1	Staff and Administrative Area	TLTU1	TLTU1
+402	2	Nursing Education and Training Area	CLR02	CLR02
+402	2	Nursing Education and Training Area	SS205	OFA09
+402	2	Nursing Education and Training Area	SS218	OFA07
+402	2	Nursing Education and Training Area	SS222	SEC01
+402	2	Nursing Education and Training Area	SV648	SRS01
+402	3	Education Auditorium Area	OPT16	CRA02
+402	3	Education Auditorium Area	SB159	TLTF2
+402	3	Education Auditorium Area	SRE01	SRE01
+402	3	Education Auditorium Area	SRS02	SRS02
+402	3	Education Auditorium Area	SS131	AUD01
+402	3	Education Auditorium Area	SV549	JANC1
+402	3	Education Auditorium Area	TLTM2	TLTM2
+402	3	Education Auditorium Area	XXYYC	XXYYC
+402	4	Education Laboratory Area	CLR07	CLR07
+402	4	Education Laboratory Area	CMP01	CMP01
+402	4	Education Laboratory Area	OPT16	CRA02
+406	1	Staff and Administrative Area	SS205	OFA09
+406	1	Staff and Administrative Area	SS218	OFA07
+406	1	Staff and Administrative Area	SS222	SEC01
+406	2	. Support Area	SB711	SRPB1
+406	2	. Support Area	SC455	LCSL1
+406	2	. Support Area	SC471	LCCL1
+406	2	. Support Area	SC474	UTC01
+406	2	. Support Area	SRSE1	SRSE1
+408	1	Staff and Administrative Area	BX001	BX001
+408	1	Staff and Administrative Area	OPT16	CRA02
+408	1	Locker Area	RSH02	LOB02
+408	1	Staff and Administrative Area	SRSE1	SRSE1
+408	1	Staff and Administrative Area	SS205	OFA09
+408	1	Staff and Administrative Area	SS218	OFA07
+408	1	Locker Area	SS241	LR002
+408	1	Staff and Administrative Area	SS262	SL001
+408	1	Staff and Administrative Area	SS282	LR001
+408	1	Staff and Administrative Area	SV549	JANC1
+408	1	Staff and Administrative Area	TLTU1	TLTU1
+408	2	Lounge Area	SS262	SL001
+408	3	Production Area	SC426	LCFA1
+408	3	Production Area	SC439	LCS01
+408	3	Production Area	SC455	LCSL1
+408	3	Production Area	SC471	LCCL1
+408	3	Production Area	SC871	CWSH2
+408	3	Production Area	SC961	CSCQ1
+408	3	Toilet and Shower Area	TLTS1	TLTS1
+408	4	Medical Center Linen Support Area	SC426	LCFA1
+408	4	Medical Center Linen Support Area	SC446	LCUC1
+408	4	Medical Center Linen Support Area	SC455	LCSL1
+408	4	Medical Center Linen Support Area	SC471	LCCL1
+420	1	Reception Area	RECP1	RECP1
+420	1	Reception Area	SB117	LOB01
+420	2	Staff and Administrative Area	SS205	OFA09
+420	2	Staff and Administrative Area	SS218	OFA07
+420	2	Staff and Administrative Area	SS262	SL001
+420	2	Staff and Administrative Area	SV648	SRS01
+420	2	Staff and Administrative Area	TLTU1	TLTU1
+420	3	Child Care Area	SS078	NYIR1
+420	3	Child Care Area	TLTU1	TLTU1
+420	3	Child Care Area	XXYYC	XXYYC
+420	4	Support Area	NULR1	NULR1
+420	4	Support Area	SV549	JANC1
+420	4	Support Area	SV678	FSCD1
+100	2	Medical / Surgical Inpatient Unit Reception Area	VISITOR AREA	EQUIP_FA
+100	3	Medical / Surgical Inpatient Unit Patient Area	PATIENT AREA	EQUIP_FA
+100	4	Medical / Surgical Inpatient Unit Support Area	PATIENT CARE SUPPORT AREA	EQUIP_FA
+100	4	Medical / Surgical Inpatient Unit Support Area	BUILDING SUPPORT AREA	EQUIP_FA
+100	5	Medical / Surgical Inpatient Unit Staff and Administrative Area	PATIENT CARE STAFF AREA	EQUIP_FA
+100	5	Medical / Surgical Inpatient Unit Staff and Administrative Area	CLINICAL STAFF AREA	EQUIP_FA
+102	2	Intensive Care Nursing Unit Reception Area	INTENSIVE CARE PATIENT UNIT RECEPTION AREA	EQUIP_FA
+102	3	Intensive Care Nursing Unit Patient Area	INTENSIVE CARE PATIENT UNIT PATIENT AREA	EQUIP_FA
+102	4	Intensive Care Nursing Unit Support Area	INTENSIVE CARE PATIENT UNIT SUPPORT AREA	EQUIP_FA
+102	5	Intensive Care Nursing Unit Staff and Administrative Area	EDUCATION AREA	EQUIP_FA
+102	5	Intensive Care Nursing Unit Staff and Administrative Area	INTENSIVE CARE PATIENT UNIT STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+102	5	Intensive Care Nursing Unit Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+102	6	Support Area	SUPPORT AREA	EQUIP_FA
+104	2	Reception Area	SCI/D CENTER PATIENT / RESIDENT AREA	EQUIP_FA
+104	3	Acute Care (AC) Unit Patient Area	SCI/D CENTER ACUTE CARE PATIENT CARE UNIT (AC-PCU) PATIENT AREA	EQUIP_FA
+104	5	Acute Care (AC) Support Area	SCI SPOKE AREA	EQUIP_FA
+104	5	Acute Care (AC) Support Area	SCI/D CENTER ACUTE CARE / OUTPATIENT (AC/OP) THERAPY SUPPORT AREA	EQUIP_FA
+104	5	Acute Care (AC) Support Area	SCI/D CENTER ACUTE CARE / OUTPATIENT KINESIOTHERAPY (AC/OP-KT) AREA	EQUIP_FA
+104	5	Acute Care (AC) Support Area	SCI/D CENTER ACUTE CARE / OUTPATIENT OCCUPATIONAL THERAPY (AC/OP-OT) AREA	EQUIP_FA
+104	5	Acute Care (AC) Support Area	SCI/D CENTER ACUTE CARE / OUTPATIENT PHYSICAL THERAPY (AC/OP-PT) AREA	EQUIP_FA
+104	5	Acute Care (AC) Support Area	SCI/D CENTER ACUTE CARE PATIENT CARE UNIT (AC-PCU) SUPPORT AREA	EQUIP_FA
+104	5	Acute Care (AC) Support Area	SCI/D CENTER AQUATIC THERAPY (AT) AREA	EQUIP_FA
+104	5	Acute Care (AC) Support Area	SCI/D CENTER LONG TERM CARE HOME (LTC-H) SUPPORT AREA	EQUIP_FA
+104	5	Acute Care (AC) Support Area	SCI/D CENTER LONG TERM CARE NEIGHBORHOOD CENTER (LTC-NC) THERAPY SUPPORT AREA	EQUIP_FA
+104	5	Acute Care (AC) Support Area	SCI/D CENTER LONG TERM CARE NEIGHBORHOOD CENTER KINESIOTHERAPY (LTC-NC-KT) AREA	EQUIP_FA
+104	5	Acute Care (AC) Support Area	SCI/D CENTER LONG TERM CARE NEIGHBORHOOD CENTER OCCUPATIONAL THERAPY (LTC-NC-OT) AREA	EQUIP_FA
+104	5	Acute Care (AC) Support Area	SCI/D CENTER LONG TERM CARE NEIGHBORHOOD CENTER PHYSICAL THERAPY (LTC-NC-PT) AREA	EQUIP_FA
+104	5	Acute Care (AC) Support Area	SCI/D CENTER OUTPATIENT (OP) RECEPTION AREA	EQUIP_FA
+104	5	Acute Care (AC) Support Area	SCI/D CENTER OUTPATIENT (OP) SUPPORT AREA	EQUIP_FA
+104	5	Acute Care (AC) Support Area	SCI/D CENTER OUTPATIENT (OP) THERAPY SUPPORT AREA	EQUIP_FA
+104	5	Acute Care (AC) Support Area	SCI/D CENTER OUTPATIENT KINESIOTHERAPY (OP-KT) AREA	EQUIP_FA
+104	5	Acute Care (AC) Support Area	SCI/D CENTER OUTPATIENT OCCUPATIONAL THERAPY (OP-OT) AREA	EQUIP_FA
+104	5	Acute Care (AC) Support Area	SCI/D CENTER OUTPATIENT PHYSICAL THERAPY (OP-PT) AREA	EQUIP_FA
+104	5	Acute Care (AC) Support Area	SCI/D CENTER RECEPTION AREA	EQUIP_FA
+104	9	SCI/D Patient Clinic Area	SCI/D CENTER OUTPATIENT (OP) PATIENT AREA	EQUIP_FA
+104	12	SCI/D Staff and Administrative Area	SCI/D CENTER ACUTE CARE (AC) STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+104	12	SCI/D Staff and Administrative Area	SCI/D CENTER LONG TERM CARE (LTC) STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+104	12	SCI/D Staff and Administrative Area	SCI/D CENTER OUTPATIENT (OP) STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+104	12	SCI/D Staff and Administrative Area	SCI/D CENTER STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+110	4	Patient Care Unit Support Area [67]	PATIENT CARE UNIT (PCU) SUPPORT AREA	EQUIP_FA
+110	5	Patient Care Unit Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+110	6	Staff and Administrative Area	ACADEMIC EDUCATION AREA	EQUIP_FA
+110	6	Staff and Administrative Area	PATIENT CARE UNIT (PCU) CLINICAL STAFF AREA	EQUIP_FA
+111	1	PRC Reception Area	OUTPATIENT UNIT RECEPTION AREA	EQUIP_FA
+111	1	PRC Reception Area	PRC PATIENT CARE UNIT RECEPTION AREA	EQUIP_FA
+111	1	PRC Reception Area	PRC RESIDENT CARE UNIT RECEPTION AREA	EQUIP_FA
+111	2	Inpatient Unit Patient Area	PRC PATIENT CARE UNIT PATIENT AREA	EQUIP_FA
+111	3	Inpatient Unit Patient Support Area	OUTPATIENT UNIT SUPPORT AREA	EQUIP_FA
+111	3	Inpatient Unit Patient Support Area	PRC PATIENT CARE UNIT SUPPORT AREA	EQUIP_FA
+111	3	Inpatient Unit Patient Support Area	PRC RESIDENT CARE UNIT SUPPORT AREA	EQUIP_FA
+111	3	Inpatient Unit Patient Support Area	PRC STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+111	4	Inpatient Unit Patient and Family Area	PRC PATIENT CARE UNIT PATIENT AND FAMILY AREA	EQUIP_FA
+111	4	Inpatient Unit Patient and Family Area	PRC RESIDENT CARE UNIT RESIDENT AND FAMILY SUPPORT AREA	EQUIP_FA
+111	5	Inpatient Unit Therapy Patient Area	PRC PATIENT CARE UNIT THERAPY AREA	EQUIP_FA
+111	6	Inpatient Unit Staff and Administrative Area	OUTPATIENT UNIT STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+111	6	Inpatient Unit Staff and Administrative Area	PRC PATIENT CARE UNIT STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+111	6	Inpatient Unit Staff and Administrative Area	PRC RESIDENT CARE UNIT STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+111	8	PTRP Resident Unit Area	PRC RESIDENT CARE UNIT RESIDENT UNIT AREA	EQUIP_FA
+111	11	PTRP Therapy Area	PRC RESIDENT CARE UNIT THERAPY AREA	EQUIP_FA
+111	14	Outpatient Unit Patient Area	OUTPATIENT UNIT PATIENT AREA	EQUIP_FA
+111	16	Outpatient Unit Therapy Area	OUTPATIENT UNIT THERAPY AREA	EQUIP_FA
+204	1	Reception Area	AUDIOLOGY AND SPEECH LANGUAGE PATHOLOGY RECEPTION AREA	EQUIP_FA
+204	2	Audiology Clinic Patient Area	AUDIOLOGY PATIENT AREA	EQUIP_FA
+204	5	Staff and Administrative Area	AUDIOLOGY AND SPEECH-LANGUAGE PATHOLOGY STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+206	1	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+206	4	Coffee Shop Area	CAFETERIA DINING AREA	EQUIP_FA
+206	5	Optical Shop Area	OPTICAL SHOP AREA	EQUIP_FA
+206	7	Food Court Support Area	FOOD COURT SUPPORT AREA	EQUIP_FA
+206	8	Cafeteria Serving Area	CAFETERIA SERVING AREA	EQUIP_FA
+210	1	Reception Area	RECEPTION AREA	EQUIP_FA
+210	2	Non-Invasive Cardiology Patient Area	CARDIOLOGY PATIENT AREA	EQUIP_FA
+210	2	Non-Invasive Cardiology Patient Area	CARDIOLOGY SUPPORT AREA	EQUIP_FA
+210	7	Staff and Administrative Areas	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+212	1	Reception Area	RECEPTION AREA	EQUIP_FA
+212	2	Pulmonary Medicine / Respiratory Care Patient Area	PULMONARY MEDICINE / RESPIRATORY CARE PATIENT AREA	EQUIP_FA
+212	3	Bronchoscopy Patient Area	BRONCHOSCOPY PATIENT AREA	EQUIP_FA
+212	4	Sleep Study Patient Area	SLEEP STUDY PATIENT AREA	EQUIP_FA
+212	5	Prep and Recovery Patient Area	PREP AND RECOVERY PATIENT AREA	EQUIP_FA
+212	6	Support Area	SUPPORT AREA	EQUIP_FA
+212	7	Staff and Administrative Areas	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+214	1	Medical Service Area	DERMATOLOGY SERVICE AREA	EQUIP_FA
+214	1	Medical Service Area	ENDOCRINOLOGY AREA	EQUIP_FA
+214	1	Medical Service Area	GERIATRICS HOME BASED PRIMARY CARE (HBPC) AREA	EQUIP_FA
+214	1	Medical Service Area	HOMELESS / COMPENSATED WORK THERAPY (CWT) AREA	EQUIP_FA
+214	1	Medical Service Area	HOSPITAL MEDICINE AREA	EQUIP_FA
+214	1	Medical Service Area	INFECTIOUS DISEASES AREA	EQUIP_FA
+214	1	Medical Service Area	MEDICAL SERVICE AREA	EQUIP_FA
+214	1	Medical Service Area	NEUROLOGY SERVICE AREA	EQUIP_FA
+214	1	Medical Service Area	ONCOLOGY SERVICE AREA	EQUIP_FA
+214	1	Medical Service Area	RHEUMATOLOGY AREA	EQUIP_FA
+218	1	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+220	1	Lobby and Teller Area	LOBBY AND TELLER AREA	EQUIP_FA
+220	2	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+220	3	Support Area	SUPPORT AREA	EQUIP_FA
+222	2	Reception Area	RECEPTION AREA	EQUIP_FA
+222	3	Dental Treatment Patient Area	DENTAL TREATMENT PATIENT AREA	EQUIP_FA
+222	4	Dental Surgery Suite Patient Area	DENTAL SURGERY SUITE PATIENT AREA	EQUIP_FA
+222	5	Dental Laboratories Area	DENTAL LABORATORIES	EQUIP_FA
+222	6	Support Area	EDUCATION AREA	EQUIP_FA
+222	6	Support Area	SUPPORT AREA	EQUIP_FA
+222	7	Staff and Administrative Areas	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+226	1	Reception Area	RECEPTION AREA	EQUIP_FA
+226	2	Patient Area	PATIENT AREA	EQUIP_FA
+226	3	Support Area	SUPPORT AREA	EQUIP_FA
+226	4	Staff and Administrative Area	STAFF AMD ADMINISTRATIVE AREA	EQUIP_FA
+230	2	Administrative and Operations Area	ADMINISTRATIVE AND OPERATIONS AREA	EQUIP_FA
+230	2	Administrative and Operations Area	INTERIOR DESIGN (ID) AREA	EQUIP_FA
+230	2	Administrative and Operations Area	SHOP SUPPORT AREA	EQUIP_FA
+230	4	Biomedical Engineering Repair Shop	BIOMEDICAL ENGINEERING REPAIR SHOP	EQUIP_FA
+233	1	Reception Area	OPHTHALMOLOGY SERVICE RECEPTION AREA	EQUIP_FA
+233	1	Reception Area	OPTOMETRY SERVICE RECEPTION AREA	EQUIP_FA
+233	2	Patient Area	OPTICAL FITTING AREA	EQUIP_FA
+233	3	Support Area	OPHTHALMOLOGY SERVICE SUPPORT AREA	EQUIP_FA
+233	3	Support Area	OPTOMETRY SERVICE SUPPORT AREA	EQUIP_FA
+233	4	Staff and Administrative Area	OPHTHALMOLOGY SERVICE STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+233	4	Staff and Administrative Area	OPTOMETRY SERVICE STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+234	1	Reception Area	RECEPTION AREA	EQUIP_FA
+234	2	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+238	1	Reception Area	RECEPTION AREA	EQUIP_FA
+238	2	Staff and Administrative Area	STAFF AND ADMININSTRATIVE AREA	EQUIP_FA
+240	1	Patient Specimen Collection Area	PATIENT SPECIMEN COLLECTION AREA	EQUIP_FA
+240	3	Clinical Pathology Work Area	CLINICAL PATHOLOGY WORK AREA	EQUIP_FA
+240	4	Molecular Testing Suite	MOLECULAR TESTING SUITE	EQUIP_FA
+240	5	Anatomical Pathology Work Area	ANATOMICAL PATHOLOGY WORK AREA	EQUIP_FA
+240	6	Electron Microscopy Suite	ELECTRON MICROSCOPY SUITE	EQUIP_FA
+240	7	Autopsy Suite	AUTOPSY SUITE	EQUIP_FA
+240	9	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+240	10	Education Area	EDUCATION AREA	EQUIP_FA
+244	1	Lobby Area	LOBBY AREA	EQUIP_FA
+246	1	Office of the Chief	FEE SERVICES (FS) SECTION	EQUIP_FA
+246	1	Office of the Chief	HEALTH INFORMATION MANAGEMENT SECTION (HIMS)	EQUIP_FA
+246	1	Office of the Chief	OFFICE OF THE CHIEF	EQUIP_FA
+246	1	Office of the Chief	WARD ADMINISTRATION SECTION (WAS)	EQUIP_FA
+246	2	Health Benefits Section: Centralized Registration Unit (CRU)	HEALTH BENEFITS SECTION: CENTRALIZED REGISTRATION UNIT (CRU)	EQUIP_FA
+246	7	Office Operations Section	OFFICE OPERATIONS SECTION	EQUIP_FA
+248	1	Reception and Administration Area	MMVSS RECEPTION AND ADMINISTRATION AREA	EQUIP_FA
+248	1	Reception and Administration Area	RECEPTION AND ADMINISTRATION AREA	EQUIP_FA
+248	2	Photography Service Production Area	MMVSS PHOTOGRAPHY PRODUCTION AREA	EQUIP_FA
+248	2	Photography Service Production Area	PHOTOGRAPHY SERVICE PRODUCTION AREA	EQUIP_FA
+248	4	Audiovisual Service Production Area	MMVSS AUDIOVISUAL SERVICE PRODUCTION AREA	EQUIP_FA
+254	2	Staff and Administration Area	EDUCATION AREA	EQUIP_FA
+254	2	Staff and Administration Area	RECEPTION AREA	EQUIP_FA
+254	2	Staff and Administration Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+256	1	Emergency Department: Reception Area	RECEPTION / PUBLIC AREA	EQUIP_FA
+256	5	Emergency Department: Support Area	EMERGENCY IMAGING AREA	EQUIP_FA
+256	5	Emergency Department: Support Area	STAFF WORK AREA	EQUIP_FA
+256	5	Emergency Department: Support Area	SUPPORT AREA	EQUIP_FA
+256	6	Emergency Department: Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+258	1	Reception Area	IMAGING WOMEN HEALTH CENTER (WHC) (MODEL 3 ONLY) PATIENT AREA	EQUIP_FA
+258	1	Reception Area	RECEPTION AREA	EQUIP_FA
+258	2	Patient Area	PATIENT AREA	EQUIP_FA
+258	4	Support Area	SUPPORT AREA	EQUIP_FA
+258	5	Staff and Administrative Area	EDUCATION AREA	EQUIP_FA
+258	5	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+266	1	Reception Area	RECEPTION AREA	EQUIP_FA
+266	2	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+266	2	Staff and Administrative Area	SUPPORT AREA	EQUIP_FA
+268	3	Inpatient Pharmacy Education Program	INPATIENT PHARMACY SUPPORT AREA	EQUIP_FA
+268	3	Inpatient Pharmacy Education Program	MEDICATION CONSULTATION SERVICES	EQUIP_FA
+268	3	Inpatient Pharmacy Education Program	OUTPATIENT PHARMACY SUPPORT AREA	EQUIP_FA
+268	3	Inpatient Pharmacy Education Program	PHARMACY EDUCATION AREA	EQUIP_FA
+268	5	Inpatient Pharmacy Staff and Administrative Area	INPATIENT PHARMACY STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+268	5	Inpatient Pharmacy Staff and Administrative Area	OUTPATIENT PHARMACY STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+268	5	Inpatient Pharmacy Staff and Administrative Area	PHARMACY SERVICE STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+268	7	Outpatient Pharmacy Patient Area	OUTPATIENT PHARMACY PUBLIC AREA	EQUIP_FA
+268	8	Outpatient Pharmacy Work Area	OUTPATIENT PHARMACY WORK AREA	EQUIP_FA
+268	9	Outpatient Pharmacy Support Area	INPATIENT PHARMACY STERILE PREPARATION AREA	EQUIP_FA
+269	1	Reception Area	RECEPTION AREA	EQUIP_FA
+269	2	Recreation / Creative Arts Therapy Area	AQUATIC THERAPY AREA	EQUIP_FA
+269	2	Recreation / Creative Arts Therapy Area	RECREATION / CREATIVE ARTS THERAPY AREA	EQUIP_FA
+269	3	Self-Directed Therapy Area	SELF-DIRECTED THERAPY AREA	EQUIP_FA
+269	5	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+274	1	Staff Area	STAFF AREA	EQUIP_FA
+277	2	Patient Area	PATIENT AREA	EQUIP_FA
+277	2	Patient Area	RECEPTION AREA	EQUIP_FA
+277	3	Treatment Planning Unit Area	TREATMENT PLANNING UNIT AREA	EQUIP_FA
+277	4	Support Area	SUPPORT AREA	EQUIP_FA
+277	5	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+278	5	Biomedical Research Unit Staff and Administration Area	BLR&D SERVICE STAFF AREA	EQUIP_FA
+278	5	Biomedical Research Unit Staff and Administration Area	CSR&D SERVICE STAFF AREA	EQUIP_FA
+278	5	Biomedical Research Unit Staff and Administration Area	HSR&D SERVICE STAFF AREA	EQUIP_FA
+278	5	Biomedical Research Unit Staff and Administration Area	R&D NON-PROFIT (N-P) STAFF AREA	EQUIP_FA
+278	5	Biomedical Research Unit Staff and Administration Area	R&D SUPPORT AREA	EQUIP_FA
+278	5	Biomedical Research Unit Staff and Administration Area	RR&D SERVICE STAFF AREA	EQUIP_FA
+278	5	Biomedical Research Unit Staff and Administration Area	VMU STAFF AREA	EQUIP_FA
+278	17	Veterinary Medical Unit Support Area	VMU SUPPORT AREA	EQUIP_FA
+279	2	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+280	1	Reception Area	RECEPTION AREA	EQUIP_FA
+282	1	Reception Area	RECEPTION AREA	EQUIP_FA
+282	2	Patient Area	PATIENT AREA	EQUIP_FA
+282	2	Patient Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+284	2	Loading Dock Area	LOADING DOCK AREA	EQUIP_FA
+284	3	Warehouse Area	WAREHOUSE AREA	EQUIP_FA
+284	4	Postal / Mail Service Area	POSTAL / MAIL SERVICE AREA	EQUIP_FA
+284	5	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+285	1	Decontamination Area	DECONTAMINATION AREA	EQUIP_FA
+285	2	Scope Processing Area	SCOPE PROCESSING AREA	EQUIP_FA
+285	3	Preparation and Assembly Area	PREPARATION AND ASSEMBLY AREA	EQUIP_FA
+285	4	Sterilization Area	STERILIZATION AREA	EQUIP_FA
+285	5	Receiving, Storage and Dispatch Area	"RECEIVING, STORAGE AND DISPATCH AREA"	EQUIP_FA
+285	6	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+287	1	Reception Area	RECEPTION AREA	EQUIP_FA
+287	2	Patient Area	PATIENT AREA	EQUIP_FA
+287	3	Prep and Recovery Area	PREP AND RECOVERY PATIENT AREA	EQUIP_FA
+287	4	Support Area	SUPPORT AREA	EQUIP_FA
+287	5	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+290	2	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+290	2	Staff and Administrative Area	VOLUNTEER AREA	EQUIP_FA
+308	1	Reception Area	RECEPTION AREA	EQUIP_FA
+308	2	Patient Area	PATIENT AREA	EQUIP_FA
+308	3	Support Area	SUPPORT AREA	EQUIP_FA
+308	4	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+312	3	Patient Care Unit Patient Area	FA 4 RESIDENT CARE UNIT (RCU) PATIENT AREA	EQUIP_FA
+312	4	Patient Care Unit Support Area	RESIDENT CARE UNIT (RCU) SUPPORT AREA	EQUIP_FA
+312	5	Core Area Staff and Administration Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+312	7	Core Area Patient Nutrition and Food Service	RESIDENT NUTRITION AND FOOD SERVICE AREA	EQUIP_FA
+316	1	Reception Area	RECEPTION AREA	EQUIP_FA
+316	2	Patient Area	PATIENT AREA	EQUIP_FA
+316	3	Support Area	SUPPORT AREA	EQUIP_FA
+316	4	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+400	2	Health Sciences Library Shelving Area	PATIENT EDUCATION RESOURCE CENTER (PERC)	EQUIP_FA
+400	4	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+402	1	Staff and Administrative Area	NURSING EDUCATION AND TRAINING AREA	EQUIP_FA
+402	1	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+402	3	Education Auditorium Area	EDUCATION AUDITORIUM AREA	EQUIP_FA
+406	1	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+406	2	. Support Area	SUPPORT AREA	EQUIP_FA
+408	1	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+408	3	Production Area	PRODUCTION AREA	EQUIP_FA
+408	4	Medical Center Linen Support Area	MEDICAL CENTER LINEN SUPPORT AREA	EQUIP_FA
+420	2	Staff and Administrative Area	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+420	3	Child Care Area	CHILDCARE AREA	EQUIP_FA
+106	2	House Reception Area	HOUSE RECEPTION AREA	EQUIP_FA
+106	3	House Resident Area	HOUSE RESIDENT AREA	EQUIP_FA
+106	4	House Support Area	HOUSE SUPPORT AREA	EQUIP_FA
+106	5	House Staff and Administrative Area	HOUSE STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+106	6	Neighborhood Center Reception Area	NEIGHBORHOOD CENTER RECEPTION AREA	EQUIP_FA
+106	7	Neighborhood Center Resident Area	NEIGHBORHOOD CENTER RESIDENT AREA	EQUIP_FA
+106	8	Neighborhood Center Support Area	NEIGHBORHOOD CENTER SUPPORT AREA	EQUIP_FA
+106	9	Community Center Reception Area	COMMUNITY CENTER RECEPTION AREA	EQUIP_FA
+106	10	Community Center Resident Area	COMMUNITY CENTER RESIDENT AREA	EQUIP_FA
+106	11	Community Center Support Area	COMMUNITY CENTER SUPPORT AREA	EQUIP_FA
+106	12	Community Center Staff and Administrative Area	COMMUNITY CENTER STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+104	13	SCI/D CENTER ACUTE CARE (AC) RECEPTION AREA	SCI/D CENTER ACUTE CARE (AC) RECEPTION AREA	EQUIP_FA
+104	14	SCI/D CENTER ACUTE CARE / OUTPATIENT ACTIVITIES OF DAILY LIVING (AC/OP-ADL) AREA	SCI/D CENTER ACUTE CARE / OUTPATIENT ACTIVITIES OF DAILY LIVING (AC/OP-ADL) AREA	EQUIP_FA
+104	15	SCI/D CENTER ACUTE CARE HOME ENVIRONMENT (AC-HE) AREA	SCI/D CENTER ACUTE CARE HOME ENVIRONMENT (AC-HE) AREA	EQUIP_FA
+104	16	SCI/D CENTER ACUTE CARE PATIENT CARE UNIT (AC-PCU) COMMON AREA	SCI/D CENTER ACUTE CARE PATIENT CARE UNIT (AC-PCU) COMMON AREA	EQUIP_FA
+104	17	SCI/D CENTER EDUCATION AREA	SCI/D CENTER EDUCATION AREA	EQUIP_FA
+104	18	SCI/D CENTER LONG TERM CARE HOME (LTC-H) RECEPTION AREA	SCI/D CENTER LONG TERM CARE HOME (LTC-H) RECEPTION AREA	EQUIP_FA
+104	19	SCI/D CENTER LONG TERM CARE HOME (LTC-H) RESIDENT AREA	SCI/D CENTER LONG TERM CARE HOME (LTC-H) RESIDENT AREA	EQUIP_FA
+104	20	SCI/D CENTER LONG TERM CARE NEIGHBORHOOD CENTER (LTC-NC) RESIDENT AREA	SCI/D CENTER LONG TERM CARE NEIGHBORHOOD CENTER (LTC-NC) RESIDENT AREA	EQUIP_FA
+104	21	SCI/D CENTER LONG TERM CARE NEIGHBORHOOD CENTER (LTC-NC) STAFF AND ADMINISTRATIVE AREA	SCI/D CENTER LONG TERM CARE NEIGHBORHOOD CENTER (LTC-NC) STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+104	22	SCI/D CENTER LONG TERM CARE NEIGHBORHOOD CENTER (LTC-NC) SUPPORT AREA	SCI/D CENTER LONG TERM CARE NEIGHBORHOOD CENTER (LTC-NC) SUPPORT AREA	EQUIP_FA
+104	23	SCI/D CENTER LONG TERM CARE NEIGHBORHOOD CENTER ACTIVITIES OF DAILY LIVING (LTC-NC-ADL) AREA	SCI/D CENTER LONG TERM CARE NEIGHBORHOOD CENTER ACTIVITIES OF DAILY LIVING (LTC-NC-ADL) AREA	EQUIP_FA
+104	24	SCI/D CENTER OUTPATIENT ACTIVITIES OF DAILY LIVING (OP-ADL) AREA	SCI/D CENTER OUTPATIENT ACTIVITIES OF DAILY LIVING (OP-ADL) AREA	EQUIP_FA
+104	25	SCI/D CENTER OUTPATIENT HOME CARE (OP-HC) AREA	SCI/D CENTER OUTPATIENT HOME CARE (OP-HC) AREA	EQUIP_FA
+104	26	SCI/D CENTER RESEARCH AREA	SCI/D CENTER RESEARCH AREA	EQUIP_FA
+104	27	SCI/D CENTER SUPPORT AREA	SCI/D CENTER SUPPORT AREA	EQUIP_FA
+110	7	PATIENT CARE UNIT (PCU) PATIENT AREA	PATIENT CARE UNIT (PCU) PATIENT AREA	EQUIP_FA
+110	8	PATIENT CARE UNIT (PCU) PATIENT COMMON AREA	PATIENT CARE UNIT (PCU) PATIENT COMMON AREA	EQUIP_FA
+110	9	PATIENT CARE UNIT (PCU) RECEPTION AREA	PATIENT CARE UNIT (PCU) RECEPTION AREA	EQUIP_FA
+110	10	PATIENT CARE UNIT (PCU) STAFF-PATIENT AREA	PATIENT CARE UNIT (PCU) STAFF-PATIENT AREA	EQUIP_FA
+111	17	EDUCATION AREA	EDUCATION AREA	EQUIP_FA
+204	6	AUDIOLOGY AND SPEECH-LANGUAGE PATHOLOGY EDUCATION AREA	AUDIOLOGY AND SPEECH-LANGUAGE PATHOLOGY EDUCATION AREA	EQUIP_FA
+204	7	AUDIOLOGY SUPPORT AREA	AUDIOLOGY SUPPORT AREA	EQUIP_FA
+204	8	SPEECH-LANGUAGE PATHOLOGY PATIENT AREA	SPEECH-LANGUAGE PATHOLOGY PATIENT AREA	EQUIP_FA
+204	9	SPEECH-LANGUAGE PATHOLOGY SUPPORT AREA	SPEECH-LANGUAGE PATHOLOGY SUPPORT AREA	EQUIP_FA
+206	9	BARBER / BEAUTY SHOP	BARBER / BEAUTY SHOP	EQUIP_FA
+206	10	COFFEE SHOP AREA	COFFEE SHOP AREA	EQUIP_FA
+206	11	RETAIL CONCESSION AREA	RETAIL CONCESSION AREA	EQUIP_FA
+206	12	RETAIL STORE AREA	RETAIL STORE AREA	EQUIP_FA
+206	13	VENDING AREA	VENDING AREA	EQUIP_FA
+208	1	EDUCATION AREA	EDUCATION AREA	EQUIP_FA
+208	2	PRE-ASSEMBLY AREA	PRE-ASSEMBLY AREA	EQUIP_FA
+208	3	STAFF AND ADMINISTRATIVE AREA	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+208	4	SUPPORT AREA	SUPPORT AREA	EQUIP_FA
+208	5	WORSHIP AREA	WORSHIP AREA	EQUIP_FA
+210	8	EDUCATION AREA	EDUCATION AREA	EQUIP_FA
+212	8	EDUCATION AREA	EDUCATION AREA	EQUIP_FA
+218	2	SUPPORT AREA	SUPPORT AREA	EQUIP_FA
+226	5	EDUCATION AREA	EDUCATION AREA	EQUIP_FA
+230	5	ENGINEERING CONTROL CENTER	ENGINEERING CONTROL CENTER	EQUIP_FA
+230	6	RECEPTION AREA	RECEPTION AREA	EQUIP_FA
+230	7	SHOP AREA	SHOP AREA	EQUIP_FA
+233	5	OPHTHALMOLOGY SERVICE EDUCATION AREA	OPHTHALMOLOGY SERVICE EDUCATION AREA	EQUIP_FA
+233	6	OPHTHALMOLOGY SERVICE PATIENT AREA	OPHTHALMOLOGY SERVICE PATIENT AREA	EQUIP_FA
+233	7	OPTOMETRY SERVICE EDUCATION AREA	OPTOMETRY SERVICE EDUCATION AREA	EQUIP_FA
+233	8	OPTOMETRY SERVICE PATIENT AREA	OPTOMETRY SERVICE PATIENT AREA	EQUIP_FA
+234	3	SUPPORT AREA	SUPPORT AREA	EQUIP_FA
+238	3	SUPPORT AREA	SUPPORT AREA	EQUIP_FA
+240	11	CORE LABORATORY WORK AREA	CORE LABORATORY WORK AREA	EQUIP_FA
+240	12	SUPPORT AREA	SUPPORT AREA	EQUIP_FA
+246	8	HEALTH BENEFITS SECTION: OUTPATIENT REGISTRATION	HEALTH BENEFITS SECTION: OUTPATIENT REGISTRATION	EQUIP_FA
+248	5	AUDIOVISUAL SERVICE PRODUCTION AREA	AUDIOVISUAL SERVICE PRODUCTION AREA	EQUIP_FA
+248	6	CENTRAL COPY CENTER SERVICE PRODUCTION AREA	CENTRAL COPY CENTER SERVICE PRODUCTION AREA	EQUIP_FA
+248	7	ILLUSTRATION SERVICE PRODUCTION AREA	ILLUSTRATION SERVICE PRODUCTION AREA	EQUIP_FA
+248	8	MMVSS CENTRAL COPY CENTER SERVICE PRODUCTION AREA	MMVSS CENTRAL COPY CENTER SERVICE PRODUCTION AREA	EQUIP_FA
+248	9	MMVSS ILLUSTRATION SERVICE PRODUCTION AREA	MMVSS ILLUSTRATION SERVICE PRODUCTION AREA	EQUIP_FA
+248	10	MMVSS SUPPORT AREA	MMVSS SUPPORT AREA	EQUIP_FA
+248	11	SUPPORT AREA	SUPPORT AREA	EQUIP_FA
+248	12	VAMC WITHOUT MEDICAL MEDIA SERVICE	VAMC WITHOUT MEDICAL MEDIA SERVICE	EQUIP_FA
+256	7	AMBULANCE / EMS AREA	AMBULANCE / EMS AREA	EQUIP_FA
+256	8	EDUCATION AREA	EDUCATION AREA	EQUIP_FA
+256	9	PATIENT AREA	PATIENT AREA	EQUIP_FA
+256	10	PATIENT ASSESSMENT AREA	PATIENT ASSESSMENT AREA	EQUIP_FA
+256	11	SECURITY / POLICE AREA	SECURITY / POLICE AREA	EQUIP_FA
+257	1	EDUCATION AREA	EDUCATION AREA	EQUIP_FA
+257	2	PATIENT AREA	PATIENT AREA	EQUIP_FA
+257	3	PATIENT ASSESSMENT AREA	PATIENT ASSESSMENT AREA	EQUIP_FA
+257	4	RECEPTION / PUBLIC AREA	RECEPTION / PUBLIC AREA	EQUIP_FA
+257	5	SECURITY / POLICE AREA	SECURITY / POLICE AREA	EQUIP_FA
+257	6	STAFF AND ADMINISTRATIVE AREA	STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+257	7	STAFF WORK AREA	STAFF WORK AREA	EQUIP_FA
+257	8	SUPPORT AREA	SUPPORT AREA	EQUIP_FA
+263	1	AUDIOLOGY AND SPEECH-LANGUAGE PATHOLOGY CLINIC	AUDIOLOGY AND SPEECH-LANGUAGE PATHOLOGY CLINIC	EQUIP_FA
+263	2	CANTEEN SERVICE	CANTEEN SERVICE	EQUIP_FA
+263	3	CLINIC MANAGEMENT	CLINIC MANAGEMENT	EQUIP_FA
+263	4	DENTAL CLINIC	DENTAL CLINIC	EQUIP_FA
+263	5	ENGINEERING SERVICE	ENGINEERING SERVICE	EQUIP_FA
+263	6	EYE CLINIC	EYE CLINIC	EQUIP_FA
+263	7	FISCAL SERVICE	FISCAL SERVICE	EQUIP_FA
+263	8	HOME BASED PRIMARY CARE	HOME BASED PRIMARY CARE	EQUIP_FA
+263	9	IMAGING SERVICE	IMAGING SERVICE	EQUIP_FA
+263	10	LOBBY / RECEPTION AREA	LOBBY / RECEPTION AREA	EQUIP_FA
+263	11	LOGISTICS SERVICE	LOGISTICS SERVICE	EQUIP_FA
+263	12	MENTAL HEALTH CLINIC	MENTAL HEALTH CLINIC	EQUIP_FA
+263	13	MULTI-SPECIALTY CLINIC	MULTI-SPECIALTY CLINIC	EQUIP_FA
+263	14	PATHOLOGY AND LABORATORY MEDICINE (PLM) SERVICE	PATHOLOGY AND LABORATORY MEDICINE (PLM) SERVICE	EQUIP_FA
+263	15	PATIENT ALIGNED CARE TEAM (PACT) CLINIC 1	PATIENT ALIGNED CARE TEAM (PACT) CLINIC 1	EQUIP_FA
+263	16	PATIENT ALIGNED CARE TEAM (PACT) CLINIC 2	PATIENT ALIGNED CARE TEAM (PACT) CLINIC 2	EQUIP_FA
+263	17	PATIENT ALIGNED CARE TEAM (PACT) CLINIC 3	PATIENT ALIGNED CARE TEAM (PACT) CLINIC 3	EQUIP_FA
+263	18	PHARMACY SERVICE	PHARMACY SERVICE	EQUIP_FA
+263	19	PHYSICAL MEDICINE AND REHABILITATION (PM&R) CLINIC	PHYSICAL MEDICINE AND REHABILITATION (PM&R) CLINIC	EQUIP_FA
+263	20	POLICE SERVICE	POLICE SERVICE	EQUIP_FA
+263	21	PROSTHETICS AND SENSORY AIDS CLINIC	PROSTHETICS AND SENSORY AIDS CLINIC	EQUIP_FA
+263	22	STAFF SUPPORT AREA	STAFF SUPPORT AREA	EQUIP_FA
+263	23	SUPPORT AREA	SUPPORT AREA	EQUIP_FA
+268	10	ALL-HAZARD EMERGENCY CACHE	ALL-HAZARD EMERGENCY CACHE	EQUIP_FA
+268	11	INPATIENT PHARMACY WORK AREA	INPATIENT PHARMACY WORK AREA	EQUIP_FA
+268	12	INVESTIGATIONAL DRUG SERVICES (IDS)	INVESTIGATIONAL DRUG SERVICES (IDS)	EQUIP_FA
+269	6	EDUCATION AREA	EDUCATION AREA	EQUIP_FA
+278	18	BLR&D SERVICE RESEARCH AREA	BLR&D SERVICE RESEARCH AREA	EQUIP_FA
+278	19	BLR&D SERVICE SUPPORT AREA	BLR&D SERVICE SUPPORT AREA	EQUIP_FA
+278	20	R&D RECEPTION AREA	R&D RECEPTION AREA	EQUIP_FA
+278	21	R&D STAFF AND ADMINISTRATIVE AREA	R&D STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+278	22	VMU ANIMAL AREA	VMU ANIMAL AREA	EQUIP_FA
+278	23	VMU CAGEWASH AREA	VMU CAGEWASH AREA	EQUIP_FA
+278	24	VMU IMAGING / BEHAVIORAL STUDY AREA	VMU IMAGING / BEHAVIORAL STUDY AREA	EQUIP_FA
+278	25	VMU SURGERY AREA	VMU SURGERY AREA	EQUIP_FA
+278	26	VMU TREATMENT AREA	VMU TREATMENT AREA	EQUIP_FA
+279	3	DUTY AREA	DUTY AREA	EQUIP_FA
+280	2	STAFF AND ADMINISTRATTIVE AREA	STAFF AND ADMINISTRATTIVE AREA	EQUIP_FA
+280	3	SUPPORT AREA	SUPPORT AREA	EQUIP_FA
+285	7	RECEIVING, STORAGE AND DISPATCH AREA	RECEIVING, STORAGE AND DISPATCH AREA	EQUIP_FA
+286	1	AMBULATORY SURGERY CENTER (ASC) ANESTHESIA PROCEDURE PATIENT AREA	AMBULATORY SURGERY CENTER (ASC) ANESTHESIA PROCEDURE PATIENT AREA	EQUIP_FA
+286	2	AMBULATORY SURGERY CENTER (ASC) CLEAN CORE AREA	AMBULATORY SURGERY CENTER (ASC) CLEAN CORE AREA	EQUIP_FA
+286	3	AMBULATORY SURGERY CENTER (ASC) PATIENT AREA	AMBULATORY SURGERY CENTER (ASC) PATIENT AREA	EQUIP_FA
+286	4	AMBULATORY SURGERY CENTER (ASC) POST-ANESTHESIA CARE UNIT (PACU) / PHASE I RECOVERY PATIENT AREA	AMBULATORY SURGERY CENTER (ASC) POST-ANESTHESIA CARE UNIT (PACU) / PHASE I RECOVERY PATIENT AREA	EQUIP_FA
+286	5	AMBULATORY SURGERY CENTER (ASC) PRE-OPERATIVE HOLDING / PHASE II RECOVERY PATIENT AREA	AMBULATORY SURGERY CENTER (ASC) PRE-OPERATIVE HOLDING / PHASE II RECOVERY PATIENT AREA	EQUIP_FA
+286	6	AMBULATORY SURGERY CENTER (ASC) PRE-PROCEDURE ASSESSMENT UNIT AREA	AMBULATORY SURGERY CENTER (ASC) PRE-PROCEDURE ASSESSMENT UNIT AREA	EQUIP_FA
+286	7	AMBULATORY SURGERY CENTER (ASC) RECEPTION AREA	AMBULATORY SURGERY CENTER (ASC) RECEPTION AREA	EQUIP_FA
+286	8	AMBULATORY SURGERY CENTER (ASC) STAFF AND ADMINISTRATIVE AREA	AMBULATORY SURGERY CENTER (ASC) STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+286	9	AMBULATORY SURGERY CENTER (ASC) SUPPORT AREA	AMBULATORY SURGERY CENTER (ASC) SUPPORT AREA	EQUIP_FA
+286	10	INPATIENT (IP) ENDOVASCULAR PATIENT AREA	INPATIENT (IP) ENDOVASCULAR PATIENT AREA	EQUIP_FA
+286	11	INPATIENT (IP) SURGICAL / ENDOVASCULAR ANESTHESIA PROCEDURE PATIENT AREA	INPATIENT (IP) SURGICAL / ENDOVASCULAR ANESTHESIA PROCEDURE PATIENT AREA	EQUIP_FA
+286	12	INPATIENT (IP) SURGICAL / ENDOVASCULAR CLEAN CORE AREA	INPATIENT (IP) SURGICAL / ENDOVASCULAR CLEAN CORE AREA	EQUIP_FA
+286	13	INPATIENT (IP) SURGICAL / ENDOVASCULAR EDUCATION AREA	INPATIENT (IP) SURGICAL / ENDOVASCULAR EDUCATION AREA	EQUIP_FA
+286	14	INPATIENT (IP) SURGICAL / ENDOVASCULAR POST ANESTHESIA CARE UNIT (PACU) / PHASE I RECOVERY PATIENT AREA	INPATIENT (IP) SURGICAL / ENDOVASCULAR POST ANESTHESIA CARE UNIT (PACU) / PHASE I RECOVERY PATIENT AREA	EQUIP_FA
+286	15	INPATIENT (IP) SURGICAL / ENDOVASCULAR PRE-OPERATIVE ASSESSMENT UNIT AREA	INPATIENT (IP) SURGICAL / ENDOVASCULAR PRE-OPERATIVE ASSESSMENT UNIT AREA	EQUIP_FA
+286	16	INPATIENT (IP) SURGICAL / ENDOVASCULAR PRE-OPERATIVE HOLDING / PHASE II RECOVERY PATIENT AREA	INPATIENT (IP) SURGICAL / ENDOVASCULAR PRE-OPERATIVE HOLDING / PHASE II RECOVERY PATIENT AREA	EQUIP_FA
+286	17	INPATIENT (IP) SURGICAL / ENDOVASCULAR RECEPTION AREA	INPATIENT (IP) SURGICAL / ENDOVASCULAR RECEPTION AREA	EQUIP_FA
+286	18	INPATIENT (IP) SURGICAL / ENDOVASCULAR STAFF AND ADMINISTRATIVE AREA	INPATIENT (IP) SURGICAL / ENDOVASCULAR STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+286	19	INPATIENT (IP) SURGICAL / ENDOVASCULAR SUPPORT AREA	INPATIENT (IP) SURGICAL / ENDOVASCULAR SUPPORT AREA	EQUIP_FA
+286	20	INPATIENT (IP) SURGICAL PATIENT AREA	INPATIENT (IP) SURGICAL PATIENT AREA	EQUIP_FA
+287	6	EDUCATION AREA	EDUCATION AREA	EQUIP_FA
+290	3	RECEPTION AREA	RECEPTION AREA	EQUIP_FA
+290	4	SUPPORT AREA	SUPPORT AREA	EQUIP_FA
+295	1	BONE DENSITOMETRY AREA	BONE DENSITOMETRY AREA	EQUIP_FA
+295	2	BREAST IMAGING AREA	BREAST IMAGING AREA	EQUIP_FA
+295	3	COMPUTED TOMOGRAPHY (CT) AREA	COMPUTED TOMOGRAPHY (CT) AREA	EQUIP_FA
+295	4	GENERAL RADIOLOGY AREA	GENERAL RADIOLOGY AREA	EQUIP_FA
+295	5	IMAGING SERVICES ACADEMIC EDUCATION AREA	IMAGING SERVICES ACADEMIC EDUCATION AREA	EQUIP_FA
+295	6	IMAGING SERVICES RECEPTION AREA	IMAGING SERVICES RECEPTION AREA	EQUIP_FA
+295	7	IMAGING SERVICES STAFF AND ADMINISTRATIVE AREA	IMAGING SERVICES STAFF AND ADMINISTRATIVE AREA	EQUIP_FA
+295	8	IMAGING SERVICES SUPPORT AREA	IMAGING SERVICES SUPPORT AREA	EQUIP_FA
+295	9	MAGNETIC RESONANCE IMAGING (MRI) AREA	MAGNETIC RESONANCE IMAGING (MRI) AREA	EQUIP_FA
+295	10	NUCLEAR MEDICINE (NM) AREA	NUCLEAR MEDICINE (NM) AREA	EQUIP_FA
+295	11	POSITRON EMISSION TOMOGRAPHY (PET) COMPUTED TOMOGRAPHY (CT) - PET/CT AREA	POSITRON EMISSION TOMOGRAPHY (PET) COMPUTED TOMOGRAPHY (CT) - PET/CT AREA	EQUIP_FA
+295	12	POSITRON EMISSION TOMOGRAPHY (PET) MAGNETIC RESONANCE IMAGING (MRI) - PET/MRI AREA	POSITRON EMISSION TOMOGRAPHY (PET) MAGNETIC RESONANCE IMAGING (MRI) - PET/MRI AREA	EQUIP_FA
+295	13	ULTRASOUND AREA	ULTRASOUND AREA	EQUIP_FA
+312	8	CLINICAL EVALUATION AREA	CLINICAL EVALUATION AREA	EQUIP_FA
+312	9	COMMON RESIDENT SERVICES AREA	COMMON RESIDENT SERVICES AREA	EQUIP_FA
+312	10	RECEPTION AREA	RECEPTION AREA	EQUIP_FA
+312	11	RESIDENT CARE UNIT (RCU) STAFF AREA	RESIDENT CARE UNIT (RCU) STAFF AREA	EQUIP_FA
+312	12	SUPPORT AREA	SUPPORT AREA	EQUIP_FA
+316	5	EDUCATION AREA	EDUCATION AREA	EQUIP_FA
+400	5	HEALTH SCIENCES LIBRARY CIRCULATION AREA	HEALTH SCIENCES LIBRARY CIRCULATION AREA	EQUIP_FA
+400	6	HEALTH SCIENCES LIBRARY SHELVING AREA	HEALTH SCIENCES LIBRARY SHELVING AREA	EQUIP_FA
+400	7	SUPPORT AREA	SUPPORT AREA	EQUIP_FA
+402	4	EDUCATION LABORATORY AREA	EDUCATION LABORATORY AREA	EQUIP_FA
+410	1	LOCKER AREA	LOCKER AREA	EQUIP_FA
+410	2	LOUNGE AREA	LOUNGE AREA	EQUIP_FA
+410	3	TOILET AND SHOWER AREA	TOILET AND SHOWER AREA	EQUIP_FA
+420	4	RECEPTION AREA	RECEPTION AREA	EQUIP_FA
+420	5	SUPPORT AREA	SUPPORT AREA	EQUIP_FA
+2701PMR Svc Range CalculationSC133SC133
+2701PMR Svc Range CalculationSC134SC134
+2701PMR Svc Range CalculationSC135SC135
+2701PMR Svc Range CalculationSC136SC136
+2701PMR Svc Range CalculationSC137SC137
+2701PMR Svc Range CalculationSC138SC138
+2701PMR Svc Range CalculationSC139SC139
+2702PMR Svc Reception AreaSB003SB003
+2702PMR Svc Reception AreaSB051SB051
+2702PMR Svc Reception AreaSC165SC165
+2702PMR Svc Reception AreaSC183SC183
+2702PMR Svc Reception AreaSS218SS218
+2702PMR Svc Reception AreaSB202SB202
+2702PMR Svc Reception AreaSB203SB203
+2702PMR Svc Reception AreaSB136SB136
+2702PMR Svc Reception AreaSB262SB262
+2702PMR Svc Reception AreaSB122SB122
+2703PMR Svc Common Patient AreaSB071SB071
+2703PMR Svc Common Patient AreaSC066SC066
+2703PMR Svc Common Patient AreaSC165SC165
+2703PMR Svc Common Patient AreaCT011CT011
+2703PMR Svc Common Patient AreaCT012CT012
+2703PMR Svc Common Patient AreaCT013CT013
+2703PMR Svc Common Patient AreaCT014CT014
+2703PMR Svc Common Patient AreaCT015CT015
+2703PMR Svc Common Patient AreaCT018CT018
+2703PMR Svc Common Patient AreaSB201SB201
+2703PMR Svc Common Patient AreaCT019CT019
+2703PMR Svc Common Patient AreaCT021CT021
+2703PMR Svc Common Patient AreaSC267SC267
+2703PMR Svc Common Patient AreaSB163SB163
+2703PMR Svc Common Patient AreaSB139SB139
+2703PMR Svc Common Patient AreaCT024CT024
+2703PMR Svc Common Patient AreaCT025CT025
+2703PMR Svc Common Patient AreaCT026CT026
+2703PMR Svc Common Patient AreaCT027CT027
+2703PMR Svc Common Patient AreaSV581SV581
+2703PMR Svc Common Patient AreaSV583SV583
+2704PMR Svc Common Clinical Staff AreaSC243SC243
+2704PMR Svc Common Clinical Staff AreaCT028CT028
+2704PMR Svc Common Clinical Staff AreaSS204SS204
+2704PMR Svc Common Clinical Staff AreaSC249SC249
+2704PMR Svc Common Clinical Staff AreaSC253SC253
+2704PMR Svc Common Clinical Staff AreaSS272SS272
+2704PMR Svc Common Clinical Staff AreaSB191SB191
+270	1	PMR Svc Range Calculation	SC133	SC133
+270	1	PMR Svc Range Calculation	SC134	SC134
+270	1	PMR Svc Range Calculation	SC135	SC135
+270	1	PMR Svc Range Calculation	SC136	SC136
+270	1	PMR Svc Range Calculation	SC137	SC137
+270	1	PMR Svc Range Calculation	SC138	SC138
+270	1	PMR Svc Range Calculation	SC139	SC139
+270	2	PMR Svc Reception Area	SB003	SB003
+270	2	PMR Svc Reception Area	SB051	SB051
+270	2	PMR Svc Reception Area	SC165	SC165
+270	2	PMR Svc Reception Area	SC183	SC183
+270	2	PMR Svc Reception Area	SS218	SS218
+270	2	PMR Svc Reception Area	SB202	SB202
+270	2	PMR Svc Reception Area	SB247	SB247
+270	2	PMR Svc Reception Area	SB191	SB191
+270	2	PMR Svc Reception Area	SB148	SB148
+270	2	PMR Svc Reception Area	SB173	SB173
+270	3	PMR Svc Common Patient Area	SC186	SC186
+270	3	PMR Svc Common Patient Area	CT009	CT009
+270	3	PMR Svc Common Patient Area	SB701	SB701
+270	3	PMR Svc Common Patient Area	SB702	SB702
+270	3	PMR Svc Common Patient Area	SB703	SB703
+270	3	PMR Svc Common Patient Area	SB704	SB704
+270	3	PMR Svc Common Patient Area	SB705	SB705
+270	3	PMR Svc Common Patient Area	SB706	SB706
+270	3	PMR Svc Common Patient Area	SB708	SB708
+270	3	PMR Svc Common Patient Area	SB709	SB709
+270	3	PMR Svc Common Patient Area	SB710	SB710
+270	3	PMR Svc Common Patient Area	SB711	SB711
+270	3	PMR Svc Common Patient Area	SB041	SB041
+270	3	PMR Svc Common Patient Area	SB019	SB019
+270	3	PMR Svc Common Patient Area	SB017	SB017
+270	3	PMR Svc Common Patient Area	SB018	SB018
+270	3	PMR Svc Common Patient Area	SB013	SB013
+270	3	PMR Svc Common Patient Area	SB707	SB707
+270	3	PMR Svc Common Patient Area	SB025	SB025
+270	3	PMR Svc Common Patient Area	SB712	SB712
+270	3	PMR Svc Common Patient Area	SB024	SB024
+270	4	PMR Svc Common Clinical Staff Area	SC176	SC176
+270	4	PMR Svc Common Clinical Staff Area	SC148	SC148
+270	4	PMR Svc Common Clinical Staff Area	SC175	SC175
+270	4	PMR Svc Common Clinical Staff Area	SB188	SB188
+270	4	PMR Svc Common Clinical Staff Area	SB546	SB546
+270	4	PMR Svc Common Clinical Staff Area	SB280	SB280
+270	4	PMR Svc Common Clinical Staff Area	SB237	SB237
+270	5	Physical Therapy (PT) Area	CT001	CT001
+270	5	Physical Therapy (PT) Area	CT002	CT002
+270	5	Physical Therapy (PT) Area	CT003	CT003
+270	5	Physical Therapy (PT) Area	CT004	CT004
+270	5	Physical Therapy (PT) Area	CT007	CT007
+270	5	Physical Therapy (PT) Area	CT017	CT017
+270	5	Physical Therapy (PT) Area	CT018	CT018
+270	5	Physical Therapy (PT) Area	CT040	CT040
+270	5	Physical Therapy (PT) Area	CT048	CT048
+270	5	Physical Therapy (PT) Area	CT044	CT044
+270	5	Physical Therapy (PT) Area	CT049	CT049
+270	5	Physical Therapy (PT) Area	CT046	CT046
+270	5	Physical Therapy (PT) Area	CT045	CT045
+270	5	Physical Therapy (PT) Area	CT047	CT047
+270	5	Physical Therapy (PT) Area	SS232	SS232
+270	5	Physical Therapy (PT) Area	SB188	SB188
+270	5	Physical Therapy (PT) Area	SB191	SB191
+270	5	Physical Therapy (PT) Area	SB280	SB280
+270	5	Physical Therapy (PT) Area	SB237	SB237
+270	6	Kinesiotherapy (KT) Area	CT060	CT060
+270	6	Kinesiotherapy (KT) Area	CT061	CT061
+270	6	Kinesiotherapy (KT) Area	CT062	CT062
+270	6	Kinesiotherapy (KT) Area	CT063	CT063
+270	6	Kinesiotherapy (KT) Area	CT064	CT064
+270	6	Kinesiotherapy (KT) Area	CT065	CT065
+270	6	Kinesiotherapy (KT) Area	CT069	CT069
+270	6	Kinesiotherapy (KT) Area	CT070	CT070
+270	6	Kinesiotherapy (KT) Area	CT071	CT071
+270	6	Kinesiotherapy (KT) Area	CT072	CT072
+270	6	Kinesiotherapy (KT) Area	CT073	CT073
+270	6	Kinesiotherapy (KT) Area	CT074	CT074
+270	6	Kinesiotherapy (KT) Area	CT075	CT075
+270	6	Kinesiotherapy (KT) Area	SS232	SS232
+270	6	Kinesiotherapy (KT) Area	SB188	SB188
+270	6	Kinesiotherapy (KT) Area	SB191	SB191
+270	6	Kinesiotherapy (KT) Area	SB280	SB280
+270	6	Kinesiotherapy (KT) Area	SB237	SB237
+270	7	Occupational Therapy (OT) Area	CT101	CT101
+270	7	Occupational Therapy (OT) Area	CT102	CT102
+270	7	Occupational Therapy (OT) Area	CT103	CT103
+270	7	Occupational Therapy (OT) Area	CT104	CT104
+270	7	Occupational Therapy (OT) Area	CT105	CT105
+270	7	Occupational Therapy (OT) Area	CT106	CT106
+270	7	Occupational Therapy (OT) Area	CT107	CT107
+270	7	Occupational Therapy (OT) Area	CT108	CT108
+270	7	Occupational Therapy (OT) Area	CT109	CT109
+270	7	Occupational Therapy (OT) Area	CT111	CT111
+270	7	Occupational Therapy (OT) Area	CT112	CT112
+270	7	Occupational Therapy (OT) Area	CT113	CT113
+270	7	Occupational Therapy (OT) Area	CT114	CT114
+270	7	Occupational Therapy (OT) Area	CT115	CT115
+270	7	Occupational Therapy (OT) Area	CT116	CT116
+270	7	Occupational Therapy (OT) Area	CT117	CT117
+270	7	Occupational Therapy (OT) Area	CT118	CT118
+270	7	Occupational Therapy (OT) Area	CT119	CT119
+270	7	Occupational Therapy (OT) Area	CT120	CT120
+270	7	Occupational Therapy (OT) Area	CT121	CT121
+270	7	Occupational Therapy (OT) Area	SS232	SS232
+270	7	Occupational Therapy (OT) Area	SB188	SB188
+270	7	Occupational Therapy (OT) Area	SB191	SB191
+270	7	Occupational Therapy (OT) Area	SB280	SB280
+270	7	Occupational Therapy (OT) Area	SB237	SB237
+270	8	Assistive Technology (ATech) Area	CT140	CT140
+270	8	Assistive Technology (ATech) Area	CT142	CT142
+270	8	Assistive Technology (ATech) Area	CT143	CT143
+270	8	Assistive Technology (ATech) Area	CT144	CT144
+270	8	Assistive Technology (ATech) Area	CT145	CT145
+270	8	Assistive Technology (ATech) Area	CT146	CT146
+270	8	Assistive Technology (ATech) Area	CT147	CT147
+270	8	Assistive Technology (ATech) Area	CT148	CT148
+270	8	Assistive Technology (ATech) Area	CT149	CT149
+270	8	Assistive Technology (ATech) Area	CT150	CT150
+270	8	Assistive Technology (ATech) Area	CT151	CT151
+270	8	Assistive Technology (ATech) Area	CT152	CT152
+270	8	Assistive Technology (ATech) Area	SS232	SS232
+270	8	Assistive Technology (ATech) Area	SB188	SB188
+270	8	Assistive Technology (ATech) Area	SB191	SB191
+270	8	Assistive Technology (ATech) Area	SB280	SB280
+270	8	Assistive Technology (ATech) Area	SB237	SB237
+270	9	Chiropractic Care (CC) Area	CT160	CT160
+270	9	Chiropractic Care (CC) Area	CT161	CT161
+270	9	Chiropractic Care (CC) Area	CT162	CT162
+270	9	Chiropractic Care (CC) Area	SS232	SS232
+270	9	Chiropractic Care (CC) Area	SB280	SB280
+270	10	Driver Training (DT) Area	CT180	CT180
+270	10	Driver Training (DT) Area	CT181	CT181
+270	10	Driver Training (DT) Area	CT182	CT182
+270	10	Driver Training (DT) Area	CT183	CT183
+270	10	Driver Training (DT) Area	CT184	CT184
+270	10	Driver Training (DT) Area	SB280	SB280
+270	11	Aquatic Therapy (AT) Area	CT190	CT190
+270	11	Aquatic Therapy (AT) Area	CT191	CT191
+270	11	Aquatic Therapy (AT) Area	CT192	CT192
+270	11	Aquatic Therapy (AT) Area	CT193	CT193
+270	11	Aquatic Therapy (AT) Area	CT194	CT194
+270	11	Aquatic Therapy (AT) Area	CT195	CT195
+270	11	Aquatic Therapy (AT) Area	CT196	CT196
+270	11	Aquatic Therapy (AT) Area	CT197	CT197
+270	11	Aquatic Therapy (AT) Area	CT198	CT198
+270	11	Aquatic Therapy (AT) Area	CT199	CT199
+270	11	Aquatic Therapy (AT) Area	SB721	SB721
+270	11	Aquatic Therapy (AT) Area	SB722	SB722
+270	11	Aquatic Therapy (AT) Area	SB723	SB723
+270	11	Aquatic Therapy (AT) Area	SB724	SB724
+270	11	Aquatic Therapy (AT) Area	SB725	SB725
+270	11	Aquatic Therapy (AT) Area	SB726	SB726
+270	11	Aquatic Therapy (AT) Area	SB727	SB727
+270	11	Aquatic Therapy (AT) Area	SB728	SB728
+270	11	Aquatic Therapy (AT) Area	SB731	SB731
+270	11	Aquatic Therapy (AT) Area	SB732	SB732
+270	11	Aquatic Therapy (AT) Area	SB733	SB733
+270	11	Aquatic Therapy (AT) Area	SB734	SB734
+270	11	Aquatic Therapy (AT) Area	SB735	SB735
+270	11	Aquatic Therapy (AT) Area	SB736	SB736
+270	11	Aquatic Therapy (AT) Area	SB737	SB737
+270	11	Aquatic Therapy (AT) Area	SB738	SB738
+270	11	Aquatic Therapy (AT) Area	SB280	SB280
+270	11	Aquatic Therapy (AT) Area	SB237	SB237
+270	12	PMR Svc Wheelchair Clinic Area	CT201	CT201
+270	12	PMR Svc Wheelchair Clinic Area	CT202	CT202
+270	12	PMR Svc Wheelchair Clinic Area	CT203	CT203
+270	12	PMR Svc Wheelchair Clinic Area	CT204	CT204
+270	12	PMR Svc Wheelchair Clinic Area	CT205	CT205
+270	13	PMR Svc Support Area	CT207	CT207
+270	13	PMR Svc Support Area	SB743	SB743
+270	13	PMR Svc Support Area	SB737	SB737
+270	13	PMR Svc Support Area	SC452	SC452
+270	13	PMR Svc Support Area	SC471	SC471
+270	13	PMR Svc Support Area	CT211	CT211
+270	13	PMR Svc Support Area	SB280	SB280
+270	13	PMR Svc Support Area	SB541	SB541
+270	13	PMR Svc Support Area	SB551	SB551
+270	13	PMR Svc Support Area	SB244	SB244
+270	14	PMR Svc Staff and Administrative Area	SS222	SS222
+270	14	PMR Svc Staff and Administrative Area	SS218	SS218
+270	14	PMR Svc Staff and Administrative Area	SS204	SS204
+270	14	PMR Svc Staff and Administrative Area	SS101	SS101
+270	14	PMR Svc Staff and Administrative Area	SS272	SS272
+270	14	PMR Svc Staff and Administrative Area	SS262	SS262
+270	14	PMR Svc Staff and Administrative Area	SS232	SS232
+270	14	PMR Svc Staff and Administrative Area	SS241	SS241
+270	14	PMR Svc Staff and Administrative Area	SB191	SB191
+270	14	PMR Svc Staff and Administrative Area	SB173	SB173
+270	14	PMR Svc Staff and Administrative Area	SB184	SB184
+270	15	PMR Svc Education Area	SS111	SS111
+270	2	PMR Svc Reception Area	PMR SVC RECEPTION AREA	
+270	3	PMR Svc Common Patient Area	PMR SVC COMMON PATIENT AREA	
+270	4	PMR Svc Common Clinical Staff Area	PMR SVC COMMON CLINICAL STAFF AREA	
+270	5	Physical Therapy (PT) Area	PHYSICAL THERAPY (PT) AREA	
+270	6	Kinesiotherapy (KT) Area	KINESIOTHERAPY (KT) AREA	
+270	7	Occupational Therapy (OT) Area	OCCUPATIONAL THERAPY (OT) AREA	
+270	8	Assistive Technology (ATech) Area	ASSISTIVE TECHNOLOGY (ATECH) AREA	
+270	9	Chiropractic Care (CC) Area	CHIROPRACTIC CARE (CC) AREA	
+270	10	Driver Training (DT) Area	DRIVER TRAINING (DT) AREA	
+270	11	Aquatic Therapy (AT) Area	AQUATIC THERAPY (AT) AREA	
+270	12	PMR Svc Wheelchair Clinic Area	PMR SVC WHEELCHAIR CLINIC AREA	
+270	13	PMR Svc Support Area	PMR SVC SUPPORT AREA	
+270	14	PMR Svc Staff and Administrative Area	PMR SVC STAFF AND ADMINISTRATIVE AREA	
+270	15	PMR Svc Education Area	PMR SVC EDUCATION AREA	
+270	2	PMR Svc Reception Area	PMR SVC RECEPTION AREA	
+270	3	PMR Svc Common Patient Area	PMR SVC COMMON PATIENT AREA	
+270	4	PMR Svc Common Clinical Staff Area	PMR SVC COMMON CLINICAL STAFF AREA	
+270	5	Physical Therapy (PT) Area	PHYSICAL THERAPY (PT) AREA	
+270	6	Kinesiotherapy (KT) Area	KINESIOTHERAPY (KT) AREA	
+270	7	Occupational Therapy (OT) Area	OCCUPATIONAL THERAPY (OT) AREA	
+270	8	Assistive Technology (ATech) Area	ASSISTIVE TECHNOLOGY (ATECH) AREA	
+270	9	Chiropractic Care (CC) Area	CHIROPRACTIC CARE (CC) AREA	
+270	10	Driver Training (DT) Area	DRIVER TRAINING (DT) AREA	
+270	11	Aquatic Therapy (AT) Area	AQUATIC THERAPY (AT) AREA	
+270	12	PMR Svc Wheelchair Clinic Area	PMR SVC WHEELCHAIR CLINIC AREA	
+270	13	PMR Svc Support Area	PMR SVC SUPPORT AREA	
+270	14	PMR Svc Staff and Administrative Area	PMR SVC STAFF AND ADMINISTRATIVE AREA	
+270	15	PMR Svc Education Area	PMR SVC EDUCATION AREA	

@@ -2345,8 +2345,36 @@
           // Build a map of chapter number to full department name
           const chapterToDeptName = new Map();
           
-          // Build canonical FA order from Equipment Guide - preserves order FAs appear in the file
+          // Build canonical FA order - SEED from TSV first (has complete FA structure including Range Calculation)
+          // Then supplement from Equipment Guide for any FAs not in TSV
           const canonicalFAOrder = {};
+          
+          // Seed canonical FA order from TSV chapterFaNumberMap
+          // This ensures FA1 (Range Calculation) etc. appear even if they have no equipment
+          chapterFaNumberMap.forEach((faMap, chapter) => {
+            if (!canonicalFAOrder[chapter]) {
+              canonicalFAOrder[chapter] = {
+                departmentName: '',
+                faOrder: [],
+                faNameToNumber: {}
+              };
+            }
+            // Build ordered array from FA numbers in TSV
+            const faEntries = [];
+            faMap.forEach((faNumber, faName) => {
+              faEntries.push({ faNumber: parseInt(faNumber) || 999, faName, faNumberStr: faNumber });
+            });
+            // Sort by FA number
+            faEntries.sort((a, b) => a.faNumber - b.faNumber);
+            // Add to canonical order
+            faEntries.forEach(entry => {
+              if (!canonicalFAOrder[chapter].faNameToNumber[entry.faName]) {
+                canonicalFAOrder[chapter].faOrder.push(entry.faName);
+                canonicalFAOrder[chapter].faNameToNumber[entry.faName] = entry.faNumberStr;
+              }
+            });
+          });
+          console.log(`Seeded canonical FA order from TSV for ${Object.keys(canonicalFAOrder).length} chapters`);
           
           // Add chapter names for chapters that don't have equipment data
           chapterToDeptName.set('202', '202 (Primary Care)');
@@ -2392,7 +2420,13 @@
               chapterToDeptName.set(chapterNum, dept);
             }
             
-            // Build canonical FA order - first occurrence of FA in each chapter sets its number
+            // Update department name in canonical FA order if not set
+            if (chapterNum && canonicalFAOrder[chapterNum] && !canonicalFAOrder[chapterNum].departmentName) {
+              canonicalFAOrder[chapterNum].departmentName = dept;
+            }
+            
+            // Add FA from equipment guide if not already in canonical order (case-insensitive check)
+            // TSV provides authoritative FA numbers, equipment guide fills in gaps
             if (chapterNum && fa) {
               if (!canonicalFAOrder[chapterNum]) {
                 canonicalFAOrder[chapterNum] = {
@@ -2401,11 +2435,20 @@
                   faNameToNumber: {}
                 };
               }
-              // Add FA if not already seen for this chapter
-              if (!canonicalFAOrder[chapterNum].faNameToNumber[fa]) {
-                const faNumber = String(canonicalFAOrder[chapterNum].faOrder.length + 1);
+              // Check if this FA (case-insensitive) is already in canonical order
+              const faUpper = fa.toUpperCase();
+              const existingFA = Object.keys(canonicalFAOrder[chapterNum].faNameToNumber)
+                .find(existing => existing.toUpperCase() === faUpper);
+              
+              if (!existingFA) {
+                // This FA from equipment guide isn't in TSV - add it with next available number
+                const nextNumber = canonicalFAOrder[chapterNum].faOrder.length + 1;
                 canonicalFAOrder[chapterNum].faOrder.push(fa);
-                canonicalFAOrder[chapterNum].faNameToNumber[fa] = faNumber;
+                canonicalFAOrder[chapterNum].faNameToNumber[fa] = String(nextNumber);
+              } else if (existingFA !== fa) {
+                // FA exists with different casing - add uppercase version with same number
+                canonicalFAOrder[chapterNum].faNameToNumber[fa] = 
+                  canonicalFAOrder[chapterNum].faNameToNumber[existingFA];
               }
             }
             
@@ -2543,6 +2586,65 @@
           const instancesWithFaNumber = allRoomInstances.filter(i => i.functionalAreaNumber).length;
           console.log(`FA Number coverage: ${instancesWithFaNumber} of ${allRoomInstances.length} instances (${Math.round(instancesWithFaNumber/allRoomInstances.length*100)}%)`);
           console.log('Sample metadata:', Array.from(deptFaMap.entries()).slice(0, 3));
+          
+          // Add rooms from ROOM_SIZES that aren't already in allRoomInstances
+          // This ensures all VA rooms appear in reference tree even without equipment/finish data
+          const existingRoomCodes = new Set(allRoomInstances.map(i => i.roomCode));
+          let addedFromRoomSizes = 0;
+          
+          // Map room name service suffixes to chapter numbers
+          const serviceToChapter = {
+            'PMR Svc': { chapter: '270', dept: '270 (PHYSICAL MEDICINE AND REHABILITATION SERVICE (PMR))' },
+            'Path Svc': { chapter: '240', dept: '240 (LABORATORY SERVICE)' },
+            'Phrm Svc': { chapter: '268', dept: '268 (PHARMACY SERVICE)' },
+            'Nurs Svc': { chapter: '254', dept: '254 (NURSING ADMINISTRATIVE FUNCTIONS)' },
+            'Surg Svc': { chapter: '286', dept: '286 (SURGICAL AND ENDOVASCULAR SERVICES)' },
+            'Img Svc': { chapter: '228', dept: '228 (RADIOLOGY SERVICE)' },
+            'Psych Svc': { chapter: '260', dept: '260 (MENTAL HEALTH SERVICE)' },
+            'Dent Svc': { chapter: '222', dept: '222 (DENTAL SERVICE)' },
+            'Eye Svc': { chapter: '233', dept: '233 (EYE CLINIC)' },
+            'Wm Vet Svc': { chapter: '258', dept: '258 (WOMEN VETERANS HEALTH PROGRAM)' },
+            'Aud Svc': { chapter: '204', dept: '204 (AUDIOLOGY AND SPEECH PATHOLOGY SERVICE)' },
+            'Card Svc': { chapter: '210', dept: '210 (CARDIOLOGY)' },
+            'Endo Svc': { chapter: '229', dept: '229 (GI-ENDOSCOPY)' },
+            'Neph Svc': { chapter: '316', dept: '316 (DIALYSIS SERVICE)' },
+            'Onco Svc': { chapter: '296', dept: '296 (ONCOLOGY / HEMATOLOGY)' },
+            'Pulm Svc': { chapter: '212', dept: '212 (PULMONARY FUNCTION SERVICE)' },
+            'Derm Svc': { chapter: '224', dept: '224 (DERMATOLOGY SERVICE)' },
+            'Neuro Svc': { chapter: '226', dept: '226 (NEUROLOGY SERVICE)' },
+            'Urol Svc': { chapter: '298', dept: '298 (UROLOGY SERVICE)' },
+            'ED Svc': { chapter: '256', dept: '256 (EMERGENCY DEPARTMENT)' },
+            'Educ Svc': { chapter: '248', dept: '248 (MEDICAL MEDIA SERVICE)' },
+            'Bldg Sprt': { chapter: '000', dept: 'Building Support' },
+            'Stff Sprt': { chapter: '000', dept: 'Staff Support' },
+            'CBOC': { chapter: '263', dept: '263 (COMMUNITY BASED OUTPATIENT CLINIC (CBOC))' },
+          };
+          
+          ROOM_SIZES.forEach(room => {
+            if (!existingRoomCodes.has(room.id)) {
+              // Try to determine chapter from room name service suffix
+              let chapterInfo = { chapter: '', dept: 'Uncategorized' };
+              for (const [suffix, info] of Object.entries(serviceToChapter)) {
+                if (room.name && room.name.includes(suffix)) {
+                  chapterInfo = info;
+                  break;
+                }
+              }
+              
+              allRoomInstances.push({
+                roomCode: room.id,
+                department: chapterInfo.dept,
+                departmentChapter: chapterInfo.chapter,
+                functionalArea: 'Other Rooms',
+                functionalAreaNumber: '',
+                roomName: room.name || room.id
+              });
+              addedFromRoomSizes++;
+            }
+          });
+          
+          console.log(`Added ${addedFromRoomSizes} rooms from ROOM_SIZES (no equipment/finish data)`);
+          console.log(`Total room instances: ${allRoomInstances.length}`);
           
           // Store globally for compare mode
           window.ROOM_METADATA = deptFaMap;
@@ -4420,7 +4522,8 @@
               deptMap.set(instance.department, {
                 name: instance.department,
                 chapterNum: instance.departmentChapter || '',
-                functionalAreas: new Map()
+                functionalAreas: new Map(),
+                faKeyToDisplayName: new Map() // Maps uppercase key to display name
               });
             }
             
@@ -4430,15 +4533,30 @@
               dept.chapterNum = instance.departmentChapter;
             }
             
-            if (!dept.functionalAreas.has(instance.functionalArea)) {
-              dept.functionalAreas.set(instance.functionalArea, {
-                name: instance.functionalArea,
+            // Use uppercase FA name as key for case-insensitive grouping
+            const faKey = instance.functionalArea.toUpperCase();
+            
+            if (!dept.functionalAreas.has(faKey)) {
+              dept.functionalAreas.set(faKey, {
+                name: instance.functionalArea, // Keep original casing for display
                 number: instance.functionalAreaNumber || '',
                 rooms: new Map()
               });
+              dept.faKeyToDisplayName.set(faKey, instance.functionalArea);
             }
             
-            const fa = dept.functionalAreas.get(instance.functionalArea);
+            const fa = dept.functionalAreas.get(faKey);
+            // Prefer mixed-case name over UPPERCASE for display
+            if (instance.functionalArea !== instance.functionalArea.toUpperCase() && 
+                fa.name === fa.name.toUpperCase()) {
+              fa.name = instance.functionalArea;
+              dept.faKeyToDisplayName.set(faKey, instance.functionalArea);
+            }
+            // Also update FA number if we have one and the existing one is empty
+            if (!fa.number && instance.functionalAreaNumber) {
+              fa.number = instance.functionalAreaNumber;
+            }
+            
             if (!fa.rooms.has(instance.roomCode)) {
               fa.rooms.set(instance.roomCode, {
                 code: instance.roomCode,
@@ -4454,20 +4572,32 @@
               deptMap.set(mapping.department, {
                 name: mapping.department,
                 chapterNum: '',
-                functionalAreas: new Map()
+                functionalAreas: new Map(),
+                faKeyToDisplayName: new Map()
               });
             }
             
             const dept = deptMap.get(mapping.department);
-            if (!dept.functionalAreas.has(mapping.functionalArea)) {
-              dept.functionalAreas.set(mapping.functionalArea, {
+            // Use uppercase FA name as key for case-insensitive grouping
+            const faKey = mapping.functionalArea.toUpperCase();
+            
+            if (!dept.functionalAreas.has(faKey)) {
+              dept.functionalAreas.set(faKey, {
                 name: mapping.functionalArea,
                 number: mapping.functionalAreaNumber || '',
                 rooms: new Map()
               });
+              dept.faKeyToDisplayName.set(faKey, mapping.functionalArea);
             }
             
-            const fa = dept.functionalAreas.get(mapping.functionalArea);
+            const fa = dept.functionalAreas.get(faKey);
+            // Prefer mixed-case name over UPPERCASE for display
+            if (mapping.functionalArea !== mapping.functionalArea.toUpperCase() && 
+                fa.name === fa.name.toUpperCase()) {
+              fa.name = mapping.functionalArea;
+              dept.faKeyToDisplayName.set(faKey, mapping.functionalArea);
+            }
+            
             if (!fa.rooms.has(mapping.roomCode)) {
               fa.rooms.set(mapping.roomCode, {
                 code: mapping.roomCode,
@@ -4503,15 +4633,32 @@
           extendedFANumbers[chapterNum] = {};
           const chapterOrder = window.CANONICAL_FA_ORDER?.[chapterNum];
           const canonicalFAs = chapterOrder?.faOrder || [];
-          const canonicalSet = new Set(canonicalFAs);
+          // Build case-insensitive canonical set for matching
+          const canonicalSetUpper = new Set(canonicalFAs.map(fa => fa.toUpperCase()));
           
-          // First, assign canonical FAs their numbers
+          // Also create a map from uppercase to original for proper assignment
+          const upperToCanonical = {};
+          canonicalFAs.forEach((faName, index) => {
+            upperToCanonical[faName.toUpperCase()] = { name: faName, index: index };
+          });
+          
+          // First, assign canonical FAs their numbers (both original and any case variant)
           canonicalFAs.forEach((faName, index) => {
             extendedFANumbers[chapterNum][faName] = String(index + 1);
           });
           
-          // Find non-canonical FAs
-          const nonCanonicalFAs = allFANames.filter(fa => !canonicalSet.has(fa));
+          // Find non-canonical FAs (case-insensitive check)
+          const nonCanonicalFAs = allFANames.filter(fa => !canonicalSetUpper.has(fa.toUpperCase()));
+          
+          // Also assign numbers for canonical FAs that appear with different casing
+          allFANames.forEach(fa => {
+            const upperFa = fa.toUpperCase();
+            if (canonicalSetUpper.has(upperFa) && !extendedFANumbers[chapterNum][fa]) {
+              // This FA matches a canonical one (case-insensitive) but is spelled differently
+              const canonical = upperToCanonical[upperFa];
+              extendedFANumbers[chapterNum][fa] = String(canonical.index + 1);
+            }
+          });
           
           if (nonCanonicalFAs.length === 0) return;
           
@@ -4582,24 +4729,47 @@
         
         // Helper function to get FA number (canonical or extended)
         function getExtendedFANumber(chapterNum, faName, allFANames) {
-          if (!chapterNum) return null;
+          if (!chapterNum || !faName) return null;
           
           // Build extended numbers for this chapter if not done yet
           if (!extendedFANumbers[chapterNum]) {
             buildExtendedFANumbers(chapterNum, allFANames);
           }
           
-          return extendedFANumbers[chapterNum]?.[faName] || null;
+          // Try exact match first
+          if (extendedFANumbers[chapterNum]?.[faName]) {
+            return extendedFANumbers[chapterNum][faName];
+          }
+          
+          // Try case-insensitive match
+          const faNameUpper = faName.toUpperCase();
+          for (const [key, value] of Object.entries(extendedFANumbers[chapterNum] || {})) {
+            if (key.toUpperCase() === faNameUpper) {
+              return value;
+            }
+          }
+          
+          return null;
         }
         
         // Helper function to get canonical FA number for a chapter/FA name
         function getCanonicalFANumber(chapterNum, faName) {
-          if (!chapterNum) return null;
+          if (!chapterNum || !faName) return null;
           
           // First try the direct lookup from CANONICAL_FA_ORDER (faster)
           const chapterOrder = window.CANONICAL_FA_ORDER?.[chapterNum];
-          if (chapterOrder && chapterOrder.faNameToNumber[faName]) {
-            return chapterOrder.faNameToNumber[faName];
+          if (chapterOrder) {
+            // Try exact match first
+            if (chapterOrder.faNameToNumber[faName]) {
+              return chapterOrder.faNameToNumber[faName];
+            }
+            // Try case-insensitive match (equipment guide uses UPPERCASE, TSV uses Mixed Case)
+            const faNameUpper = faName.toUpperCase();
+            for (const [canonicalFaName, faNumber] of Object.entries(chapterOrder.faNameToNumber)) {
+              if (canonicalFaName.toUpperCase() === faNameUpper) {
+                return faNumber;
+              }
+            }
           }
           
           // Fall back to canonicalFAs module
@@ -4648,17 +4818,23 @@
             children: []
           };
 
-          // Get all FA names for this department (needed for extended numbering)
-          const allFANames = Array.from(dept.functionalAreas.keys());
+          // Get all FA keys for this department (uppercase keys for grouping)
+          const allFAKeys = Array.from(dept.functionalAreas.keys());
           
-          // Build extended FA numbers for this chapter
+          // Get display names for extended numbering
+          const allFANames = allFAKeys.map(key => dept.faKeyToDisplayName.get(key) || key);
+          
+          // Build extended FA numbers for this chapter using display names
           buildExtendedFANumbers(chapterNum, allFANames);
           
           // Sort functional areas by extended FA number (handles 1, 1a, 1b, 2, etc.)
-          const sortedFaNames = allFANames.sort((a, b) => {
-            // Use extended FA numbers for sorting
-            const numA = extendedFANumbers[chapterNum]?.[a] || '';
-            const numB = extendedFANumbers[chapterNum]?.[b] || '';
+          const sortedFaKeys = allFAKeys.sort((a, b) => {
+            // Get display names for looking up FA numbers
+            const nameA = dept.faKeyToDisplayName.get(a) || a;
+            const nameB = dept.faKeyToDisplayName.get(b) || b;
+            // Use extended FA numbers for sorting (case-insensitive lookup)
+            const numA = getExtendedFANumber(chapterNum, nameA, allFANames) || '';
+            const numB = getExtendedFANumber(chapterNum, nameB, allFANames) || '';
             
             // Parse number and letter parts for proper sorting
             const matchA = numA.match(/^(\d+)([a-z]?)$/);
@@ -4684,16 +4860,17 @@
           });
 
           // Flat FA list - no care setting grouping
-          sortedFaNames.forEach(faName => {
-            const fa = dept.functionalAreas.get(faName);
-            const displayLabel = getFADisplayLabel(chapterNum, faName, allFANames);
+          sortedFaKeys.forEach(faKey => {
+            const fa = dept.functionalAreas.get(faKey);
+            const faDisplayName = dept.faKeyToDisplayName.get(faKey) || faKey;
+            const displayLabel = getFADisplayLabel(chapterNum, faDisplayName, allFANames);
             const faNode = {
-              id: `fa-ref-${deptName}-${faName}`,
+              id: `fa-ref-${deptName}-${faDisplayName}`,
               type: 'functional-area-reference',
               label: displayLabel,
               icon: '📂',
               department: deptName,
-              functionalArea: faName,
+              functionalArea: faDisplayName,
               children: []
             };
 
@@ -4716,12 +4893,12 @@
               label += ` - ${room.name}`;
               
               faNode.children.push({
-                id: `room-ref-${deptName}-${faName}-${roomCode}`,
+                id: `room-ref-${deptName}-${faDisplayName}-${roomCode}`,
                 type: 'room-reference',
                 label: label,
                 icon: '🚪',
                 department: deptName,
-                functionalArea: faName,
+                functionalArea: faDisplayName,
                 roomCode: room.code,
                 roomName: room.name,
                 isLegacy: isLegacy,
@@ -4737,7 +4914,7 @@
         });
 
         // Cache the tree for next time with version number
-        tree._version = 4; // Increment to invalidate cache - removed care setting grouping
+        tree._version = 5; // Increment to invalidate cache - case-insensitive FA grouping
         cachedReferenceTree = tree;
         lastMappingsLength = mappings.length;
         console.log('Reference tree cached with', tree.children.length, 'departments');
