@@ -8747,7 +8747,7 @@
       const projectTitleStyle = {
         fill: { fgColor: { rgb: "000000" } },
         font: { color: { rgb: "FFFFFF" }, bold: true, sz: 14 },
-        alignment: { horizontal: "left", vertical: "center" }
+        alignment: { horizontal: "center", vertical: "center" }
       };
       
       const columnHeaderStyle = {
@@ -8767,6 +8767,7 @@
       // Build worksheet data with row metadata for styling
       const wsData = [];
       const rowTypes = []; // Track row type for styling: 'project', 'dept', 'fa', 'roomHeader', 'colHeader', 'data', 'spacer'
+      const mergeRows = []; // Track rows that need to be merged
       let faCounter = 0;
       
       const numCols = tsvType === 'simple' ? 5 : 15;
@@ -8778,17 +8779,19 @@
         return row;
       };
       
-      // Row 1: Project name (spans all columns)
+      // Row 1: Project name (spans all columns, merged & centered)
       wsData.push(makeFullWidthRow(project.name));
       rowTypes.push('project');
+      mergeRows.push(wsData.length - 1); // Track for merging
       wsData.push([]); // Spacer
       rowTypes.push('spacer');
       
       if (project.departments) {
         project.departments.forEach((dept) => {
-          // Department row (spans all columns)
+          // Department row (spans all columns, merged & left-aligned)
           wsData.push(makeFullWidthRow(dept.name));
           rowTypes.push('dept');
+          mergeRows.push(wsData.length - 1); // Track for merging
           wsData.push([]); // Spacer
           rowTypes.push('spacer');
           
@@ -8798,9 +8801,10 @@
             dept.functionalAreas.forEach((fa) => {
               faCounter++;
               
-              // Functional Area row (spans all columns)
+              // Functional Area row (spans all columns, merged & left-aligned)
               wsData.push(makeFullWidthRow(`${faCounter} - ${fa.name}`));
               rowTypes.push('fa');
+              mergeRows.push(wsData.length - 1); // Track for merging
               wsData.push([]); // Spacer
               rowTypes.push('spacer');
               
@@ -8812,17 +8816,19 @@
                     : `${room.name} - ${room.code}`;
                   
                   if (tsvType === 'simple') {
-                    // Room header spans all columns
+                    // Room header spans all columns, merged & left-aligned
                     wsData.push(makeFullWidthRow(roomTitle));
                     rowTypes.push('roomHeader');
+                    mergeRows.push(wsData.length - 1); // Track for merging
                     wsData.push(['JSN', 'Name', 'Qty', 'Acquisition', 'Description']);
                     rowTypes.push('colHeader');
                   } else {
-                    // Room header with NSF, spans all columns
-                    const roomRow = makeFullWidthRow(roomTitle);
-                    roomRow[1] = `NSF: ${room.nsf || roomData?.nsf || 0}`;
-                    wsData.push(roomRow);
+                    // Room header with NSF appended to title, merged & left-aligned
+                    const nsf = room.nsf || roomData?.nsf || 0;
+                    const roomTitleWithNSF = `${roomTitle} | NSF: ${nsf}`;
+                    wsData.push(makeFullWidthRow(roomTitleWithNSF));
                     rowTypes.push('roomHeader');
+                    mergeRows.push(wsData.length - 1); // Track for merging
                     wsData.push([
                       'JSN', 'Name', 'Qty', 'Acquisition', 'Description', 'Unit Cost',
                       'Width (in)', 'Depth (in)', 'Height (in)', 'Weight (lbs)',
@@ -8927,6 +8933,12 @@
       
       // Update the range to include all styled cells
       ws['!ref'] = XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: range.e.r, c: numCols - 1 } });
+      
+      // Add merge ranges for header rows (merge across all columns)
+      ws['!merges'] = mergeRows.map(rowIdx => ({
+        s: { r: rowIdx, c: 0 },
+        e: { r: rowIdx, c: numCols - 1 }
+      }));
       
       // Set column widths
       const colWidths = tsvType === 'simple' 
