@@ -8762,12 +8762,12 @@
               
               if (fa.rooms) {
                 fa.rooms.forEach((room, roomIdx) => {
-                  // Room header row (code - name)
+                  // Room header row (roomNumber - name - code)
                   if (tsvType === 'simple') {
                     // Simple: Room row then equipment rows with 5 columns
                     const roomTitle = room.roomNumber 
-                      ? `${room.code} - ${room.roomNumber} - ${room.name}`
-                      : `${room.code} - ${room.name}`;
+                      ? `${room.roomNumber} - ${room.name} - ${room.code}`
+                      : `${room.name} - ${room.code}`;
                     rows.push([roomTitle]);
                     // Column headers under each room
                     rows.push(['JSN', 'Name', 'Qty', 'Acquisition', 'Description']);
@@ -8775,8 +8775,8 @@
                     // Expanded: Room row includes room details
                     const roomData = ROOM_SIZES.find(r => r.roomCode === room.code || r.id === room.code);
                     const roomTitle = room.roomNumber 
-                      ? `${room.code} - ${room.roomNumber} - ${room.name}`
-                      : `${room.code} - ${room.name}`;
+                      ? `${room.roomNumber} - ${room.name} - ${room.code}`
+                      : `${room.name} - ${room.code}`;
                     rows.push([
                       roomTitle,
                       `NSF: ${room.nsf || roomData?.nsf || 0}`
