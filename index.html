@@ -5747,29 +5747,29 @@
               <div id="content-fa-${faIndex}" style="display: none; margin-top: 8px; margin-left: 8px;">
           `;
           
-          // Show rooms in this FA (grouped by identity)
-          const roomGroups = groupRoomsByIdentity(fa.rooms);
-          roomGroups.forEach(group => {
-            const room = group.room;
+          // Show rooms in this FA (individual rooms, not grouped, to allow room number editing)
+          fa.rooms.forEach(room => {
             const equipCount = room.equipment ? room.equipment.length : 0;
             html += `
               <div style="padding: 6px 8px; margin-bottom: 4px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 4px; display: flex; align-items: center; gap: 8px; font-size: 0.85rem;">
-                <div style="min-width: 30px; text-align: center;">
-                  <input type="number" value="${group.quantity}" min="0" 
-                    onchange="updateRoomGroupQuantity('${group.roomIds.join(',')}', this.value, ${group.quantity})"
-                    style="width: 45px; padding: 2px 4px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 3px; text-align: center; font-size: 0.85rem;"
-                    title="Quantity (0 to delete all, adjust to add/remove copies)">
+                <div style="min-width: 70px;">
+                  <input type="text" value="${room.roomNumber || ''}" 
+                    onchange="updateRoomNumber('${room.id}', this.value)"
+                    placeholder="Room #"
+                    style="width: 65px; padding: 2px 4px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 3px; text-align: center; font-size: 0.85rem;"
+                    title="Room Number">
                 </div>
                 <div style="flex: 1; min-width: 0;">
                   <strong>${room.code}</strong> - ${room.name}
                 </div>
                 <div style="white-space: nowrap;">
                   <input type="number" value="${room.nsf || 0}" 
-                    onchange="updateRoomGroupNSF('${group.roomIds.join(',')}', this.value)"
+                    onchange="updateRoomNSF('${room.id}', this.value)"
                     style="width: 55px; padding: 2px 4px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 3px; text-align: right; font-size: 0.85rem;">
                   <span style="font-size: 0.75rem; margin-left: 2px;">SF</span>
                 </div>
                 <div style="font-size: 0.75rem; color: var(--muted); white-space: nowrap;">${equipCount} eq</div>
+                <button onclick="deleteRoom('${room.id}')" style="padding: 2px 6px; background: var(--error); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.75rem;" title="Delete room">✕</button>
               </div>
             `;
           });
@@ -5849,28 +5849,29 @@
           <h3>🚪 Rooms (${fa.rooms.length}${hasMoreRooms ? ' - showing first 100' : ''})</h3>
           <div style="max-height: 400px; overflow-y: auto;">
         `;
-        const roomGroups = groupRoomsByIdentity(displayRooms);
-        roomGroups.forEach(group => {
-          const room = group.room;
+        // Show individual rooms (not grouped) to allow room number editing
+        displayRooms.forEach(room => {
           const equipCount = room.equipment ? room.equipment.length : 0;
           html += `
             <div style="padding: 6px 8px; margin-bottom: 4px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; display: flex; align-items: center; gap: 8px; font-size: 0.85rem;">
-              <div style="min-width: 30px; text-align: center;">
-                <input type="number" value="${group.quantity}" min="0" 
-                  onchange="updateRoomGroupQuantity('${group.roomIds.join(',')}', this.value, ${group.quantity})"
-                  style="width: 45px; padding: 2px 4px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 3px; text-align: center; font-size: 0.85rem;"
-                  title="Quantity (0 to delete all, adjust to add/remove copies)">
+              <div style="min-width: 70px;">
+                <input type="text" value="${room.roomNumber || ''}" 
+                  onchange="updateRoomNumber('${room.id}', this.value)"
+                  placeholder="Room #"
+                  style="width: 65px; padding: 2px 4px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 3px; text-align: center; font-size: 0.85rem;"
+                  title="Room Number">
               </div>
               <div style="flex: 1; min-width: 0;">
                 <strong>${room.code}</strong> - ${room.name}
               </div>
               <div style="white-space: nowrap;">
                 <input type="number" value="${room.nsf || 0}" 
-                  onchange="updateRoomGroupNSF('${group.roomIds.join(',')}', this.value)"
+                  onchange="updateRoomNSF('${room.id}', this.value)"
                   style="width: 55px; padding: 2px 4px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); border-radius: 3px; text-align: right; font-size: 0.85rem;">
                 <span style="font-size: 0.75rem; margin-left: 2px;">SF</span>
               </div>
               <div style="font-size: 0.75rem; color: var(--muted); white-space: nowrap;">${equipCount} eq</div>
+              <button onclick="deleteRoom('${room.id}')" style="padding: 2px 6px; background: var(--error); color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.75rem;" title="Delete room">✕</button>
             </div>
           `;
         });
