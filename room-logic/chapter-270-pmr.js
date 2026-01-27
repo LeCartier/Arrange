@@ -142,8 +142,8 @@ export const CHAPTER_270 = {
             if (visits > 40) nsf = 1600;
             if (visits > 60) nsf = 2000;
             return [{ 
-              roomCode: 'SE401', 
-              roomName: 'PT Gymnasium', 
+              roomCode: 'CT037', 
+              roomName: 'PT Warm-up/Stretching Area, PMR Svc', 
               nsf: nsf, 
               quantity: 1 
             }];
@@ -156,8 +156,8 @@ export const CHAPTER_270 = {
             if (!inputs.has_physical_therapy) return [];
             const quantity = CHAPTER_270.calculatePTStations(inputs);
             return [{ 
-              roomCode: 'SE402', 
-              roomName: 'PT Treatment Station', 
+              roomCode: 'CT031', 
+              roomName: 'PT Treatment Station A, PMR Svc', 
               nsf: 80, 
               quantity: quantity 
             }];
@@ -171,8 +171,8 @@ export const CHAPTER_270 = {
             const visits = inputs.annual_visits;
             const quantity = visits >= 30 ? 2 : 1;
             return [{ 
-              roomCode: 'SE403', 
-              roomName: 'PT Private Treatment Room', 
+              roomCode: 'CT041', 
+              roomName: 'PT Treatment Cubicle, PMR Svc', 
               nsf: 120, 
               quantity: quantity 
             }];
@@ -184,8 +184,8 @@ export const CHAPTER_270 = {
           calculate: (inputs) => {
             if (!inputs.has_physical_therapy) return [];
             return [{ 
-              roomCode: 'SE404', 
-              roomName: 'PT Hydrotherapy Room', 
+              roomCode: 'CT038', 
+              roomName: 'PT Special Equipment, PMR Svc', 
               nsf: 150, 
               quantity: 1 
             }];
@@ -193,17 +193,53 @@ export const CHAPTER_270 = {
         },
         {
           id: 'PMR-PT-GAIT',
-          name: 'PT Gait Training Area',
+          name: 'PT Gait Lane',
           calculate: (inputs) => {
             if (!inputs.has_physical_therapy) return [];
-            const visits = inputs.annual_visits;
-            const nsf = visits >= 40 ? 300 : 200;
-            return [{ 
-              roomCode: 'SE405', 
-              roomName: 'PT Gait Training Area', 
-              nsf: nsf, 
-              quantity: 1 
-            }];
+            // Convert visits (in thousands) to annual clinic stops
+            const annualStops = inputs.annual_visits * 1000;
+            
+            // Per PG-18-9: CT049 (Straight Gait Lane) for 600-7,968 stops
+            // CT042 (Racetrack Gait Lane) for larger volumes
+            if (annualStops < 600) return [];
+            
+            if (annualStops <= 7968) {
+              // CT049 - PT Straight Gait Lane (330 NSF base)
+              return [{ 
+                roomCode: 'CT049', 
+                roomName: 'PT Straight Gait Lane, PMR Svc', 
+                nsf: 330, 
+                quantity: 1 
+              }];
+            } else if (annualStops <= 15936) {
+              // CT049 at 395 NSF for higher volume
+              return [{ 
+                roomCode: 'CT049', 
+                roomName: 'PT Straight Gait Lane, PMR Svc', 
+                nsf: 395, 
+                quantity: 1 
+              }];
+            } else if (annualStops <= 23904) {
+              // CT049 at 460 NSF
+              return [{ 
+                roomCode: 'CT049', 
+                roomName: 'PT Straight Gait Lane, PMR Svc', 
+                nsf: 460, 
+                quantity: 1 
+              }];
+            } else {
+              // CT042 - PT Racetrack Gait Lane for high volume
+              let nsf = 1115;
+              if (annualStops > 39840) nsf = 1230;
+              if (annualStops > 47808) nsf = 1360;
+              if (annualStops > 55776) nsf = 1590;
+              return [{ 
+                roomCode: 'CT042', 
+                roomName: 'PT Racetrack Gait Lane, PMR Svc', 
+                nsf: nsf, 
+                quantity: 1 
+              }];
+            }
           }
         },
         {
@@ -214,8 +250,8 @@ export const CHAPTER_270 = {
             const visits = inputs.annual_visits;
             const nsf = visits >= 40 ? 200 : 150;
             return [{ 
-              roomCode: 'SB745', 
-              roomName: 'PT Equipment Storage', 
+              roomCode: 'CT044', 
+              roomName: 'PT Equipment Storage Room, PMR Svc', 
               nsf: nsf, 
               quantity: 1 
             }];
@@ -239,8 +275,8 @@ export const CHAPTER_270 = {
             if (visits > 40) nsf = 1000;
             if (visits > 60) nsf = 1200;
             return [{ 
-              roomCode: 'SE406', 
-              roomName: 'OT Clinic', 
+              roomCode: 'CT081', 
+              roomName: 'OT Treatment Station A, PMR Svc', 
               nsf: nsf, 
               quantity: 1 
             }];
@@ -257,8 +293,8 @@ export const CHAPTER_270 = {
             if (visits > 40) quantity = 6;
             if (visits > 60) quantity = 8;
             return [{ 
-              roomCode: 'SE407', 
-              roomName: 'OT Treatment Station', 
+              roomCode: 'CT091', 
+              roomName: 'OT Treatment Cubicle, PMR Svc', 
               nsf: 80, 
               quantity: quantity 
             }];
@@ -270,8 +306,8 @@ export const CHAPTER_270 = {
           calculate: (inputs) => {
             if (!inputs.has_occupational_therapy) return [];
             return [{ 
-              roomCode: 'SE408', 
-              roomName: 'OT ADL Training Area', 
+              roomCode: 'CT111', 
+              roomName: 'OT ADL Kitchen, PMR Svc', 
               nsf: 300, 
               quantity: 1 
             }];
@@ -283,8 +319,8 @@ export const CHAPTER_270 = {
           calculate: (inputs) => {
             if (!inputs.has_occupational_therapy) return [];
             return [{ 
-              roomCode: 'SE409', 
-              roomName: 'OT Training Kitchen', 
+              roomCode: 'CT112', 
+              roomName: 'OT ADL Bathroom, PMR Svc', 
               nsf: 200, 
               quantity: 1 
             }];
@@ -296,8 +332,8 @@ export const CHAPTER_270 = {
           calculate: (inputs) => {
             if (!inputs.has_occupational_therapy) return [];
             return [{ 
-              roomCode: 'SE410', 
-              roomName: 'OT Splint Fabrication', 
+              roomCode: 'CT101', 
+              roomName: 'OT Hand Therapy Room, PMR Svc', 
               nsf: 120, 
               quantity: 1 
             }];
@@ -311,8 +347,8 @@ export const CHAPTER_270 = {
             const visits = inputs.annual_visits;
             const nsf = visits >= 40 ? 180 : 120;
             return [{ 
-              roomCode: 'SB745', 
-              roomName: 'OT Equipment Storage', 
+              roomCode: 'CT106', 
+              roomName: 'OT Equipment Storage Room, PMR Svc', 
               nsf: nsf, 
               quantity: 1 
             }];
@@ -335,8 +371,8 @@ export const CHAPTER_270 = {
             if (visits > 30) quantity = 3;
             if (visits > 60) quantity = 4;
             return [{ 
-              roomCode: 'SE411', 
-              roomName: 'Speech Treatment Room', 
+              roomCode: 'CT015', 
+              roomName: 'Specialty Treatment Room, PMR Svc', 
               nsf: 100, 
               quantity: quantity 
             }];
@@ -348,8 +384,8 @@ export const CHAPTER_270 = {
           calculate: (inputs) => {
             if (!inputs.has_speech_therapy) return [];
             return [{ 
-              roomCode: 'SE412', 
-              roomName: 'Audiology Booth', 
+              roomCode: 'CT026', 
+              roomName: 'Multi-function Room, PMR Svc', 
               nsf: 80, 
               quantity: 1 
             }];
@@ -361,8 +397,8 @@ export const CHAPTER_270 = {
           calculate: (inputs) => {
             if (!inputs.has_speech_therapy) return [];
             return [{ 
-              roomCode: 'SB745', 
-              roomName: 'Speech Equipment Storage', 
+              roomCode: 'CT045', 
+              roomName: 'PT Supply Storage Room, PMR Svc', 
               nsf: 80, 
               quantity: 1 
             }];
@@ -383,8 +419,8 @@ export const CHAPTER_270 = {
             const visits = inputs.annual_visits;
             const quantity = visits >= 40 ? 2 : 1;
             return [{ 
-              roomCode: 'SE413', 
-              roomName: 'Prosthetics Fitting Room', 
+              roomCode: 'CT201', 
+              roomName: 'Wheelchair Evaluation/Fitting Room, PMR Svc', 
               nsf: 150, 
               quantity: quantity 
             }];
@@ -396,8 +432,8 @@ export const CHAPTER_270 = {
           calculate: (inputs) => {
             if (!inputs.has_prosthetics) return [];
             return [{ 
-              roomCode: 'SE414', 
-              roomName: 'Prosthetics Workshop', 
+              roomCode: 'CT202', 
+              roomName: 'Wheelchair Repair Workroom, PMR Svc', 
               nsf: 300, 
               quantity: 1 
             }];
@@ -409,8 +445,8 @@ export const CHAPTER_270 = {
           calculate: (inputs) => {
             if (!inputs.has_prosthetics) return [];
             return [{ 
-              roomCode: 'SE415', 
-              roomName: 'Prosthetics Gait Training', 
+              roomCode: 'CT037', 
+              roomName: 'PT Warm-up/Stretching Area, PMR Svc', 
               nsf: 200, 
               quantity: 1 
             }];
@@ -422,8 +458,8 @@ export const CHAPTER_270 = {
           calculate: (inputs) => {
             if (!inputs.has_prosthetics) return [];
             return [{ 
-              roomCode: 'SB745', 
-              roomName: 'Prosthetics Storage', 
+              roomCode: 'CT203', 
+              roomName: 'Wheelchair Parts Storage Room, PMR Svc', 
               nsf: 150, 
               quantity: 1 
             }];
@@ -442,8 +478,8 @@ export const CHAPTER_270 = {
           calculate: (inputs) => {
             if (!inputs.has_aquatic) return [];
             return [{ 
-              roomCode: 'SE416', 
-              roomName: 'Aquatic Therapy Pool', 
+              roomCode: 'CT171', 
+              roomName: 'AT Therapy Pool, PMR Svc', 
               nsf: 1200, 
               quantity: 1 
             }];
@@ -455,8 +491,8 @@ export const CHAPTER_270 = {
           calculate: (inputs) => {
             if (!inputs.has_aquatic) return [];
             return [{ 
-              roomCode: 'SE417', 
-              roomName: 'Pool Deck', 
+              roomCode: 'CT175', 
+              roomName: 'AT Treadmill Pool Deck, PMR Svc', 
               nsf: 400, 
               quantity: 1 
             }];
@@ -468,8 +504,8 @@ export const CHAPTER_270 = {
           calculate: (inputs) => {
             if (!inputs.has_aquatic) return [];
             return [{ 
-              roomCode: 'SB152', 
-              roomName: 'Pool Locker Room', 
+              roomCode: 'SB209', 
+              roomName: 'AT Patient Locker Room, PMR Svc', 
               nsf: 200, 
               quantity: 2 
             }];
@@ -481,8 +517,8 @@ export const CHAPTER_270 = {
           calculate: (inputs) => {
             if (!inputs.has_aquatic) return [];
             return [{ 
-              roomCode: 'SE418', 
-              roomName: 'Pool Mechanical Room', 
+              roomCode: 'CT207', 
+              roomName: 'Equipment Cleaning/Sanitation Room, PMR Svc', 
               nsf: 300, 
               quantity: 1 
             }];
@@ -507,8 +543,8 @@ export const CHAPTER_270 = {
           calculate: (inputs) => {
             if (!inputs.has_driver_eval) return [];
             return [{ 
-              roomCode: 'SE419', 
-              roomName: 'Driver Simulator Room', 
+              roomCode: 'CT182', 
+              roomName: 'DTC Simulator Station, PMR Svc', 
               nsf: 200, 
               quantity: 1 
             }];
@@ -522,8 +558,8 @@ export const CHAPTER_270 = {
             const visits = inputs.annual_visits;
             const nsf = visits >= 40 ? 600 : 400;
             return [{ 
-              roomCode: 'SE420', 
-              roomName: 'Kinesiotherapy Area', 
+              roomCode: 'CT051', 
+              roomName: 'KT Treatment Station A, PMR Svc', 
               nsf: nsf, 
               quantity: 1 
             }];
@@ -545,8 +581,8 @@ export const CHAPTER_270 = {
             if (visits > 30) quantity = 3;
             if (visits > 60) quantity = 4;
             return [{ 
-              roomCode: 'SE101', 
-              roomName: 'PM&R Examination Room', 
+              roomCode: 'CT015', 
+              roomName: 'Specialty Treatment Room, PMR Svc', 
               nsf: 120, 
               quantity: quantity 
             }];
@@ -556,8 +592,8 @@ export const CHAPTER_270 = {
           id: 'PMR-CONSULT',
           name: 'PM&R Consultation Room',
           calculate: (inputs) => [{ 
-            roomCode: 'SE116', 
-            roomName: 'PM&R Consultation Room', 
+            roomCode: 'SC271', 
+            roomName: 'Universal Consult Room, PMR Svc', 
             nsf: 120, 
             quantity: 1 
           }]
@@ -566,8 +602,8 @@ export const CHAPTER_270 = {
           id: 'PMR-CLEAN-UTILITY',
           name: 'PM&R Clean Utility',
           calculate: (inputs) => [{ 
-            roomCode: 'SB655', 
-            roomName: 'PM&R Clean Utility', 
+            roomCode: 'SC471', 
+            roomName: 'PMR Svc Clean Linen Room', 
             nsf: 80, 
             quantity: 1 
           }]
@@ -576,8 +612,8 @@ export const CHAPTER_270 = {
           id: 'PMR-SOILED-UTILITY',
           name: 'PM&R Soiled Utility',
           calculate: (inputs) => [{ 
-            roomCode: 'SB656', 
-            roomName: 'PM&R Soiled Utility', 
+            roomCode: 'SC473', 
+            roomName: 'PMR Svc Soiled Linen Room', 
             nsf: 80, 
             quantity: 1 
           }]
@@ -588,8 +624,8 @@ export const CHAPTER_270 = {
           calculate: (inputs) => {
             const visits = inputs.annual_visits;
             return visits >= 40 ? [{ 
-              roomCode: 'SE166', 
-              roomName: 'PM&R Medication Room', 
+              roomCode: 'CT026', 
+              roomName: 'Multi-function Room, PMR Svc', 
               nsf: 80, 
               quantity: 1 
             }] : [];
@@ -602,8 +638,8 @@ export const CHAPTER_270 = {
             const visits = inputs.annual_visits;
             const nsf = visits >= 40 ? 150 : 100;
             return [{ 
-              roomCode: 'SB745', 
-              roomName: 'Wheelchair Storage', 
+              roomCode: 'CT203', 
+              roomName: 'Wheelchair Parts Storage Room, PMR Svc', 
               nsf: nsf, 
               quantity: 1 
             }];
@@ -679,8 +715,8 @@ export const CHAPTER_270 = {
             const visits = inputs.annual_visits;
             const nsf = visits >= 50 ? 180 : 120;
             return [{ 
-              roomCode: 'SB152', 
-              roomName: 'PM&R Staff Lounge', 
+              roomCode: 'SS232', 
+              roomName: 'Female Staff Locker Room, PMR Svc', 
               nsf: nsf, 
               quantity: 1 
             }];
@@ -692,8 +728,8 @@ export const CHAPTER_270 = {
           calculate: (inputs) => {
             const visits = inputs.annual_visits;
             return visits >= 40 ? [{ 
-              roomCode: 'SB152', 
-              roomName: 'PM&R Staff Locker Room', 
+              roomCode: 'SS233', 
+              roomName: 'Male Staff Locker Room, PMR Svc', 
               nsf: 80, 
               quantity: 1 
             }] : [];
@@ -739,8 +775,8 @@ export const CHAPTER_270 = {
             if (visits > 30) nsf = 200;
             if (visits > 60) nsf = 250;
             return [{ 
-              roomCode: 'SB745', 
-              roomName: 'PM&R General Storage', 
+              roomCode: 'CT044', 
+              roomName: 'PT Equipment Storage Room, PMR Svc', 
               nsf: nsf, 
               quantity: 1 
             }];
@@ -750,8 +786,8 @@ export const CHAPTER_270 = {
           id: 'PMR-LINEN',
           name: 'PM&R Linen Storage',
           calculate: (inputs) => [{ 
-            roomCode: 'SB745', 
-            roomName: 'PM&R Linen Storage', 
+            roomCode: 'SC467', 
+            roomName: 'PMR Svc PT Linen Alcove', 
             nsf: 80, 
             quantity: 1 
           }]

@@ -119,9 +119,9 @@ export const CHAPTER_202 = {
           calculate: (inputs) => {
             const quantity = CHAPTER_202.calculateExamRooms(inputs);
             return [{ 
-              roomCode: 'SE101', 
+              roomCode: 'OCB31', 
               roomName: 'Primary Care Examination Room', 
-              nsf: 120, 
+              nsf: 140, 
               quantity: quantity 
             }];
           }
@@ -133,9 +133,9 @@ export const CHAPTER_202 = {
             const examRooms = CHAPTER_202.calculateExamRooms(inputs);
             const quantity = examRooms >= 8 ? 1 : 0;
             return quantity > 0 ? [{ 
-              roomCode: 'SE102', 
+              roomCode: 'OCB37', 
               roomName: 'Primary Care Examination Room, Bariatric', 
-              nsf: 150, 
+              nsf: 210, 
               quantity: quantity 
             }] : [];
           }
@@ -147,9 +147,9 @@ export const CHAPTER_202 = {
             const examRooms = CHAPTER_202.calculateExamRooms(inputs);
             const quantity = examRooms >= 6 ? 1 : 0;
             return quantity > 0 ? [{ 
-              roomCode: 'SE201', 
+              roomCode: 'CT013', 
               roomName: 'Primary Care Procedure Room', 
-              nsf: 150, 
+              nsf: 200, 
               quantity: quantity 
             }] : [];
           }
@@ -158,9 +158,9 @@ export const CHAPTER_202 = {
           id: 'PC-CONSULT',
           name: 'Primary Care Consultation Room',
           calculate: (inputs) => [{ 
-            roomCode: 'SE116', 
+            roomCode: 'OCB11', 
             roomName: 'Primary Care Consultation Room', 
-            nsf: 120, 
+            nsf: 140, 
             quantity: 1 
           }]
         },
@@ -171,7 +171,7 @@ export const CHAPTER_202 = {
             const examRooms = CHAPTER_202.calculateExamRooms(inputs);
             const quantity = Math.ceil(examRooms / 8);
             return [{ 
-              roomCode: 'SE159', 
+              roomCode: 'SC102', 
               roomName: 'Primary Care Vital Signs Alcove', 
               nsf: 40, 
               quantity: quantity 
@@ -183,9 +183,9 @@ export const CHAPTER_202 = {
           name: 'Women\'s Health Examination Room',
           calculate: (inputs) => {
             return inputs.has_womens_health ? [{ 
-              roomCode: 'SE110', 
+              roomCode: 'CWV21', 
               roomName: 'Women\'s Health Examination Room', 
-              nsf: 120, 
+              nsf: 140, 
               quantity: 2 
             }] : [];
           }
@@ -224,7 +224,7 @@ export const CHAPTER_202 = {
             const examRooms = CHAPTER_202.calculateExamRooms(inputs);
             const quantity = Math.ceil(examRooms / 10);
             return [{ 
-              roomCode: 'SE166', 
+              roomCode: 'SV581', 
               roomName: 'Primary Care Medication Prep Alcove', 
               nsf: 40, 
               quantity: quantity 

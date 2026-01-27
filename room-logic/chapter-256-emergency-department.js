@@ -111,9 +111,9 @@ export const CHAPTER_256 = {
             const visits = inputs.annual_visits;
             const quantity = visits >= 50000 ? 2 : 1;
             return [{ 
-              roomCode: 'SE601', 
-              roomName: 'Triage Station', 
-              nsf: 100, 
+              roomCode: 'CED12', 
+              roomName: 'Triage Room', 
+              nsf: 150, 
               quantity: quantity 
             }];
           }
@@ -151,7 +151,7 @@ export const CHAPTER_256 = {
             const visits = inputs.annual_visits;
             const nsf = visits >= 50000 ? 120 : 80;
             return [{ 
-              roomCode: 'SE602', 
+              roomCode: 'SS204', 
               roomName: 'ED Security Office', 
               nsf: nsf, 
               quantity: 1 
@@ -172,8 +172,8 @@ export const CHAPTER_256 = {
             const traumaBays = CHAPTER_256.calculateTraumaBays(inputs);
             const nsf = traumaBays >= 3 ? 800 : 600;
             return [{ 
-              roomCode: 'SE603', 
-              roomName: 'Ambulance Bay', 
+              roomCode: 'CED59', 
+              roomName: 'EMS Ambulance Garage', 
               nsf: nsf, 
               quantity: 1 
             }];
@@ -183,9 +183,9 @@ export const CHAPTER_256 = {
           id: 'ED-AMBULANCE-CONTROL',
           name: 'Ambulance Control / Radio Room',
           calculate: (inputs) => [{ 
-            roomCode: 'SE604', 
-            roomName: 'Ambulance Control', 
-            nsf: 80, 
+            roomCode: 'CED57', 
+            roomName: 'EMS Staff Workstation', 
+            nsf: 55, 
             quantity: 1 
           }]
         },
@@ -195,9 +195,9 @@ export const CHAPTER_256 = {
           calculate: (inputs) => {
             if (!inputs.has_decontamination) return [];
             return [{ 
-              roomCode: 'SE605', 
-              roomName: 'Outdoor Decontamination', 
-              nsf: 400, 
+              roomCode: 'CED52', 
+              roomName: 'EMS Decontamination Shower (Outdoor)', 
+              nsf: 120, 
               quantity: 1 
             }];
           }
@@ -208,9 +208,9 @@ export const CHAPTER_256 = {
           calculate: (inputs) => {
             if (!inputs.has_decontamination) return [];
             return [{ 
-              roomCode: 'SE606', 
-              roomName: 'Indoor Decontamination', 
-              nsf: 300, 
+              roomCode: 'CED53', 
+              roomName: 'EMS Decontamination Patient Changing Room', 
+              nsf: 120, 
               quantity: 1 
             }];
           }
@@ -221,9 +221,9 @@ export const CHAPTER_256 = {
           calculate: (inputs) => {
             if (!inputs.has_decontamination) return [];
             return [{ 
-              roomCode: 'SB745', 
-              roomName: 'Decon Equipment Storage', 
-              nsf: 100, 
+              roomCode: 'CED54', 
+              roomName: 'EMS Decontamination Storage Room', 
+              nsf: 80, 
               quantity: 1 
             }];
           }
@@ -241,9 +241,9 @@ export const CHAPTER_256 = {
           calculate: (inputs) => {
             const quantity = CHAPTER_256.calculateTraumaBays(inputs);
             return [{ 
-              roomCode: 'SE607', 
-              roomName: 'Trauma Resuscitation Bay', 
-              nsf: 400, 
+              roomCode: 'CED31', 
+              roomName: 'Resuscitation Room', 
+              nsf: 350, 
               quantity: quantity 
             }];
           }
@@ -266,9 +266,9 @@ export const CHAPTER_256 = {
           name: 'Trauma X-Ray Room',
           calculate: (inputs) => {
             return inputs.trauma_level !== 'none' ? [{ 
-              roomCode: 'SE301', 
+              roomCode: 'CI011', 
               roomName: 'Trauma X-Ray Room', 
-              nsf: 300, 
+              nsf: 325, 
               quantity: 1 
             }] : [];
           }
@@ -278,9 +278,9 @@ export const CHAPTER_256 = {
           name: 'Trauma CT Scanner',
           calculate: (inputs) => {
             return (inputs.trauma_level === 'level1' || inputs.trauma_level === 'level2') ? [{ 
-              roomCode: 'SE305', 
+              roomCode: 'CI081', 
               roomName: 'Trauma CT Scanner', 
-              nsf: 500, 
+              nsf: 560, 
               quantity: 1 
             }] : [];
           }
@@ -298,9 +298,9 @@ export const CHAPTER_256 = {
           calculate: (inputs) => {
             const quantity = CHAPTER_256.calculateTreatmentBays(inputs);
             return [{ 
-              roomCode: 'SE608', 
+              roomCode: 'CED21', 
               roomName: 'ED Treatment Bay', 
-              nsf: 150, 
+              nsf: 160, 
               quantity: quantity 
             }];
           }
@@ -314,9 +314,9 @@ export const CHAPTER_256 = {
             if (visits > 50000) quantity = 3;
             if (visits > 75000) quantity = 4;
             return [{ 
-              roomCode: 'SE609', 
+              roomCode: 'CED27', 
               roomName: 'ED Isolation Room', 
-              nsf: 150, 
+              nsf: 200, 
               quantity: quantity 
             }];
           }
@@ -330,9 +330,9 @@ export const CHAPTER_256 = {
             if (visits > 35000) quantity = 6;
             if (visits > 60000) quantity = 8;
             return [{ 
-              roomCode: 'SE610', 
+              roomCode: 'CED21', 
               roomName: 'ED Cardiac Bay', 
-              nsf: 150, 
+              nsf: 160, 
               quantity: quantity 
             }];
           }
@@ -344,9 +344,9 @@ export const CHAPTER_256 = {
             const visits = inputs.annual_visits;
             const quantity = visits >= 40000 ? 2 : 1;
             return [{ 
-              roomCode: 'SE201', 
+              roomCode: 'CED21', 
               roomName: 'ED Procedure Room', 
-              nsf: 200, 
+              nsf: 160, 
               quantity: quantity 
             }];
           }
@@ -355,9 +355,9 @@ export const CHAPTER_256 = {
           id: 'ED-GYNECOLOGY',
           name: 'GYN Examination Room',
           calculate: (inputs) => [{ 
-            roomCode: 'SE110', 
+            roomCode: 'CED24', 
             roomName: 'ED GYN Exam Room', 
-            nsf: 120, 
+            nsf: 160, 
             quantity: 1 
           }]
         }
@@ -378,9 +378,9 @@ export const CHAPTER_256 = {
             if (visits > 35000) quantity = 6;
             if (visits > 60000) quantity = 8;
             return [{ 
-              roomCode: 'SE611', 
+              roomCode: 'CED22', 
               roomName: 'Fast Track Treatment Room', 
-              nsf: 100, 
+              nsf: 160, 
               quantity: quantity 
             }];
           }
@@ -404,9 +404,9 @@ export const CHAPTER_256 = {
           calculate: (inputs) => {
             if (!inputs.has_fast_track) return [];
             return [{ 
-              roomCode: 'SE612', 
+              roomCode: 'CED17', 
               roomName: 'Splint/Cast Room', 
-              nsf: 100, 
+              nsf: 190, 
               quantity: 1 
             }];
           }
@@ -427,9 +427,9 @@ export const CHAPTER_256 = {
             let quantity = 2;
             if (visits > 50000) quantity = 3;
             return [{ 
-              roomCode: 'SE613', 
+              roomCode: 'CED25', 
               roomName: 'Behavioral Health Exam Room', 
-              nsf: 120, 
+              nsf: 190, 
               quantity: quantity 
             }];
           }
@@ -440,9 +440,9 @@ export const CHAPTER_256 = {
           calculate: (inputs) => {
             if (!inputs.has_behavioral_health) return [];
             return [{ 
-              roomCode: 'SE614', 
+              roomCode: 'CED26', 
               roomName: 'Seclusion Room', 
-              nsf: 120, 
+              nsf: 115, 
               quantity: 1 
             }];
           }
@@ -453,7 +453,7 @@ export const CHAPTER_256 = {
           calculate: (inputs) => {
             if (!inputs.has_behavioral_health) return [];
             return [{ 
-              roomCode: 'SE116', 
+              roomCode: 'SC271', 
               roomName: 'Behavioral Health Consult', 
               nsf: 100, 
               quantity: 1 
@@ -490,9 +490,9 @@ export const CHAPTER_256 = {
             if (visits > 35000) quantity = 8;
             if (visits > 60000) quantity = 12;
             return [{ 
-              roomCode: 'SE615', 
+              roomCode: 'CED34', 
               roomName: 'Observation Bed', 
-              nsf: 120, 
+              nsf: 100, 
               quantity: quantity 
             }];
           }
@@ -516,7 +516,7 @@ export const CHAPTER_256 = {
           calculate: (inputs) => {
             if (!inputs.has_observation) return [];
             return [{ 
-              roomCode: 'SB657', 
+              roomCode: 'SC294', 
               roomName: 'Observation Nourishment', 
               nsf: 60, 
               quantity: 1 
@@ -564,9 +564,9 @@ export const CHAPTER_256 = {
             const visits = inputs.annual_visits;
             const quantity = visits >= 50000 ? 2 : 1;
             return [{ 
-              roomCode: 'SE166', 
+              roomCode: 'SV583', 
               roomName: 'ED Medication Room', 
-              nsf: 100, 
+              nsf: 56, 
               quantity: quantity 
             }];
           }
@@ -578,9 +578,9 @@ export const CHAPTER_256 = {
             const visits = inputs.annual_visits;
             const quantity = visits >= 50000 ? 2 : 1;
             return [{ 
-              roomCode: 'SB655', 
+              roomCode: 'SB737', 
               roomName: 'ED Clean Utility', 
-              nsf: 100, 
+              nsf: 60, 
               quantity: quantity 
             }];
           }
@@ -592,9 +592,9 @@ export const CHAPTER_256 = {
             const visits = inputs.annual_visits;
             const quantity = visits >= 50000 ? 2 : 1;
             return [{ 
-              roomCode: 'SB656', 
+              roomCode: 'SB743', 
               roomName: 'ED Soiled Utility', 
-              nsf: 100, 
+              nsf: 40, 
               quantity: quantity 
             }];
           }
@@ -603,9 +603,9 @@ export const CHAPTER_256 = {
           id: 'ED-LAB-PHLEBOTOMY',
           name: 'Laboratory / Phlebotomy Station',
           calculate: (inputs) => [{ 
-            roomCode: 'SE159', 
+            roomCode: 'LD121', 
             roomName: 'ED Lab/Phlebotomy', 
-            nsf: 80, 
+            nsf: 60, 
             quantity: 1 
           }]
         },
@@ -615,9 +615,9 @@ export const CHAPTER_256 = {
           calculate: (inputs) => {
             const visits = inputs.annual_visits;
             return visits >= 40000 ? [{ 
-              roomCode: 'SE616', 
+              roomCode: 'CED33', 
               roomName: 'Point of Care Testing', 
-              nsf: 100, 
+              nsf: 50, 
               quantity: 1 
             }] : [];
           }
@@ -626,9 +626,9 @@ export const CHAPTER_256 = {
           id: 'ED-NOURISHMENT',
           name: 'Nourishment / Nutrition Station',
           calculate: (inputs) => [{ 
-            roomCode: 'SB657', 
+            roomCode: 'SC294', 
             roomName: 'ED Nourishment Station', 
-            nsf: 80, 
+            nsf: 60, 
             quantity: 1 
           }]
         },
@@ -639,9 +639,9 @@ export const CHAPTER_256 = {
             const visits = inputs.annual_visits;
             const quantity = visits >= 50000 ? 2 : 1;
             return [{ 
-              roomCode: 'SE335', 
+              roomCode: 'CED62', 
               roomName: 'Crash Cart Alcove', 
-              nsf: 40, 
+              nsf: 20, 
               quantity: quantity 
             }];
           }
@@ -650,7 +650,7 @@ export const CHAPTER_256 = {
           id: 'ED-BLOOD-REFRIG',
           name: 'Blood Refrigerator Alcove',
           calculate: (inputs) => [{ 
-            roomCode: 'SE518', 
+            roomCode: 'CED65', 
             roomName: 'Blood Refrigerator', 
             nsf: 40, 
             quantity: 1 
@@ -672,9 +672,9 @@ export const CHAPTER_256 = {
             if (visits > 35000) quantity = 2;
             if (visits > 60000) quantity = 3;
             return [{ 
-              roomCode: 'SE301', 
+              roomCode: 'CI011', 
               roomName: 'ED X-Ray Room', 
-              nsf: 300, 
+              nsf: 325, 
               quantity: quantity 
             }];
           }
@@ -688,9 +688,9 @@ export const CHAPTER_256 = {
             if (visits > 35000) quantity = 2;
             if (visits > 60000) quantity = 3;
             return [{ 
-              roomCode: 'SE302', 
+              roomCode: 'CI012', 
               roomName: 'X-Ray Control', 
-              nsf: 50, 
+              nsf: 75, 
               quantity: quantity 
             }];
           }
@@ -701,9 +701,9 @@ export const CHAPTER_256 = {
           calculate: (inputs) => {
             const visits = inputs.annual_visits;
             return visits >= 30000 ? [{ 
-              roomCode: 'SE305', 
+              roomCode: 'CI081', 
               roomName: 'ED CT Scanner', 
-              nsf: 500, 
+              nsf: 560, 
               quantity: 1 
             }] : [];
           }
@@ -714,9 +714,9 @@ export const CHAPTER_256 = {
           calculate: (inputs) => {
             const visits = inputs.annual_visits;
             return visits >= 30000 ? [{ 
-              roomCode: 'SE306', 
+              roomCode: 'CI082', 
               roomName: 'CT Control Room', 
-              nsf: 100, 
+              nsf: 75, 
               quantity: 1 
             }] : [];
           }
@@ -727,9 +727,9 @@ export const CHAPTER_256 = {
           calculate: (inputs) => {
             const visits = inputs.annual_visits;
             return visits >= 25000 ? [{ 
-              roomCode: 'SE311', 
+              roomCode: 'CI063', 
               roomName: 'ED Ultrasound Room', 
-              nsf: 150, 
+              nsf: 255, 
               quantity: 1 
             }] : [];
           }
@@ -776,7 +776,7 @@ export const CHAPTER_256 = {
             const visits = inputs.annual_visits;
             const nsf = visits >= 50000 ? 180 : 120;
             return [{ 
-              roomCode: 'SB152', 
+              roomCode: 'SS262', 
               roomName: 'ED Staff Lounge', 
               nsf: nsf, 
               quantity: 1 
@@ -790,7 +790,7 @@ export const CHAPTER_256 = {
             const visits = inputs.annual_visits;
             const nsf = visits >= 50000 ? 120 : 80;
             return [{ 
-              roomCode: 'SB152', 
+              roomCode: 'SS241', 
               roomName: 'Male Locker Room', 
               nsf: nsf, 
               quantity: 1 
@@ -804,7 +804,7 @@ export const CHAPTER_256 = {
             const visits = inputs.annual_visits;
             const nsf = visits >= 50000 ? 120 : 80;
             return [{ 
-              roomCode: 'SB152', 
+              roomCode: 'SS246', 
               roomName: 'Female Locker Room', 
               nsf: nsf, 
               quantity: 1 
@@ -829,7 +829,7 @@ export const CHAPTER_256 = {
             let quantity = 1;
             if (visits > 50000) quantity = 2;
             return [{ 
-              roomCode: 'SB152', 
+              roomCode: 'SQ211', 
               roomName: 'On-Call Sleep Room', 
               nsf: 100, 
               quantity: quantity 
@@ -915,7 +915,7 @@ export const CHAPTER_256 = {
             const visits = inputs.annual_visits;
             const nsf = visits >= 50000 ? 250 : 200;
             return [{ 
-              roomCode: 'SB745', 
+              roomCode: 'CED63', 
               roomName: 'ED Equipment Storage', 
               nsf: nsf, 
               quantity: 1 
@@ -929,7 +929,7 @@ export const CHAPTER_256 = {
             const visits = inputs.annual_visits;
             const nsf = visits >= 50000 ? 150 : 100;
             return [{ 
-              roomCode: 'SB745', 
+              roomCode: 'CED64', 
               roomName: 'Clean Linen Storage', 
               nsf: nsf, 
               quantity: 1 
@@ -940,9 +940,9 @@ export const CHAPTER_256 = {
           id: 'ED-LINEN-SOILED',
           name: 'Soiled Linen Holding',
           calculate: (inputs) => [{ 
-            roomCode: 'SB745', 
+            roomCode: 'SB743', 
             roomName: 'Soiled Linen Holding', 
-            nsf: 80, 
+            nsf: 40, 
             quantity: 1 
           }]
         },
@@ -953,7 +953,7 @@ export const CHAPTER_256 = {
             const visits = inputs.annual_visits;
             const nsf = visits >= 50000 ? 150 : 100;
             return [{ 
-              roomCode: 'SE330', 
+              roomCode: 'SB258', 
               roomName: 'Stretcher Storage', 
               nsf: nsf, 
               quantity: 1 
@@ -967,7 +967,7 @@ export const CHAPTER_256 = {
             const visits = inputs.annual_visits;
             const nsf = visits >= 50000 ? 200 : 150;
             return [{ 
-              roomCode: 'SB745', 
+              roomCode: 'CED66', 
               roomName: 'General Storage', 
               nsf: nsf, 
               quantity: 1 

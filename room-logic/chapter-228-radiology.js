@@ -204,9 +204,9 @@ export const CHAPTER_228 = {
             if (!inputs.has_xray) return [];
             const quantity = inputs.num_xray_rooms || 2;
             return [{ 
-              roomCode: 'SE301', 
-              roomName: 'General X-Ray Room', 
-              nsf: 300, 
+              roomCode: 'CI011', 
+              roomName: 'Class 1 Radiology Imaging Room', 
+              nsf: 325, 
               quantity: quantity 
             }];
           }
@@ -218,9 +218,9 @@ export const CHAPTER_228 = {
             if (!inputs.has_xray) return [];
             const quantity = inputs.num_xray_rooms || 2;
             return [{ 
-              roomCode: 'SE302', 
-              roomName: 'X-Ray Control Alcove', 
-              nsf: 50, 
+              roomCode: 'CI012', 
+              roomName: 'Class 1 Radiology Control Alcove', 
+              nsf: 75, 
               quantity: quantity 
             }];
           }
@@ -245,9 +245,9 @@ export const CHAPTER_228 = {
             if (!inputs.has_fluoro) return [];
             const quantity = inputs.num_fluoro_rooms || 1;
             return [{ 
-              roomCode: 'SE303', 
-              roomName: 'Fluoroscopy Room', 
-              nsf: 400, 
+              roomCode: 'CI031', 
+              roomName: 'Class 1 R/F Imaging Room', 
+              nsf: 415, 
               quantity: quantity 
             }];
           }
@@ -259,9 +259,9 @@ export const CHAPTER_228 = {
             if (!inputs.has_fluoro) return [];
             const quantity = inputs.num_fluoro_rooms || 1;
             return [{ 
-              roomCode: 'SE304', 
-              roomName: 'Fluoroscopy Control Room', 
-              nsf: 80, 
+              roomCode: 'CI032', 
+              roomName: 'Class 1 R/F Control Room', 
+              nsf: 105, 
               quantity: quantity 
             }];
           }
@@ -280,9 +280,9 @@ export const CHAPTER_228 = {
             if (!inputs.has_ct) return [];
             const quantity = inputs.num_ct_scanners || 1;
             return [{ 
-              roomCode: 'SE305', 
-              roomName: 'CT Scanner Room', 
-              nsf: 500, 
+              roomCode: 'CI081', 
+              roomName: 'Class 1 CT Scanning Room', 
+              nsf: 560, 
               quantity: quantity 
             }];
           }
@@ -294,9 +294,9 @@ export const CHAPTER_228 = {
             if (!inputs.has_ct) return [];
             const quantity = inputs.num_ct_scanners || 1;
             return [{ 
-              roomCode: 'SE306', 
-              roomName: 'CT Control Room', 
-              nsf: 100, 
+              roomCode: 'CI082', 
+              roomName: 'Class 1 CT Control Room', 
+              nsf: 210, 
               quantity: quantity 
             }];
           }
@@ -308,9 +308,9 @@ export const CHAPTER_228 = {
             if (!inputs.has_ct) return [];
             const quantity = inputs.num_ct_scanners || 1;
             return [{ 
-              roomCode: 'SE307', 
-              roomName: 'CT Equipment Room', 
-              nsf: 100, 
+              roomCode: 'CI083', 
+              roomName: 'Class 1 CT System Component Room', 
+              nsf: 105, 
               quantity: quantity 
             }];
           }
@@ -322,9 +322,9 @@ export const CHAPTER_228 = {
             if (!inputs.has_mri) return [];
             const quantity = inputs.num_mri_scanners || 1;
             return [{ 
-              roomCode: 'SE308', 
-              roomName: 'MRI Scanner Room', 
-              nsf: 600, 
+              roomCode: 'CI111', 
+              roomName: 'Class 1 MRI Scanning Room', 
+              nsf: 590, 
               quantity: quantity 
             }];
           }
@@ -336,9 +336,9 @@ export const CHAPTER_228 = {
             if (!inputs.has_mri) return [];
             const quantity = inputs.num_mri_scanners || 1;
             return [{ 
-              roomCode: 'SE309', 
-              roomName: 'MRI Control Room', 
-              nsf: 100, 
+              roomCode: 'CI112', 
+              roomName: 'Class 1 MRI Control Room', 
+              nsf: 200, 
               quantity: quantity 
             }];
           }
@@ -350,9 +350,9 @@ export const CHAPTER_228 = {
             if (!inputs.has_mri) return [];
             const quantity = inputs.num_mri_scanners || 1;
             return [{ 
-              roomCode: 'SE310', 
-              roomName: 'MRI Equipment Room', 
-              nsf: 200, 
+              roomCode: 'CI113', 
+              roomName: 'Class 1 MRI System Component Room', 
+              nsf: 160, 
               quantity: quantity 
             }];
           }
@@ -384,9 +384,9 @@ export const CHAPTER_228 = {
             if (!inputs.has_ultrasound) return [];
             const quantity = inputs.num_ultrasound_rooms || 2;
             return [{ 
-              roomCode: 'SE311', 
-              roomName: 'Ultrasound Room', 
-              nsf: 150, 
+              roomCode: 'CI063', 
+              roomName: 'Class 1 Ultrasound Scanning Room', 
+              nsf: 255, 
               quantity: quantity 
             }];
           }
@@ -397,9 +397,9 @@ export const CHAPTER_228 = {
           calculate: (inputs) => {
             if (!inputs.has_mammography) return [];
             return [{ 
-              roomCode: 'SE312', 
-              roomName: 'Mammography Room', 
-              nsf: 250, 
+              roomCode: 'CI056', 
+              roomName: 'Class 2 Standing Breast Imaging Room', 
+              nsf: 290, 
               quantity: 1 
             }];
           }
@@ -410,9 +410,9 @@ export const CHAPTER_228 = {
           calculate: (inputs) => {
             if (!inputs.has_mammography) return [];
             return [{ 
-              roomCode: 'SE313', 
-              roomName: 'Mammography Control Alcove', 
-              nsf: 50, 
+              roomCode: 'CI057', 
+              roomName: 'Class 2 Standing Breast Imaging System Component Alcove', 
+              nsf: 20, 
               quantity: 1 
             }];
           }
@@ -423,9 +423,9 @@ export const CHAPTER_228 = {
           calculate: (inputs) => {
             if (!inputs.has_mammography) return [];
             return [{ 
-              roomCode: 'SE314', 
-              roomName: 'Mammography Dressing Room', 
-              nsf: 40, 
+              roomCode: 'SB137', 
+              roomName: 'Patient Dressing Cubicle', 
+              nsf: 35, 
               quantity: 2 
             }];
           }
@@ -443,9 +443,9 @@ export const CHAPTER_228 = {
           calculate: (inputs) => {
             if (!inputs.has_nuclear_med) return [];
             return [{ 
-              roomCode: 'SE315', 
-              roomName: 'Nuclear Medicine Camera Room', 
-              nsf: 400, 
+              roomCode: 'CI211', 
+              roomName: 'Class 1 NM Scanning Room', 
+              nsf: 500, 
               quantity: 2 
             }];
           }
@@ -456,9 +456,9 @@ export const CHAPTER_228 = {
           calculate: (inputs) => {
             if (!inputs.has_nuclear_med) return [];
             return [{ 
-              roomCode: 'SE316', 
-              roomName: 'Nuclear Medicine Control Room', 
-              nsf: 100, 
+              roomCode: 'CI216', 
+              roomName: 'Class 1 SPECT/CT Control Room', 
+              nsf: 210, 
               quantity: 1 
             }];
           }
@@ -469,9 +469,9 @@ export const CHAPTER_228 = {
           calculate: (inputs) => {
             if (!inputs.has_nuclear_med) return [];
             return [{ 
-              roomCode: 'SE317', 
-              roomName: 'Nuclear Medicine Uptake Room', 
-              nsf: 80, 
+              roomCode: 'CI256', 
+              roomName: 'PET/CT Uptake Room', 
+              nsf: 145, 
               quantity: 2 
             }];
           }
@@ -482,9 +482,9 @@ export const CHAPTER_228 = {
           calculate: (inputs) => {
             if (!inputs.has_nuclear_med) return [];
             return [{ 
-              roomCode: 'SE318', 
-              roomName: 'Nuclear Medicine Hot Lab', 
-              nsf: 200, 
+              roomCode: 'CI227', 
+              roomName: 'NM Radiopharmacy / Hot Lab', 
+              nsf: 240, 
               quantity: 1 
             }];
           }
@@ -495,9 +495,9 @@ export const CHAPTER_228 = {
           calculate: (inputs) => {
             if (!inputs.has_nuclear_med) return [];
             return [{ 
-              roomCode: 'SE319', 
-              roomName: 'Nuclear Medicine Dose Prep', 
-              nsf: 100, 
+              roomCode: 'CI531', 
+              roomName: 'Imaging Medication Preparation', 
+              nsf: 80, 
               quantity: 1 
             }];
           }
@@ -508,9 +508,9 @@ export const CHAPTER_228 = {
           calculate: (inputs) => {
             if (!inputs.has_nuclear_med) return [];
             return [{ 
-              roomCode: 'SE320', 
-              roomName: 'Nuclear Medicine Decay Storage', 
-              nsf: 80, 
+              roomCode: 'CI228', 
+              roomName: 'NM Radioactive Waste Decay Room', 
+              nsf: 120, 
               quantity: 1 
             }];
           }
@@ -521,8 +521,8 @@ export const CHAPTER_228 = {
           calculate: (inputs) => {
             if (!inputs.has_pet_ct) return [];
             return [{ 
-              roomCode: 'SE321', 
-              roomName: 'PET/CT Scanner Room', 
+              roomCode: 'CI242', 
+              roomName: 'Class 1 PET/CT Scanning Room', 
               nsf: 600, 
               quantity: 1 
             }];
@@ -534,9 +534,9 @@ export const CHAPTER_228 = {
           calculate: (inputs) => {
             if (!inputs.has_pet_ct) return [];
             return [{ 
-              roomCode: 'SE322', 
-              roomName: 'PET/CT Control Room', 
-              nsf: 100, 
+              roomCode: 'CI243', 
+              roomName: 'Class 1 PET/CT Control Room', 
+              nsf: 210, 
               quantity: 1 
             }];
           }
@@ -547,9 +547,9 @@ export const CHAPTER_228 = {
           calculate: (inputs) => {
             if (!inputs.has_pet_ct) return [];
             return [{ 
-              roomCode: 'SE323', 
+              roomCode: 'CI256', 
               roomName: 'PET/CT Uptake Room', 
-              nsf: 80, 
+              nsf: 145, 
               quantity: 2 
             }];
           }
@@ -567,9 +567,9 @@ export const CHAPTER_228 = {
           calculate: (inputs) => {
             if (!inputs.has_interventional) return [];
             return [{ 
-              roomCode: 'SE324', 
-              roomName: 'Interventional Radiology Suite', 
-              nsf: 600, 
+              roomCode: 'CI041', 
+              roomName: 'Class 2 Multipurpose R/F Imaging Room', 
+              nsf: 490, 
               quantity: 1 
             }];
           }
@@ -580,9 +580,9 @@ export const CHAPTER_228 = {
           calculate: (inputs) => {
             if (!inputs.has_interventional) return [];
             return [{ 
-              roomCode: 'SE325', 
-              roomName: 'IR Control Room', 
-              nsf: 100, 
+              roomCode: 'CI042', 
+              roomName: 'Class 2 Multipurpose R/F Control Room', 
+              nsf: 110, 
               quantity: 1 
             }];
           }
@@ -593,9 +593,9 @@ export const CHAPTER_228 = {
           calculate: (inputs) => {
             if (!inputs.has_interventional) return [];
             return [{ 
-              roomCode: 'SE326', 
-              roomName: 'IR Prep / Recovery', 
-              nsf: 200, 
+              roomCode: 'SB001', 
+              roomName: 'Gowned Imaging Patient Waiting', 
+              nsf: 60, 
               quantity: 1 
             }];
           }
@@ -606,9 +606,9 @@ export const CHAPTER_228 = {
           calculate: (inputs) => {
             if (!inputs.has_interventional) return [];
             return [{ 
-              roomCode: 'SE327', 
-              roomName: 'IR Scrub Alcove', 
-              nsf: 40, 
+              roomCode: 'CI521', 
+              roomName: 'Lead Apron Alcove', 
+              nsf: 15, 
               quantity: 1 
             }];
           }
@@ -627,9 +627,9 @@ export const CHAPTER_228 = {
             const totalRooms = CHAPTER_228.getTotalProcedureRooms(inputs);
             const quantity = Math.max(2, Math.ceil(totalRooms * 0.5));
             return [{ 
-              roomCode: 'SE328', 
+              roomCode: 'SB138', 
               roomName: 'Patient Dressing Room', 
-              nsf: 40, 
+              nsf: 60, 
               quantity: quantity 
             }];
           }
@@ -641,9 +641,9 @@ export const CHAPTER_228 = {
             const procedures = inputs.annual_procedures;
             const quantity = procedures >= 100 ? 3 : 2;
             return [{ 
-              roomCode: 'SE329', 
-              roomName: 'Patient Holding Area', 
-              nsf: 100, 
+              roomCode: 'SB001', 
+              roomName: 'Gowned Imaging Patient Waiting', 
+              nsf: 60, 
               quantity: quantity 
             }];
           }
@@ -655,8 +655,8 @@ export const CHAPTER_228 = {
             const totalRooms = CHAPTER_228.getTotalProcedureRooms(inputs);
             const nsf = totalRooms >= 10 ? 120 : 80;
             return [{ 
-              roomCode: 'SE330', 
-              roomName: 'Stretcher Alcove', 
+              roomCode: 'CI301', 
+              roomName: 'Equipment Storage Room', 
               nsf: nsf, 
               quantity: 1 
             }];
@@ -686,8 +686,8 @@ export const CHAPTER_228 = {
             const procedures = inputs.annual_procedures;
             const nsf = procedures >= 100 ? 200 : 150;
             return [{ 
-              roomCode: 'SE331', 
-              roomName: 'Film Reading Room', 
+              roomCode: 'CI401', 
+              roomName: 'Imaging Physician Reading Room', 
               nsf: nsf, 
               quantity: 1 
             }];
@@ -699,8 +699,8 @@ export const CHAPTER_228 = {
           calculate: (inputs) => {
             const procedures = inputs.annual_procedures;
             return procedures >= 50 ? [{ 
-              roomCode: 'SE332', 
-              roomName: 'PACS Server Room', 
+              roomCode: 'CI403', 
+              roomName: 'PACS Digital Quality Control Workroom', 
               nsf: 150, 
               quantity: 1 
             }] : [];
@@ -713,9 +713,9 @@ export const CHAPTER_228 = {
             const procedures = inputs.annual_procedures;
             const quantity = procedures >= 100 ? 3 : 2;
             return [{ 
-              roomCode: 'SE333', 
-              roomName: 'Dictation Booth', 
-              nsf: 50, 
+              roomCode: 'CI405', 
+              roomName: 'PACS 3D Workstation', 
+              nsf: 56, 
               quantity: quantity 
             }];
           }
@@ -724,9 +724,9 @@ export const CHAPTER_228 = {
           id: 'RAD-CONTRAST',
           name: 'Contrast Media Preparation / Storage',
           calculate: (inputs) => [{ 
-            roomCode: 'SE334', 
-            roomName: 'Contrast Media Prep', 
-            nsf: 100, 
+            roomCode: 'CI531', 
+            roomName: 'CT Medication Preparation', 
+            nsf: 80, 
             quantity: 1 
           }]
         },
@@ -754,9 +754,9 @@ export const CHAPTER_228 = {
           id: 'RAD-CRASH-CART',
           name: 'Emergency / Crash Cart Alcove',
           calculate: (inputs) => [{ 
-            roomCode: 'SE335', 
-            roomName: 'Crash Cart Alcove', 
-            nsf: 40, 
+            roomCode: 'CI151', 
+            roomName: 'Equipment Storage Room', 
+            nsf: 80, 
             quantity: 1 
           }]
         }

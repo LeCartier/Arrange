@@ -89,7 +89,7 @@ export const CHAPTER_268 = {
           calculate: (inputs) => {
             const quantity = CHAPTER_268.calculateDispensingWindows(inputs);
             return [{ 
-              roomCode: 'SR001', 
+              roomCode: 'SV401', 
               roomName: 'Pharmacy Dispensing Window', 
               nsf: 50, 
               quantity: quantity 
@@ -103,7 +103,7 @@ export const CHAPTER_268 = {
             const rxVolume = inputs.annual_prescriptions;
             const quantity = rxVolume >= 150000 ? 2 : 1;
             return [{ 
-              roomCode: 'SE116', 
+              roomCode: 'SV422', 
               roomName: 'Pharmacy Consultation Room', 
               nsf: 100, 
               quantity: quantity 
@@ -128,7 +128,7 @@ export const CHAPTER_268 = {
             if (rxVolume > 300000) nsf = 1000;
             if (rxVolume > 400000) nsf = 1200;
             return [{ 
-              roomCode: 'SR002', 
+              roomCode: 'SV423', 
               roomName: 'Pharmacy Dispensing Area', 
               nsf: nsf, 
               quantity: 1 
@@ -154,7 +154,7 @@ export const CHAPTER_268 = {
           calculate: (inputs) => {
             const rxVolume = inputs.annual_prescriptions;
             return rxVolume >= 200000 ? [{ 
-              roomCode: 'SR003', 
+              roomCode: 'SV431', 
               roomName: 'Automated Dispensing System', 
               nsf: 300, 
               quantity: 1 
@@ -168,7 +168,7 @@ export const CHAPTER_268 = {
             const rxVolume = inputs.annual_prescriptions;
             const nsf = rxVolume >= 200000 ? 200 : 120;
             return [{ 
-              roomCode: 'SR004', 
+              roomCode: 'SV501', 
               roomName: 'Unit Dose Preparation Area', 
               nsf: nsf, 
               quantity: 1 
@@ -180,7 +180,7 @@ export const CHAPTER_268 = {
           name: 'Non-Sterile Compounding Room',
           calculate: (inputs) => {
             return inputs.has_compounding ? [{ 
-              roomCode: 'SR005', 
+              roomCode: 'SV508', 
               roomName: 'Non-Sterile Compounding Room', 
               nsf: 150, 
               quantity: 1 
@@ -192,7 +192,7 @@ export const CHAPTER_268 = {
           name: 'Sterile Compounding Room (IV Room)',
           calculate: (inputs) => {
             return inputs.has_compounding ? [{ 
-              roomCode: 'SR006', 
+              roomCode: 'SV511', 
               roomName: 'Sterile Compounding Room', 
               nsf: 200, 
               quantity: 1 
@@ -204,7 +204,7 @@ export const CHAPTER_268 = {
           name: 'Sterile Compounding Anteroom',
           calculate: (inputs) => {
             return inputs.has_compounding ? [{ 
-              roomCode: 'SR007', 
+              roomCode: 'SV548', 
               roomName: 'Sterile Compounding Anteroom', 
               nsf: 80, 
               quantity: 1 
@@ -216,7 +216,7 @@ export const CHAPTER_268 = {
           name: 'Oncology/Chemotherapy Compounding Room',
           calculate: (inputs) => {
             return inputs.has_oncology ? [{ 
-              roomCode: 'SR008', 
+              roomCode: 'SV521', 
               roomName: 'Oncology Compounding Room', 
               nsf: 250, 
               quantity: 1 
@@ -228,7 +228,7 @@ export const CHAPTER_268 = {
           name: 'Oncology Compounding Anteroom',
           calculate: (inputs) => {
             return inputs.has_oncology ? [{ 
-              roomCode: 'SR009', 
+              roomCode: 'SV548', 
               roomName: 'Oncology Compounding Anteroom', 
               nsf: 80, 
               quantity: 1 
@@ -246,7 +246,7 @@ export const CHAPTER_268 = {
           id: 'PH-VAULT',
           name: 'Pharmacy Controlled Substance Vault',
           calculate: (inputs) => [{ 
-            roomCode: 'SR010', 
+            roomCode: 'SV433', 
             roomName: 'Controlled Substance Vault', 
             nsf: 120, 
             quantity: 1 
@@ -262,7 +262,7 @@ export const CHAPTER_268 = {
             if (rxVolume > 250000) nsf = 500;
             if (rxVolume > 350000) nsf = 600;
             return [{ 
-              roomCode: 'SB745', 
+              roomCode: 'SV451', 
               roomName: 'Pharmacy Bulk Storage', 
               nsf: nsf, 
               quantity: 1 
@@ -273,7 +273,7 @@ export const CHAPTER_268 = {
           id: 'PH-REFRIGERATOR',
           name: 'Pharmacy Refrigerator Storage',
           calculate: (inputs) => [{ 
-            roomCode: 'SR011', 
+            roomCode: 'SV541', 
             roomName: 'Pharmacy Refrigerator Storage', 
             nsf: 80, 
             quantity: 1 
@@ -286,7 +286,7 @@ export const CHAPTER_268 = {
             const rxVolume = inputs.annual_prescriptions;
             const nsf = rxVolume >= 200000 ? 150 : 100;
             return [{ 
-              roomCode: 'SR012', 
+              roomCode: 'SV443', 
               roomName: 'Pharmacy Receiving Area', 
               nsf: nsf, 
               quantity: 1 
@@ -297,7 +297,7 @@ export const CHAPTER_268 = {
           id: 'PH-RETURNS',
           name: 'Pharmacy Returns and Outdates',
           calculate: (inputs) => [{ 
-            roomCode: 'SR013', 
+            roomCode: 'SV442', 
             roomName: 'Pharmacy Returns Area', 
             nsf: 80, 
             quantity: 1 
@@ -368,7 +368,7 @@ export const CHAPTER_268 = {
           calculate: (inputs) => {
             const rxVolume = inputs.annual_prescriptions;
             return rxVolume >= 150000 ? [{ 
-              roomCode: 'SB152', 
+              roomCode: 'SS251', 
               roomName: 'Pharmacy Staff Locker Room', 
               nsf: 80, 
               quantity: 1 
@@ -396,7 +396,7 @@ export const CHAPTER_268 = {
           id: 'PH-CLEAN-UTILITY',
           name: 'Pharmacy Clean Utility',
           calculate: (inputs) => [{ 
-            roomCode: 'SB655', 
+            roomCode: 'SV531', 
             roomName: 'Pharmacy Clean Utility', 
             nsf: 80, 
             quantity: 1 
@@ -406,7 +406,7 @@ export const CHAPTER_268 = {
           id: 'PH-SOILED-UTILITY',
           name: 'Pharmacy Soiled Utility',
           calculate: (inputs) => [{ 
-            roomCode: 'SB656', 
+            roomCode: 'SV549', 
             roomName: 'Pharmacy Soiled Utility', 
             nsf: 80, 
             quantity: 1 
@@ -417,7 +417,7 @@ export const CHAPTER_268 = {
           name: 'Pharmacy Equipment Cleaning Room',
           calculate: (inputs) => {
             return inputs.has_compounding ? [{ 
-              roomCode: 'SR014', 
+              roomCode: 'SV547', 
               roomName: 'Pharmacy Equipment Cleaning', 
               nsf: 100, 
               quantity: 1 
@@ -428,7 +428,7 @@ export const CHAPTER_268 = {
           id: 'PH-JANITOR',
           name: 'Pharmacy Janitor Closet',
           calculate: (inputs) => [{ 
-            roomCode: 'SB773', 
+            roomCode: 'SB244', 
             roomName: 'Pharmacy Janitor Closet', 
             nsf: 60, 
             quantity: 1 
@@ -439,7 +439,7 @@ export const CHAPTER_268 = {
           name: 'Clinic Satellite Pharmacy',
           calculate: (inputs) => {
             return inputs.has_clinic_satellite ? [{ 
-              roomCode: 'SR015', 
+              roomCode: 'SV557', 
               roomName: 'Clinic Satellite Pharmacy', 
               nsf: 150, 
               quantity: 1 

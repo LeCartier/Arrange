@@ -163,7 +163,7 @@ export const CHAPTER_216 = {
           calculate: (inputs) => {
             const quantity = CHAPTER_216.calculatePreOpBays(inputs);
             return [{ 
-              roomCode: 'SE501', 
+              roomCode: 'SC291', 
               roomName: 'Pre-Op Patient Bay', 
               nsf: 100, 
               quantity: quantity 
@@ -191,7 +191,7 @@ export const CHAPTER_216 = {
             const orRooms = inputs.num_or_rooms;
             const quantity = orRooms >= 5 ? 2 : 1;
             return [{ 
-              roomCode: 'SE116', 
+              roomCode: 'CS111', 
               roomName: 'Anesthesia Interview Room', 
               nsf: 100, 
               quantity: quantity 
@@ -225,7 +225,7 @@ export const CHAPTER_216 = {
           calculate: (inputs) => {
             const quantity = inputs.num_or_rooms || 3;
             return [{ 
-              roomCode: 'SE502', 
+              roomCode: 'CS141', 
               roomName: 'Operating Room', 
               nsf: 400, 
               quantity: quantity 
@@ -238,7 +238,7 @@ export const CHAPTER_216 = {
           calculate: (inputs) => {
             const quantity = inputs.num_or_rooms || 3;
             return [{ 
-              roomCode: 'SE503', 
+              roomCode: 'SC199', 
               roomName: 'Scrub Alcove', 
               nsf: 50, 
               quantity: quantity 
@@ -262,7 +262,7 @@ export const CHAPTER_216 = {
             const orRooms = inputs.num_or_rooms || 3;
             const quantity = Math.ceil(orRooms / 2);
             return [{ 
-              roomCode: 'SE504', 
+              roomCode: 'CS231', 
               roomName: 'Sub-Sterile Room', 
               nsf: 80, 
               quantity: quantity 
@@ -273,7 +273,7 @@ export const CHAPTER_216 = {
           id: 'ASU-ANESTHESIA-WORK',
           name: 'Anesthesia Workroom',
           calculate: (inputs) => [{ 
-            roomCode: 'SE505', 
+            roomCode: 'CS131', 
             roomName: 'Anesthesia Workroom', 
             nsf: 150, 
             quantity: 1 
@@ -303,7 +303,7 @@ export const CHAPTER_216 = {
             if (!inputs.has_endoscopy) return [];
             const quantity = inputs.num_endo_rooms || 2;
             return [{ 
-              roomCode: 'SE506', 
+              roomCode: 'CGE11', 
               roomName: 'Endoscopy Procedure Room', 
               nsf: 300, 
               quantity: quantity 
@@ -316,7 +316,7 @@ export const CHAPTER_216 = {
           calculate: (inputs) => {
             if (!inputs.has_endoscopy) return [];
             return [{ 
-              roomCode: 'SE507', 
+              roomCode: 'CGE41', 
               roomName: 'Endoscopy Equipment Cleaning', 
               nsf: 150, 
               quantity: 1 
@@ -342,7 +342,7 @@ export const CHAPTER_216 = {
           calculate: (inputs) => {
             if (!inputs.has_cystoscopy) return [];
             return [{ 
-              roomCode: 'SE508', 
+              roomCode: 'CS151', 
               roomName: 'Cystoscopy Procedure Room', 
               nsf: 250, 
               quantity: 1 
@@ -362,7 +362,7 @@ export const CHAPTER_216 = {
           calculate: (inputs) => {
             if (!inputs.has_ophthalmology) return [];
             return [{ 
-              roomCode: 'SE509', 
+              roomCode: 'CEY11', 
               roomName: 'Ophthalmology Procedure Room', 
               nsf: 300, 
               quantity: 1 
@@ -375,7 +375,7 @@ export const CHAPTER_216 = {
           calculate: (inputs) => {
             if (!inputs.has_ophthalmology) return [];
             return [{ 
-              roomCode: 'SE510', 
+              roomCode: 'SC291', 
               roomName: 'Ophthalmology Pre-Op', 
               nsf: 100, 
               quantity: 1 
@@ -388,7 +388,7 @@ export const CHAPTER_216 = {
           calculate: (inputs) => {
             if (!inputs.has_podiatry) return [];
             return [{ 
-              roomCode: 'SE511', 
+              roomCode: 'CT013', 
               roomName: 'Podiatry Procedure Room', 
               nsf: 250, 
               quantity: 1 
@@ -408,7 +408,7 @@ export const CHAPTER_216 = {
           calculate: (inputs) => {
             const quantity = CHAPTER_216.calculatePACUBays(inputs);
             return [{ 
-              roomCode: 'SE512', 
+              roomCode: 'CS241', 
               roomName: 'PACU Patient Bay', 
               nsf: 120, 
               quantity: quantity 
@@ -419,7 +419,7 @@ export const CHAPTER_216 = {
           id: 'ASU-PACU-ISOLATION',
           name: 'PACU Isolation Bay',
           calculate: (inputs) => [{ 
-            roomCode: 'SE513', 
+            roomCode: 'CS242', 
             roomName: 'PACU Isolation Bay', 
             nsf: 150, 
             quantity: 1 
@@ -473,7 +473,7 @@ export const CHAPTER_216 = {
             const pacuBays = CHAPTER_216.calculatePACUBays(inputs);
             const quantity = Math.ceil(pacuBays * 0.75);
             return [{ 
-              roomCode: 'SE514', 
+              roomCode: 'SC291', 
               roomName: 'Phase II Recovery Bay', 
               nsf: 80, 
               quantity: quantity 
@@ -514,7 +514,7 @@ export const CHAPTER_216 = {
             const orRooms = inputs.num_or_rooms || 3;
             const nsf = orRooms >= 5 ? 300 : 200;
             return [{ 
-              roomCode: 'SE515', 
+              roomCode: 'CS231', 
               roomName: 'Sterile Supply Core', 
               nsf: nsf, 
               quantity: 1 
@@ -555,7 +555,7 @@ export const CHAPTER_216 = {
           calculate: (inputs) => {
             const totalRooms = CHAPTER_216.getTotalProcedureRooms(inputs);
             return totalRooms >= 6 ? [{ 
-              roomCode: 'SE516', 
+              roomCode: 'SC861', 
               roomName: 'Decontamination Room', 
               nsf: 120, 
               quantity: 1 
@@ -569,7 +569,7 @@ export const CHAPTER_216 = {
             const orRooms = inputs.num_or_rooms || 3;
             const nsf = orRooms >= 5 ? 200 : 150;
             return [{ 
-              roomCode: 'SE517', 
+              roomCode: 'SC441', 
               roomName: 'Case Cart Holding', 
               nsf: nsf, 
               quantity: 1 
@@ -587,7 +587,7 @@ export const CHAPTER_216 = {
           id: 'ASU-LAB-ALCOVE',
           name: 'Laboratory Draw / Point of Care',
           calculate: (inputs) => [{ 
-            roomCode: 'SE159', 
+            roomCode: 'SC291', 
             roomName: 'Lab Draw Alcove', 
             nsf: 60, 
             quantity: 1 
@@ -597,7 +597,7 @@ export const CHAPTER_216 = {
           id: 'ASU-MEDICATION',
           name: 'Medication Room',
           calculate: (inputs) => [{ 
-            roomCode: 'SE166', 
+            roomCode: 'SV583', 
             roomName: 'Medication Room', 
             nsf: 100, 
             quantity: 1 
@@ -607,7 +607,7 @@ export const CHAPTER_216 = {
           id: 'ASU-BLOOD-WARMER',
           name: 'Blood Warmer / Refrigerator',
           calculate: (inputs) => [{ 
-            roomCode: 'SE518', 
+            roomCode: 'CS236', 
             roomName: 'Blood Warmer Alcove', 
             nsf: 40, 
             quantity: 1 
@@ -620,7 +620,7 @@ export const CHAPTER_216 = {
             const totalRooms = CHAPTER_216.getTotalProcedureRooms(inputs);
             const quantity = Math.ceil(totalRooms / 4);
             return [{ 
-              roomCode: 'SE335', 
+              roomCode: 'SC052', 
               roomName: 'Crash Cart Alcove', 
               nsf: 40, 
               quantity: quantity 
@@ -634,7 +634,7 @@ export const CHAPTER_216 = {
             const totalRooms = CHAPTER_216.getTotalProcedureRooms(inputs);
             const nsf = totalRooms >= 6 ? 120 : 80;
             return [{ 
-              roomCode: 'SE330', 
+              roomCode: 'SB254', 
               roomName: 'Stretcher Alcove', 
               nsf: nsf, 
               quantity: 1 

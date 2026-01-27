@@ -97,8 +97,8 @@ export const CHAPTER_240 = {
             if (!inputs.has_phlebotomy) return [];
             const quantity = CHAPTER_240.calculatePhlebotomyStations(inputs);
             return [{ 
-              roomCode: 'SE159', 
-              roomName: 'Phlebotomy Station', 
+              roomCode: 'CL821', 
+              roomName: 'Blood Draw Station', 
               nsf: 50, 
               quantity: quantity 
             }];
@@ -143,7 +143,7 @@ export const CHAPTER_240 = {
           calculate: (inputs) => {
             const nsf = CHAPTER_240.calculateCoreLabNSF(inputs);
             return [{ 
-              roomCode: 'SR020', 
+              roomCode: 'CL201', 
               roomName: 'Core Laboratory', 
               nsf: nsf, 
               quantity: 1 
@@ -156,7 +156,7 @@ export const CHAPTER_240 = {
           calculate: (inputs) => {
             const testVolume = inputs.annual_lab_tests;
             return testVolume >= 150 ? [{ 
-              roomCode: 'SR021', 
+              roomCode: 'CL121', 
               roomName: 'Automated Analyzer Area', 
               nsf: 200, 
               quantity: 1 
@@ -170,7 +170,7 @@ export const CHAPTER_240 = {
             const testVolume = inputs.annual_lab_tests;
             const nsf = testVolume >= 200 ? 200 : 120;
             return [{ 
-              roomCode: 'SR022', 
+              roomCode: 'CL823', 
               roomName: 'Specimen Processing Area', 
               nsf: nsf, 
               quantity: 1 
@@ -181,7 +181,7 @@ export const CHAPTER_240 = {
           id: 'LAB-URINALYSIS',
           name: 'Urinalysis Area',
           calculate: (inputs) => [{ 
-            roomCode: 'SR023', 
+            roomCode: 'CL226', 
             roomName: 'Urinalysis Area', 
             nsf: 100, 
             quantity: 1 
@@ -193,7 +193,7 @@ export const CHAPTER_240 = {
           calculate: (inputs) => {
             const testVolume = inputs.annual_lab_tests;
             return testVolume >= 150 ? [{ 
-              roomCode: 'SR024', 
+              roomCode: 'CL241', 
               roomName: 'Coagulation Testing Area', 
               nsf: 100, 
               quantity: 1 
@@ -206,7 +206,7 @@ export const CHAPTER_240 = {
           calculate: (inputs) => {
             const testVolume = inputs.annual_lab_tests;
             return testVolume >= 200 ? [{ 
-              roomCode: 'SR025', 
+              roomCode: 'CL211', 
               roomName: 'Special Chemistry Area', 
               nsf: 150, 
               quantity: 1 
@@ -228,7 +228,7 @@ export const CHAPTER_240 = {
             const testVolume = inputs.annual_lab_tests;
             const nsf = testVolume >= 200 ? 400 : 300;
             return [{ 
-              roomCode: 'SR026', 
+              roomCode: 'CL271', 
               roomName: 'Microbiology Laboratory', 
               nsf: nsf, 
               quantity: 1 
@@ -241,7 +241,7 @@ export const CHAPTER_240 = {
           calculate: (inputs) => {
             if (!inputs.has_microbiology) return [];
             return [{ 
-              roomCode: 'SR027', 
+              roomCode: 'CL282', 
               roomName: 'Microbiology Media Prep', 
               nsf: 100, 
               quantity: 1 
@@ -255,7 +255,7 @@ export const CHAPTER_240 = {
             if (!inputs.has_microbiology) return [];
             const testVolume = inputs.annual_lab_tests;
             return testVolume >= 150 ? [{ 
-              roomCode: 'SR028', 
+              roomCode: 'CL286', 
               roomName: 'Serology/Immunology Area', 
               nsf: 150, 
               quantity: 1 
@@ -268,7 +268,7 @@ export const CHAPTER_240 = {
           calculate: (inputs) => {
             if (!inputs.has_molecular) return [];
             return [{ 
-              roomCode: 'SR029', 
+              roomCode: 'CL311', 
               roomName: 'Molecular Diagnostics Laboratory', 
               nsf: 300, 
               quantity: 1 
@@ -281,7 +281,7 @@ export const CHAPTER_240 = {
           calculate: (inputs) => {
             if (!inputs.has_molecular) return [];
             return [{ 
-              roomCode: 'SR030', 
+              roomCode: 'CL306', 
               roomName: 'PCR Amplification Room', 
               nsf: 120, 
               quantity: 1 
@@ -301,7 +301,7 @@ export const CHAPTER_240 = {
           calculate: (inputs) => {
             if (!inputs.has_blood_bank) return [];
             return [{ 
-              roomCode: 'SR031', 
+              roomCode: 'CL251', 
               roomName: 'Blood Bank Laboratory', 
               nsf: 300, 
               quantity: 1 
@@ -314,7 +314,7 @@ export const CHAPTER_240 = {
           calculate: (inputs) => {
             if (!inputs.has_blood_bank) return [];
             return [{ 
-              roomCode: 'SR032', 
+              roomCode: 'CL261', 
               roomName: 'Blood Product Storage', 
               nsf: 100, 
               quantity: 1 
@@ -328,7 +328,7 @@ export const CHAPTER_240 = {
             if (!inputs.has_blood_bank) return [];
             const testVolume = inputs.annual_lab_tests;
             return testVolume >= 300 ? [{ 
-              roomCode: 'SR033', 
+              roomCode: 'CL267', 
               roomName: 'Apheresis Room', 
               nsf: 150, 
               quantity: 1 
@@ -348,7 +348,7 @@ export const CHAPTER_240 = {
           calculate: (inputs) => {
             if (!inputs.has_anatomic_path) return [];
             return [{ 
-              roomCode: 'SR034', 
+              roomCode: 'CL411', 
               roomName: 'Gross Examination Room', 
               nsf: 300, 
               quantity: 1 
@@ -361,7 +361,7 @@ export const CHAPTER_240 = {
           calculate: (inputs) => {
             if (!inputs.has_anatomic_path) return [];
             return [{ 
-              roomCode: 'SR035', 
+              roomCode: 'CL401', 
               roomName: 'Histology Laboratory', 
               nsf: 250, 
               quantity: 1 
@@ -374,7 +374,7 @@ export const CHAPTER_240 = {
           calculate: (inputs) => {
             if (!inputs.has_anatomic_path) return [];
             return [{ 
-              roomCode: 'SR036', 
+              roomCode: 'CL421', 
               roomName: 'Cytology Laboratory', 
               nsf: 200, 
               quantity: 1 
@@ -387,7 +387,7 @@ export const CHAPTER_240 = {
           calculate: (inputs) => {
             if (!inputs.has_anatomic_path) return [];
             return [{ 
-              roomCode: 'SR037', 
+              roomCode: 'CL861', 
               roomName: 'Frozen Section Room', 
               nsf: 120, 
               quantity: 1 
@@ -400,7 +400,7 @@ export const CHAPTER_240 = {
           calculate: (inputs) => {
             if (!inputs.has_anatomic_path) return [];
             return [{ 
-              roomCode: 'SR038', 
+              roomCode: 'CL621', 
               roomName: 'Morgue', 
               nsf: 200, 
               quantity: 1 
@@ -421,7 +421,7 @@ export const CHAPTER_240 = {
             const testVolume = inputs.annual_lab_tests;
             const nsf = testVolume >= 200 ? 100 : 80;
             return [{ 
-              roomCode: 'SR039', 
+              roomCode: 'CL721', 
               roomName: 'Specimen Refrigerator', 
               nsf: nsf, 
               quantity: 1 
@@ -468,7 +468,7 @@ export const CHAPTER_240 = {
           calculate: (inputs) => {
             const testVolume = inputs.annual_lab_tests;
             return testVolume >= 150 ? [{ 
-              roomCode: 'SR040', 
+              roomCode: 'CL701', 
               roomName: 'Glassware Washing Room', 
               nsf: 100, 
               quantity: 1 
@@ -536,7 +536,7 @@ export const CHAPTER_240 = {
             const testVolume = inputs.annual_lab_tests;
             const nsf = testVolume >= 200 ? 150 : 100;
             return [{ 
-              roomCode: 'SR041', 
+              roomCode: 'CL501', 
               roomName: 'Microscopy Room', 
               nsf: nsf, 
               quantity: 1 
@@ -593,7 +593,7 @@ export const CHAPTER_240 = {
           calculate: (inputs) => {
             const testVolume = inputs.annual_lab_tests;
             return testVolume >= 200 ? [{ 
-              roomCode: 'SR042', 
+              roomCode: 'CL296', 
               roomName: 'Quality Control Laboratory', 
               nsf: 120, 
               quantity: 1 
@@ -606,7 +606,7 @@ export const CHAPTER_240 = {
           calculate: (inputs) => {
             const testVolume = inputs.annual_lab_tests;
             return testVolume >= 250 ? [{ 
-              roomCode: 'SR043', 
+              roomCode: 'CL231', 
               roomName: 'Reference Testing Area', 
               nsf: 150, 
               quantity: 1 
