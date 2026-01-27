@@ -8630,12 +8630,12 @@
                           ? EQUIPMENT_ATTRIBUTES[equip.jsn] 
                           : null;
                         
-                        // Get power info (use maxPower if available)
-                        const power = attrs?.maxPower?.[0] || {};
-                        // Get size info
-                        const size = attrs?.maxSize || {};
-                        // Get BTU info
-                        const hertz = attrs?.maxHertz || {};
+                        // Get power info
+                        const power = attrs?.power || {};
+                        // Get dimensions
+                        const dims = attrs?.dimensions || {};
+                        // Get hertz/BTU info
+                        const hertz = attrs?.hertz || {};
                         
                         rows.push([
                           equip.jsn || '',
@@ -8644,10 +8644,10 @@
                           equip.acquisitionCode || equip.acqIns || '',
                           equip.description || '',
                           attrs?.meanPrice || '',
-                          size.width?.american || '',
-                          size.depth?.american || '',
-                          size.height?.american || '',
-                          size.weight?.american || '',
+                          dims.width || '',
+                          dims.depth || '',
+                          dims.height || '',
+                          dims.weight || '',
                           power.volts || '',
                           power.amps || '',
                           power.watts || '',
