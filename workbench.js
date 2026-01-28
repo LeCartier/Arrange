@@ -29,7 +29,6 @@ class IsometricWorkbench {
     // Tabletop parameters (much larger and deeper)
     this.tableHeight = 300; // Pixel height of table surface above ground
     this.tableThickness = 15; // Thickness of tabletop
-    this.tableWidth = 1200; // Much wider table
     this.tableDepth = 400;  // Much deeper to show more of the table surface
     
     // Grid and cubes
@@ -38,7 +37,12 @@ class IsometricWorkbench {
     this.selectedCube = null;
     this.selectedCubes = []; // Multiple selection via lasso
     this.hoveredCube = null;
+    this.hoveredHandle = null;
     this.isDragging = false;
+    this.didDrag = false;
+    this.isResizing = false;
+    this.activeHandle = null;
+    this.resizeStart = null;
     this.dragStartX = 0;
     this.dragStartY = 0;
     
@@ -55,6 +59,15 @@ class IsometricWorkbench {
     
     // Background style: 'pixel-art', 'terminal', 'minimal'
     this.backgroundStyle = 'pixel-art';
+
+    // Resize handle settings
+    this.handleRadius = 6;
+    this.handleOffset = 14;
+    this.minCubeSize = 0.6;
+
+    // Plan view animation
+    this.planFactor = 0; // 0 = elevation, 1 = plan
+    this.targetPlanFactor = 0;
     
     // Pastel color palette for departments
     this.departmentColors = {
@@ -129,8 +142,10 @@ class IsometricWorkbench {
     this.canvas.height = container.clientHeight;
     this.width = this.canvas.width;
     this.height = this.canvas.height;
-    this.offsetX = this.width / 2;
-    this.offsetY = this.height / 3;
+    const metrics = this.getTableMetrics();
+    this.offsetX = metrics.centerX;
+    this.offsetY = metrics.surfaceCenterY;
+    this.clampOffsets();
     
     // Enable pixelated/crisp rendering for retro aesthetic
     this.ctx.imageSmoothingEnabled = false;
@@ -139,6 +154,32 @@ class IsometricWorkbench {
     this.ctx.msImageSmoothingEnabled = false;
     
     this.render();
+  }
+
+  // Compute table geometry based on current canvas size so grids and graphics stay aligned
+  getTableMetrics() {
+    const tableLeft = 80;
+    const tableRight = this.width - 340;
+    const tableWidthPx = Math.max(200, tableRight - tableLeft);
+    const tableTop = this.height - 180;
+    const centerX = tableLeft + tableWidthPx / 2;
+    const surfaceTopY = tableTop - this.tableThickness - this.tableDepth;
+    const surfaceBottomY = tableTop - this.tableThickness;
+    const surfaceCenterY = (surfaceTopY + surfaceBottomY) / 2;
+    const gridWidthUnits = tableWidthPx / this.tileWidth;
+    const gridDepthUnits = this.tableDepth / this.cubeDepth;
+    return {
+      tableLeft,
+      tableRight,
+      tableWidthPx,
+      tableTop,
+      centerX,
+      surfaceTopY,
+      surfaceBottomY,
+      surfaceCenterY,
+      gridHalfWidth: gridWidthUnits / 2,
+      gridHalfDepth: gridDepthUnits / 2
+    };
   }
   
   // Change background style
@@ -169,10 +210,11 @@ class IsometricWorkbench {
     // Reverse the projection - remove offset first, then divide by zoom
     const x = (screenX - this.offsetX) / this.zoom;
     const y = (screenY - this.offsetY) / this.zoom;
+    const depthScale = 1 - this.planFactor * 0.9;
     
-    // Simple orthographic projection (no rotation)
+    // Simple orthographic projection with plan flattening
     const gridX = x / this.tileWidth;
-    const gridY = y / this.cubeDepth; // Y shows depth (tilted up view)
+    const gridY = y / (this.cubeDepth * depthScale || 1e-6); // avoid divide by zero
     
     return { x: Math.round(gridX), y: Math.round(gridY) };
   }
@@ -181,8 +223,9 @@ class IsometricWorkbench {
   gridToScreen(gridX, gridY, height = 0) {
     // Straight on: X maps to X, Y shows as depth (tilted), Z is vertical
     // Apply zoom to grid coordinates first, then add offset
+    const depthScale = 1 - this.planFactor * 0.9; // 0.1 depth in plan
     const screenX = (gridX * this.tileWidth) * this.zoom + this.offsetX;
-    const screenY = (gridY * this.cubeDepth - height) * this.zoom + this.offsetY;
+    const screenY = (gridY * this.cubeDepth * depthScale - height * (1 - 0.85 * this.planFactor)) * this.zoom + this.offsetY;
     
     return { x: screenX, y: screenY };
   }
@@ -199,8 +242,8 @@ class IsometricWorkbench {
     // Constrain initial position to table bounds
     const width = 1.2;
     const depth = 1.2;
-    const constrainedX = this.constrainToTable(gridX, width, this.tableWidth / this.tileWidth);
-    const constrainedY = this.constrainToTable(gridY, depth, this.tableDepth / this.cubeDepth);
+    const constrainedX = this.constrainToTable(gridX, width, 'x');
+    const constrainedY = this.constrainToTable(gridY, depth, 'y');
     
     const cube = {
       id: `cube_${Date.now()}_${Math.random()}`,
@@ -212,6 +255,7 @@ class IsometricWorkbench {
       width: width, // Consistent width for clean grid
       depth: depth, // Consistent depth for clean grid
       height: heightUnits, // Varies by NSF
+      baseArea: width * depth,
       color: cubeColor,
       pattern: this.getFunctionalAreaPattern(room.functional_area)
     };
@@ -266,11 +310,13 @@ class IsometricWorkbench {
   
   // Draw a cube in straight-on elevated view
   drawCube(cube, isHovered = false, isSelected = false) {
-    const { x: baseX, y: baseY } = this.gridToScreen(cube.gridX, cube.gridY, cube.stackHeight * this.cubeHeight);
-    
+    // Use the same visual height factor (0.4) for stackHeight calculation to align stacked cubes
+    const visualStackHeight = cube.stackHeight * this.cubeHeight * 0.4;
+    const { x: baseX, y: baseY } = this.gridToScreen(cube.gridX, cube.gridY, visualStackHeight);
+    const tilt = 1 - this.planFactor;
     const w = cube.width * this.tileWidth * 0.3 * this.zoom; // Cube width
-    const h = cube.height * this.cubeHeight * 0.4 * this.zoom; // Cube height (vertical)
-    const d = cube.depth * this.cubeDepth * 0.3 * this.zoom; // Cube depth (shows as tilt)
+    const h = Math.max(6, cube.height * this.cubeHeight * 0.4 * this.zoom * tilt); // Cube height (vertical)
+    const d = cube.depth * this.cubeDepth * 0.3 * this.zoom * (0.1 + 0.9 * tilt); // Cube depth (shows as tilt)
     
     const color = cube.color;
     const isInSelection = this.selectedCubes.includes(cube);
@@ -319,7 +365,7 @@ class IsometricWorkbench {
     // Draw front face (main visible face)
     this.ctx.beginPath();
     this.ctx.rect(baseX - w/2, baseY - h, w, h);
-    this.ctx.fillStyle = (isSelected || isInSelection) ? color.highlight : color.base;
+    this.ctx.fillStyle = color.base;
     this.ctx.fill();
     
     // Apply hatch pattern ONLY to front face with correct clipping
@@ -331,10 +377,21 @@ class IsometricWorkbench {
     this.applyHatchPatternToFace(cube, baseX - w/2, baseY - h, w, h);
     this.ctx.restore();
     
-    // Outline front - emphasized for selected cubes
-    this.ctx.strokeStyle = (isSelected || isInSelection) ? '#ff6b35' : (isHovered ? '#000' : '#333');
-    this.ctx.lineWidth = (isSelected || isInSelection) ? 4 : (isHovered ? 3 : 2);
+    // Outline front - subtle glow for selected, darker for hover
+    if (isSelected || isInSelection) {
+      this.ctx.shadowColor = 'rgba(100, 200, 255, 0.8)';
+      this.ctx.shadowBlur = 12;
+      this.ctx.strokeStyle = '#64c8ff';
+      this.ctx.lineWidth = 3;
+    } else if (isHovered) {
+      this.ctx.strokeStyle = '#222';
+      this.ctx.lineWidth = 3;
+    } else {
+      this.ctx.strokeStyle = '#333';
+      this.ctx.lineWidth = 2;
+    }
     this.ctx.stroke();
+    this.ctx.shadowBlur = 0;
     
     this.ctx.restore();
     
@@ -342,7 +399,7 @@ class IsometricWorkbench {
     if (isSelected || isHovered) {
       this.ctx.save();
       
-      const labelY = baseY - h - d - 20;
+      const labelY = baseY - h - d - 28;
       const roomName = cube.room.room_name;
       const nsfText = `${cube.room.nsf} NSF`;
       
@@ -354,7 +411,7 @@ class IsometricWorkbench {
       const maxWidth = Math.max(nameWidth, nsfWidth);
       
       // Draw background box
-      const padding = 6;
+      const padding = 8;
       this.ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
       this.ctx.fillRect(baseX - maxWidth/2 - padding, labelY - 18, maxWidth + padding * 2, 28);
       this.ctx.strokeStyle = '#333';
@@ -370,6 +427,10 @@ class IsometricWorkbench {
       this.ctx.fillText(nsfText, baseX, labelY + 8);
       
       this.ctx.restore();
+    }
+
+    if (isSelected || isHovered) {
+      this.drawHandles(cube);
     }
   }
   
@@ -739,7 +800,8 @@ class IsometricWorkbench {
     // Check from front to back (reverse order for proper z-sorting)
     for (let i = this.cubes.length - 1; i >= 0; i--) {
       const cube = this.cubes[i];
-      const { x: baseX, y: baseY } = this.gridToScreen(cube.gridX, cube.gridY, cube.stackHeight * this.cubeHeight);
+      const visualStackHeight = cube.stackHeight * this.cubeHeight * 0.4;
+      const { x: baseX, y: baseY } = this.gridToScreen(cube.gridX, cube.gridY, visualStackHeight);
       
       const w = cube.width * this.tileWidth * 0.3;
       const h = cube.height * this.cubeHeight * 0.4;
@@ -752,6 +814,69 @@ class IsometricWorkbench {
       }
     }
     return null;
+  }
+
+  // Compute resize handle positions in screen space for a cube
+  getResizeHandles(cube) {
+    const visualStackHeight = cube.stackHeight * this.cubeHeight * 0.4;
+    const { x: baseX, y: baseY } = this.gridToScreen(cube.gridX, cube.gridY, visualStackHeight);
+    const w = cube.width * this.tileWidth * 0.3 * this.zoom;
+    const h = cube.height * this.cubeHeight * 0.4 * this.zoom;
+    const d = cube.depth * this.cubeDepth * 0.3 * this.zoom;
+    const offset = this.handleOffset;
+    return [
+      { id: 'left', x: baseX - w / 2 - offset, y: baseY - h / 2, cursor: 'ew-resize' },
+      { id: 'right', x: baseX + w / 2 + offset, y: baseY - h / 2, cursor: 'ew-resize' },
+      { id: 'depth', x: baseX, y: baseY - h - d - offset, cursor: 'ns-resize' }
+    ];
+  }
+
+  // Return the handle under a pointer, prioritizing selected cube if present
+  getHandleAtPosition(x, y) {
+    const targetCube = this.selectedCube || this.hoveredCube;
+    if (!targetCube) return null;
+    const handles = this.getResizeHandles(targetCube);
+    for (const handle of handles) {
+      const dx = x - handle.x;
+      const dy = y - handle.y;
+      if (Math.sqrt(dx * dx + dy * dy) <= this.handleRadius + 3) {
+        return { ...handle, cube: targetCube };
+      }
+    }
+    return null;
+  }
+
+  // Draw resize grabbers for a cube
+  drawHandles(cube) {
+    const handles = this.getResizeHandles(cube);
+    this.ctx.save();
+    handles.forEach(handle => {
+      const isActive = this.activeHandle === handle.id && this.isResizing;
+      const isHover = this.hoveredHandle && this.hoveredHandle.id === handle.id;
+      const size = this.handleRadius + 1;
+      this.ctx.fillStyle = isActive ? '#ffd166' : (isHover ? '#fff' : 'rgba(100, 200, 255, 0.9)');
+      this.ctx.strokeStyle = '#1a1a2e';
+      this.ctx.lineWidth = 1.5;
+      this.ctx.beginPath();
+      if (handle.id === 'left') {
+        this.ctx.moveTo(handle.x - size, handle.y);
+        this.ctx.lineTo(handle.x + size, handle.y - size);
+        this.ctx.lineTo(handle.x + size, handle.y + size);
+      } else if (handle.id === 'right') {
+        this.ctx.moveTo(handle.x + size, handle.y);
+        this.ctx.lineTo(handle.x - size, handle.y - size);
+        this.ctx.lineTo(handle.x - size, handle.y + size);
+      } else {
+        // depth handle points upward
+        this.ctx.moveTo(handle.x, handle.y - size);
+        this.ctx.lineTo(handle.x - size, handle.y + size);
+        this.ctx.lineTo(handle.x + size, handle.y + size);
+      }
+      this.ctx.closePath();
+      this.ctx.fill();
+      this.ctx.stroke();
+    });
+    this.ctx.restore();
   }
   
   // Check if point is inside polygon (ray casting algorithm)
@@ -773,7 +898,8 @@ class IsometricWorkbench {
     if (this.lassoPoints.length < 3) return; // Need at least 3 points for a polygon
     
     this.cubes.forEach(cube => {
-      const { x: baseX, y: baseY } = this.gridToScreen(cube.gridX, cube.gridY, cube.stackHeight * this.cubeHeight);
+      const visualStackHeight = cube.stackHeight * this.cubeHeight * 0.4;
+      const { x: baseX, y: baseY } = this.gridToScreen(cube.gridX, cube.gridY, visualStackHeight);
       
       // Check if cube center is inside lasso
       if (this.isPointInPolygon({x: baseX, y: baseY}, this.lassoPoints)) {
@@ -799,6 +925,27 @@ class IsometricWorkbench {
       this.panStartY = y;
       this.canvas.style.cursor = 'grabbing';
       e.preventDefault();
+      return;
+    }
+    const handle = this.getHandleAtPosition(x, y);
+    if (handle && e.button === 0) {
+      this.selectedCube = handle.cube;
+      this.selectedCubes = [handle.cube];
+      this.isResizing = true;
+      this.activeHandle = handle.id;
+      const area = handle.cube.baseArea || (handle.cube.width * handle.cube.depth);
+      handle.cube.baseArea = area;
+      this.resizeStart = {
+        x,
+        y,
+        width: handle.cube.width,
+        depth: handle.cube.depth,
+        area
+      };
+      this.hoveredHandle = handle;
+      this.canvas.style.cursor = handle.cursor;
+      e.preventDefault();
+      this.render();
       return;
     }
     
@@ -830,6 +977,7 @@ class IsometricWorkbench {
         this.isDragging = true;
         this.dragStartX = x;
         this.dragStartY = y;
+        this.didDrag = false;
       }
       // Regular click on unselected cube: Select only this one
       else {
@@ -838,6 +986,7 @@ class IsometricWorkbench {
         this.isDragging = true;
         this.dragStartX = x;
         this.dragStartY = y;
+        this.didDrag = false;
       }
       this.canvas.style.cursor = 'grabbing';
     } else {
@@ -846,6 +995,7 @@ class IsometricWorkbench {
       this.lassoPoints = [{x, y}];
       this.lassoStartX = x;
       this.lassoStartY = y;
+      this.hoveredHandle = null;
       if (!e.shiftKey && !e.ctrlKey) {
         this.selectedCube = null;
         this.selectedCubes = [];
@@ -860,6 +1010,26 @@ class IsometricWorkbench {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     
+    if (this.isResizing && this.selectedCube) {
+      const cube = this.selectedCube;
+      const area = cube.baseArea || (cube.width * cube.depth);
+      cube.baseArea = area;
+      if (this.activeHandle === 'left' || this.activeHandle === 'right') {
+        const dir = this.activeHandle === 'right' ? 1 : -1;
+        const deltaUnits = dir * (x - this.resizeStart.x) / (this.tileWidth * 0.3 * this.zoom);
+        const { width, depth } = this.computeResizeFromWidth(this.resizeStart.width + deltaUnits, cube);
+        cube.width = width;
+        cube.depth = depth;
+      } else if (this.activeHandle === 'depth') {
+        const deltaDepth = -(y - this.resizeStart.y) / (this.cubeDepth * 0.3 * this.zoom);
+        const { width, depth } = this.computeResizeFromDepth(this.resizeStart.depth + deltaDepth, cube);
+        cube.width = width;
+        cube.depth = depth;
+      }
+      this.render();
+      return;
+    }
+    
     if (this.isPanning) {
       // Pan the view by adjusting offsets
       const dx = x - this.panStartX;
@@ -867,6 +1037,7 @@ class IsometricWorkbench {
       
       this.offsetX += dx;
       this.offsetY += dy;
+      this.clampOffsets();
       
       this.panStartX = x;
       this.panStartY = y;
@@ -877,44 +1048,221 @@ class IsometricWorkbench {
       this.lassoPoints.push({x, y});
       this.render();
     } else if (this.isDragging && this.selectedCubes.length > 0) {
-      const dx = x - this.dragStartX;
-      const dy = y - this.dragStartY;
+      // Calculate delta in grid units directly
+      const deltaGridX = (x - this.dragStartX) / (this.tileWidth * this.zoom);
+      const deltaGridY = (y - this.dragStartY) / (this.cubeDepth * this.zoom);
       
-      // Move all selected cubes with proper zoom scaling
+      // Move all selected cubes smoothly - NO snapping during drag
       this.selectedCubes.forEach(cube => {
-        const newGridX = cube.gridX + (dx / (this.tileWidth * this.zoom));
-        const newGridY = cube.gridY + (dy / (this.cubeDepth * this.zoom));
-        
-        // Constrain to table boundaries
-        cube.gridX = this.constrainToTable(newGridX, cube.width, this.tableWidth / this.tileWidth);
-        cube.gridY = this.constrainToTable(newGridY, cube.depth, this.tableDepth / this.cubeDepth);
+        const newGridX = cube.gridX + deltaGridX;
+        const newGridY = cube.gridY + deltaGridY;
+        cube.gridX = this.constrainToTable(newGridX, cube.width, 'x');
+        cube.gridY = this.constrainToTable(newGridY, cube.depth, 'y');
       });
       
       this.dragStartX = x;
       this.dragStartY = y;
+      this.didDrag = true;
       
+      // Direct render for responsiveness
       this.render();
     } else {
       const cube = this.getCubeAtPosition(x, y);
+      let needsRender = false;
       if (cube !== this.hoveredCube) {
         this.hoveredCube = cube;
-        this.canvas.style.cursor = cube ? 'grab' : 'default';
+        needsRender = true;
+      }
+      const handle = this.getHandleAtPosition(x, y);
+      if (handle) {
+        const handleChanged = !this.hoveredHandle || this.hoveredHandle.id !== handle.id || this.hoveredHandle.cube !== handle.cube;
+        this.hoveredHandle = handle;
+        this.canvas.style.cursor = handle.cursor;
+        if (needsRender || handleChanged) {
+          this.render();
+        }
+        return;
+      }
+      if (this.hoveredHandle) {
+        this.hoveredHandle = null;
+        needsRender = true;
+      }
+      const cursor = cube ? 'grab' : 'default';
+      if (this.canvas.style.cursor !== cursor) {
+        this.canvas.style.cursor = cursor;
+      }
+      if (needsRender) {
         this.render();
       }
     }
   }
   
   // Constrain a cube position to stay within table bounds
-  constrainToTable(position, cubeSize, maxGridSize) {
+  constrainToTable(position, cubeSize, axis) {
+    const metrics = this.getTableMetrics();
+    const half = axis === 'y' ? metrics.gridHalfDepth : metrics.gridHalfWidth;
     const halfSize = cubeSize / 2;
-    const min = -maxGridSize / 2 + halfSize;
-    const max = maxGridSize / 2 - halfSize;
+    const min = -half + halfSize;
+    const max = half - halfSize;
     return Math.max(min, Math.min(max, position));
+  }
+
+  clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+  }
+
+  clampOffsets() {
+    const metrics = this.getTableMetrics();
+    const pad = this.handleOffset + this.handleRadius + 4;
+    const surfaceLeft = metrics.centerX - metrics.tableWidthPx / 2 + pad;
+    const surfaceRight = metrics.centerX + metrics.tableWidthPx / 2 - pad;
+    const surfaceTop = metrics.surfaceTopY + pad;
+    const surfaceBottom = metrics.surfaceBottomY - pad;
+    const halfGridWidthPx = metrics.gridHalfWidth * this.tileWidth * this.zoom;
+    const halfGridDepthPx = metrics.gridHalfDepth * this.cubeDepth * this.zoom;
+    const minX = surfaceLeft + halfGridWidthPx;
+    const maxX = surfaceRight - halfGridWidthPx;
+    const minY = surfaceTop + halfGridDepthPx;
+    const maxY = surfaceBottom - halfGridDepthPx;
+    this.offsetX = this.clamp(this.offsetX, minX, maxX);
+    this.offsetY = this.clamp(this.offsetY, minY, maxY);
+  }
+
+  getSizeBounds(cube) {
+    const metrics = this.getTableMetrics();
+    const maxWidth = Math.max(this.minCubeSize, (metrics.gridHalfWidth - Math.abs(cube.gridX)) * 2);
+    const maxDepth = Math.max(this.minCubeSize, (metrics.gridHalfDepth - Math.abs(cube.gridY)) * 2);
+    return { maxWidth, maxDepth };
+  }
+
+  computeResizeFromWidth(targetWidth, cube) {
+    const { maxWidth, maxDepth } = this.getSizeBounds(cube);
+    const baseArea = cube.baseArea || (cube.width * cube.depth);
+    const usableArea = Math.min(baseArea, maxWidth * maxDepth);
+    let width = this.clamp(targetWidth, this.minCubeSize, maxWidth);
+    let depth = usableArea / width;
+    depth = this.clamp(depth, this.minCubeSize, maxDepth);
+    width = this.clamp(usableArea / depth, this.minCubeSize, maxWidth);
+    depth = usableArea / width;
+    return { width, depth };
+  }
+
+  computeResizeFromDepth(targetDepth, cube) {
+    const { maxWidth, maxDepth } = this.getSizeBounds(cube);
+    const baseArea = cube.baseArea || (cube.width * cube.depth);
+    const usableArea = Math.min(baseArea, maxWidth * maxDepth);
+    let depth = this.clamp(targetDepth, this.minCubeSize, maxDepth);
+    let width = usableArea / depth;
+    width = this.clamp(width, this.minCubeSize, maxWidth);
+    depth = usableArea / width;
+    return { width, depth };
+  }
+
+  // Stack cube on top of another if overlapping on drop
+  tryStackCube(cube) {
+    let bestTarget = null;
+    let bestOverlap = 0;
+    
+    this.cubes.forEach(other => {
+      if (other === cube) return;
+      if (this.selectedCubes.includes(other)) return;
+      
+      // Calculate overlap area
+      const cubeLeft = cube.gridX - cube.width / 2;
+      const cubeRight = cube.gridX + cube.width / 2;
+      const cubeBack = cube.gridY - cube.depth / 2;
+      const cubeFront = cube.gridY + cube.depth / 2;
+      
+      const otherLeft = other.gridX - other.width / 2;
+      const otherRight = other.gridX + other.width / 2;
+      const otherBack = other.gridY - other.depth / 2;
+      const otherFront = other.gridY + other.depth / 2;
+      
+      const overlapX = Math.min(cubeRight, otherRight) - Math.max(cubeLeft, otherLeft);
+      const overlapY = Math.min(cubeFront, otherFront) - Math.max(cubeBack, otherBack);
+      
+      // Need significant overlap (at least 40% of the smaller cube)
+      if (overlapX > 0 && overlapY > 0) {
+        const overlapArea = overlapX * overlapY;
+        const minArea = Math.min(cube.width * cube.depth, other.width * other.depth) * 0.4;
+        
+        if (overlapArea > minArea && overlapArea > bestOverlap) {
+          bestOverlap = overlapArea;
+          bestTarget = other;
+        }
+      }
+    });
+    
+    if (bestTarget) {
+      // Snap cube to exactly align with target center
+      cube.gridX = bestTarget.gridX;
+      cube.gridY = bestTarget.gridY;
+      // Stack height = target's base height + target's cube height
+      cube.stackHeight = bestTarget.stackHeight + bestTarget.height;
+      return true;
+    } else {
+      // Drop to ground level
+      cube.stackHeight = 0;
+      return false;
+    }
+  }
+
+  // Snap cube position so edges magnetically align to neighboring cubes on drop
+  snapPosition(gridX, gridY, cube) {
+    const threshold = 0.35; // grid units - larger threshold for easier snapping
+    let snappedX = gridX;
+    let snappedY = gridY;
+    const cubeLeft = gridX - cube.width / 2;
+    const cubeRight = gridX + cube.width / 2;
+    const cubeBack = gridY - cube.depth / 2;
+    const cubeFront = gridY + cube.depth / 2;
+    let bestDeltaX = threshold;
+    let bestDeltaY = threshold;
+    this.cubes.forEach(other => {
+      if (other === cube) return;
+      if (this.selectedCubes.includes(other)) return; // don't snap to moving group
+      const otherLeft = other.gridX - other.width / 2;
+      const otherRight = other.gridX + other.width / 2;
+      const otherBack = other.gridY - other.depth / 2;
+      const otherFront = other.gridY + other.depth / 2;
+      // X snapping (edges)
+      const deltaLeftToRight = Math.abs(cubeLeft - otherRight);
+      if (deltaLeftToRight < bestDeltaX) {
+        bestDeltaX = deltaLeftToRight;
+        snappedX = otherRight + cube.width / 2;
+      }
+      const deltaRightToLeft = Math.abs(cubeRight - otherLeft);
+      if (deltaRightToLeft < bestDeltaX) {
+        bestDeltaX = deltaRightToLeft;
+        snappedX = otherLeft - cube.width / 2;
+      }
+      // Y snapping (depth edges)
+      const deltaBackToFront = Math.abs(cubeBack - otherFront);
+      if (deltaBackToFront < bestDeltaY) {
+        bestDeltaY = deltaBackToFront;
+        snappedY = otherFront + cube.depth / 2;
+      }
+      const deltaFrontToBack = Math.abs(cubeFront - otherBack);
+      if (deltaFrontToBack < bestDeltaY) {
+        bestDeltaY = deltaFrontToBack;
+        snappedY = otherBack - cube.depth / 2;
+      }
+    });
+    return { x: snappedX, y: snappedY };
   }
   
   handleMouseUp(e) {
     if (this.isPanning) {
       this.isPanning = false;
+      this.canvas.style.cursor = this.hoveredCube ? 'grab' : 'default';
+      this.render();
+      return;
+    }
+
+    if (this.isResizing) {
+      this.isResizing = false;
+      this.activeHandle = null;
+      this.resizeStart = null;
       this.canvas.style.cursor = this.hoveredCube ? 'grab' : 'default';
       this.render();
       return;
@@ -927,7 +1275,19 @@ class IsometricWorkbench {
       this.lassoPoints = [];
     }
     
+    if (this.isDragging && this.selectedCubes.length > 0 && this.didDrag) {
+      this.selectedCubes.forEach(cube => {
+        const snapped = this.snapPosition(cube.gridX, cube.gridY, cube);
+        cube.gridX = this.constrainToTable(snapped.x, cube.width, 'x');
+        cube.gridY = this.constrainToTable(snapped.y, cube.depth, 'y');
+      });
+      if (this.selectedCubes.length === 1) {
+        this.tryStackCube(this.selectedCubes[0]);
+      }
+    }
+    
     this.isDragging = false;
+    this.didDrag = false;
     this.canvas.style.cursor = this.hoveredCube ? 'grab' : 'default';
     this.render();
   }
@@ -944,19 +1304,6 @@ class IsometricWorkbench {
   handleWheel(e) {
     e.preventDefault();
     
-    // Calculate table center position (matching drawTable calculations)
-    const tableLeft = 80;
-    const tableRight = this.width - 340;
-    const tableW = (tableRight - tableLeft) / 2;
-    const centerX = tableLeft + tableW;
-    const tableTop = this.height - 180;
-    const tableD = this.tableDepth;
-    
-    // Table center in screen space (center of the visible table surface)
-    const tableCenterX = centerX;
-    const tableCenterY = tableTop - tableD / 2;
-    
-    // Get mouse position relative to canvas
     const rect = this.canvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
@@ -971,6 +1318,7 @@ class IsometricWorkbench {
     // Adjust offsets so the point under the mouse stays in the same place
     this.offsetX = mouseX - (mouseX - this.offsetX) * zoomRatio;
     this.offsetY = mouseY - (mouseY - this.offsetY) * zoomRatio;
+    this.clampOffsets();
     
     this.zoom = newZoom;
     this.render();
@@ -1042,17 +1390,27 @@ class IsometricWorkbench {
         const dy = y - this.dragStartY;
         
         this.selectedCubes.forEach(cube => {
-          const newGridX = cube.gridX + (dx / (this.tileWidth * this.zoom));
-          const newGridY = cube.gridY + (dy / (this.cubeDepth * this.zoom));
-          
-          cube.gridX = this.constrainToTable(newGridX, cube.width, this.tableWidth / this.tileWidth);
-          cube.gridY = this.constrainToTable(newGridY, cube.depth, this.tableDepth / this.cubeDepth);
+          let newGridX = cube.gridX + (dx / (this.tileWidth * this.zoom));
+          let newGridY = cube.gridY + (dy / (this.cubeDepth * this.zoom));
+          if (this.selectedCubes.length === 1) {
+            const snapped = this.snapPosition(newGridX, newGridY, cube);
+            newGridX = snapped.x;
+            newGridY = snapped.y;
+          }
+          cube.gridX = this.constrainToTable(newGridX, cube.width, 'x');
+          cube.gridY = this.constrainToTable(newGridY, cube.depth, 'y');
         });
+        this.didDrag = true;
         
         this.dragStartX = x;
         this.dragStartY = y;
         
-        this.render();
+        if (!this._dragRaf) {
+          this._dragRaf = requestAnimationFrame(() => {
+            this._dragRaf = null;
+            this.render();
+          });
+        }
       } else {
         // Pan view with single touch drag (when not dragging a cube)
         if (!this.touchPanning) {
@@ -1404,18 +1762,15 @@ class IsometricWorkbench {
   drawTable() {
     this.ctx.save();
     
-    // Position table in bottom-left area, filling to legend and stats
-    const tableLeft = 80;  // Leave margin on left
-    const tableRight = this.width - 340; // Leave room for legend (300px + margin)
-    const tableW = (tableRight - tableLeft) / 2;
-    const centerX = tableLeft + tableW;
-    
+    const metrics = this.getTableMetrics();
+    const tableW = metrics.tableWidthPx / 2;
+    const centerX = metrics.centerX;
+    const tableLeft = metrics.tableLeft;
+    const tableRight = metrics.tableRight;
     const tableD = this.tableDepth;  // Much deeper visible surface
     const tableH = this.tableHeight;
     const thickness = this.tableThickness;
-    
-    // Position near bottom, leaving room for stats overlay at top
-    const tableTop = this.height - 180;
+    const tableTop = metrics.tableTop;
     
     // Draw background based on style
     if (this.backgroundStyle === 'terminal') {
@@ -1813,6 +2168,7 @@ class IsometricWorkbench {
   
   // Render everything
   render() {
+    const animatingPlan = this.stepPlanLerp();
     // Clear canvas with retro grid background
     this.ctx.fillStyle = '#1a1a2e';
     this.ctx.fillRect(0, 0, this.width, this.height);
@@ -1862,6 +2218,20 @@ class IsometricWorkbench {
     
     // Draw stats overlay
     this.drawStatsOverlay();
+
+    if (animatingPlan) {
+      requestAnimationFrame(() => this.render());
+    }
+  }
+
+  stepPlanLerp() {
+    const delta = this.targetPlanFactor - this.planFactor;
+    if (Math.abs(delta) < 0.001) {
+      this.planFactor = this.targetPlanFactor;
+      return false;
+    }
+    this.planFactor += delta * 0.18;
+    return true;
   }
   
   drawGrid() {
@@ -2077,6 +2447,12 @@ class IsometricWorkbench {
       this.cubeHeight = 60;
     }
     
+    this.render();
+  }
+
+  togglePlanView() {
+    this.isPlanView = !this.isPlanView;
+    this.targetPlanFactor = this.isPlanView ? 1 : 0;
     this.render();
   }
 }

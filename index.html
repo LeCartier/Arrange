@@ -1682,6 +1682,7 @@
       <h2>╔═══════════════ WORKBENCH v1.0 ═══════════════╗</h2>
       <div id="workbench-controls">
         <button class="workbench-btn" onclick="workbenchToggleView()" id="view-toggle-btn">📐 45°/45° View</button>
+        <button class="workbench-btn" onclick="workbenchTogglePlan()" id="plan-toggle-btn">🗺️ Plan View</button>
         <button class="workbench-btn" onclick="workbenchAutoArrange()">🎯 Auto-Arrange</button>
         <button class="workbench-btn" onclick="workbenchReload()">🔄 Reload</button>
         <button class="workbench-btn" onclick="workbenchSetBackground('pixel-art')">🎨 Pixel Art</button>
@@ -12087,6 +12088,13 @@
       } else {
         btn.textContent = '📐 Top-Down View';
       }
+    }
+
+    function workbenchTogglePlan() {
+      if (!workbench) return;
+      workbench.togglePlanView();
+      const btn = document.getElementById('plan-toggle-btn');
+      btn.textContent = workbench.isPlanView ? '🗻 3D Elevation' : '🗺️ Plan View';
     }
 
     function openLogicPortal() {
